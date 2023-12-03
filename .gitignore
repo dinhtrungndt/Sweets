@@ -2,6 +2,13 @@
 #
 .DS_Store
 
+#  không đưa package và yarn lên git
+node_modules
+yarn-error.log
+yarn.lock
+package-lock.json
+package.json
+
 # Xcode
 #
 build/
@@ -39,7 +46,6 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
-package.json
 
 # fastlane
 #
