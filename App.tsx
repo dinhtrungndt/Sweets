@@ -1,11 +1,12 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import TrangChuScreen from './src/components/home/trangchu';
 
 const App = () => {
   return (
-    <View>
-      <Text>App</Text>
-    </View>
+    <SafeAreaView>
+      <TrangChuScreen />
+    </SafeAreaView>
   );
 };
 
