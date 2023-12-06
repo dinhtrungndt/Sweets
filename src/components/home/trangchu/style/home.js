@@ -12,7 +12,7 @@ export default StyleSheet.create({
   },
   textHeader: {
     fontSize: 38,
-    color: '#3CC8FF',
+    color: '#7EC1A5',
     fontFamily: 'Roboto',
   },
   headerIconContainer: {

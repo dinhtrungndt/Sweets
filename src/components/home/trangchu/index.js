@@ -10,12 +10,6 @@ import {
   ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-
-// Screens
-import QuanTamScreen from './quantam';
-import KhacScreen from './khac';
-import HomeTabsTop from './tabTop';
 
 // Data
 import {dataStory} from './data';
@@ -24,18 +18,9 @@ import {BaiVietData} from './data/baiviet';
 // StyleCss
 import styles from './style/home';
 
-const Tab = createMaterialTopTabNavigator();
+const TrangChuScreen = props => {
+  const {navigation} = props;
 
-function tabTop() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="QuanTamScreen" component={QuanTamScreen} />
-      <Tab.Screen name="KhacScreen" component={KhacScreen} />
-    </Tab.Navigator>
-  );
-}
-
-const TrangChuScreen = () => {
   // Chữ nhiều hơn 150 kí tự thì ẩn đi và hiện chữ xem thêm
   const [showMore, setShowMore] = useState(false);
 
@@ -68,8 +53,6 @@ const TrangChuScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      {/* Tab Top */}
-      {/* <HomeTabsTop /> */}
       {/* đường kẻ ngang*/}
       <Text style={styles.lineHr} />
       {/* Body */}
@@ -87,7 +70,8 @@ const TrangChuScreen = () => {
               height: 40,
               justifyContent: 'center',
               borderRadius: 50,
-            }}>
+            }}
+            onPress={() => navigation.navigate('UpStatus')}>
             <Text style={{marginLeft: 10, fontSize: 16}}>
               Bạn đang nghĩ gì?
             </Text>
