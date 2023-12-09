@@ -1,11 +1,15 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 import React from 'react';
+
+import LoginScreens from './src/components/user/login/Login';
+import SignUpScreens from './src/components/user/signup/SingUp';
 
 const App = () => {
   return (
-    <View>
-      <Text>App</Text>
-    </View>
+    <SafeAreaView>
+      {/* <LoginScreens /> */}
+      <SignUpScreens />
+    </SafeAreaView>
   );
 };
 
