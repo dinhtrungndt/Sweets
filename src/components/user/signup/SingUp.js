@@ -21,7 +21,7 @@ const SignUpScreens = () => {
         Signup to get Started
       </Text> */}
       <View style={myStyles.username}>
-        <Text style={myStyles.usernameLayble}>Email or Phone*</Text>
+       
         <TextInput
           value={email}
           onChangeText={setEmail}

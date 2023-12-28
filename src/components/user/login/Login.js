@@ -2,6 +2,9 @@ import { Image, StyleSheet, Text, TextInput, View, Pressable, Alert } from 'reac
 import React, { useState, useContext } from 'react';
 import CheckBox from '@react-native-community/checkbox';
 
+import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
+import hidePassImage from '../../../../media/image/eya.png'; // Replace with the actual path
+
 const LoginScreens = () => {
 
   const [email, setEmail] = useState('');
