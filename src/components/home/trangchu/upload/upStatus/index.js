@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {styles} from '../style/upStatusCss';

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 
@@ -68,8 +69,11 @@ const SelectScreenUp = props => {
         </TouchableOpacity>
         {/* Chọn bạn bè cụ thể */}
         <TouchableOpacity
-          style={styles.body_content}
-          onPress={() => handleOptionSelect('option3')}>
+          onPress={() => [
+            navigation.navigate('SelectBB'),
+            handleOptionSelect('option3'),
+          ]}
+          style={styles.body_content}>
           <View style={styles.radioContainer}>
             {selectedOption === 'option3' && (
               <View style={styles.radioSelected} />

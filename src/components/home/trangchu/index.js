@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Image,
   StyleSheet,
@@ -134,11 +135,14 @@ const TrangChuScreen = props => {
           {/* Story */}
           <View style={[styles.story, {flexDirection: 'row'}]}>
             {dataStory.map((item, index) => (
-              <View key={index} style={styles.storyItem}>
+              <TouchableOpacity
+                key={index}
+                style={styles.storyItem}
+                onPress={() => navigation.navigate('UpStory')}>
                 <Image style={styles.storyAvatar} source={item.avatar} />
                 <Image style={styles.storyImage} source={item.image} />
                 <Text style={styles.storyName}>{item.name}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         </ScrollView>

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
@@ -12,7 +13,7 @@ export default StyleSheet.create({
   },
   textHeader: {
     fontSize: 38,
-    color: '#7EC1A5',
+    color: '#000000',
     fontFamily: 'Roboto',
   },
   headerIconContainer: {
@@ -178,7 +179,6 @@ export default StyleSheet.create({
     fontWeight: '500',
     fontFamily: 'Roboto',
     marginLeft: 15,
-    fontWeight: 'bold',
     color: '#050505',
   },
   baiVietTime: {
@@ -215,7 +215,6 @@ export default StyleSheet.create({
   baiVietImage: {
     marginTop: 10,
     height: 400,
-    marginTop: 10,
   },
   baiVietImageImage: {
     width: '100%',
