@@ -1,14 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+import { UserContext } from '../user/userContext';
+import UserNavigation from '../user/userNavigations';
+import HomeNavigation from '../home/homeNavigation';
 
 const AppNavigations = () => {
+  const { user } = useContext(UserContext);
   return (
-    <View>
-      <Text>AppNavigations</Text>
-    </View>
+    <NavigationContainer>
+      {user ? <HomeNavigation />
+        : <UserNavigation />}
+    </NavigationContainer>
   )
 }
 
 export default AppNavigations
-
-const styles = StyleSheet.create({})

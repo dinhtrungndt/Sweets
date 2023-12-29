@@ -1,16 +1,28 @@
 import { Image, StyleSheet, Text, TextInput, View, Pressable, Alert } from 'react-native'
 import React, { useState, useContext } from 'react';
 import CheckBox from '@react-native-community/checkbox';
+import { UserContext } from '../userContext';
 
 import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
 import hidePassImage from '../../../../media/image/eya.png'; // Replace with the actual path
 
-const LoginScreens = () => {
+const LoginScreens = (props) => {
+  const { navigation } = props;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+   const { onLogin } = useContext(UserContext);
 
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const onLoginPress = async () => {
+        setLoading(true);
+        const result = await onLogin(email, password);
+        if (!result) {
+            Alert.alert('Login failed!');
+        }
+        setLoading(false);
+    }
 
   return (
     <View style={myStyles.body}>
@@ -52,6 +64,7 @@ const LoginScreens = () => {
         </View>
       </View>
       <Pressable
+        onPress={onLoginPress}  
         style={myStyles.btnLogin} >
         <Text style={myStyles.textbtn}>
           {loading ? 'Loading...' : 'Login'}
@@ -73,6 +86,7 @@ const LoginScreens = () => {
       <View style={myStyles.dont}>
         <Text>don't have an account ?  </Text>
         <Text
+          onPress={() => navigation.navigate('SignUpScreens')}
           style={myStyles.sign}>Sign Up  </Text>
       </View>
     </View>

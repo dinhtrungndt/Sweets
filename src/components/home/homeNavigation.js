@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const homeNavigation = () => {
+const HomeNavigation = () => {
   return (
     <View>
-      <Text>homeNavigation</Text>
+      <Text>HomeNavigation</Text>
     </View>
   );
 };
 
-export default homeNavigation;
+export default HomeNavigation;
 
 const styles = StyleSheet.create({});
