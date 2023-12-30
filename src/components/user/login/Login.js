@@ -6,14 +6,13 @@ import {
   TextInput,
   View,
   Pressable,
-  Alert,
 } from 'react-native';
 import React, {useState, useContext} from 'react';
 // import CheckBox from '@react-native-community/checkbox';
 import {UserContext} from '../userContext';
 
-import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
-import hidePassImage from '../../../../media/image/eya.png'; // Replace with the actual path
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreens = props => {
   const {navigation} = props;
@@ -21,6 +20,8 @@ const LoginScreens = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {onLogin} = useContext(UserContext);
+  const [loginError, setLoginError] = useState(false);
+  const [loginErrorText, setLoginErrorText] = useState('');
 
   const [loading, setLoading] = useState(false);
 
@@ -28,9 +29,25 @@ const LoginScreens = props => {
     setLoading(true);
     const result = await onLogin(email, password);
     if (!result) {
-      Alert.alert('Login failed!');
+      setLoginError(true);
+      setLoginErrorText('Đăng nhập thất bại, Vui lòng kiểm tra lại !');
+      Toast.show({
+        message: 'Login failed',
+        type: 'danger',
+        duration: 3000,
+        icon: 'auto',
+        backgroundColor: 'red',
+        color: 'white',
+      });
+    } else {
+      // Đăng nhập thành công, lưu thông tin đăng nhập vào AsyncStorage
+      try {
+        await AsyncStorage.setItem('userEmail', email);
+        await AsyncStorage.setItem('userPassword', password);
+      } catch (error) {
+        console.log('Lỗi khi lưu thông tin đăng nhập:', error);
+      }
     }
-    setLoading(false);
   };
 
   return (
