@@ -1,10 +1,11 @@
-import React, { useState, createContext } from 'react'
-import { login } from './UserService';
+/* eslint-disable prettier/prettier */
+import React, {useState, useEffect, createContext} from 'react';
+import {login} from './userService';
 
 export const UserContext = createContext();
 
-export const UserProvider = (props) => {
-  const { children } = props;
+export const UserProvider = props => {
+  const {children} = props;
 
   const [user, setUser] = useState(null);
 
@@ -12,7 +13,7 @@ export const UserProvider = (props) => {
     try {
       const result = await login(email, password);
       console.log('Kết quả đăng nhập', result);
-      if (result.status === 1) {
+      if (result.status === 1 && result.token) {
         setUser(result);
         return true;
       }
@@ -24,13 +25,8 @@ export const UserProvider = (props) => {
   };
 
   return (
-    <UserContext.Provider value={{
-      user,
-      setUser,
-      onLogin
-    }}>
-
+    <UserContext.Provider value={{user, setUser, onLogin}}>
       {children}
     </UserContext.Provider>
-  )
-}
+  );
+};
