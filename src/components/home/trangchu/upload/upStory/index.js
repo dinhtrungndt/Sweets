@@ -147,7 +147,11 @@ const UpStory = () => {
   }, [current]);
 
   return (
-    <View style={{flex: 1, backgroundColor: '#000'}}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#000',
+      }}>
       <Image
         source={content[current].content}
         onLoadEnd={() => {
@@ -239,7 +243,7 @@ const UpStory = () => {
                     height: 100,
                     backgroundColor: '#fff',
                     position: 'absolute',
-                    bottom: 20,
+                    bottom: 80,
                     flexDirection: 'row',
                     borderTopLeftRadius: 20,
                     borderTopRightRadius: 20,
@@ -304,7 +308,7 @@ const UpStory = () => {
           height: 50,
           backgroundColor: '#fff',
           position: 'absolute',
-          bottom: 40,
+          bottom: 90,
           flexDirection: 'row',
           alignItems: 'center',
           marginLeft: 33,

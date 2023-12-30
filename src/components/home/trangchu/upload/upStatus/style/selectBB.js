@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -40,6 +41,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingLeft: 30,
+    bottom: 5,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },

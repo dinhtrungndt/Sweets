@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -108,7 +109,7 @@ export const styles = StyleSheet.create({
   },
   bottomSheet: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 10,
     width: '100%',
     backgroundColor: 'white',
     padding: 16,
@@ -147,6 +148,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 15,
+    bottom: 10,
   },
   boder_image: {
     width: 110,

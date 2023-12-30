@@ -12,6 +12,9 @@ import ChatScreen from './chat';
 import DanhBaScreen from './danhba';
 import CaNhanScreen from './canhan';
 import UpStatus from './trangchu/upload/upStatus';
+import SelectScreenUp from './trangchu/upload/upStatus/select';
+import SelectBB from './trangchu/upload/upStatus/select/selectBB';
+import UpStory from './trangchu/upload/upStory';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -154,9 +157,15 @@ const options = ({route}) => ({
 
 const HomeStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
       <Stack.Screen name="TrangChuScreen" component={TrangChuScreen} />
       <Stack.Screen name="UpStatus" component={UpStatus} />
+      <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />
+      <Stack.Screen name="SelectBB" component={SelectBB} />
+      <Stack.Screen name="UpStory" component={UpStory} />
     </Stack.Navigator>
   );
 };
