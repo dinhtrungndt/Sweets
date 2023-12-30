@@ -1,14 +1,15 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+/* eslint-disable prettier/prettier */
+import React, {createContext, useState} from 'react';
 
-const homeContext = () => {
+export const HomeContext = createContext();
+
+export const HomeProvider = props => {
+  const {children} = props;
+
+  const [news, setNews] = useState([]);
   return (
-    <View>
-      <Text>homeContext</Text>
-    </View>
+    <HomeContext.Provider value={{news, setNews}}>
+      {children}
+    </HomeContext.Provider>
   );
 };
-
-export default homeContext;
-
-const styles = StyleSheet.create({});

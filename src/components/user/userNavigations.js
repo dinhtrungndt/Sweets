@@ -1,14 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+/* eslint-disable prettier/prettier */
+import {View, Text} from 'react-native';
+import React from 'react';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-const userNavigations = () => {
+const StacK = createNativeStackNavigator();
+
+import LoginScreens from './login/Login';
+import SignUpScreens from './signup/SingUp';
+
+const UserNavigation = () => {
   return (
-    <View>
-      <Text>userNavigations</Text>
-    </View>
-  )
-}
+    <StacK.Navigator screenOptions={{headerShown: false}}>
+      <StacK.Screen name="LoginScreens" component={LoginScreens} />
+      <StacK.Screen name="SignUpScreensr" component={SignUpScreens} />
+    </StacK.Navigator>
+  );
+};
 
-export default userNavigations
-
-const styles = StyleSheet.create({})
+export default UserNavigation;
