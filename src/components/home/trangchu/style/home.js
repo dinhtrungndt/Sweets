@@ -236,7 +236,7 @@ export default StyleSheet.create({
     height: 22,
     resizeMode: 'cover',
     top: 3,
-    left: 105,
+    left: 95,
   },
   baiVietLikeCommentLeft: {
     flexDirection: 'row',
@@ -262,6 +262,7 @@ export default StyleSheet.create({
     resizeMode: 'cover',
   },
   baiVietLikeCommentRightText: {
+    width: 100,
     fontSize: 16,
     fontFamily: 'Roboto',
     paddingLeft: 3,

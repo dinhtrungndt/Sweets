@@ -15,6 +15,7 @@ import UpStatus from './trangchu/upload/upStatus';
 import SelectScreenUp from './trangchu/upload/upStatus/select';
 import SelectBB from './trangchu/upload/upStatus/select/selectBB';
 import UpStory from './trangchu/upload/upStory';
+import DropDown from './trangchu/dropDown';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -166,6 +167,7 @@ const HomeStack = () => {
       <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />
       <Stack.Screen name="SelectBB" component={SelectBB} />
       <Stack.Screen name="UpStory" component={UpStory} />
+      <Stack.Screen name="DropDown" component={DropDown} />
     </Stack.Navigator>
   );
 };
