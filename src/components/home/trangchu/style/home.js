@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {StyleSheet} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   T: {
@@ -267,5 +267,8 @@ export default StyleSheet.create({
     fontFamily: 'Roboto',
     paddingLeft: 3,
     paddingTop: 3,
+  },
+  noStatus: {
+    padding: 10,
   },
 });

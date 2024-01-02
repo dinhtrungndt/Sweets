@@ -1,10 +1,17 @@
 /* eslint-disable prettier/prettier */
 import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {styles} from '../style/upStatusCss';
 
-const UpStatus = props => {
-  const {navigation} = props;
+// Data
+import {uploadPost} from '../../../homeService';
+import {UserContext} from '../../../../user/userContext';
+import Toast from 'react-native-toast-message';
+
+const UpStatus = ({navigation, route}) => {
+  const {user} = route.params;
+
+  const [upload, setUpload] = useState(false);
 
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true);
   const [inputText, setInputText] = useState('');
@@ -21,6 +28,65 @@ const UpStatus = props => {
     setInputText(text);
   };
 
+  const handlePostUpload = () => {
+    handleUploadPost();
+    if (!upload) {
+      navigation.goBack();
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Up tin thành công',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    } else {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Up tin thất bại',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    }
+  };
+
+  const handleUploadPost = async () => {
+    if (!user || !inputText) {
+      return;
+    }
+
+    try {
+      const postDetails = {
+        avatar: user.post[0].avatar,
+        name: user.post[0].name,
+        time: new Date().toISOString(),
+        content: inputText,
+      };
+
+      // Call the uploadPost function directly
+      const response = await uploadPost(user.id, postDetails);
+
+      // Check the response status and handle accordingly
+      if (response.status === 1) {
+        console.log('Upload successful:', response);
+        setUpload(response);
+      } else {
+        console.error('Upload failed. Server returned:', response.message);
+      }
+    } catch (error) {
+      console.error('Error uploading post:', error);
+    }
+  };
+
+  useEffect(() => {
+    handleUploadPost();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   return (
     <View style={styles.T}>
       {/* header */}
@@ -33,6 +99,7 @@ const UpStatus = props => {
         </TouchableOpacity>
         <Text style={styles.textHeader}>Tạo bài viết</Text>
         <TouchableOpacity
+          onPress={handlePostUpload}
           style={[
             styles.upHeaderButton,
             {backgroundColor: inputText ? '#7ec1a5' : '#CBCBCB'},

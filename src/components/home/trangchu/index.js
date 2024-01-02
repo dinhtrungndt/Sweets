@@ -1,13 +1,10 @@
 /* eslint-disable prettier/prettier */
 import {
   Image,
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  TextComponent,
-  TextInput,
-  FlatList,
+  Modal,
   ScrollView,
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
@@ -21,7 +18,7 @@ import {getPosts} from '../homeService';
 // StyleCss
 import styles from './style/home';
 import {UserContext} from '../../user/userContext';
-import axios from 'axios';
+import AddModal from './dropDown/addModal';
 
 const TrangChuScreen = props => {
   const {navigation} = props;
@@ -30,6 +27,7 @@ const TrangChuScreen = props => {
   const [showMore, setShowMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   const handleShowMore = () => {
     setShowMore(!showMore);
@@ -40,19 +38,21 @@ const TrangChuScreen = props => {
       setLoading(true);
       const res = await getPosts();
       // Update isLiked property based on the data received
-      const updatedPosts = res.map(post => {
-        const likedByCurrentUser = post.posts[0].likedBy.includes(user.id);
-        // console.log('>>>>>>>>>>>>>>>>>> 78', likedByCurrentUser);
-        return {
-          ...post,
-          posts: [
-            {
-              ...post.posts[0],
-              isLiked: likedByCurrentUser,
-            },
-          ],
-        };
-      });
+      const updatedPosts = res.flatMap(project =>
+        project.posts.map(post => {
+          const likedByCurrentUser = post.likedBy.includes(user.id);
+          // console.log('>>>>>>>>>>>>>>>>>> 78', likedByCurrentUser);
+          return {
+            ...post,
+            posts: [
+              {
+                ...post,
+                isLiked: likedByCurrentUser,
+              },
+            ],
+          };
+        }),
+      );
       setPosts(updatedPosts);
       setLoading(false);
     } catch (error) {
@@ -76,22 +76,19 @@ const TrangChuScreen = props => {
       );
 
       const data = await response.json();
-      console.log('Response from API:', data); // Log response for debugging
+      // console.log('Response from API:', data);
 
       if (data.status === 1) {
-        // Cập nhật trạng thái like trong state
+        // Update the posts array with the new like count
         const updatedPosts = posts.map(post => {
-          if (post.posts[0]._id === postId) {
-            // console.log('>>>>>>>>>>>>>>>>>> 82', post.posts[0].like);
+          if (post._id === postId) {
+            // console.log('>>>>>>>>>>>>>>>>>> 81', post.isLiked);
             return {
               ...post,
-              posts: [
-                {
-                  ...post.posts[0],
-                  isLiked: !post.posts[0].isLiked,
-                  like: post.posts[0].likedBy,
-                },
-              ],
+              isLiked: !post.isLiked, // Toggle the like status
+              likedBy: post.isLiked
+                ? post.likedBy.filter(id => id !== userId)
+                : [...post.likedBy, userId],
             };
           }
           return post;
@@ -101,8 +98,8 @@ const TrangChuScreen = props => {
         // console.log('>>>>>>>>>>>>>>>>>> 81', data.isLiked);
 
         console.log(
-          'Updated posts:',
-          updatedPosts.map(post => post.posts[0].like),
+          '------------>>>>>>>>>>>>>>>>>> 106 Updated posts:',
+          updatedPosts,
         ); // Log updated posts for debugging
 
         setPosts([...updatedPosts]);
@@ -115,7 +112,7 @@ const TrangChuScreen = props => {
   };
 
   const handleOnDropdown = () => {
-    navigation.navigate('DropDown');
+    setDropdownVisible(!isDropdownVisible);
   };
 
   useEffect(() => {
@@ -171,7 +168,7 @@ const TrangChuScreen = props => {
                 justifyContent: 'center',
                 borderRadius: 50,
               }}
-              onPress={() => navigation.navigate('UpStatus')}>
+              onPress={() => navigation.navigate('UpStatus', {user})}>
               <Text style={{marginLeft: 10, fontSize: 16}}>
                 Bạn đang nghĩ gì?
               </Text>
@@ -248,123 +245,139 @@ const TrangChuScreen = props => {
           {/* BaiViet */}
           <View>
             <Text style={[styles.lineHr, {marginTop: 20, height: 5}]} />
-            {posts.map((item, index) => (
-              <View style={styles.baiViet} key={item._id}>
-                <View
-                  style={[
-                    styles.baiVietHeader,
-                    {paddingTop: index === 0 ? 15 : 0},
-                  ]}>
-                  <View style={styles.baiVietHeaderLeft}>
-                    <Image
-                      style={styles.baiVietAvatar}
-                      source={{uri: item.posts[0].avatar}}
-                    />
-                    <View style={styles.baiVietNameTime}>
-                      <Text style={styles.baiVietName}>
-                        {item.posts[0].name}
-                      </Text>
-                      <Text style={styles.baiVietTime}>
-                        {Math.floor(
-                          (new Date().getTime() -
-                            new Date(item.posts[0].time).getTime()) /
-                            60000,
-                        )}{' '}
-                        phút trước
-                      </Text>
+            {posts.length === 0 ? (
+              <Text style={styles.noStatus}>
+                Không có bài viết nào được đăng !
+              </Text>
+            ) : (
+              posts.map((item, index) => (
+                <View style={styles.baiViet} key={item._id}>
+                  {console.log('>>>>>>>>>>>>>>>>>> 2511111', item.name)}
+                  <View
+                    style={[
+                      styles.baiVietHeader,
+                      {paddingTop: index === 0 ? 15 : 0},
+                    ]}>
+                    <View style={styles.baiVietHeaderLeft}>
+                      <Image
+                        style={styles.baiVietAvatar}
+                        source={{uri: item.avatar}}
+                      />
+                      <View style={styles.baiVietNameTime}>
+                        <Text style={styles.baiVietName}>{item.name}</Text>
+                        <Text style={styles.baiVietTime}>
+                          {Math.floor(
+                            (new Date().getTime() -
+                              new Date(item.time).getTime()) /
+                              60000,
+                          )}{' '}
+                          phút trước
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                  <TouchableOpacity style={styles.baiVietHeaderRight}>
-                    <Image
-                      style={styles.baiVietHeaderRightIcon}
-                      source={require('../../../../media/image/icon_more.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Image
-                      style={[
-                        styles.baiVietHeaderRightIcon,
-                        {
-                          left: 15,
-                          width: 14,
-                          height: 14,
-                        },
-                      ]}
-                      source={require('../../../../media/image/icon_delete.png')}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.baiVietContent}>
-                  {showMore ? (
-                    <Text style={styles.baiVietContentText}>
-                      {item.posts[0].content}
-                    </Text>
-                  ) : (
-                    <Text style={styles.baiVietContentText}>
-                      {item.posts[0].content.slice(0, 100)}
-                    </Text>
-                  )}
-                  {/* Toggle button */}
-                  {item.posts[0].content.length > 100 && (
-                    <TouchableOpacity onPress={handleShowMore}>
-                      <Text style={{color: 'blue'}}>
-                        {showMore ? 'Ẩn' : 'Xem thêm'}
-                      </Text>
+                    <TouchableOpacity style={styles.baiVietHeaderRight}>
+                      <Image
+                        style={styles.baiVietHeaderRightIcon}
+                        source={require('../../../../media/image/icon_more.png')}
+                      />
                     </TouchableOpacity>
-                  )}
-                </View>
-                <View style={styles.baiVietImage}>
-                  <Image
-                    style={styles.baiVietImageImage}
-                    source={{uri: item.posts[0].image}}
-                  />
-                </View>
-                <View style={styles.baiVietLikeComment}>
-                  <View style={styles.baiVietLikeCommentLeft}>
-                    <TouchableOpacity
-                      onPress={() => handleLike(item.posts[0]._id)}
-                      style={[
-                        styles.baiVietLikeCommentLeftIcon,
-                        {
-                          flexDirection: 'row',
-                          paddingLeft: 0,
-                        },
-                      ]}>
-                      {item.posts[0].isLiked ? (
-                        <Image
-                          style={styles.baiVietLikeCommentLeftIconImage}
-                          source={require('../../../../media/image/icon_like_click.png')}
-                        />
-                      ) : (
-                        <Image
-                          style={styles.baiVietLikeCommentLeftIconImage}
-                          source={require('../../../../media/image/icon_like.png')}
-                        />
-                      )}
+                    <TouchableOpacity>
+                      <Image
+                        style={[
+                          styles.baiVietHeaderRightIcon,
+                          {
+                            left: 15,
+                            width: 14,
+                            height: 14,
+                          },
+                        ]}
+                        source={require('../../../../media/image/icon_delete.png')}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.baiVietContent}>
+                    {showMore ? (
+                      <Text style={styles.baiVietContentText}>
+                        {item.content}
+                      </Text>
+                    ) : (
+                      <Text style={styles.baiVietContentText}>
+                        {item.content.slice(0, 100)}
+                      </Text>
+                    )}
+                    {/* Toggle button */}
+                    {item.content.length > 100 && (
+                      <TouchableOpacity onPress={handleShowMore}>
+                        <Text style={{color: 'blue'}}>
+                          {showMore ? 'Ẩn' : 'Xem thêm'}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                  <View style={styles.baiVietImage}>
+                    <Image
+                      style={styles.baiVietImageImage}
+                      source={{uri: item.image}}
+                    />
+                  </View>
+                  <View style={styles.baiVietLikeComment}>
+                    <View style={styles.baiVietLikeCommentLeft}>
+                      <TouchableOpacity
+                        onPress={() => handleLike(item._id)}
+                        style={[
+                          styles.baiVietLikeCommentLeftIcon,
+                          {
+                            flexDirection: 'row',
+                            paddingLeft: 0,
+                          },
+                        ]}>
+                        {item.isLiked ? (
+                          <Image
+                            style={styles.baiVietLikeCommentLeftIconImage}
+                            source={require('../../../../media/image/icon_like_click.png')}
+                          />
+                        ) : (
+                          <Image
+                            style={styles.baiVietLikeCommentLeftIconImage}
+                            source={require('../../../../media/image/icon_like.png')}
+                          />
+                        )}
+                        <Text style={styles.baiVietLikeCommentRightText}>
+                          {item.likedBy.length}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity style={styles.baiVietLikeCommentLeftIcon}>
+                      <Image
+                        style={styles.baiVietLikeCommentRightIconImage}
+                        source={require('../../../../media/image/icon_comment.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.baiVietLikeCommentRight}>
                       <Text style={styles.baiVietLikeCommentRightText}>
-                        {item.posts[0].likedBy.length}
+                        {item.comment} bình luận
                       </Text>
                     </TouchableOpacity>
                   </View>
-                  <TouchableOpacity style={styles.baiVietLikeCommentLeftIcon}>
-                    <Image
-                      style={styles.baiVietLikeCommentRightIconImage}
-                      source={require('../../../../media/image/icon_comment.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.baiVietLikeCommentRight}>
-                    <Text style={styles.baiVietLikeCommentRightText}>
-                      {item.posts[0].comment} bình luận
-                    </Text>
-                  </TouchableOpacity>
+                  <Text style={[styles.lineHr, {marginTop: 10, height: 5}]} />
                 </View>
-                <Text style={[styles.lineHr, {marginTop: 10, height: 5}]} />
-              </View>
-            ))}
+              ))
+            )}
           </View>
           {/* đường kẻ ngang*/}
         </ScrollView>
       </View>
+
+      {/* Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isDropdownVisible}
+        onRequestClose={() => {
+          setDropdownVisible(!isDropdownVisible);
+        }}>
+        <AddModal />
+      </Modal>
     </>
   );
 };
