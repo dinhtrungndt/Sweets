@@ -1,10 +1,21 @@
 /* eslint-disable prettier/prettier */
-import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import React, {useState, useEffect, useContext} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Modal,
+} from 'react-native';
+import React, {useState, useEffect, useContext, useCallback} from 'react';
 import {styles} from '../style/upStatusCss';
 
+// Library
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+
 // Data
-import {uploadPost} from '../../../homeService';
+import {uploadImageStatus, uploadPost} from '../../../homeService';
 import {UserContext} from '../../../../user/userContext';
 import Toast from 'react-native-toast-message';
 
@@ -15,6 +26,52 @@ const UpStatus = ({navigation, route}) => {
 
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true);
   const [inputText, setInputText] = useState('');
+  const [image, setImage] = useState(null);
+  const [imagePath, setImagePath] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const takePhoto = useCallback(async response => {
+    if (response.didCancel) {
+      return;
+    }
+    if (response.errorCode) {
+      return;
+    }
+    if (response.errorMessage) {
+      return;
+    }
+    if (response.assets && response.assets.length > 0) {
+      const asset = response.assets[0];
+      setImage(asset.uri);
+      const formData = new FormData();
+      formData.append('imageStatus', {
+        uri: asset.uri,
+        type: asset.type,
+        name: asset.fileName,
+      });
+      const data = await uploadImageStatus(formData);
+      console.log(data.url);
+      setImagePath(data.url);
+    }
+  }, []);
+
+  const openCamera = useCallback(async () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      saveToPhotos: true,
+    };
+    await launchCamera(options, takePhoto);
+  }, []);
+
+  const openLibrary = useCallback(async () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      saveToPhotos: true,
+    };
+    await launchImageLibrary(options, takePhoto);
+  }, []);
 
   const showBottomSheet = () => {
     setBottomSheetVisible(true);
@@ -54,37 +111,37 @@ const UpStatus = ({navigation, route}) => {
     }
   };
 
-  const handleUploadPost = async () => {
+  const handleUploadPost = useCallback(async () => {
     if (!user || !inputText) {
       return;
     }
 
     try {
       const postDetails = {
-        avatar: user.post[0].avatar,
-        name: user.post[0].name,
+        avatar: user.user.avatar,
+        name: user.user.name,
         time: new Date().toISOString(),
         content: inputText,
+        image: imagePath,
       };
 
-      // Call the uploadPost function directly
       const response = await uploadPost(user.id, postDetails);
 
-      // Check the response status and handle accordingly
       if (response.status === 1) {
-        console.log('Upload successful:', response);
+        console.log('Đăng thành công:', response);
         setUpload(response);
       } else {
-        console.error('Upload failed. Server returned:', response.message);
+        console.error('Lỗi 134 ->>>>>> status 1:', response.message);
       }
     } catch (error) {
-      console.error('Error uploading post:', error);
+      console.error('Lỗi catch --->>>>> error :', error);
     }
-  };
+  }, [user, inputText]);
+
+  // console.log(' >>>>>>>>>>>>>>> 14111111 ', user.user.avatar);
 
   useEffect(() => {
     handleUploadPost();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return (
@@ -112,13 +169,11 @@ const UpStatus = ({navigation, route}) => {
       <View style={styles.body}>
         {/* chedo_congkhai */}
         <View style={{flexDirection: 'row'}}>
-          <Image
-            style={styles.body_avatar}
-            source={require('../../../../../../media/image/avatar.jpg')}
-          />
+          <Image style={styles.body_avatar} source={{uri: user.user.avatar}} />
           <View style={styles.body_content}>
             {/* name */}
-            <Text style={styles.body_name}>Nguyễn Văn A</Text>
+            <Text style={styles.body_name}>{user.user.name}</Text>
+            {/* {console.log('user post', user.user.name)} */}
             <View style={{flexDirection: 'row'}}>
               {/* congkhai */}
               <TouchableOpacity
@@ -162,7 +217,9 @@ const UpStatus = ({navigation, route}) => {
         </View>
         {/* bottom sheet */}
         <View style={styles.pick_feelings}>
-          <TouchableOpacity style={styles.boder_image}>
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            style={styles.boder_image}>
             <Image
               style={styles.avatar_icon_image}
               source={require('../../../../../../media/image/icon_image.png')}
@@ -251,6 +308,20 @@ const UpStatus = ({navigation, route}) => {
           </View>
         )}
       </View>
+      {/* modal  */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {}}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text onPress={openCamera}>Chụp ảnh</Text>
+            <Text onPress={openLibrary}>Chọn ảnh</Text>
+            <Text onPress={() => setModalVisible(false)}>Cancel</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

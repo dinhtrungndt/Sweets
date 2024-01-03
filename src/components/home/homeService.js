@@ -13,6 +13,18 @@ export const getPosts = async () => {
   }
 };
 
+// Lấy danh sách bài viết bạn bè theo id
+export const getPostById = async userId => {
+  try {
+    const response = await AxiosInstance().get(`/friend/${userId}`);
+    // console.log('get post >>>>>>>>>>>>>>> 8 ', response.Data);
+    return response.Data;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi get: 11 s', error);
+    throw error;
+  }
+};
+
 // upload bài viết
 export const uploadPost = async (userId, postDetails) => {
   try {
@@ -20,10 +32,20 @@ export const uploadPost = async (userId, postDetails) => {
       `/post/${userId}/create-post`,
       postDetails,
     );
-    console.log('upload post >>>>>>>>>>>>>>> 20 ', response);
+    // console.log('upload post >>>>>>>>>>>>>>> 20 ', response);
     return response;
   } catch (error) {
-    console.error(' >>>>>>>>> Error fetching posts: 11 s', error);
+    console.error(' >>>>>>>>> Lỗi loading ảnh: 11 s', error);
     throw error;
   }
+};
+
+// Upload ảnh status
+export const uploadImageStatus = async form => {
+  const response = await AxiosInstance('multipart/form-data').post(
+    'post/upload-imageStatus',
+    form,
+  );
+  console.log(response);
+  return response;
 };

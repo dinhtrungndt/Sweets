@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import {
   Image,
   Text,
@@ -13,12 +15,15 @@ import {LoadingScreen} from '../../loading';
 // Data
 import {dataStory} from './data';
 import {BaiVietData} from './data/baiviet';
-import {getPosts} from '../homeService';
+import {getPosts, getPostById} from '../homeService';
 
 // StyleCss
 import styles from './style/home';
 import {UserContext} from '../../user/userContext';
+
+// Library
 import AddModal from './dropDown/addModal';
+import moment from 'moment';
 
 const TrangChuScreen = props => {
   const {navigation} = props;
@@ -33,30 +38,64 @@ const TrangChuScreen = props => {
     setShowMore(!showMore);
   };
 
-  const onGetPosts = async () => {
+  // const onGetPosts = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await getPosts();
+  //     const updatedPosts = res.flatMap(project =>
+  //       project.posts.map(post => {
+  //         const likedByCurrentUser = post.likedBy.includes(user.id);
+  //         // console.log('>>>>>>>>>>>>>>>>>> 78', likedByCurrentUser);
+  //         return {
+  //           ...post,
+  //           posts: [
+  //             {
+  //               ...post,
+  //               isLiked: likedByCurrentUser,
+  //             },
+  //           ],
+  //         };
+  //       }),
+  //     );
+  //     setPosts(updatedPosts);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error('Lỗi: ', error);
+  //     setLoading(false);
+  //   }
+  // };
+
+  const onGetPostById = async () => {
     try {
       setLoading(true);
-      const res = await getPosts();
-      // Update isLiked property based on the data received
-      const updatedPosts = res.flatMap(project =>
-        project.posts.map(post => {
-          const likedByCurrentUser = post.likedBy.includes(user.id);
-          // console.log('>>>>>>>>>>>>>>>>>> 78', likedByCurrentUser);
-          return {
-            ...post,
-            posts: [
-              {
-                ...post,
-                isLiked: likedByCurrentUser,
-              },
-            ],
-          };
-        }),
-      );
-      setPosts(updatedPosts);
+      const userId = user.id;
+      const res = await getPostById(userId);
+
+      if (res && res.friends) {
+        const updatedPosts = res.friends.flatMap(friend =>
+          friend.posts.map(friendd => {
+            const likedByCurrentUser = friendd.likedBy.includes(user.id);
+            return {
+              ...friendd,
+              friendds: [
+                {
+                  ...friendd,
+                  isLiked: likedByCurrentUser,
+                },
+              ],
+            };
+          }),
+        );
+
+        // console.log('>>>>>>>>>>>>>>> In updatedPosts :', updatedPosts);
+        setPosts(updatedPosts);
+      } else {
+        console.error('>>>>>>>>>>>>>>>> Lỗi trả về 93 ');
+      }
+
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error('Lỗi:', error);
       setLoading(false);
     }
   };
@@ -65,7 +104,7 @@ const TrangChuScreen = props => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `http://192.168.2.209:3001/post/like/${postId}/${userId}`,
+        `http://192.168.1.14:3001/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -79,13 +118,12 @@ const TrangChuScreen = props => {
       // console.log('Response from API:', data);
 
       if (data.status === 1) {
-        // Update the posts array with the new like count
         const updatedPosts = posts.map(post => {
           if (post._id === postId) {
             // console.log('>>>>>>>>>>>>>>>>>> 81', post.isLiked);
             return {
               ...post,
-              isLiked: !post.isLiked, // Toggle the like status
+              isLiked: !post.isLiked,
               likedBy: post.isLiked
                 ? post.likedBy.filter(id => id !== userId)
                 : [...post.likedBy, userId],
@@ -94,13 +132,12 @@ const TrangChuScreen = props => {
           return post;
         });
 
-        // Move log statement outside the map
         // console.log('>>>>>>>>>>>>>>>>>> 81', data.isLiked);
 
         console.log(
-          '------------>>>>>>>>>>>>>>>>>> 106 Updated posts:',
+          // '------------>>>>>>>>>>>>>>>>>> 106 Updated posts:',
           updatedPosts,
-        ); // Log updated posts for debugging
+        );
 
         setPosts([...updatedPosts]);
       } else {
@@ -115,9 +152,29 @@ const TrangChuScreen = props => {
     setDropdownVisible(!isDropdownVisible);
   };
 
+  const formatTime = createdAt => {
+    const currentTime = moment();
+    const postTime = moment(createdAt);
+    const diffInMinutes = currentTime.diff(postTime, 'minutes');
+
+    if (diffInMinutes < 1) {
+      return 'Vừa đăng';
+    } else if (diffInMinutes < 60) {
+      return `${diffInMinutes} phút trước`;
+    } else if (diffInMinutes < 24 * 60) {
+      return `${Math.floor(diffInMinutes / 60)} giờ trước`;
+    } else if (diffInMinutes < 24 * 60 * 30) {
+      return `${Math.floor(diffInMinutes / (60 * 24))} ngày trước`;
+    } else if (diffInMinutes < 24 * 60 * 30 * 12) {
+      return `${Math.floor(diffInMinutes / (60 * 24 * 30))} tháng trước`;
+    } else {
+      return `${Math.floor(diffInMinutes / (60 * 24 * 30 * 12))} năm trước`;
+    }
+  };
+
   useEffect(() => {
-    onGetPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //   onGetPosts();
+    onGetPostById();
   }, []);
 
   return loading ? (
@@ -158,7 +215,7 @@ const TrangChuScreen = props => {
             <TouchableOpacity>
               <Image
                 style={[styles.avatar, {marginLeft: 5}]}
-                source={require('../../../../media/image/avatar.jpg')}
+                source={{uri: user.user.avatar}}
               />
             </TouchableOpacity>
             <TouchableOpacity
@@ -218,7 +275,7 @@ const TrangChuScreen = props => {
             <TouchableOpacity style={styles.upStory_User}>
               <Image
                 style={styles.avatar_upstory}
-                source={require('../../../../media/image/avatar.jpg')}
+                source={{uri: user.user.avatar}}
               />
               <View style={styles.view_addStory}>
                 <Image
@@ -252,7 +309,7 @@ const TrangChuScreen = props => {
             ) : (
               posts.map((item, index) => (
                 <View style={styles.baiViet} key={item._id}>
-                  {console.log('>>>>>>>>>>>>>>>>>> 2511111', item.name)}
+                  {/* {console.log('>>>>>>>>>>>>>>>>>> 2511111', item.name)} */}
                   <View
                     style={[
                       styles.baiVietHeader,
@@ -266,12 +323,8 @@ const TrangChuScreen = props => {
                       <View style={styles.baiVietNameTime}>
                         <Text style={styles.baiVietName}>{item.name}</Text>
                         <Text style={styles.baiVietTime}>
-                          {Math.floor(
-                            (new Date().getTime() -
-                              new Date(item.time).getTime()) /
-                              60000,
-                          )}{' '}
-                          phút trước
+                          {/* Vừa đăng, giây, phút, giờ, ngày*/}
+                          {formatTime(item.time)}
                         </Text>
                       </View>
                     </View>
