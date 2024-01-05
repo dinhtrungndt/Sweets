@@ -215,6 +215,10 @@ export default StyleSheet.create({
   baiVietImage: {
     marginTop: 10,
     height: 400,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    borderColor: 'gray',
+    borderWidth: 1,
   },
   baiVietImageImage: {
     width: '100%',

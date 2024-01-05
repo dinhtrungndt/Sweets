@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   View,
   Modal,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect, useContext, useCallback} from 'react';
 import {styles} from '../style/upStatusCss';
 
 // Library
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {CommonActions} from '@react-navigation/native';
 
 // Data
 import {uploadImageStatus, uploadPost} from '../../../homeService';
@@ -26,7 +28,7 @@ const UpStatus = ({navigation, route}) => {
 
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true);
   const [inputText, setInputText] = useState('');
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState([]);
   const [imagePath, setImagePath] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -41,17 +43,23 @@ const UpStatus = ({navigation, route}) => {
       return;
     }
     if (response.assets && response.assets.length > 0) {
-      const asset = response.assets[0];
-      setImage(asset.uri);
-      const formData = new FormData();
-      formData.append('imageStatus', {
+      const selectedImages = response.assets.map(asset => ({
         uri: asset.uri,
         type: asset.type,
         name: asset.fileName,
+      }));
+      setImage(selectedImages);
+      const formData = new FormData();
+
+      // Append all selected images to the formData
+      selectedImages.forEach((image, index) => {
+        formData.append('imageStatus', image);
       });
+
       const data = await uploadImageStatus(formData);
-      console.log(data.url);
-      setImagePath(data.url);
+      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      setImagePath(data.urls);
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>> 62 dataImage", data.urls);
     }
   }, []);
 
@@ -67,10 +75,13 @@ const UpStatus = ({navigation, route}) => {
   const openLibrary = useCallback(async () => {
     const options = {
       mediaType: 'photo',
-      quality: 1,
+      quality: 5,
       saveToPhotos: true,
+      selectionLimit: 5,
+      multiple: true,
     };
     await launchImageLibrary(options, takePhoto);
+    setModalVisible(false);
   }, []);
 
   const showBottomSheet = () => {
@@ -87,8 +98,19 @@ const UpStatus = ({navigation, route}) => {
 
   const handlePostUpload = () => {
     handleUploadPost();
-    if (!upload) {
-      navigation.goBack();
+    // Kiểm tra có xem inputText có rỗng hay không
+    if (!inputText) {
+      return Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Bạn chưa nhập nội dung',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    } else if (!upload) {
+      navigation.navigate('TrangChuScreen');
       Toast.show({
         type: 'success',
         position: 'top',
@@ -128,8 +150,14 @@ const UpStatus = ({navigation, route}) => {
       const response = await uploadPost(user.id, postDetails);
 
       if (response.status === 1) {
-        console.log('Đăng thành công:', response);
+        // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
         setUpload(response);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{name: 'TrangChuScreen'}],
+          }),
+        );
       } else {
         console.error('Lỗi 134 ->>>>>> status 1:', response.message);
       }
@@ -214,6 +242,27 @@ const UpStatus = ({navigation, route}) => {
             multiline={true}
             onChangeText={handleInputChange}
           />
+          {image.length > 0 && (
+            <FlatList
+              data={image}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => (
+                <TouchableOpacity key={index}>
+                  <Image
+                    source={{uri: item.uri}}
+                    style={{
+                      width: 100,
+                      height: 200,
+                      resizeMode: 'cover',
+                      justifyContent: 'center',
+                      alignSelf: 'center',
+                      marginTop: 20,
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </View>
         {/* bottom sheet */}
         <View style={styles.pick_feelings}>
@@ -251,7 +300,9 @@ const UpStatus = ({navigation, route}) => {
         {/* Bottom Sheet */}
         {bottomSheetVisible && (
           <View style={styles.bottomSheet}>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              style={styles.bottomSheetItem}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../../media/image/icon_image.png')}

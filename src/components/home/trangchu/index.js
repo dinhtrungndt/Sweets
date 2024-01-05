@@ -71,8 +71,9 @@ const TrangChuScreen = props => {
       const userId = user.id;
       const res = await getPostById(userId);
 
-      if (res && res.friends) {
-        const updatedPosts = res.friends.flatMap(friend =>
+      if (res && res.friends && res.posts) {
+        // console.log('>>>>>>>>>>>>>>>>>> 93', res.posts);
+        const updatedPostsFriends = res.friends.flatMap(friend =>
           friend.posts.map(friendd => {
             const likedByCurrentUser = friendd.likedBy.includes(user.id);
             return {
@@ -87,12 +88,33 @@ const TrangChuScreen = props => {
           }),
         );
 
-        // console.log('>>>>>>>>>>>>>>> In updatedPosts :', updatedPosts);
-        setPosts(updatedPosts);
+        const updatedPostsMe = res.posts.map(post => {
+          // console.log('>>>>>>>>>>>>>>>>>> 93', post);
+          const likedByCurrentUser = post.likedBy.includes(user.id);
+          return {
+            ...post,
+            posts: [
+              {
+                ...post,
+                isLiked: likedByCurrentUser,
+              },
+            ],
+          };
+        });
+
+        // console.log('>>>>>>>>>>>>>>> In updatedPosts :', updatedPostsFriends);
+        // console.log('>>>>>>>>>>>>>>> In updatedPostsMe :', updatedPostsMe);
+
+        // Combine and sort the arrays based on time in descending order
+        const sortedPosts = [...updatedPostsFriends, ...updatedPostsMe].sort(
+          (a, b) => moment(b.time).diff(moment(a.time)),
+        );
+
+        // console.log('>>>>>>>>>>>>>>> In sortedPosts :', sortedPosts);
+        setPosts([...sortedPosts]);
       } else {
         console.error('>>>>>>>>>>>>>>>> Lỗi trả về 93 ');
       }
-
       setLoading(false);
     } catch (error) {
       console.error('Lỗi:', error);
@@ -104,7 +126,7 @@ const TrangChuScreen = props => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `http://192.168.1.14:3001/post/like/${postId}/${userId}`,
+        `http://192.168.1.10:3001/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -367,12 +389,26 @@ const TrangChuScreen = props => {
                       </TouchableOpacity>
                     )}
                   </View>
-                  <View style={styles.baiVietImage}>
-                    <Image
-                      style={styles.baiVietImageImage}
-                      source={{uri: item.image}}
-                    />
-                  </View>
+                  {item.image && item.image.length > 0 ? (
+                    <View style={styles.baiVietImage}>
+                      {item.image.map((imageUrl, index) => (
+                        <Image
+                          key={index}
+                          style={[
+                            styles.baiVietImageImage,
+                            {
+                              width: 100 / item.image.length + '%',
+                            },
+                          ]}
+                          source={{uri: imageUrl}}
+                        />
+                      ))}
+                      {/* {console.log('>>>>>>>>>>>>>>>>>> 2511111', item.image)} */}
+                    </View>
+                  ) : (
+                    <View style={{height: 0}} />
+                  )}
+
                   <View style={styles.baiVietLikeComment}>
                     <View style={styles.baiVietLikeCommentLeft}>
                       <TouchableOpacity

@@ -35,7 +35,7 @@ export const uploadPost = async (userId, postDetails) => {
     // console.log('upload post >>>>>>>>>>>>>>> 20 ', response);
     return response;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi loading ảnh: 11 s', error);
+    console.error(' >>>>>>>>> Lỗi loading ảnh: 11 s', error.response);
     throw error;
   }
 };
@@ -46,6 +46,6 @@ export const uploadImageStatus = async form => {
     'post/upload-imageStatus',
     form,
   );
-  console.log(response);
+  // console.log(">>>>>>>>>>>>>>>>>> 49" ,response);
   return response;
 };
