@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import React, {useState, useContext} from 'react';
-// import CheckBox from '@react-native-community/checkbox';
+import CheckBox from '@react-native-community/checkbox';
 import {UserContext} from '../userContext';
 
 import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
@@ -21,6 +21,8 @@ const LoginScreens = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {onLogin} = useContext(UserContext);
+
+  const [isShowPass, setIsShowPass] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -40,33 +42,34 @@ const LoginScreens = props => {
         Log in and start a chat with someone
       </Text>
       <View style={myStyles.username}>
-        <Text style={myStyles.usernameLayble}>Email or Phone*</Text>
+        <Text style={myStyles.usernameLayble}>Mobile number or email</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
-          style={myStyles.usernameInput}
-          placeholder="Email hoặc số điện thoại"
-        />
+          style={myStyles.usernameInput}/>
       </View>
       <View style={myStyles.pass}>
-        <Text style={myStyles.usernameLayble}>Password*</Text>
+        <Text style={myStyles.usernameLayble}>Password</Text>
         <View style={myStyles.container}>
           <TextInput
             value={password}
             onChangeText={setPassword}
-            secureTextEntry={true}
-            style={myStyles.usernameInput}
-            placeholder="Mật khẩu"
-          />
-          <Image
+            secureTextEntry={isShowPass}
+            style={myStyles.usernameInput}/>
+          <Text
+            onPress={() => setIsShowPass(!isShowPass)}
             style={myStyles.icon}
-            source={require('../../../../media/image/eya.png')}
-          />
+          >
+            <Image
+              source={isShowPass ? hidePassImage : showPassImage}
+              style={myStyles.iconImage}
+            />
+          </Text>
         </View>
         <View style={myStyles.box}>
           <View style={myStyles.remember}>
-            {/* <CheckBox /> */}
+            <CheckBox />
             <Text>Remeber me</Text>
           </View>
           <View style={myStyles.fogot}>
@@ -77,32 +80,14 @@ const LoginScreens = props => {
       <Pressable onPress={onLoginPress} style={myStyles.btnLogin}>
         <Text style={myStyles.textbtn}>{loading ? 'Loading...' : 'Login'}</Text>
       </Pressable>
-      <View>
-        <Text style={myStyles.textor}>or continue with</Text>
-      </View>
-      <View style={myStyles.FbandGg}>
-        <Pressable style={myStyles.BtnFb}>
-          <Image
-            style={myStyles.ImgFb}
-            source={require('../../../../media/image/fb.png')}
-          />
-          <Text>Facebook</Text>
-        </Pressable>
-        <Pressable style={myStyles.BtnFb}>
-          <Image
-            style={myStyles.ImgFb}
-            source={require('../../../../media/image/gg.png')}
-          />
-          <Text>Google</Text>
-        </Pressable>
-      </View>
+      
       <View style={myStyles.dont}>
-        <Text>don't have an account ? </Text>
-        <Text
-          onPress={() => navigation.navigate('SignUpScreens')}
-          style={myStyles.sign}>
-          Sign Up{' '}
-        </Text>
+        <Text>Or</Text>
+        <Pressable
+          onPress={() => navigation.navigate('SignUpBg')}
+          style={myStyles.btnSign}>
+          <Text style={myStyles.textbtn}>Create new accout</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -111,6 +96,10 @@ const LoginScreens = props => {
 export default LoginScreens;
 
 const myStyles = StyleSheet.create({
+  iconImage: {
+    width: 24, // Adjust the width as needed
+    height: 24, // Adjust the height as needed
+  },
   icon: {
     position: 'absolute',
     right: 10,
@@ -162,10 +151,10 @@ const myStyles = StyleSheet.create({
     width: '100%',
     fontFamily: 'Poppins',
     fontStyle: 'normal',
-    fontSize: 14,
+    fontSize: 18,
     lineHeight: 21,
     letterSpacing: 0.12,
-    color: '#4E4B66',
+    color: '#000000',
     marginTop: 16,
   },
   usernameInput: {
@@ -176,6 +165,7 @@ const myStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#4E4B66',
     borderRadius: 6,
+    marginTop: 8,
   },
   CheckBox: {
     width: '50%',
@@ -219,19 +209,14 @@ const myStyles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 24,
   },
-  FbandGg: {
-    flexDirection: 'row',
-    marginTop: 8,
-  },
-  BtnFb: {
-    flexDirection: 'row',
-    width: 160,
-    height: 40,
-    backgroundColor: '#EEF1F4',
-    margin: 6,
-    borderRadius: 10,
+  btnSign: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#2EA931',
+    borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 16,
   },
   ImgFb: {
     width: 21,
@@ -243,10 +228,9 @@ const myStyles = StyleSheet.create({
     margin: 16,
   },
   dont: {
-    margin: 16,
+    marginTop: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
   },
   sign: {
     color: '#1877F2',

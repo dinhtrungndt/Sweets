@@ -1,11 +1,12 @@
 import { Image, StyleSheet, Text, TextInput, View, Pressable, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CheckBox from '@react-native-community/checkbox';
 
 import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
 import hidePassImage from '../../../../media/image/eya.png'; // Replace with the actual path
 
-const SignUpScreens = () => {
+const SignUpScreens = (props) => {
+  const { navigation } = props;
 
   const [isShowPass, setIsShowPass] = useState(false);
   const [isShowPass2, setIsShowPass2] = useState(false);
@@ -14,30 +15,58 @@ const SignUpScreens = () => {
   const [password, setPassword] = useState('');
   const [confirmPasswrod, setConfirmPassword] = useState('');
 
+  const onSignUp = async () => {
+    if (email.trim().length === 0) {
+      Alert.alert('Please enter your email');
+      return;
+    }
+    if (password.trim().length === 0) {
+      Alert.alert('Please enter your password');
+      return;
+    }
+    if (confirmPasswrod.trim().length === 0) {
+      Alert.alert('Please enter your confirm password');
+      return;
+    }
+    if (password !== confirmPasswrod) {
+      Alert.alert('Confirm password not match');
+      return;
+    }
+
+    // gọi api đăng ký
+    const result = await register(email, password);
+    console.log('aaaaa', result);
+    if (result.status === 1) {
+      Alert.alert('Register success!');
+      navigation.navigate('SignUpBg');
+    } else {
+      Alert.alert('Register failer!:')
+    }
+
+
+
+  }
+
+
   return (
     <View style={myStyles.body}>
       <Text style={myStyles.hello}>Welcome to Sweets</Text>
-      {/* <Text style={myStyles.wellcome}>
-        Signup to get Started
-      </Text> */}
       <View style={myStyles.username}>
-       
+        <Text style={myStyles.usernameLayble}>Email</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
-          style={myStyles.usernameInput}
-          placeholder='Email hoặc số điện thoại'>
+          style={myStyles.usernameInput}>
         </TextInput>
       </View>
       <View style={myStyles.pass}>
-        <Text style={myStyles.usernameLayble}>Password*</Text>
+        <Text style={myStyles.usernameLayble}>Password</Text>
         <View style={myStyles.container}>
           <TextInput
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!isShowPass}
-            style={myStyles.usernameInput}
-            placeholder='Mật khẩu'>
+            style={myStyles.usernameInput}>
           </TextInput>
 
           <Text
@@ -51,14 +80,13 @@ const SignUpScreens = () => {
           </Text>
         </View>
 
-        <Text style={myStyles.usernameLayble}>Confirm Password*</Text>
-        <View style={[myStyles.container, { marginTop: 10 }]}>
+        <Text style={myStyles.usernameLayble}>Confirm Password</Text>
+        <View style={[myStyles.container, { marginTop: 0 }]}>
           <TextInput
             value={confirmPasswrod}
             onChangeText={setConfirmPassword}
             secureTextEntry={!isShowPass2}
-            style={myStyles.usernameInput}
-            placeholder='Xác nhận mật khẩu'>
+            style={myStyles.usernameInput}>
           </TextInput>
           <Text
             onPress={() => setIsShowPass2(!isShowPass2)}
@@ -75,34 +103,25 @@ const SignUpScreens = () => {
         <View style={myStyles.box}>
           <View style={myStyles.remember}>
             <CheckBox />
-            <Text>Remeber me</Text>
+            <Text>I agree to</Text>
           </View>
           <View style={myStyles.fogot}>
-            <Text style={myStyles.textfogot}>Forgot the password ?</Text>
+            <Text style={myStyles.textfogot}>terms of use Sweets </Text>
           </View>
 
         </View>
       </View>
-      <Pressable style={myStyles.btnLogin} >
+      <Pressable
+        style={myStyles.btnLogin} 
+        onPress={onSignUp}>
         <Text style={myStyles.textbtn}>Sign Up</Text>
       </Pressable>
-      <View>
-        <Text style={myStyles.textor}>or continue with</Text>
-      </View>
-      <View style={myStyles.FbandGg}>
-        <Pressable style={myStyles.BtnFb}>
-          <Image style={myStyles.ImgFb} source={require('../../../../media/image/fb.png')} />
-          <Text>Facebook</Text>
-        </Pressable>
-        <Pressable style={myStyles.BtnFb}>
-          <Image style={myStyles.ImgFb} source={require('../../../../media/image/gg.png')} />
-          <Text>Google</Text>
-        </Pressable>
-      </View>
       <View style={myStyles.dont}>
-        <Text>don't have an account ?  </Text>
-        <Text
-          style={myStyles.sign}>Login  </Text>
+        <Text>Or </Text>
+        <Pressable style={myStyles.btnSign}
+          onPress={() => navigation.navigate('LoginScreens')}>
+          <Text style={myStyles.textbtn}>Login</Text>
+        </Pressable>
       </View>
     </View>
   )
@@ -115,7 +134,6 @@ const myStyles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     top: 12
-
   },
   container: {
     position: "relative"
@@ -164,10 +182,10 @@ const myStyles = StyleSheet.create({
     width: "100%",
     fontFamily: 'Poppins',
     fontStyle: 'normal',
-    fontSize: 14,
+    fontSize: 20,
     lineHeight: 21,
     letterSpacing: 0.12,
-    color: '#4E4B66',
+    color: '#000000',
     marginTop: 16
   },
   usernameInput: {
@@ -177,13 +195,8 @@ const myStyles = StyleSheet.create({
     alignItems: 'flex-start',
     borderWidth: 1,
     borderColor: "#4E4B66",
-    borderRadius: 6
-  },
-  CheckBox: {
-    width: '50%',
-    height: 50,
-    // backgroundColor: 'black'
-
+    borderRadius: 6,
+    marginTop: 8,
   },
   box: {
     marginTop: 8,
@@ -191,11 +204,11 @@ const myStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // backgroundColor: 'gray',
-    justifyContent: 'space-between'
   },
   fogot: {
     color: 'blue',
     alignItems: 'flex-end',
+    marginLeft: 4.5
 
   },
   textfogot: {
@@ -216,6 +229,15 @@ const myStyles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
   },
+  btnSign: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#2EA931',
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+  },
   textbtn: {
     color: '#FFFFFF',
     fontFamily: 'Poppins',
@@ -228,36 +250,14 @@ const myStyles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 8
   },
-  BtnFb: {
-    flexDirection: 'row',
-    width: 160,
-    height: 40,
-    backgroundColor: '#EEF1F4',
-    margin: 6,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  ImgFb: {
-    width: 21,
-    height: 21,
-    marginEnd: 10
-  },
-  img: {
-    // position:'absolute',
-    // left:10,
-    // top: 10
-    margin: 10
-  },
   textor: {
     textAlign: 'center',
     margin: 16
   },
   dont: {
-    margin: 16,
+    marginTop: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row'
   },
   sign: {
     color: '#1877F2',
@@ -267,8 +267,8 @@ const myStyles = StyleSheet.create({
     lineHeight: 21,
   },
   iconImage: {
-    width: 20, // Adjust the width as needed
-    height: 20, // Adjust the height as needed
+    width: 24, // Adjust the width as needed
+    height: 24, // Adjust the height as needed
   },
 
 })
