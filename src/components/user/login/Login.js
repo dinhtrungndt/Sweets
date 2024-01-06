@@ -11,6 +11,9 @@ import React, {useState, useContext} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 import {UserContext} from '../userContext';
 
+import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
+import hidePassImage from '../../../../media/image/eya.png'; // Replace with the actual path
+
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

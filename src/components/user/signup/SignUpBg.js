@@ -55,7 +55,6 @@ const SignUpBg = (props) => {
     } else {
       Alert.alert('Register failer!:')
     }
-
   };
 
 
