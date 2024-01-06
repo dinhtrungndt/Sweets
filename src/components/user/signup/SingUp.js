@@ -1,12 +1,22 @@
-import { Image, StyleSheet, Text, TextInput, View, Pressable, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+/* eslint-disable prettier/prettier */
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Pressable,
+  Alert,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 
 import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
 import hidePassImage from '../../../../media/image/eya.png'; // Replace with the actual path
+import {register} from '../userService';
 
-const SignUpScreens = (props) => {
-  const { navigation } = props;
+const SignUpScreens = props => {
+  const {navigation} = props;
 
   const [isShowPass, setIsShowPass] = useState(false);
   const [isShowPass2, setIsShowPass2] = useState(false);
@@ -40,13 +50,9 @@ const SignUpScreens = (props) => {
       Alert.alert('Register success!');
       navigation.navigate('SignUpBg');
     } else {
-      Alert.alert('Register failer!:')
+      Alert.alert('Register failer!:');
     }
-
-
-
-  }
-
+  };
 
   return (
     <View style={myStyles.body}>
@@ -56,8 +62,8 @@ const SignUpScreens = (props) => {
         <TextInput
           value={email}
           onChangeText={setEmail}
-          style={myStyles.usernameInput}>
-        </TextInput>
+          style={myStyles.usernameInput}
+        />
       </View>
       <View style={myStyles.pass}>
         <Text style={myStyles.usernameLayble}>Password</Text>
@@ -66,13 +72,12 @@ const SignUpScreens = (props) => {
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!isShowPass}
-            style={myStyles.usernameInput}>
-          </TextInput>
+            style={myStyles.usernameInput}
+          />
 
           <Text
             onPress={() => setIsShowPass(!isShowPass)}
-            style={myStyles.icon}
-          >
+            style={myStyles.icon}>
             <Image
               source={isShowPass ? hidePassImage : showPassImage}
               style={myStyles.iconImage}
@@ -81,24 +86,21 @@ const SignUpScreens = (props) => {
         </View>
 
         <Text style={myStyles.usernameLayble}>Confirm Password</Text>
-        <View style={[myStyles.container, { marginTop: 0 }]}>
+        <View style={[myStyles.container, {marginTop: 0}]}>
           <TextInput
             value={confirmPasswrod}
             onChangeText={setConfirmPassword}
             secureTextEntry={!isShowPass2}
-            style={myStyles.usernameInput}>
-          </TextInput>
+            style={myStyles.usernameInput}
+          />
           <Text
             onPress={() => setIsShowPass2(!isShowPass2)}
-            style={myStyles.icon}
-          >
+            style={myStyles.icon}>
             <Image
               source={isShowPass2 ? hidePassImage : showPassImage}
               style={myStyles.iconImage}
             />
           </Text>
-
-
         </View>
         <View style={myStyles.box}>
           <View style={myStyles.remember}>
@@ -108,23 +110,21 @@ const SignUpScreens = (props) => {
           <View style={myStyles.fogot}>
             <Text style={myStyles.textfogot}>terms of use Sweets </Text>
           </View>
-
         </View>
       </View>
-      <Pressable
-        style={myStyles.btnLogin} 
-        onPress={onSignUp}>
+      <Pressable style={myStyles.btnLogin} onPress={onSignUp}>
         <Text style={myStyles.textbtn}>Sign Up</Text>
       </Pressable>
       <View style={myStyles.dont}>
         <Text>Or </Text>
-        <Pressable style={myStyles.btnSign}
+        <Pressable
+          style={myStyles.btnSign}
           onPress={() => navigation.navigate('LoginScreens')}>
           <Text style={myStyles.textbtn}>Login</Text>
         </Pressable>
       </View>
     </View>
-  )
+  );
 };
 
 export default SignUpScreens;
@@ -133,33 +133,33 @@ const myStyles = StyleSheet.create({
   icon: {
     position: 'absolute',
     right: 10,
-    top: 12
+    top: 12,
   },
   container: {
-    position: "relative"
+    position: 'relative',
   },
   body: {
     padding: 24,
     width: '100%',
     height: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   hello: {
     fontSize: 38,
-    fontFamily: "Poppins",
+    fontFamily: 'Poppins',
     fontStyle: 'normal',
     lineHeight: 72,
     letterSpacing: 0.12,
-    color: '#1877F2'
+    color: '#1877F2',
   },
   again: {
     fontSize: 48,
     letterSpacing: 0.12,
-    fontFamily: "Poppins",
+    fontFamily: 'Poppins',
     fontStyle: 'normal',
     lineHeight: 72,
     flexGrow: 0,
-    color: '#1877F2'
+    color: '#1877F2',
   },
   wellcome: {
     width: '80%',
@@ -168,7 +168,7 @@ const myStyles = StyleSheet.create({
     lineHeight: 30,
     letterSpacing: 0.12,
     color: '#4E4B66',
-    marginTop: 4
+    marginTop: 4,
   },
   username: {
     marginTop: 24,
@@ -176,25 +176,24 @@ const myStyles = StyleSheet.create({
     flexdirection: 'column',
     justifycontent: 'flexend',
     alignitems: 'flexstart',
-
   },
   usernameLayble: {
-    width: "100%",
+    width: '100%',
     fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontSize: 20,
     lineHeight: 21,
     letterSpacing: 0.12,
     color: '#000000',
-    marginTop: 16
+    marginTop: 16,
   },
   usernameInput: {
-    width: "100%",
+    width: '100%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
     borderWidth: 1,
-    borderColor: "#4E4B66",
+    borderColor: '#4E4B66',
     borderRadius: 6,
     marginTop: 8,
   },
@@ -208,8 +207,7 @@ const myStyles = StyleSheet.create({
   fogot: {
     color: 'blue',
     alignItems: 'flex-end',
-    marginLeft: 4.5
-
+    marginLeft: 4.5,
   },
   textfogot: {
     color: 'blue',
@@ -244,15 +242,14 @@ const myStyles = StyleSheet.create({
     fontStyle: 'normal',
     fontSize: 16,
     lineHeight: 24,
-
   },
   FbandGg: {
     flexDirection: 'row',
-    marginTop: 8
+    marginTop: 8,
   },
   textor: {
     textAlign: 'center',
-    margin: 16
+    margin: 16,
   },
   dont: {
     marginTop: 16,
@@ -270,7 +267,4 @@ const myStyles = StyleSheet.create({
     width: 24, // Adjust the width as needed
     height: 24, // Adjust the height as needed
   },
-
-})
-
-
+});
