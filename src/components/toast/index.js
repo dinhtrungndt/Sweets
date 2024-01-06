@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {forwardRef, useImperativeHandle} from 'react';
 import Toast from 'react-native-toast-message';
 
