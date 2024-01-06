@@ -8,7 +8,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Screens
 import TrangChuScreen from './trangchu';
-import ChatScreen from './chat';
+import ChatScreen from './chat/ChatScreen';
 import DanhBaScreen from './danhba';
 import CaNhanScreen from './canhan';
 import UpStatus from './trangchu/upload/upStatus';
