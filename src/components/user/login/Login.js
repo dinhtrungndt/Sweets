@@ -10,6 +10,8 @@ import {
 import React, {useState, useContext} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 import {UserContext} from '../userContext';
+import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
+import hidePassImage from '../../../../media/image/eya.png'; // Replace with the actual path
 
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -64,7 +66,8 @@ const LoginScreens = props => {
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
-          style={myStyles.usernameInput}/>
+          style={myStyles.usernameInput}
+        />
       </View>
       <View style={myStyles.pass}>
         <Text style={myStyles.usernameLayble}>Password</Text>
@@ -73,11 +76,11 @@ const LoginScreens = props => {
             value={password}
             onChangeText={setPassword}
             secureTextEntry={isShowPass}
-            style={myStyles.usernameInput}/>
+            style={myStyles.usernameInput}
+          />
           <Text
             onPress={() => setIsShowPass(!isShowPass)}
-            style={myStyles.icon}
-          >
+            style={myStyles.icon}>
             <Image
               source={isShowPass ? hidePassImage : showPassImage}
               style={myStyles.iconImage}
@@ -97,7 +100,7 @@ const LoginScreens = props => {
       <Pressable onPress={onLoginPress} style={myStyles.btnLogin}>
         <Text style={myStyles.textbtn}>{loading ? 'Loading...' : 'Login'}</Text>
       </Pressable>
-      
+
       <View style={myStyles.dont}>
         <Text>Or</Text>
         <Pressable
