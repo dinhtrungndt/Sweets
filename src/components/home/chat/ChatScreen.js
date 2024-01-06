@@ -1,7 +1,8 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet, Text, View, Image } from 'react-native';
+/* eslint-disable prettier/prettier */
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {StyleSheet, Text, View, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React from 'react';
 import Screen1 from './Screen1';
@@ -16,30 +17,41 @@ const TopTab = createMaterialTopTabNavigator();
 const TopTabScreen = () => {
   return (
     <TopTab.Navigator
-    screenOptions={({ route }) => ({
-      tabBarActiveTintColor: 'black', // Màu chữ khi tab được chọn
-      tabBarInactiveTintColor: 'gray',
-      tabBarLabelStyle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-      },
-      tabBarIndicatorStyle: {
-        backgroundColor: 'black',
-      },
-    })}
-  >
-    <TopTab.Screen name='ScreenChatAll' component={ScreenChatAll} options={{ title: "All chat" }} />
-    <TopTab.Screen name='ScreenChatGroup' component={ScreenChatGroup} options={{ title: "Group chat" }} />
-    <TopTab.Screen name='ScreenChatStorage' component={ScreenChatStorage} options={{ title: "Storage" }} />
-  </TopTab.Navigator>
-  )
-}
+      screenOptions={({route}) => ({
+        tabBarActiveTintColor: 'black', // Màu chữ khi tab được chọn
+        tabBarInactiveTintColor: 'gray',
+        tabBarLabelStyle: {
+          fontSize: 14,
+          fontWeight: 'bold',
+        },
+        tabBarIndicatorStyle: {
+          backgroundColor: 'black',
+        },
+      })}>
+      <TopTab.Screen
+        name="ScreenChatAll"
+        component={ScreenChatAll}
+        options={{title: 'All chat'}}
+      />
+      <TopTab.Screen
+        name="ScreenChatGroup"
+        component={ScreenChatGroup}
+        options={{title: 'Group chat'}}
+      />
+      <TopTab.Screen
+        name="ScreenChatStorage"
+        component={ScreenChatStorage}
+        options={{title: 'Storage'}}
+      />
+    </TopTab.Navigator>
+  );
+};
 
 const BottomTabScreen = () => {
   return (
     <BottomTab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
           let iconName;
           if (route.name === 'TopTabScreen') {
             iconName = focused ? 'chatbox-sharp' : 'chatbox-outline';
@@ -55,29 +67,41 @@ const BottomTabScreen = () => {
         tabBarStyle: {
           display: 'flex',
         },
-      })}
-    >
-      <BottomTab.Screen name='TopTabScreen' component={TopTabScreen} options={{ title: "Chat", headerShown: false }} />
-      <BottomTab.Screen name='Screen1' component={Screen1} options={{ title: "CalL", headerShown: false }} />
-      <BottomTab.Screen name='Screen2' component={Screen2} options={{ title: "Profile", headerShown: false }} />
+      })}>
+      <BottomTab.Screen
+        name="TopTabScreen"
+        component={TopTabScreen}
+        options={{title: 'Chat', headerShown: false}}
+      />
+      <BottomTab.Screen
+        name="Screen1"
+        component={Screen1}
+        options={{title: 'CalL', headerShown: false}}
+      />
+      <BottomTab.Screen
+        name="Screen2"
+        component={Screen2}
+        options={{title: 'Profile', headerShown: false}}
+      />
     </BottomTab.Navigator>
-  )
-}
+  );
+};
 
 const ChatScreen = () => {
   return (
-    <NavigationContainer>
-      <View style={styles.container}>
-        <View style={styles.top1}>
-          <Text style={styles.text}>Sweets</Text>
-          <Image
-            style={styles.searchIcon}
-            source={require("../chat/imageChat/timkiem.png")}
-          />
-        </View>
-        <BottomTabScreen />
-      </View>
-    </NavigationContainer>
+    // <NavigationContainer>
+    //   <View style={styles.container}>
+    //     <View style={styles.top1}>
+    //       <Text style={styles.text}>Sweets</Text>
+    //       <Image
+    //         style={styles.searchIcon}
+    //         source={require('../chat/imageChat/timkiem.png')}
+    //       />
+    //     </View>
+    //     <BottomTabScreen />
+    //   </View>
+    // </NavigationContainer>
+    <Text>Hi</Text>
   );
 };
 

@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import { Image, StyleSheet, Text, TextInput, View, Pressable, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
-=======
 /* eslint-disable prettier/prettier */
 import {
   Image,
@@ -13,19 +9,15 @@ import {
   Alert,
 } from 'react-native';
 import React, {useState} from 'react';
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
 import CheckBox from '@react-native-community/checkbox';
 
 import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
 import hidePassImage from '../../../../media/image/eya.png'; // Replace with the actual path
+import {register} from '../userService';
 
-<<<<<<< HEAD
-const SignUpScreens = (props) => {
-  const { navigation } = props;
+const SignUpScreens = props => {
+  const {navigation} = props;
 
-=======
-const SignUpScreens = () => {
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
   const [isShowPass, setIsShowPass] = useState(false);
   const [isShowPass2, setIsShowPass2] = useState(false);
 
@@ -58,33 +50,20 @@ const SignUpScreens = () => {
       Alert.alert('Register success!');
       navigation.navigate('SignUpBg');
     } else {
-      Alert.alert('Register failer!:')
+      Alert.alert('Register failer!:');
     }
-
-
-
-  }
-
+  };
 
   return (
     <View style={myStyles.body}>
       <Text style={myStyles.hello}>Welcome to Sweets</Text>
       <View style={myStyles.username}>
-<<<<<<< HEAD
         <Text style={myStyles.usernameLayble}>Email</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
-          style={myStyles.usernameInput}>
-        </TextInput>
-=======
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
           style={myStyles.usernameInput}
-          placeholder="Email hoặc số điện thoại"
         />
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
       </View>
       <View style={myStyles.pass}>
         <Text style={myStyles.usernameLayble}>Password</Text>
@@ -93,14 +72,8 @@ const SignUpScreens = () => {
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!isShowPass}
-<<<<<<< HEAD
-            style={myStyles.usernameInput}>
-          </TextInput>
-=======
             style={myStyles.usernameInput}
-            placeholder="Mật khẩu"
           />
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
 
           <Text
             onPress={() => setIsShowPass(!isShowPass)}
@@ -112,25 +85,14 @@ const SignUpScreens = () => {
           </Text>
         </View>
 
-<<<<<<< HEAD
         <Text style={myStyles.usernameLayble}>Confirm Password</Text>
-        <View style={[myStyles.container, { marginTop: 0 }]}>
-=======
-        <Text style={myStyles.usernameLayble}>Confirm Password*</Text>
-        <View style={[myStyles.container, {marginTop: 10}]}>
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
+        <View style={[myStyles.container, {marginTop: 0}]}>
           <TextInput
             value={confirmPasswrod}
             onChangeText={setConfirmPassword}
             secureTextEntry={!isShowPass2}
-<<<<<<< HEAD
-            style={myStyles.usernameInput}>
-          </TextInput>
-=======
             style={myStyles.usernameInput}
-            placeholder="Xác nhận mật khẩu"
           />
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
           <Text
             onPress={() => setIsShowPass2(!isShowPass2)}
             style={myStyles.icon}>
@@ -150,45 +112,16 @@ const SignUpScreens = () => {
           </View>
         </View>
       </View>
-<<<<<<< HEAD
-      <Pressable
-        style={myStyles.btnLogin} 
-        onPress={onSignUp}>
+      <Pressable style={myStyles.btnLogin} onPress={onSignUp}>
         <Text style={myStyles.textbtn}>Sign Up</Text>
       </Pressable>
       <View style={myStyles.dont}>
         <Text>Or </Text>
-        <Pressable style={myStyles.btnSign}
+        <Pressable
+          style={myStyles.btnSign}
           onPress={() => navigation.navigate('LoginScreens')}>
           <Text style={myStyles.textbtn}>Login</Text>
         </Pressable>
-=======
-      <Pressable style={myStyles.btnLogin}>
-        <Text style={myStyles.textbtn}>Sign Up</Text>
-      </Pressable>
-      <View>
-        <Text style={myStyles.textor}>or continue with</Text>
-      </View>
-      <View style={myStyles.FbandGg}>
-        <Pressable style={myStyles.BtnFb}>
-          <Image
-            style={myStyles.ImgFb}
-            source={require('../../../../media/image/fb.png')}
-          />
-          <Text>Facebook</Text>
-        </Pressable>
-        <Pressable style={myStyles.BtnFb}>
-          <Image
-            style={myStyles.ImgFb}
-            source={require('../../../../media/image/gg.png')}
-          />
-          <Text>Google</Text>
-        </Pressable>
-      </View>
-      <View style={myStyles.dont}>
-        <Text>don't have an account ? </Text>
-        <Text style={myStyles.sign}>Login </Text>
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
       </View>
     </View>
   );
@@ -200,11 +133,7 @@ const myStyles = StyleSheet.create({
   icon: {
     position: 'absolute',
     right: 10,
-<<<<<<< HEAD
-    top: 12
-=======
     top: 12,
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
   },
   container: {
     position: 'relative',
@@ -255,13 +184,8 @@ const myStyles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 21,
     letterSpacing: 0.12,
-<<<<<<< HEAD
     color: '#000000',
-    marginTop: 16
-=======
-    color: '#4E4B66',
     marginTop: 16,
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
   },
   usernameInput: {
     width: '100%',
@@ -269,19 +193,9 @@ const myStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     borderWidth: 1,
-<<<<<<< HEAD
-    borderColor: "#4E4B66",
-    borderRadius: 6,
-    marginTop: 8,
-=======
     borderColor: '#4E4B66',
     borderRadius: 6,
-  },
-  CheckBox: {
-    width: '50%',
-    height: 50,
-    // backgroundColor: 'black'
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
+    marginTop: 8,
   },
   box: {
     marginTop: 8,
@@ -289,19 +203,11 @@ const myStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // backgroundColor: 'gray',
-<<<<<<< HEAD
-=======
-    justifyContent: 'space-between',
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
   },
   fogot: {
     color: 'blue',
     alignItems: 'flex-end',
-<<<<<<< HEAD
-    marginLeft: 4.5
-
-=======
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
+    marginLeft: 4.5,
   },
   textfogot: {
     color: 'blue',
@@ -341,8 +247,6 @@ const myStyles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 8,
   },
-<<<<<<< HEAD
-=======
   BtnFb: {
     flexDirection: 'row',
     width: 160,
@@ -364,7 +268,6 @@ const myStyles = StyleSheet.create({
     // top: 10
     margin: 10,
   },
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
   textor: {
     textAlign: 'center',
     margin: 16,
@@ -373,10 +276,6 @@ const myStyles = StyleSheet.create({
     marginTop: 16,
     alignItems: 'center',
     justifyContent: 'center',
-<<<<<<< HEAD
-=======
-    flexDirection: 'row',
->>>>>>> edca9b86d1b16d4d7790162530ce6368ff533ff8
   },
   sign: {
     color: '#1877F2',
