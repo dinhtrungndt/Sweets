@@ -1,14 +1,24 @@
-import { Image, StyleSheet, Text, TextInput, View, Pressable, Alert, Button } from 'react-native'
-import React, { useState } from 'react'
+/* eslint-disable prettier/prettier */
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Pressable,
+  Alert,
+  Button,
+} from 'react-native';
+import React, {useState} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 
 // import DateTimePicker from '@react-native-community/datetimepicker';
 // import DatePicker from 'react-native-datepicker'
-import DatePicker from 'react-native-date-picker'
-import { register } from '../userService';
+import DatePicker from 'react-native-date-picker';
+import {register} from '../userService';
 
-const SignUpBg = (props) => {
-  const { navigation } = props;
+const SignUpBg = props => {
+  const {navigation} = props;
 
   const [name, setName] = useState('');
   const [ngaysinh, setNgaysinh] = useState(new Date());
@@ -28,8 +38,7 @@ const SignUpBg = (props) => {
     }
   };
 
-
-  const handleCheckboxChange = (gioitinh) => {
+  const handleCheckboxChange = gioitinh => {
     setGioitinh(gioitinh);
   };
 
@@ -43,7 +52,7 @@ const SignUpBg = (props) => {
       return;
     }
     if (gioitinh.trim().length === 0) {
-      Alert.alert('Please choose your gender')
+      Alert.alert('Please choose your gender');
       return;
     }
 
@@ -53,11 +62,9 @@ const SignUpBg = (props) => {
     if (result.status === 1) {
       navigation.navigate('LoginScreens');
     } else {
-      Alert.alert('Register failer!:')
+      Alert.alert('Register failer!:');
     }
-
   };
-
 
   return (
     <View style={myStyles.body}>
@@ -68,8 +75,8 @@ const SignUpBg = (props) => {
           value={name}
           onChangeText={setName}
           placeholder="Enter your name"
-          style={myStyles.usernameInput}>
-        </TextInput>
+          style={myStyles.usernameInput}
+        />
       </View>
       <View style={myStyles.pass}>
         <Text style={myStyles.usernameLayble}>Birthday</Text>
@@ -108,15 +115,15 @@ const SignUpBg = (props) => {
           <Button title="Open" onPress={() => setOpen(true)} />
           <DatePicker
             modal
-            mode='date'
+            mode="date"
             open={open}
             date={ngaysinh}
-            onConfirm={(date) => {
-              setOpen(false)
-              setNgaysinh(date)
+            onConfirm={date => {
+              setOpen(false);
+              setNgaysinh(date);
             }}
             onCancel={() => {
-              setOpen(false)
+              setOpen(false);
             }}
           />
         </View>
@@ -144,47 +151,48 @@ const SignUpBg = (props) => {
           </View>
         </View>
       </View>
-      <Pressable style={myStyles.btnLogin}
+      <Pressable
+        style={myStyles.btnLogin}
         onPress={() => navigation.navigate('SignUpScreens')}>
         <Text style={myStyles.textbtn}>Next</Text>
       </Pressable>
     </View>
-  )
-}
+  );
+};
 
-export default SignUpBg
+export default SignUpBg;
 
 const myStyles = StyleSheet.create({
   icon: {
     position: 'absolute',
     right: 10,
-    top: 12
+    top: 12,
   },
   container: {
-    position: "relative"
+    position: 'relative',
   },
   body: {
     padding: 24,
     width: '100%',
     height: '100%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   hello: {
     fontSize: 38,
-    fontFamily: "Poppins",
+    fontFamily: 'Poppins',
     fontStyle: 'normal',
     lineHeight: 72,
     letterSpacing: 0.12,
-    color: '#1877F2'
+    color: '#1877F2',
   },
   again: {
     fontSize: 48,
     letterSpacing: 0.12,
-    fontFamily: "Poppins",
+    fontFamily: 'Poppins',
     fontStyle: 'normal',
     lineHeight: 72,
     flexGrow: 0,
-    color: '#1877F2'
+    color: '#1877F2',
   },
   wellcome: {
     width: '80%',
@@ -193,7 +201,7 @@ const myStyles = StyleSheet.create({
     lineHeight: 30,
     letterSpacing: 0.12,
     color: '#4E4B66',
-    marginTop: 4
+    marginTop: 4,
   },
   username: {
     marginTop: 24,
@@ -201,25 +209,24 @@ const myStyles = StyleSheet.create({
     flexdirection: 'column',
     justifycontent: 'flexend',
     alignitems: 'flexstart',
-
   },
   usernameLayble: {
-    width: "100%",
+    width: '100%',
     fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontSize: 20,
     lineHeight: 21,
     letterSpacing: 0.12,
     color: '#000000',
-    marginTop: 16
+    marginTop: 16,
   },
   usernameInput: {
-    width: "100%",
+    width: '100%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
     borderWidth: 1,
-    borderColor: "#4E4B66",
+    borderColor: '#4E4B66',
     borderRadius: 6,
     marginTop: 8,
   },
@@ -266,4 +273,4 @@ const myStyles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
   },
-})
+});
