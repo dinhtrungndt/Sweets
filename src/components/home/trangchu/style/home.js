@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {StyleSheet} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   T: {
@@ -215,6 +215,10 @@ export default StyleSheet.create({
   baiVietImage: {
     marginTop: 10,
     height: 400,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    borderColor: 'gray',
+    borderWidth: 1,
   },
   baiVietImageImage: {
     width: '100%',
@@ -236,7 +240,7 @@ export default StyleSheet.create({
     height: 22,
     resizeMode: 'cover',
     top: 3,
-    left: 105,
+    left: 95,
   },
   baiVietLikeCommentLeft: {
     flexDirection: 'row',
@@ -262,9 +266,13 @@ export default StyleSheet.create({
     resizeMode: 'cover',
   },
   baiVietLikeCommentRightText: {
+    width: 100,
     fontSize: 16,
     fontFamily: 'Roboto',
     paddingLeft: 3,
     paddingTop: 3,
+  },
+  noStatus: {
+    padding: 10,
   },
 });

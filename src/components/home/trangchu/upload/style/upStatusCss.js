@@ -168,4 +168,23 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+
+  // modal
+  modalView: {
+    width: '100%',
+    height: 200,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

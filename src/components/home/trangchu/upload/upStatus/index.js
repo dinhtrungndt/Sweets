@@ -1,13 +1,88 @@
 /* eslint-disable prettier/prettier */
-import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Modal,
+  FlatList,
+} from 'react-native';
+import React, {useState, useEffect, useContext, useCallback} from 'react';
 import {styles} from '../style/upStatusCss';
 
-const UpStatus = props => {
-  const {navigation} = props;
+// Library
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {CommonActions} from '@react-navigation/native';
+
+// Data
+import {uploadImageStatus, uploadPost} from '../../../homeService';
+import {UserContext} from '../../../../user/userContext';
+import Toast from 'react-native-toast-message';
+
+const UpStatus = ({navigation, route}) => {
+  const {user} = route.params;
+
+  const [upload, setUpload] = useState(false);
 
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true);
   const [inputText, setInputText] = useState('');
+  const [image, setImage] = useState([]);
+  const [imagePath, setImagePath] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const takePhoto = useCallback(async response => {
+    if (response.didCancel) {
+      return;
+    }
+    if (response.errorCode) {
+      return;
+    }
+    if (response.errorMessage) {
+      return;
+    }
+    if (response.assets && response.assets.length > 0) {
+      const selectedImages = response.assets.map(asset => ({
+        uri: asset.uri,
+        type: asset.type,
+        name: asset.fileName,
+      }));
+      setImage(selectedImages);
+      const formData = new FormData();
+
+      // Append all selected images to the formData
+      selectedImages.forEach((image, index) => {
+        formData.append('imageStatus', image);
+      });
+
+      const data = await uploadImageStatus(formData);
+      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      setImagePath(data.urls);
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>> 62 dataImage", data.urls);
+    }
+  }, []);
+
+  const openCamera = useCallback(async () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      saveToPhotos: true,
+    };
+    await launchCamera(options, takePhoto);
+  }, []);
+
+  const openLibrary = useCallback(async () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 5,
+      saveToPhotos: true,
+      selectionLimit: 5,
+      multiple: true,
+    };
+    await launchImageLibrary(options, takePhoto);
+    setModalVisible(false);
+  }, []);
 
   const showBottomSheet = () => {
     setBottomSheetVisible(true);
@@ -21,6 +96,82 @@ const UpStatus = props => {
     setInputText(text);
   };
 
+  const handlePostUpload = () => {
+    handleUploadPost();
+    // Kiểm tra có xem inputText có rỗng hay không
+    if (!inputText) {
+      return Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Bạn chưa nhập nội dung',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    } else if (!upload) {
+      navigation.navigate('TrangChuScreen');
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Up tin thành công',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    } else {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Up tin thất bại',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    }
+  };
+
+  const handleUploadPost = useCallback(async () => {
+    if (!user || !inputText) {
+      return;
+    }
+
+    try {
+      const postDetails = {
+        avatar: user.user.avatar,
+        name: user.user.name,
+        time: new Date().toISOString(),
+        content: inputText,
+        image: imagePath,
+      };
+
+      const response = await uploadPost(user.id, postDetails);
+
+      if (response.status === 1) {
+        // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+        setUpload(response);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{name: 'TrangChuScreen'}],
+          }),
+        );
+      } else {
+        console.error('Lỗi 134 ->>>>>> status 1:', response.message);
+      }
+    } catch (error) {
+      console.error('Lỗi catch --->>>>> error :', error);
+    }
+  }, [user, inputText]);
+
+  // console.log(' >>>>>>>>>>>>>>> 14111111 ', user.user.avatar);
+
+  useEffect(() => {
+    handleUploadPost();
+  }, [user]);
+
   return (
     <View style={styles.T}>
       {/* header */}
@@ -33,6 +184,7 @@ const UpStatus = props => {
         </TouchableOpacity>
         <Text style={styles.textHeader}>Tạo bài viết</Text>
         <TouchableOpacity
+          onPress={handlePostUpload}
           style={[
             styles.upHeaderButton,
             {backgroundColor: inputText ? '#7ec1a5' : '#CBCBCB'},
@@ -45,13 +197,11 @@ const UpStatus = props => {
       <View style={styles.body}>
         {/* chedo_congkhai */}
         <View style={{flexDirection: 'row'}}>
-          <Image
-            style={styles.body_avatar}
-            source={require('../../../../../../media/image/avatar.jpg')}
-          />
+          <Image style={styles.body_avatar} source={{uri: user.user.avatar}} />
           <View style={styles.body_content}>
             {/* name */}
-            <Text style={styles.body_name}>Nguyễn Văn A</Text>
+            <Text style={styles.body_name}>{user.user.name}</Text>
+            {/* {console.log('user post', user.user.name)} */}
             <View style={{flexDirection: 'row'}}>
               {/* congkhai */}
               <TouchableOpacity
@@ -92,10 +242,33 @@ const UpStatus = props => {
             multiline={true}
             onChangeText={handleInputChange}
           />
+          {image.length > 0 && (
+            <FlatList
+              data={image}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => (
+                <TouchableOpacity key={index}>
+                  <Image
+                    source={{uri: item.uri}}
+                    style={{
+                      width: 100,
+                      height: 200,
+                      resizeMode: 'cover',
+                      justifyContent: 'center',
+                      alignSelf: 'center',
+                      marginTop: 20,
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </View>
         {/* bottom sheet */}
         <View style={styles.pick_feelings}>
-          <TouchableOpacity style={styles.boder_image}>
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            style={styles.boder_image}>
             <Image
               style={styles.avatar_icon_image}
               source={require('../../../../../../media/image/icon_image.png')}
@@ -127,7 +300,9 @@ const UpStatus = props => {
         {/* Bottom Sheet */}
         {bottomSheetVisible && (
           <View style={styles.bottomSheet}>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              style={styles.bottomSheetItem}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../../media/image/icon_image.png')}
@@ -184,6 +359,20 @@ const UpStatus = props => {
           </View>
         )}
       </View>
+      {/* modal  */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {}}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text onPress={openCamera}>Chụp ảnh</Text>
+            <Text onPress={openLibrary}>Chọn ảnh</Text>
+            <Text onPress={() => setModalVisible(false)}>Cancel</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

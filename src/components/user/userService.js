@@ -26,7 +26,7 @@ export const login = async (email, password) => {
       password: password,
     };
     const response = await AxiosInstance().post('/user/post-login', body);
-    console.log('register r ', response);
+    // console.log('register r ', response);
     return response;
   } catch (error) {
     console.log('register: ', error);
