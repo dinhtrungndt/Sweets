@@ -15,7 +15,7 @@ import CheckBox from '@react-native-community/checkbox';
 // import DateTimePicker from '@react-native-community/datetimepicker';
 // import DatePicker from 'react-native-datepicker'
 import DatePicker from 'react-native-date-picker';
-import {register} from '../userService';
+import {register} from '../../../services/user/userService';
 
 const SignUpBg = props => {
   const {navigation} = props;

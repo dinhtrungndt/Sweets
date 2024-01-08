@@ -8,11 +8,12 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 
-import showPassImage from '../../../../media/image/eyaopen.jpg'; // Replace with the actual path
-import hidePassImage from '../../../../media/image/eya.png'; // Replace with the actual path
+import showPassImage from '../../../assets/eyaopen.jpg'; // Replace with the actual path
+import hidePassImage from '../../../assets/eya.png'; // Replace with the actual path
+import {register} from '../../../services/user/userService';
 
 const SignUpScreens = props => {
   const {navigation} = props;
@@ -245,6 +246,27 @@ const myStyles = StyleSheet.create({
   FbandGg: {
     flexDirection: 'row',
     marginTop: 8,
+  },
+  BtnFb: {
+    flexDirection: 'row',
+    width: 160,
+    height: 40,
+    backgroundColor: '#EEF1F4',
+    margin: 6,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ImgFb: {
+    width: 21,
+    height: 21,
+    marginEnd: 10,
+  },
+  img: {
+    // position:'absolute',
+    // left:10,
+    // top: 10
+    margin: 10,
   },
   textor: {
     textAlign: 'center',
