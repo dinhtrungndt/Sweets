@@ -2,14 +2,14 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const InImagesScreens = () => {
+const SearchScreens = () => {
   return (
     <View>
-      <Text>InImagesScreens</Text>
+      <Text>SearchScreens</Text>
     </View>
   );
 };
 
-export default InImagesScreens;
+export default SearchScreens;
 
 const styles = StyleSheet.create({});

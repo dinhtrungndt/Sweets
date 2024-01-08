@@ -201,7 +201,7 @@ const TrangChuScreen = props => {
     <>
       <View style={styles.T}>
         {/* Header */}
-        <HeaderScreens />
+        <HeaderScreens {...props} />
         {/* Body */}
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
           <View style={styles.avatar_content_image}>
@@ -321,7 +321,9 @@ const TrangChuScreen = props => {
                         </Text>
                       </View>
                     </View>
-                    <TouchableOpacity style={styles.baiVietHeaderRight}>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('BottomSheet', {item})}
+                      style={styles.baiVietHeaderRight}>
                       <Image
                         style={styles.baiVietHeaderRightIcon}
                         source={require('../../../../media/image/icon_more.png')}

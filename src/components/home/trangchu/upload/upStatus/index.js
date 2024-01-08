@@ -33,13 +33,7 @@ const UpStatus = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const takePhoto = useCallback(async response => {
-    if (response.didCancel) {
-      return;
-    }
-    if (response.errorCode) {
-      return;
-    }
-    if (response.errorMessage) {
+    if (response.didCancel || response.errorCode || response.errorMessage) {
       return;
     }
     if (response.assets && response.assets.length > 0) {

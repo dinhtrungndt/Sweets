@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import AddModal from '../../trangchu/dropDown/addModal';
+import {UserContext} from '../../../user/userContext';
 
-const HeaderScreens = () => {
+const HeaderScreens = props => {
+  const {navigation} = props;
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   const handleOnDropdown = () => {
@@ -28,6 +30,7 @@ const HeaderScreens = () => {
             <Text style={{fontSize: 32, color: 'black', top: -5}}>+</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => navigation.navigate('SearchScreens')}
             style={[styles.headerIconContainer, {marginLeft: 5}]}>
             <Image
               style={styles.headerIcon}
