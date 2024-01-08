@@ -24,6 +24,7 @@ import {UserContext} from '../../user/userContext';
 // Library
 import AddModal from './dropDown/addModal';
 import moment from 'moment';
+import HeaderScreens from '../layout/header';
 
 const TrangChuScreen = props => {
   const {navigation} = props;
@@ -32,7 +33,6 @@ const TrangChuScreen = props => {
   const [showMore, setShowMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   const handleShowMore = () => {
     setShowMore(!showMore);
@@ -126,7 +126,7 @@ const TrangChuScreen = props => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `http://192.168.1.10:3001/post/like/${postId}/${userId}`,
+        `https://sweets-bf2818fd7e8e.herokuapp.com/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -156,10 +156,10 @@ const TrangChuScreen = props => {
 
         // console.log('>>>>>>>>>>>>>>>>>> 81', data.isLiked);
 
-        console.log(
-          // '------------>>>>>>>>>>>>>>>>>> 106 Updated posts:',
-          updatedPosts,
-        );
+        // console.log(
+        //   // '------------>>>>>>>>>>>>>>>>>> 106 Updated posts:',
+        //   updatedPosts,
+        // );
 
         setPosts([...updatedPosts]);
       } else {
@@ -168,10 +168,6 @@ const TrangChuScreen = props => {
     } catch (error) {
       console.error('Lỗi khi gửi yêu cầu API:', error);
     }
-  };
-
-  const handleOnDropdown = () => {
-    setDropdownVisible(!isDropdownVisible);
   };
 
   const formatTime = createdAt => {
@@ -205,32 +201,7 @@ const TrangChuScreen = props => {
     <>
       <View style={styles.T}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.textHeader}>𝓢𝔀𝓮𝓮𝓽𝓼</Text>
-          <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity
-              style={styles.headerIconContainer}
-              onPress={handleOnDropdown}>
-              <Text style={{fontSize: 32, color: 'black', top: -5}}>+</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.headerIconContainer, {marginLeft: 5}]}>
-              <Image
-                style={styles.headerIcon}
-                source={require('../../../../media/image/icon_search.png')}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.headerIconContainer, {marginLeft: 5}]}>
-              <Image
-                style={styles.headerIcon}
-                source={require('../../../../media/image/icon_chat.png')}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        {/* đường kẻ ngang*/}
-        <Text style={styles.lineHr} />
+        <HeaderScreens />
         {/* Body */}
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
           <View style={styles.avatar_content_image}>
@@ -456,17 +427,6 @@ const TrangChuScreen = props => {
           {/* đường kẻ ngang*/}
         </ScrollView>
       </View>
-
-      {/* Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isDropdownVisible}
-        onRequestClose={() => {
-          setDropdownVisible(!isDropdownVisible);
-        }}>
-        <AddModal />
-      </Modal>
     </>
   );
 };

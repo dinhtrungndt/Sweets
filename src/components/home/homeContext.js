@@ -6,9 +6,9 @@ export const HomeContext = createContext();
 export const HomeProvider = props => {
   const {children} = props;
 
-  const [news, setNews] = useState([]);
+  const [posts, setPosts] = useState([]);
   return (
-    <HomeContext.Provider value={{news, setNews}}>
+    <HomeContext.Provider value={{posts, setPosts}}>
       {children}
     </HomeContext.Provider>
   );

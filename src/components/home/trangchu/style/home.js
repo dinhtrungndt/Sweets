@@ -1,38 +1,10 @@
 /* eslint-disable prettier/prettier */
-import {Image, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   T: {
     width: '100%',
     height: '100%',
-  },
-  header: {
-    padding: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  textHeader: {
-    fontSize: 38,
-    color: '#000000',
-    fontFamily: 'Roboto',
-  },
-  headerIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 22,
-    borderWidth: 2,
-    borderColor: '#e4e6eb',
-    backgroundColor: '#e4e6eb',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 13,
-    flexDirection: 'row',
-  },
-  headerIcon: {
-    width: 25,
-    height: 25,
-    borderRadius: 20,
-    resizeMode: 'cover',
   },
   lineHr: {
     width: '100%',
