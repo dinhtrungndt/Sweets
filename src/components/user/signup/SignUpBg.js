@@ -12,20 +12,27 @@ const SignUpBg = (props) => {
 
   const [name, setName] = useState('');
   const [ngaysinh, setNgaysinh] = useState(new Date());
-  const [open, setOpen] = useState(false);
   const [gioitinh, setGioitinh] = useState('');
 
-  const handleDateChange = (event, date) => {
-    if (date) {
-      // Parse the date string
-      const parsedDate = new Date(date);
+  const [open, setOpen] = useState(false);
+  const [formattedNgaysinh, setFormattedNgaysinh] = useState('');
 
-      // Extract the day
-      const day = parsedDate.getDate();
 
-      // Update the state with the day
-      setNgaysinh(day.toString());
-    }
+  const onConfirmDate = (date) => {
+    setOpen(false);
+
+    // Format the date as 'YYYY-MM-DD'
+    const formattedDate = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+
+    // Set the formatted date to the state
+    setFormattedNgaysinh(formattedDate);
+
+    // Set the raw Date object to the state if needed
+    setNgaysinh(date);
   };
 
 
@@ -47,13 +54,22 @@ const SignUpBg = (props) => {
       return;
     }
 
-    // gọi api đăng ký
-    const result = await register(name, ngaysinh, gioitinh, email, password);
-    console.log('register result: ', result);
-    if (result.status === 1) {
-      navigation.navigate('LoginScreens');
-    } else {
-      Alert.alert('Register failer!:')
+    try {
+      // Call the register API
+      const result = await register(name, ngaysinh, gioitinh);
+
+      console.log('register result: ', result);
+
+      if (result && result.status === 1) {
+        // Successfully registered
+        navigation.navigate('SignUpScreens');
+      } else {
+        // Registration failed
+        Alert.alert('Registration failed!');
+      }
+    } catch (error) {
+      console.log('Error during registration: ', error);
+      Alert.alert('An error occurred during registration.');
     }
   };
 
@@ -73,47 +89,24 @@ const SignUpBg = (props) => {
       <View style={myStyles.pass}>
         <Text style={myStyles.usernameLayble}>Birthday</Text>
         <View style={myStyles.container}>
-          {/* <TextInput
-            value={ngaysinh}
-            onChangeText={setNgaysinh}
-            onValueChange={handleDateChange}
-            placeholder="YYYY-MM-DD"
-            style={myStyles.usernameInput}>
-          </TextInput> */}
-          {/* <DatePicker
-            style={myStyles.datePicker}
-            value={ngaysinh}
-            mode="date"
-            placeholder=""
-            format="YYYY-MM-DD"
-            minDate="1945-01-01"
-            maxDate="2024-01-01"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                left: 0,
-                top: 4,
-                marginLeft: 0,
-              },
-              dateInput: {
-                borderWidth: 0,
-                marginLeft: 36,
-              },
-            }}
-            onChange={handleDateChange}
-          /> */}
-          <Button title="Open" onPress={() => setOpen(true)} />
+          <Pressable
+            style={myStyles.btnDate}
+            onPress={() => setOpen(true)}>
+            <Image style={myStyles.imgDate} source={require('../../../../media/image/Date.png')} />
+            <TextInput
+              value={formattedNgaysinh}
+              editable={false}
+              placeholder="YYYY-MM-DD"
+              style={myStyles.dateInput}
+            />
+          </Pressable>
+
           <DatePicker
             modal
             mode='date'
             open={open}
             date={ngaysinh}
-            onConfirm={(date) => {
-              setOpen(false)
-              setNgaysinh(date)
-            }}
+            onConfirm={onConfirmDate}
             onCancel={() => {
               setOpen(false)
             }}
@@ -143,8 +136,9 @@ const SignUpBg = (props) => {
           </View>
         </View>
       </View>
-      <Pressable style={myStyles.btnLogin}
-        onPress={() => navigation.navigate('SignUpScreens')}>
+      <Pressable
+        style={myStyles.btnLogin}
+        onPress={onSignUp}>
         <Text style={myStyles.textbtn}>Next</Text>
       </Pressable>
     </View>
@@ -222,9 +216,31 @@ const myStyles = StyleSheet.create({
     borderRadius: 6,
     marginTop: 8,
   },
-  datePicker: {
+  btnDate: {
     width: '100%',
+    height: 60,
     marginTop: 8,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center', 
+  },
+  imgDate: {
+    width: 42,
+    height: 42,
+    position: 'absolute',
+    left: 3,
+    alignItems: 'center',
+  },
+  dateInput: {
+    width: 285,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    textAlign: 'center',
+    borderWidth: 1,
+    borderColor: "#4E4B66",
+    borderRadius: 6,
+    marginLeft: 60,
   },
   CheckBox: {
     width: 24,
