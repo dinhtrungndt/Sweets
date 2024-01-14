@@ -197,52 +197,53 @@ export default StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  baiVietLikeComment: {
+  baiVietLikeCommentShare: {
     flexDirection: 'row',
     padding: 10,
     justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 15,
   },
-  baiVietLikeCommentLeftIconImage: {
+  baiVietLike: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  baiVietLikeIcon: {
     width: 28,
     height: 28,
-    resizeMode: 'cover',
   },
-  baiVietLikeCommentRightIconImage: {
-    width: 22,
-    height: 22,
-    resizeMode: 'cover',
-    top: 3,
-    left: 95,
+  baiVietLikeText: {
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    marginLeft: 3,
+    marginTop: 3,
   },
-  baiVietLikeCommentLeft: {
+  baiVietComments: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  baiVietLikeCommentLeftIcon: {
+  baiVietCommentsIcon: {
     width: 20,
     height: 20,
     resizeMode: 'cover',
   },
-  baiVietLikeCommentLeftText: {
+  baiVietCommentsText: {
     fontSize: 16,
     fontFamily: 'Roboto',
-    marginLeft: 10,
   },
-  baiVietLikeCommentRight: {
+  baiVietShare: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  baiVietLikeCommentRightIcon: {
+  baiVietShareIcon: {
     width: 20,
     height: 20,
     resizeMode: 'cover',
   },
-  baiVietLikeCommentRightText: {
-    width: 100,
+  baiVietShareText: {
     fontSize: 16,
     fontFamily: 'Roboto',
-    paddingLeft: 3,
-    paddingTop: 3,
+    marginLeft: 5,
   },
   noStatus: {
     padding: 10,

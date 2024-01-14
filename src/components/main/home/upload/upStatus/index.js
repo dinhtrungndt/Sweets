@@ -56,7 +56,7 @@ const UpStatus = ({navigation, route}) => {
       const data = await uploadImageStatus(formData);
       // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
       setImagePath(data.urls);
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>> 62 dataImage", data.urls);
+      console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 

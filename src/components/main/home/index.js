@@ -126,7 +126,7 @@ const HomeScreen = props => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `http://192.168.2.209:3001/post/like/${postId}/${userId}`,
+        `https://sweets-bf2818fd7e8e.herokuapp.com/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -384,12 +384,12 @@ const HomeScreen = props => {
                     <View style={{height: 0}} />
                   )}
 
-                  <View style={styles.baiVietLikeComment}>
-                    <View style={styles.baiVietLikeCommentLeft}>
+                  <View style={styles.baiVietLikeCommentShare}>
+                    <View style={styles.baiVietLike}>
                       <TouchableOpacity
                         onPress={() => handleLike(item._id)}
                         style={[
-                          styles.baiVietLikeCommentLeftIcon,
+                          styles.baiVietLikeIcon,
                           {
                             flexDirection: 'row',
                             paddingLeft: 0,
@@ -397,30 +397,35 @@ const HomeScreen = props => {
                         ]}>
                         {item.isLiked ? (
                           <Image
-                            style={styles.baiVietLikeCommentLeftIconImage}
+                            style={styles.baiVietLikeIcon}
                             source={require('../../../assets/icon_like_click.png')}
                           />
                         ) : (
                           <Image
-                            style={styles.baiVietLikeCommentLeftIconImage}
+                            style={styles.baiVietLikeIcon}
                             source={require('../../../assets/icon_like.png')}
                           />
                         )}
-                        <Text style={styles.baiVietLikeCommentRightText}>
+                        <Text style={styles.baiVietLikeText}>
                           {item.likedBy.length}
                         </Text>
                       </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.baiVietLikeCommentLeftIcon}>
+                    <TouchableOpacity style={styles.baiVietComments}>
                       <Image
-                        style={styles.baiVietLikeCommentRightIconImage}
+                        style={styles.baiVietCommentsIcon}
                         source={require('../../../assets/icon_comment.png')}
                       />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.baiVietLikeCommentRight}>
-                      <Text style={styles.baiVietLikeCommentRightText}>
+                      <Text style={styles.baiVietCommentsText}>
                         {item.comment} bình luận
                       </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.baiVietShare}>
+                      <Image
+                        style={styles.baiVietShareIcon}
+                        source={require('../../../assets/icon_share.png')}
+                      />
+                      <Text style={styles.baiVietShareText}>Share</Text>
                     </TouchableOpacity>
                   </View>
                   <Text style={[styles.lineHr, {marginTop: 10, height: 5}]} />
