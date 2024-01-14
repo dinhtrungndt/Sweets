@@ -7,6 +7,11 @@ export default StyleSheet.create({
     height: '100%',
     padding: 12,
   },
+  lineHr: {
+    width: '100%',
+    height: 1,
+    backgroundColor: '#e4e6eb',
+  },
   icon_back: {
     width: 24,
     height: 24,
