@@ -142,18 +142,19 @@ const HomeScreen = props => {
       if (data.status === 1) {
         const updatedPosts = posts.map(post => {
           if (post._id === postId) {
-            // console.log('>>>>>>>>>>>>>>>>>> 81', post.isLiked);
+            const likedByCurrentUser = data.post.likedBy.includes(userId);
+            // console.log('>>>>>>>>>>>>>>>>>> 14555555', post.isLiked);
+            // console.log('>>>>>>>>>>>>>>>>>> 14555555', post);
             return {
               ...post,
-              isLiked: !post.isLiked,
-              likedBy: post.isLiked
-                ? post.likedBy.filter(id => id !== userId)
-                : [...post.likedBy, userId],
+              isLiked: likedByCurrentUser,
+              likedBy: data.post.likedBy,
             };
           }
           return post;
         });
 
+        // console.log('>>>>>>>>>>>>>>>>>> 81', data.post?.isLiked);
         // console.log('>>>>>>>>>>>>>>>>>> 81', data.isLiked);
 
         // console.log(
@@ -161,7 +162,7 @@ const HomeScreen = props => {
         //   updatedPosts,
         // );
 
-        setPosts([...updatedPosts]);
+        setPosts(updatedPosts);
       } else {
         console.error('Lỗi khi thay đổi trạng thái like:', data.message);
       }
@@ -406,12 +407,20 @@ const HomeScreen = props => {
                             source={require('../../../assets/icon_like.png')}
                           />
                         )}
+                        {console.log(
+                          '------ >>>>>>>>>>>>>>>>>> 4111111',
+                          item.isLiked,
+                        )}
                         <Text style={styles.baiVietLikeText}>
                           {item.likedBy.length}
                         </Text>
                       </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.baiVietComments}>
+                    <TouchableOpacity
+                      style={styles.baiVietComments}
+                      onPress={() =>
+                        navigation.navigate('CommentScreen', {postId: item})
+                      }>
                       <Image
                         style={styles.baiVietCommentsIcon}
                         source={require('../../../assets/icon_comment.png')}

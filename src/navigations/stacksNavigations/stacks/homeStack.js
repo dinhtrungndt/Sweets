@@ -11,6 +11,7 @@ import DropDown from '../../../components/main/home/dropDown';
 import HeaderScreens from '../../../components/main/layout/header';
 import SearchScreens from '../../../components/main/layout/search';
 import BottomSheetLayout from '../../../components/main/layout/bottomSheet';
+import CommentScreen from '../../../components/main/home/comment';
 
 // Stack
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -32,6 +33,7 @@ export function HomeStackScreen() {
       <Stack.Screen name="HeaderScreens" component={HeaderScreens} />
       <Stack.Screen name="SearchScreens" component={SearchScreens} />
       <Stack.Screen name="BottomSheetLayout" component={BottomSheetLayout} />
+      <Stack.Screen name="CommentScreen" component={CommentScreen} />
     </Stack.Navigator>
   );
 }
