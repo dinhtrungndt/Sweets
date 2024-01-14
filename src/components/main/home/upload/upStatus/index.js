@@ -152,7 +152,7 @@ const UpStatus = ({navigation, route}) => {
         navigation.dispatch(
           CommonActions.reset({
             index: 1,
-            routes: [{name: 'HomeScreen'}],
+            routes: [{name: 'HomeStackScreen'}],
           }),
         );
       } else {

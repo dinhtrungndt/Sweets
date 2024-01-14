@@ -126,7 +126,7 @@ const HomeScreen = props => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `https://sweets-bf2818fd7e8e.herokuapp.com/post/like/${postId}/${userId}`,
+        `http://192.168.2.209:3001/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
