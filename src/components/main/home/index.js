@@ -174,20 +174,22 @@ const HomeScreen = props => {
   const formatTime = createdAt => {
     const currentTime = moment();
     const postTime = moment(createdAt);
-    const diffInMinutes = currentTime.diff(postTime, 'minutes');
-
-    if (diffInMinutes < 1) {
+    const diffInSeconds = currentTime.diff(postTime, 'seconds');
+  
+    if (diffInSeconds < 1) {
       return 'Vừa đăng';
-    } else if (diffInMinutes < 60) {
-      return `${diffInMinutes} phút trước`;
-    } else if (diffInMinutes < 24 * 60) {
-      return `${Math.floor(diffInMinutes / 60)} giờ trước`;
-    } else if (diffInMinutes < 24 * 60 * 30) {
-      return `${Math.floor(diffInMinutes / (60 * 24))} ngày trước`;
-    } else if (diffInMinutes < 24 * 60 * 30 * 12) {
-      return `${Math.floor(diffInMinutes / (60 * 24 * 30))} tháng trước`;
+    } else if (diffInSeconds < 60) {
+      return `${diffInSeconds} giây trước`;
+    } else if (diffInSeconds < 3600) {
+      return `${Math.floor(diffInSeconds / 60)} phút trước`;
+    } else if (diffInSeconds < 24 * 3600) {
+      return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
+    } else if (diffInSeconds < 30 * 24 * 3600) {
+      return `${Math.floor(diffInSeconds / (24 * 3600))} ngày trước`;
+    } else if (diffInSeconds < 12 * 30 * 24 * 3600) {
+      return `${Math.floor(diffInSeconds / (30 * 24 * 3600))} tháng trước`;
     } else {
-      return `${Math.floor(diffInMinutes / (60 * 24 * 30 * 12))} năm trước`;
+      return `${Math.floor(diffInSeconds / (12 * 30 * 24 * 3600))} năm trước`;
     }
   };
 
@@ -407,10 +409,10 @@ const HomeScreen = props => {
                             source={require('../../../assets/icon_like.png')}
                           />
                         )}
-                        {console.log(
+                        {/* {console.log(
                           '------ >>>>>>>>>>>>>>>>>> 4111111',
                           item.isLiked,
-                        )}
+                        )} */}
                         <Text style={styles.baiVietLikeText}>
                           {item.likedBy.length}
                         </Text>

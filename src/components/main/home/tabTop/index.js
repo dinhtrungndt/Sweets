@@ -4,7 +4,6 @@ import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 // Screens
-import QuanTamScreen from '../quantam';
 import OtherScreen from '../other';
 import {NavigationContainer} from '@react-navigation/native';
 import CareScreen from '../care';
