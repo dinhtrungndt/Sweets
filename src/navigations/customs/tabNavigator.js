@@ -37,6 +37,22 @@ export const options = ({route}) => ({
           />
         );
       }
+    } else if (route.name === 'ReelsScreen') {
+      if (focused) {
+        return (
+          <Image
+            style={{width: 20, height: 20}}
+            source={require('../../assets/icon_reels_click.png')}
+          />
+        );
+      } else {
+        return (
+          <Image
+            style={{width: 20, height: 20}}
+            source={require('../../assets/icon_reels.png')}
+          />
+        );
+      }
     } else if (route.name === 'PhoneBookScreen') {
       if (focused) {
         return (
@@ -95,6 +111,17 @@ export const options = ({route}) => ({
       ) : (
         <Text> Trò chuyện </Text>
       );
+    } else if (route.name === 'ReelsScreen') {
+      return focused ? (
+        <Text
+          style={{
+            color: '#095fe5',
+          }}>
+          Reels
+        </Text>
+      ) : (
+        <Text> Reels </Text>
+      );
     } else if (route.name === 'PhoneBookScreen') {
       return focused ? (
         <Text
@@ -123,8 +150,10 @@ export const options = ({route}) => ({
     // borderTopLeftRadius: 20,
     // borderTopRightRadius: 20,
     bottom: 10,
-    width: '90%',
-    marginLeft: '5%',
+    width: '95%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
     borderRadius: 20,
     borderWidth: 2,
     borderColor: '#000',
