@@ -330,50 +330,44 @@ const CommentScreen = ({navigation, route}) => {
                     {DataComment.filter(
                       subItem => subItem.parentId === item.id,
                     ).map((subItem, subIndex) => (
-                      <View>
-                        <View
+                      <View
+                        style={[
+                          styles.container_comment_body,
+                          styles.childComment,
+                        ]}
+                        key={subIndex}>
+                        <Image
                           style={[
-                            styles.container_comment_body,
-                            styles.childComment,
+                            styles.avatar_comment,
+                            {width: 30, height: 30},
                           ]}
-                          key={subIndex}>
-                          <Image
-                            style={[
-                              styles.avatar_comment,
-                              {width: 30, height: 30},
-                            ]}
-                            source={{uri: subItem.avatar}}
-                          />
-                          <View style={styles.container_comment_content}>
-                            <View style={styles.comment_content}>
-                              <Text style={styles.name_comment}>
-                                {subItem.name}
+                          source={{uri: subItem.avatar}}
+                        />
+                        <View style={styles.container_comment_content}>
+                          <View style={styles.comment_content}>
+                            <Text style={styles.name_comment}>
+                              {subItem.name}
+                            </Text>
+                            <Text style={styles.content_comment}>
+                              {subItem.content}
+                            </Text>
+                          </View>
+                          <View style={styles.comment_time_like}>
+                            <Text style={styles.time_comment}>
+                              {subItem.time}
+                            </Text>
+                            <TouchableOpacity style={styles.like_like_comment}>
+                              <Text style={styles.like_like_comment}>
+                                Thích
                               </Text>
-                              <Text style={styles.content_comment}>
-                                {subItem.content}
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.like_like_comment}>
+                              <Text style={styles.like_like_comment}>
+                                Phản hồi
                               </Text>
-                            </View>
-                            <View style={styles.comment_time_like}>
-                              <Text style={styles.time_comment}>
-                                {subItem.time}
-                              </Text>
-                              <TouchableOpacity
-                                style={styles.like_like_comment}>
-                                <Text style={styles.like_like_comment}>
-                                  Thích
-                                </Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                style={styles.like_like_comment}>
-                                <Text style={styles.like_like_comment}>
-                                  Phản hồi
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
+                            </TouchableOpacity>
                           </View>
                         </View>
-                        {/* reply comment */}
-                        {/* gồm avatar và input */}
                       </View>
                     ))}
                   </View>
