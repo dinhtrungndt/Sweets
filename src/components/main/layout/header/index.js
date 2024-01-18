@@ -41,7 +41,7 @@ const HeaderScreens = props => {
             style={[styles.headerIconContainer, {marginLeft: 5}]}>
             <Image
               style={styles.headerIcon}
-              source={require('../../../../assets/icon_chat.png')}
+              source={require('../../../../assets/icon_notifi.png')}
             />
           </TouchableOpacity>
         </View>
