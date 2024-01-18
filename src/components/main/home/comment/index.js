@@ -1,13 +1,27 @@
 /* eslint-disable prettier/prettier */
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
+
+// Data
+import {getLikedBy} from '../../../../services/home/homeService';
+import AxiosInstance from '../../../../helper/Axiosinstance';
+import {UserContext} from '../../../../contexts/user/userContext';
+import {DataComment} from './data';
 
 // Css
 import styles from './style/index';
 
 // Library
 import moment from 'moment';
-import {UserContext} from '../../../../contexts/user/userContext';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const CommentScreen = ({navigation, route}) => {
   const {postId} = route.params;
@@ -26,7 +40,7 @@ const CommentScreen = ({navigation, route}) => {
     const currentTime = moment();
     const postTime = moment(createdAt);
     const diffInSeconds = currentTime.diff(postTime, 'seconds');
-  
+
     if (diffInSeconds < 1) {
       return 'Vừa đăng';
     } else if (diffInSeconds < 60) {
@@ -48,7 +62,7 @@ const CommentScreen = ({navigation, route}) => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `https://sweets-bf2818fd7e8e.herokuapp.com/post/like/${postId}/${userId}`,
+        `http://192.168.1.10:3001/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -92,67 +106,85 @@ const CommentScreen = ({navigation, route}) => {
     }
   };
 
-  // console.log(
-  //   '>>>>>>>>>>>>>>>>>> 922222222',
-  //   posts.map(post => post._id),
-  // );
+  // Lấy danh sách người dùng đã like
+  const isGetLikedBy = async postId => {
+    try {
+      const url = `/post/${postId}/get-liked-by`;
+      const response = await AxiosInstance().get(url);
+      console.log('get post >>>>>>>>>>>>>>> 10333333  ', response);
+      return response;
+    } catch (error) {
+      console.error(' >>>>>>>>> Lỗi get: 1033333 s', error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    isGetLikedBy(postId._id);
+  }, []);
 
   return (
     <View style={styles.T}>
       {/* header */}
       <View style={styles.header}>
-        <View style={styles.baiViet} key={postId._id}>
-          {/* {console.log('>>>>>>>>>>>>>>>>>> 2511111', postId.name)} */}
-          <View style={styles.baiVietHeader}>
-            <>
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                style={styles.icon_backTO}>
-                <Image
-                  style={styles.icon_back}
-                  source={require('../../../../assets/icon_back.png')}
-                />
-              </TouchableOpacity>
-              <View style={styles.baiVietHeaderLeft}>
-                <Image
-                  style={styles.baiVietAvatar}
-                  source={{uri: postId.avatar}}
-                />
-                <View style={styles.baiVietNameTime}>
-                  <Text style={styles.baiVietName}>{postId.name}</Text>
-                  <Text style={styles.baiVietTime}>
-                    {/* Vừa đăng, giây, phút, giờ, ngày*/}
-                    {formatTime(postId.time)}
-                  </Text>
-                </View>
-              </View>
-            </>
+        {/* thông tin header */}
+        <View style={styles.baiVietHeader}>
+          <>
             <TouchableOpacity
-              onPress={() => navigation.navigate('BottomSheetLayout', {postId})}
-              style={styles.baiVietHeaderRight}>
+              onPress={() => navigation.goBack()}
+              style={styles.icon_backTO}>
               <Image
-                style={styles.baiVietHeaderRightIcon}
-                source={require('../../../../assets/icon_more.png')}
+                style={styles.icon_back}
+                source={require('../../../../assets/icon_back.png')}
               />
             </TouchableOpacity>
-          </View>
-          <View style={styles.baiVietContent}>
-            {showMore ? (
-              <Text style={styles.baiVietContentText}>{postId.content}</Text>
-            ) : (
-              <Text style={styles.baiVietContentText}>
-                {postId.content.slice(0, 100)}
-              </Text>
-            )}
-            {/* Toggle button */}
-            {postId.content.length > 100 && (
-              <TouchableOpacity onPress={handleShowMore}>
-                <Text style={{color: 'blue'}}>
-                  {showMore ? 'Ẩn' : 'Xem thêm'}
+            <View style={styles.baiVietHeaderLeft}>
+              <Image
+                style={styles.baiVietAvatar}
+                source={{uri: postId.avatar}}
+              />
+              <View style={styles.baiVietNameTime}>
+                <Text style={styles.baiVietName}>{postId.name}</Text>
+                <Text style={styles.baiVietTime}>
+                  {/* Vừa đăng, giây, phút, giờ, ngày*/}
+                  {formatTime(postId.time)}
                 </Text>
-              </TouchableOpacity>
-            )}
-          </View>
+              </View>
+            </View>
+          </>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('BottomSheetLayout', {postId})}
+            style={styles.baiVietHeaderRight}>
+            <Image
+              style={styles.baiVietHeaderRightIcon}
+              source={require('../../../../assets/icon_more.png')}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+      {/* body */}
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
+        {/* content bài viết */}
+        <View style={styles.baiVietContent}>
+          {showMore ? (
+            <Text style={styles.baiVietContentText}>{postId.content}</Text>
+          ) : (
+            <Text style={styles.baiVietContentText}>
+              {postId.content.slice(0, 100)}
+            </Text>
+          )}
+          {/* Toggle button */}
+          {postId.content.length > 100 && (
+            <TouchableOpacity onPress={handleShowMore}>
+              <Text style={{color: 'blue'}}>
+                {showMore ? 'Ẩn' : 'Xem thêm'}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.baiViet} key={postId._id}>
+          {/* {console.log('>>>>>>>>>>>>>>>>>> 2511111', postId.name)} */}
+
           {postId.image && postId.image.length > 0 ? (
             <View style={styles.baiVietImage}>
               {postId.image.map((imageUrl, index) => (
@@ -217,8 +249,153 @@ const CommentScreen = ({navigation, route}) => {
               <Text style={styles.baiVietShareText}>Share</Text>
             </TouchableOpacity>
           </View>
-          <Text style={[styles.lineHr, {marginTop: 10, height: 5}]} />
+          <Text style={styles.lineHr} />
         </View>
+        {/* people who like */}
+        <View style={styles.container_peopleLike}>
+          {postId.likedBy.length > 0 && (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('PeopleLike', {postId})}
+              style={styles.container_peopleLike}>
+              <Image
+                style={styles.icon_like}
+                source={require('../../../../assets/icon_like_click.png')}
+              />
+              <Text style={styles.text_peopleLike}>
+                {postId.likedBy.map((item, index) => {
+                  if (item === user.id) {
+                    return 'Bạn';
+                  }
+                })}
+                {postId.likedBy.length > 1 && ' và'}
+                {postId.likedBy.length > 2
+                  ? postId.likedBy.length - 2 + 'và những người khác'
+                  : postId.likedBy.map((item, index) => {
+                      if (item !== user.id) {
+                        return ' ' + postId.name;
+                      }
+                    })}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        {/* Sort bình luận */}
+        <TouchableOpacity>
+          <Text style={styles.text_sortComment}>
+            Phù hợp nhất <Icon name="chevron-down" size={13} />
+          </Text>
+        </TouchableOpacity>
+        {/* Comment */}
+        <View style={styles.comment}>
+          {DataComment.map((item, index) => {
+            if (item.parentId === null) {
+              // Bình luận cha
+              return (
+                <View style={styles.container_comment} key={index}>
+                  {/* Bình luận cha */}
+                  <View style={styles.container_comment_header}>
+                    <Image
+                      style={styles.avatar_comment}
+                      source={{uri: item.avatar}}
+                    />
+                    <View style={styles.container_comment_content}>
+                      <View style={styles.comment_content}>
+                        <Text style={styles.name_comment}>{item.name}</Text>
+                        <Text style={styles.content_comment}>
+                          {item.content}
+                        </Text>
+                      </View>
+                      <View style={styles.comment_time_like}>
+                        <Text style={styles.time_comment}>{item.time}</Text>
+                        <TouchableOpacity style={styles.like_like_comment}>
+                          <Text style={styles.like_like_comment}> Thích</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.like_like_comment}>
+                          <Text style={styles.like_like_comment}>
+                            {' '}
+                            Phản hồi
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* Bình luận con */}
+                  <View
+                    style={{
+                      borderLeftWidth: 2,
+                      borderColor: '#ccc',
+                      marginLeft: 18,
+                    }}>
+                    {DataComment.filter(
+                      subItem => subItem.parentId === item.id,
+                    ).map((subItem, subIndex) => (
+                      <View>
+                        <View
+                          style={[
+                            styles.container_comment_body,
+                            styles.childComment,
+                          ]}
+                          key={subIndex}>
+                          <Image
+                            style={[
+                              styles.avatar_comment,
+                              {width: 30, height: 30},
+                            ]}
+                            source={{uri: subItem.avatar}}
+                          />
+                          <View style={styles.container_comment_content}>
+                            <View style={styles.comment_content}>
+                              <Text style={styles.name_comment}>
+                                {subItem.name}
+                              </Text>
+                              <Text style={styles.content_comment}>
+                                {subItem.content}
+                              </Text>
+                            </View>
+                            <View style={styles.comment_time_like}>
+                              <Text style={styles.time_comment}>
+                                {subItem.time}
+                              </Text>
+                              <TouchableOpacity
+                                style={styles.like_like_comment}>
+                                <Text style={styles.like_like_comment}>
+                                  Thích
+                                </Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                style={styles.like_like_comment}>
+                                <Text style={styles.like_like_comment}>
+                                  Phản hồi
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </View>
+                        {/* reply comment */}
+                        {/* gồm avatar và input */}
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              );
+            }
+            return null;
+          })}
+        </View>
+      </ScrollView>
+      {/* Reply Comment */}
+      <View style={styles.container_reply_comment}>
+        <TouchableOpacity>
+          <Image
+            style={styles.icon_comment}
+            source={require('../../../../assets/icon_camera_comment.png')}
+          />
+        </TouchableOpacity>
+        <TextInput
+          style={styles.input_comment}
+          placeholder={`Bình luận dưới tên ${postId.name}`}
+        />
       </View>
     </View>
   );

@@ -126,7 +126,7 @@ const HomeScreen = props => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `https://sweets-bf2818fd7e8e.herokuapp.com/post/like/${postId}/${userId}`,
+        `http://192.168.1.10:3001/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -175,7 +175,7 @@ const HomeScreen = props => {
     const currentTime = moment();
     const postTime = moment(createdAt);
     const diffInSeconds = currentTime.diff(postTime, 'seconds');
-  
+
     if (diffInSeconds < 1) {
       return 'Vừa đăng';
     } else if (diffInSeconds < 60) {
