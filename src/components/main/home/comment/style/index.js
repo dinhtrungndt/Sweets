@@ -225,7 +225,7 @@ export default StyleSheet.create({
     marginTop: 10,
     padding: 10,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: '#d9d9d9',
   },
   icon_comment: {
     width: 20,
