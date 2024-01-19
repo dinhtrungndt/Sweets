@@ -167,3 +167,66 @@ export const options = ({route}) => ({
     elevation: 20,
   },
 });
+
+// topTab
+export const optionsTabsTop = ({route}) => ({
+  tabBarLabel: ({focused, color, size}) => {
+    if (route.name === 'HomeFriendTab') {
+      return focused ? (
+        <Text
+          style={{
+            color: '#000',
+            textAlign: 'center',
+          }}>
+          Bạn bè
+        </Text>
+      ) : (
+        <Text
+          style={{
+            textAlign: 'center',
+          }}>
+          Bạn bè
+        </Text>
+      );
+    } else if (route.name === 'HomeWorldTab') {
+      return focused ? (
+        <Text
+          style={{
+            color: '#000',
+            textAlign: 'center',
+          }}>
+          Thế giới
+        </Text>
+      ) : (
+        <Text
+          style={{
+            textAlign: 'center',
+          }}>
+          Thế giới
+        </Text>
+      );
+    }
+  },
+  tabBarIndicatorStyle: {
+    backgroundColor: '#616161',
+    height: 3,
+    width: '20%',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#616161',
+    alignSelf: 'center',
+    position: 'absolute',
+    left: '15%',
+    top: '-8%',
+  },
+  tabBarStyle: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 20,
+    width: '50%',
+    height: 45,
+    padding: 0,
+    alignSelf: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+});

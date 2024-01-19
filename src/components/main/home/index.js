@@ -25,6 +25,7 @@ import {UserContext} from '../../../contexts/user/userContext';
 import AddModal from './dropDown/addModal';
 import moment from 'moment';
 import HeaderScreens from '../layout/header';
+import HomeTabsTop from './tabTop';
 
 const HomeScreen = props => {
   const {navigation} = props;
@@ -126,7 +127,7 @@ const HomeScreen = props => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `http://192.168.2.209:3001/post/like/${postId}/${userId}`,
+        `http://192.168.1.10:3001/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -205,6 +206,7 @@ const HomeScreen = props => {
       <View style={styles.T}>
         {/* Header */}
         <HeaderScreens {...props} />
+        <HomeTabsTop />
         {/* Body */}
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
           <View style={styles.avatar_content_image}>

@@ -62,7 +62,7 @@ const CommentScreen = ({navigation, route}) => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `http://192.168.2.209:3001/post/like/${postId}/${userId}`,
+        `http://192.168.1.10:3001/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
