@@ -103,7 +103,7 @@ const LoginScreens = props => {
       <View style={myStyles.dont}>
         <Text>Or</Text>
         <Pressable
-          onPress={() => navigation.navigate('SignUpBg')}
+          onPress={() => navigation.navigate('SignUpScreens')}
           style={myStyles.btnSign}>
           <Text style={myStyles.textbtn}>Create new accout</Text>
         </Pressable>

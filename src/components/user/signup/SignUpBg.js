@@ -81,37 +81,6 @@ const SignUpBg = props => {
       <View style={myStyles.pass}>
         <Text style={myStyles.usernameLayble}>Birthday</Text>
         <View style={myStyles.container}>
-          {/* <TextInput
-            value={ngaysinh}
-            onChangeText={setNgaysinh}
-            onValueChange={handleDateChange}
-            placeholder="YYYY-MM-DD"
-            style={myStyles.usernameInput}>
-          </TextInput> */}
-          {/* <DatePicker
-            style={myStyles.datePicker}
-            value={ngaysinh}
-            mode="date"
-            placeholder=""
-            format="YYYY-MM-DD"
-            minDate="1945-01-01"
-            maxDate="2024-01-01"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                left: 0,
-                top: 4,
-                marginLeft: 0,
-              },
-              dateInput: {
-                borderWidth: 0,
-                marginLeft: 36,
-              },
-            }}
-            onChange={handleDateChange}
-          /> */}
           <Button title="Open" onPress={() => setOpen(true)} />
           <DatePicker
             modal

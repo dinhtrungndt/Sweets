@@ -28,6 +28,17 @@ export const UserProvider = props => {
     checkLogin();
   }, []);
 
+  const onLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('userEmail');
+      await AsyncStorage.removeItem('userPassword');
+      setUser(null);
+    } catch (error) {
+      console.log('Lỗi khi đăng xuất:', error);
+    } 
+    
+  }
+
   const onLogin = async (email, password) => {
     try {
       const result = await login(email, password);
@@ -44,7 +55,7 @@ export const UserProvider = props => {
   };
 
   return (
-    <UserContext.Provider value={{user, setUser, onLogin}}>
+    <UserContext.Provider value={{user, setUser, onLogin, onLogout}}>
       {children}
     </UserContext.Provider>
   );

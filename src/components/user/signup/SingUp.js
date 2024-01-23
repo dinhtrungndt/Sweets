@@ -45,10 +45,10 @@ const SignUpScreens = props => {
 
     // gọi api đăng ký
     const result = await register(email, password);
-    console.log('aaaaa', result);
+    console.log('Đăng ký 666', result);
     if (result.status === 1) {
       Alert.alert('Register success!');
-      navigation.navigate('SignUpBg');
+      navigation.goback();
     } else {
       Alert.alert('Register failer!:');
     }
