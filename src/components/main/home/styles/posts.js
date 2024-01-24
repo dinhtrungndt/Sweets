@@ -1,0 +1,162 @@
+/* eslint-disable prettier/prettier */
+const {StyleSheet} = require('react-native');
+
+export const styles = StyleSheet.create({
+  T: {
+    height: '100%',
+  },
+  line: {
+    width: '100%',
+    height: 1,
+    backgroundColor: '#f2f2f2',
+  },
+  container_avatar_name: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: 16,
+    marginBottom: 10,
+  },
+  avatar_name: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 50,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+    marginLeft: 10,
+  },
+  container_object: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  time: {
+    fontSize: 12,
+    color: '#666666',
+    marginLeft: 10,
+  },
+  icon_object: {
+    width: 14,
+    height: 14,
+    marginLeft: 5,
+  },
+  content: {
+    fontSize: 14,
+    color: '#000',
+    margin: 16,
+    marginTop: 0,
+    marginBottom: 10,
+  },
+  showMore: {
+    margin: 16,
+    marginTop: 0,
+    marginBottom: 10,
+  },
+  posts: {
+    width: '100%',
+    height: 350,
+  },
+  like_comment_share: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  byLike: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatarByLike: {
+    width: 20,
+    height: 20,
+    borderRadius: 50,
+  },
+  nameByLike: {
+    fontSize: 12,
+    color: '#666666',
+    marginLeft: 5,
+  },
+  container_feeling_commnet_share: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: 16,
+    marginTop: 14,
+    marginBottom: 10,
+  },
+  container_feeling: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 20,
+  },
+  feeling: {
+    width: 20,
+    height: 20,
+    backgroundColor: '#22b6c0',
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon_Like_Feeling: {
+    width: 12,
+    height: 12,
+  },
+  text_feeling: {
+    fontSize: 14,
+    color: '#666666',
+    marginLeft: 5,
+  },
+  comment_share: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  container_comment: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  comment: {
+    width: 20,
+    height: 20,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  container_share: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 20,
+  },
+  linePosts: {
+    width: '100%',
+    height: 1,
+    backgroundColor: '#dedede',
+  },
+  container_like_comment_share: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: 18,
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  like_post: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  text_like_post: {
+    fontSize: 14,
+    color: '#666666',
+    marginLeft: 5,
+    fontWeight: '500',
+  },
+  linePostsEnd: {
+    width: '100%',
+    height: 5,
+    backgroundColor: '#dedede',
+  },
+});
