@@ -4,66 +4,21 @@ import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 // Screens
-import QuanTamScreen from '../quantam';
-import OtherScreen from '../other';
-import {NavigationContainer} from '@react-navigation/native';
-import CareScreen from '../care';
+import {HomeFriendTab} from './homeFriend';
+import {HomeWorldTab} from './homeWorld';
+
+// custom
+import {optionsTabsTop} from '../../../../navigations/customs/tabNavigator';
 
 const TabTop = createMaterialTopTabNavigator();
-
-const options = ({route}) => ({
-  tabBarLabel: ({focused, color, size}) => {
-    if (route.name === 'QuanTamScreen') {
-      return focused ? (
-        <Text
-          style={{
-            color: '#000',
-            textAlign: 'center',
-          }}>
-          Quan tâm
-        </Text>
-      ) : (
-        <Text
-          style={{
-            textAlign: 'center',
-          }}>
-          Quan tâm
-        </Text>
-      );
-    } else if (route.name === 'OtherScreen') {
-      return focused ? (
-        <Text
-          style={{
-            color: '#000',
-            textAlign: 'center',
-          }}>
-          Khác
-        </Text>
-      ) : (
-        <Text
-          style={{
-            textAlign: 'center',
-          }}>
-          Khác
-        </Text>
-      );
-    }
-  },
-  tabBarIndicatorStyle: {
-    backgroundColor: '#000',
-    height: 3,
-  },
-});
 
 const HomeTabsTop = () => {
   return (
     <View style={styles.T}>
-      <NavigationContainer>
-        <TabTop.Navigator screenOptions={options}>
-          <TabTop.Screen name="CareScreen" component={CareScreen} />
-          <TabTop.Screen name="OtherScreen" component={OtherScreen} />
-        </TabTop.Navigator>
-      </NavigationContainer>
+      <TabTop.Navigator screenOptions={optionsTabsTop}>
+        <TabTop.Screen name="HomeFriendTab" component={HomeFriendTab} />
+        <TabTop.Screen name="HomeWorldTab" component={HomeWorldTab} />
+      </TabTop.Navigator>
     </View>
   );
 };

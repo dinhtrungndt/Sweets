@@ -37,6 +37,22 @@ export const options = ({route}) => ({
           />
         );
       }
+    } else if (route.name === 'ReelsScreen') {
+      if (focused) {
+        return (
+          <Image
+            style={{width: 20, height: 20}}
+            source={require('../../assets/icon_reels_click.png')}
+          />
+        );
+      } else {
+        return (
+          <Image
+            style={{width: 20, height: 20}}
+            source={require('../../assets/icon_reels.png')}
+          />
+        );
+      }
     } else if (route.name === 'PhoneBookScreen') {
       if (focused) {
         return (
@@ -95,6 +111,17 @@ export const options = ({route}) => ({
       ) : (
         <Text> Trò chuyện </Text>
       );
+    } else if (route.name === 'ReelsScreen') {
+      return focused ? (
+        <Text
+          style={{
+            color: '#095fe5',
+          }}>
+          Reels
+        </Text>
+      ) : (
+        <Text> Reels </Text>
+      );
     } else if (route.name === 'PhoneBookScreen') {
       return focused ? (
         <Text
@@ -123,8 +150,10 @@ export const options = ({route}) => ({
     // borderTopLeftRadius: 20,
     // borderTopRightRadius: 20,
     bottom: 10,
-    width: '90%',
-    marginLeft: '5%',
+    width: '95%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
     borderRadius: 20,
     borderWidth: 2,
     borderColor: '#000',
@@ -136,5 +165,68 @@ export const options = ({route}) => ({
     shadowOpacity: 0.51,
     shadowRadius: 13.16,
     elevation: 20,
+  },
+});
+
+// topTab
+export const optionsTabsTop = ({route}) => ({
+  tabBarLabel: ({focused, color, size}) => {
+    if (route.name === 'HomeFriendTab') {
+      return focused ? (
+        <Text
+          style={{
+            color: '#000',
+            textAlign: 'center',
+          }}>
+          Bạn bè
+        </Text>
+      ) : (
+        <Text
+          style={{
+            textAlign: 'center',
+          }}>
+          Bạn bè
+        </Text>
+      );
+    } else if (route.name === 'HomeWorldTab') {
+      return focused ? (
+        <Text
+          style={{
+            color: '#000',
+            textAlign: 'center',
+          }}>
+          Thế giới
+        </Text>
+      ) : (
+        <Text
+          style={{
+            textAlign: 'center',
+          }}>
+          Thế giới
+        </Text>
+      );
+    }
+  },
+  tabBarIndicatorStyle: {
+    backgroundColor: '#616161',
+    height: 3,
+    width: '20%',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#616161',
+    alignSelf: 'center',
+    position: 'absolute',
+    left: '15%',
+    top: '-8%',
+  },
+  tabBarStyle: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 20,
+    width: '50%',
+    height: 45,
+    padding: 0,
+    alignSelf: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
   },
 });

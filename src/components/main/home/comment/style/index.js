@@ -5,140 +5,22 @@ export default StyleSheet.create({
   T: {
     width: '100%',
     height: '100%',
+    padding: 12,
   },
   lineHr: {
     width: '100%',
     height: 1,
     backgroundColor: '#e4e6eb',
   },
-  feelings: {
-    width: '100%',
-    height: 80,
-  },
-  avatar_content_image: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    paddingBottom: 0,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 50,
-  },
-  avatar_icon_image: {
-    width: 25,
-    height: 25,
-    marginTop: 5,
-  },
-  pick_feelings: {
-    flexDirection: 'row',
-    marginTop: 20,
-  },
-  boder_image: {
-    width: 90,
-    height: 30,
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
-    backgroundColor: '#EAEAEA',
-    flexDirection: 'row',
-  },
-  story: {
-    height: 200,
-    marginTop: 20,
-    marginLeft: 10,
-  },
-  storyItem: {
-    marginRight: 10,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 10,
-    position: 'relative',
-  },
-  storyAvatar: {
-    width: 35,
-    height: 35,
-    borderRadius: 50,
-    marginTop: 10,
-    marginLeft: 10,
-    zIndex: 2,
-    position: 'absolute',
-    top: 3,
-    left: 3,
-  },
-  storyImage: {
-    width: 130,
-    height: 200,
-    borderRadius: 10,
-    zIndex: 1,
-  },
-  storyName: {
-    fontSize: 16,
-    fontWeight: '500',
-    fontFamily: 'Roboto',
-    marginTop: 10,
-    color: 'white',
-    zIndex: 2,
-    position: 'absolute',
-    bottom: 8,
-    left: 10,
-  },
-  upStory_User: {
-    width: 130,
-    height: 200,
-    borderRadius: 10,
-    marginLeft: 20,
-    backgroundColor: '#EAEAEA',
-    marginTop: 20,
-    position: 'relative',
-    shadowColor: '#000',
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  avatar_upstory: {
-    width: 130,
-    height: 155,
-    borderRadius: 10,
-    zIndex: 1,
-  },
-  view_addStory: {
-    borderRadius: 50,
-    borderColor: '#fff',
-    backgroundColor: '#fff',
-    borderWidth: 2,
-    width: 35,
-    height: 35,
-    zIndex: 2,
-    bottom: 27,
-    left: 50,
-    position: 'absolute',
-  },
-  add_story: {
-    width: 30,
-    height: 30,
-    borderRadius: 50,
-    zIndex: 4,
-  },
-  text_addStory: {
-    fontSize: 16,
-    fontWeight: '500',
-    fontFamily: 'Roboto',
-    marginTop: 10,
-    color: 'black',
-    zIndex: 2,
-    position: 'absolute',
-    bottom: 8,
-    left: 40,
-  },
-  baiViet: {
-    margin: 16,
-    marginTop: 10,
+  icon_back: {
+    width: 24,
+    height: 24,
   },
   baiVietHeader: {
+    justifyContent: 'space-between',
     flexDirection: 'row',
     padding: 10,
+    paddingLeft: 0,
     alignItems: 'center',
   },
   baiVietAvatar: {
@@ -165,7 +47,6 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   baiVietHeaderRight: {
-    marginLeft: 20,
     flexDirection: 'row',
   },
   baiVietHeaderRightIcon: {
@@ -247,5 +128,116 @@ export default StyleSheet.create({
   },
   noStatus: {
     padding: 10,
+  },
+  // body
+  // people who like
+  container_peopleLike: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
+  },
+  icon_like: {
+    width: 20,
+    height: 20,
+  },
+  text_peopleLike: {
+    fontSize: 14,
+    fontFamily: 'Roboto',
+    marginLeft: 10,
+    color: '#000',
+    fontWeight: '500',
+  },
+
+  // Sort comment
+  text_sortComment: {
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    color: '#000',
+    paddingLeft: 10,
+    paddingTop: 8,
+    fontWeight: '700',
+  },
+
+  // comment
+  comment: {
+    paddingTop: 10,
+  },
+  container_comment: {
+    padding: 10,
+  },
+  container_comment_header: {
+    flexDirection: 'row',
+  },
+  avatar_comment: {
+    width: 45,
+    height: 45,
+    borderRadius: 50,
+  },
+  container_comment_content: {
+    marginLeft: 10,
+    width: '80%',
+  },
+  comment_content: {
+    backgroundColor: '#e4e6eb',
+    borderRadius: 20,
+    padding: 10,
+  },
+  name_comment: {
+    fontSize: 16,
+    fontFamily: 'Roboto',
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  content_comment: {
+    fontSize: 14,
+    fontFamily: 'Roboto',
+    color: '#000',
+    fontWeight: '300',
+  },
+  comment_time_like: {
+    flexDirection: 'row',
+    paddingTop: 10,
+  },
+  time_comment: {
+    fontSize: 12,
+    fontFamily: 'Roboto',
+    color: '#606770',
+    fontWeight: '300',
+    paddingLeft: 10,
+  },
+  like_like_comment: {
+    fontSize: 13,
+    fontFamily: 'Roboto',
+    color: '#606770',
+    fontWeight: 'bold',
+    paddingLeft: 10,
+  },
+  container_comment_body: {
+    marginTop: 10,
+    flexDirection: 'row',
+  },
+  childComment: {
+    marginLeft: 20,
+  },
+  container_reply_comment: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#d9d9d9',
+  },
+  icon_comment: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  input_comment: {
+    width: '80%',
+    height: 40,
+    marginLeft: 10,
+    paddingLeft: 15,
+    borderRadius: 20,
+    backgroundColor: '#e4e6eb',
   },
 });

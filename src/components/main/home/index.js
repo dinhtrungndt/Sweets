@@ -25,6 +25,7 @@ import {UserContext} from '../../../contexts/user/userContext';
 import AddModal from './dropDown/addModal';
 import moment from 'moment';
 import HeaderScreens from '../layout/header';
+import HomeTabsTop from './tabTop';
 
 const HomeScreen = props => {
   const {navigation} = props;
@@ -126,7 +127,7 @@ const HomeScreen = props => {
     try {
       const userId = user.id;
       const response = await fetch(
-        `http://192.168.2.209:3001/post/like/${postId}/${userId}`,
+        `http://192.168.1.10:3001/post/like/${postId}/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -142,18 +143,19 @@ const HomeScreen = props => {
       if (data.status === 1) {
         const updatedPosts = posts.map(post => {
           if (post._id === postId) {
-            // console.log('>>>>>>>>>>>>>>>>>> 81', post.isLiked);
+            const likedByCurrentUser = data.post.likedBy.includes(userId);
+            // console.log('>>>>>>>>>>>>>>>>>> 14555555', post.isLiked);
+            // console.log('>>>>>>>>>>>>>>>>>> 14555555', post);
             return {
               ...post,
-              isLiked: !post.isLiked,
-              likedBy: post.isLiked
-                ? post.likedBy.filter(id => id !== userId)
-                : [...post.likedBy, userId],
+              isLiked: likedByCurrentUser,
+              likedBy: data.post.likedBy,
             };
           }
           return post;
         });
 
+        // console.log('>>>>>>>>>>>>>>>>>> 81', data.post?.isLiked);
         // console.log('>>>>>>>>>>>>>>>>>> 81', data.isLiked);
 
         // console.log(
@@ -161,7 +163,7 @@ const HomeScreen = props => {
         //   updatedPosts,
         // );
 
-        setPosts([...updatedPosts]);
+        setPosts(updatedPosts);
       } else {
         console.error('Lỗi khi thay đổi trạng thái like:', data.message);
       }
@@ -173,20 +175,22 @@ const HomeScreen = props => {
   const formatTime = createdAt => {
     const currentTime = moment();
     const postTime = moment(createdAt);
-    const diffInMinutes = currentTime.diff(postTime, 'minutes');
+    const diffInSeconds = currentTime.diff(postTime, 'seconds');
 
-    if (diffInMinutes < 1) {
+    if (diffInSeconds < 1) {
       return 'Vừa đăng';
-    } else if (diffInMinutes < 60) {
-      return `${diffInMinutes} phút trước`;
-    } else if (diffInMinutes < 24 * 60) {
-      return `${Math.floor(diffInMinutes / 60)} giờ trước`;
-    } else if (diffInMinutes < 24 * 60 * 30) {
-      return `${Math.floor(diffInMinutes / (60 * 24))} ngày trước`;
-    } else if (diffInMinutes < 24 * 60 * 30 * 12) {
-      return `${Math.floor(diffInMinutes / (60 * 24 * 30))} tháng trước`;
+    } else if (diffInSeconds < 60) {
+      return `${diffInSeconds} giây trước`;
+    } else if (diffInSeconds < 3600) {
+      return `${Math.floor(diffInSeconds / 60)} phút trước`;
+    } else if (diffInSeconds < 24 * 3600) {
+      return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
+    } else if (diffInSeconds < 30 * 24 * 3600) {
+      return `${Math.floor(diffInSeconds / (24 * 3600))} ngày trước`;
+    } else if (diffInSeconds < 12 * 30 * 24 * 3600) {
+      return `${Math.floor(diffInSeconds / (30 * 24 * 3600))} tháng trước`;
     } else {
-      return `${Math.floor(diffInMinutes / (60 * 24 * 30 * 12))} năm trước`;
+      return `${Math.floor(diffInSeconds / (12 * 30 * 24 * 3600))} năm trước`;
     }
   };
 
@@ -202,6 +206,7 @@ const HomeScreen = props => {
       <View style={styles.T}>
         {/* Header */}
         <HeaderScreens {...props} />
+        <HomeTabsTop />
         {/* Body */}
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
           <View style={styles.avatar_content_image}>
@@ -384,12 +389,12 @@ const HomeScreen = props => {
                     <View style={{height: 0}} />
                   )}
 
-                  <View style={styles.baiVietLikeComment}>
-                    <View style={styles.baiVietLikeCommentLeft}>
+                  <View style={styles.baiVietLikeCommentShare}>
+                    <View style={styles.baiVietLike}>
                       <TouchableOpacity
                         onPress={() => handleLike(item._id)}
                         style={[
-                          styles.baiVietLikeCommentLeftIcon,
+                          styles.baiVietLikeIcon,
                           {
                             flexDirection: 'row',
                             paddingLeft: 0,
@@ -397,30 +402,43 @@ const HomeScreen = props => {
                         ]}>
                         {item.isLiked ? (
                           <Image
-                            style={styles.baiVietLikeCommentLeftIconImage}
+                            style={styles.baiVietLikeIcon}
                             source={require('../../../assets/icon_like_click.png')}
                           />
                         ) : (
                           <Image
-                            style={styles.baiVietLikeCommentLeftIconImage}
+                            style={styles.baiVietLikeIcon}
                             source={require('../../../assets/icon_like.png')}
                           />
                         )}
-                        <Text style={styles.baiVietLikeCommentRightText}>
+                        {/* {console.log(
+                          '------ >>>>>>>>>>>>>>>>>> 4111111',
+                          item.isLiked,
+                        )} */}
+                        <Text style={styles.baiVietLikeText}>
                           {item.likedBy.length}
                         </Text>
                       </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.baiVietLikeCommentLeftIcon}>
+                    <TouchableOpacity
+                      style={styles.baiVietComments}
+                      onPress={() =>
+                        navigation.navigate('CommentScreen', {postId: item})
+                      }>
                       <Image
-                        style={styles.baiVietLikeCommentRightIconImage}
+                        style={styles.baiVietCommentsIcon}
                         source={require('../../../assets/icon_comment.png')}
                       />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.baiVietLikeCommentRight}>
-                      <Text style={styles.baiVietLikeCommentRightText}>
+                      <Text style={styles.baiVietCommentsText}>
                         {item.comment} bình luận
                       </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.baiVietShare}>
+                      <Image
+                        style={styles.baiVietShareIcon}
+                        source={require('../../../assets/icon_share.png')}
+                      />
+                      <Text style={styles.baiVietShareText}>Share</Text>
                     </TouchableOpacity>
                   </View>
                   <Text style={[styles.lineHr, {marginTop: 10, height: 5}]} />

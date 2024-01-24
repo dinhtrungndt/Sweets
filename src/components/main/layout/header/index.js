@@ -41,13 +41,11 @@ const HeaderScreens = props => {
             style={[styles.headerIconContainer, {marginLeft: 5}]}>
             <Image
               style={styles.headerIcon}
-              source={require('../../../../assets/icon_chat.png')}
+              source={require('../../../../assets/icon_notifi.png')}
             />
           </TouchableOpacity>
         </View>
       </View>
-      {/* đường kẻ ngang*/}
-      <Text style={styles.lineHr} />
       {/* Modal */}
       <Modal
         animationType="fade"
@@ -92,10 +90,5 @@ const styles = StyleSheet.create({
     height: 25,
     borderRadius: 20,
     resizeMode: 'cover',
-  },
-  lineHr: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#e4e6eb',
   },
 });
