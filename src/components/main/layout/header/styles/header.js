@@ -16,13 +16,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
   },
-  frameLogo: {
-    borderWidth: 1,
-    borderColor: '#000',
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   logoHeader: {
     width: 100,
     height: 23,

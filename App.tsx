@@ -5,7 +5,8 @@ import React from 'react';
 // import {UserProvider} from './src/contexts/user/userContext';
 // import {HomeProvider} from './src/contexts/home/homeContext';
 // import AppNavigations from './src/navigations/AppNavigations';
-import HomeScreen from './src/components/main/home';
+import HomeNavigation from './src/navigations/stacksNavigations/homeNavigation';
+import {NavigationContainer} from '@react-navigation/native';
 
 const App = () => {
   return (
@@ -16,7 +17,9 @@ const App = () => {
         </HomeProvider>
       </UserProvider>
       <Toast ref={ref => Toast.setRef(ref)} /> */}
-      <HomeScreen />
+      <NavigationContainer>
+        <HomeNavigation />
+      </NavigationContainer>
     </SafeAreaView>
   );
 };

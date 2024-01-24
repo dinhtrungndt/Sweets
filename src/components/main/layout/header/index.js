@@ -13,12 +13,9 @@ const HeaderScreen = () => {
     <View style={styles.T}>
       {/* header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.frameLogo}>
-          <Ionicons name="add-outline" size={20} color="#000" />
-        </TouchableOpacity>
         <Image
           style={styles.logoHeader}
-          source={require('../../../../assets/sweets_text.png')}
+          source={require('../../../../assets/sweets_ngnag.png')}
         />
         <View style={styles.towEnd_Noti_Search}>
           <TouchableOpacity style={styles.container_search}>

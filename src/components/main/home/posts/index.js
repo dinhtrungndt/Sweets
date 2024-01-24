@@ -105,11 +105,11 @@ const PostsScreen = () => {
                 </TouchableOpacity>
               )}
             </View>
-
-            <Image
-              style={styles.posts}
-              source={require('../../../../assets/posts.png')}
-            />
+            {item.image ? (
+              <Image source={item.image} style={styles.posts} />
+            ) : (
+              <View style={{height: 0}} />
+            )}
             {/* feeling */}
             <View style={styles.container_feeling_commnet_share}>
               {/* feeling */}
