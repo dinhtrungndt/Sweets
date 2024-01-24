@@ -8,8 +8,9 @@ import {
   View,
   Modal,
   FlatList,
+  Dimensions,
 } from 'react-native';
-import React, {useState, useEffect, useContext, useCallback} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {styles} from '../style/upStatusCss';
 
 // Library
@@ -21,7 +22,6 @@ import {
   uploadImageStatus,
   uploadPost,
 } from '../../../../../services/home/homeService';
-import {UserContext} from '../../../../../ctest.pngontexts/user/userContext';
 import Toast from 'react-native-toast-message';
 
 const UpStatus = ({navigation, route}) => {
@@ -34,6 +34,7 @@ const UpStatus = ({navigation, route}) => {
   const [image, setImage] = useState([]);
   const [imagePath, setImagePath] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const numColumns = 4;
 
   const takePhoto = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
@@ -48,7 +49,6 @@ const UpStatus = ({navigation, route}) => {
       setImage(selectedImages);
       const formData = new FormData();
 
-      // Append all selected images to the formData
       selectedImages.forEach((image, index) => {
         formData.append('imageStatus', image);
       });
@@ -56,7 +56,7 @@ const UpStatus = ({navigation, route}) => {
       const data = await uploadImageStatus(formData);
       // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
       setImagePath(data.urls);
-      console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
+      // console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 
@@ -95,7 +95,6 @@ const UpStatus = ({navigation, route}) => {
 
   const handlePostUpload = () => {
     handleUploadPost();
-    // Kiểm tra có xem inputText có rỗng hay không
     if (!inputText) {
       return Toast.show({
         type: 'error',
@@ -156,7 +155,7 @@ const UpStatus = ({navigation, route}) => {
           }),
         );
       } else {
-        console.error('Lỗi 134 ->>>>>> status 1:', response.message);
+        // console.error('Lỗi 134 ->>>>>> status 155555:', response.message);
       }
     } catch (error) {
       console.error('Lỗi catch --->>>>> error :', error);
@@ -241,19 +240,19 @@ const UpStatus = ({navigation, route}) => {
           />
           {image.length > 0 && (
             <FlatList
+              style={{marginTop: 10}}
               data={image}
+              numColumns={numColumns}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item, index}) => (
                 <TouchableOpacity key={index}>
                   <Image
                     source={{uri: item.uri}}
                     style={{
-                      width: 100,
-                      height: 200,
-                      resizeMode: 'cover',
-                      justifyContent: 'center',
-                      alignSelf: 'center',
-                      marginTop: 20,
+                      width: Dimensions.get('window').width / numColumns - 10,
+                      height: Dimensions.get('window').width / numColumns - 10,
+                      margin: 5,
+                      borderRadius: 5,
                     }}
                   />
                 </TouchableOpacity>

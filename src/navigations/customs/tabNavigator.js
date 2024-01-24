@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {Text, Image} from 'react-native';
+import {Text, Image, View} from 'react-native';
 import React from 'react';
 
 // bottomTab
@@ -171,62 +171,46 @@ export const options = ({route}) => ({
 // topTab
 export const optionsTabsTop = ({route}) => ({
   tabBarLabel: ({focused, color, size}) => {
-    if (route.name === 'HomeFriendTab') {
-      return focused ? (
-        <Text
-          style={{
-            color: '#000',
-            textAlign: 'center',
-          }}>
-          Bạn bè
-        </Text>
-      ) : (
-        <Text
-          style={{
-            textAlign: 'center',
-          }}>
-          Bạn bè
-        </Text>
-      );
-    } else if (route.name === 'HomeWorldTab') {
-      return focused ? (
-        <Text
-          style={{
-            color: '#000',
-            textAlign: 'center',
-          }}>
-          Thế giới
-        </Text>
-      ) : (
-        <Text
-          style={{
-            textAlign: 'center',
-          }}>
-          Thế giới
-        </Text>
-      );
-    }
+    const label = route.name === 'HomeFriendTab' ? 'Bạn bè' : 'Thế giới';
+    const opacity = focused ? 1 : 0.5;
+
+    return (
+      <View style={{alignItems: 'center'}}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          {focused && (
+            <View
+              style={{
+                width: 2,
+                height: '80%',
+                backgroundColor: '#000',
+                marginHorizontal: 5,
+              }}
+            />
+          )}
+          <Text
+            style={{
+              color: focused ? '#000' : '#000',
+              textAlign: 'center',
+              opacity,
+            }}>
+            {label}
+          </Text>
+        </View>
+      </View>
+    );
   },
   tabBarIndicatorStyle: {
-    backgroundColor: '#616161',
-    height: 3,
-    width: '20%',
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#616161',
-    alignSelf: 'center',
-    position: 'absolute',
-    left: '15%',
-    top: '-8%',
+    height: 0,
   },
   tabBarStyle: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 20,
-    width: '50%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    width: '44%',
     height: 45,
     padding: 0,
     alignSelf: 'center',
-    borderWidth: 2,
     borderColor: '#fff',
+    marginBottom: 15,
+    borderWidth: 0,
   },
 });

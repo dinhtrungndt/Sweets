@@ -11,7 +11,7 @@ import {
 import React, {useContext, useEffect, useState} from 'react';
 
 // Data
-import {getLikedBy} from '../../../../services/home/homeService';
+import {getLikedBy, likePost} from '../../../../services/home/homeService';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import {UserContext} from '../../../../contexts/user/userContext';
 import {DataComment} from './data';
@@ -22,6 +22,7 @@ import styles from './style/index';
 // Library
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CommentScreen = ({navigation, route}) => {
   const {postId} = route.params;
@@ -61,45 +62,32 @@ const CommentScreen = ({navigation, route}) => {
   const handleLike = async postId => {
     try {
       const userId = user.id;
-      const response = await fetch(
-        `http://192.168.1.10:3001/post/like/${postId}/${userId}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({userId, postId}),
-        },
-      );
+      const response = await likePost(userId, postId);
+      const likedByCurrentUser = response.post.likedBy.includes(userId);
 
-      const data = await response.json();
-      // console.log('Response from API:', data);
+      // console.log('Response from likePost:', response);
 
-      if (data.status === 1) {
+      if (response.status === 1) {
         const updatedPosts = posts.map(post => {
           if (post._id === postId) {
-            // console.log('>>>>>>>>>>>>>>>>>> 6555555', post._id);
             return {
               ...post,
-              isLiked: !post.isLiked,
-              likedBy: post.isLiked
-                ? post.likedBy.filter(id => id !== userId)
-                : [...post.likedBy, userId],
+              isLiked: likedByCurrentUser,
+              likedBy: response.post.likedBy,
             };
           }
           return post;
         });
 
-        // console.log('>>>>>>>>>>>>>>>>>> 7777', data.post._id);
+        // console.log('Updated posts:', updatedPosts);
 
-        // console.log(
-        //   '------------>>>>>>>>>>>>>>>>>> 80000 Updated posts:',
-        //   updatedPosts,
-        // );
-
-        setPosts([...updatedPosts]);
+        setPosts(updatedPosts);
+        await AsyncStorage.setItem(
+          `isLiked_${postId}`,
+          likedByCurrentUser ? 'true' : 'false',
+        );
       } else {
-        console.error('Lỗi khi thay đổi trạng thái like:', data.message);
+        console.error('Lỗi khi thay đổi trạng thái like:', response.message);
       }
     } catch (error) {
       console.error('Lỗi khi gửi yêu cầu API:', error);
@@ -111,7 +99,7 @@ const CommentScreen = ({navigation, route}) => {
     try {
       const url = `/post/${postId}/get-liked-by`;
       const response = await AxiosInstance().get(url);
-      console.log('get post >>>>>>>>>>>>>>> 10333333  ', response);
+      // console.log('get post >>>>>>>>>>>>>>> 10333333  ', response);
       return response;
     } catch (error) {
       console.error(' >>>>>>>>> Lỗi get: 1033333 s', error);
@@ -141,13 +129,13 @@ const CommentScreen = ({navigation, route}) => {
             <View style={styles.baiVietHeaderLeft}>
               <Image
                 style={styles.baiVietAvatar}
-                source={{uri: postId.avatar}}
+                source={{uri: posts[0].avatar}}
               />
               <View style={styles.baiVietNameTime}>
-                <Text style={styles.baiVietName}>{postId.name}</Text>
+                <Text style={styles.baiVietName}>{posts[0].name}</Text>
                 <Text style={styles.baiVietTime}>
                   {/* Vừa đăng, giây, phút, giờ, ngày*/}
-                  {formatTime(postId.time)}
+                  {formatTime(posts[0].time)}
                 </Text>
               </View>
             </View>
@@ -167,14 +155,14 @@ const CommentScreen = ({navigation, route}) => {
         {/* content bài viết */}
         <View style={styles.baiVietContent}>
           {showMore ? (
-            <Text style={styles.baiVietContentText}>{postId.content}</Text>
+            <Text style={styles.baiVietContentText}>{posts[0].content}</Text>
           ) : (
             <Text style={styles.baiVietContentText}>
-              {postId.content.slice(0, 100)}
+              {posts[0].content.slice(0, 100)}
             </Text>
           )}
           {/* Toggle button */}
-          {postId.content.length > 100 && (
+          {posts[0].content.length > 100 && (
             <TouchableOpacity onPress={handleShowMore}>
               <Text style={{color: 'blue'}}>
                 {showMore ? 'Ẩn' : 'Xem thêm'}
@@ -182,24 +170,24 @@ const CommentScreen = ({navigation, route}) => {
             </TouchableOpacity>
           )}
         </View>
-        <View style={styles.baiViet} key={postId._id}>
-          {/* {console.log('>>>>>>>>>>>>>>>>>> 2511111', postId.name)} */}
+        <View style={styles.baiViet} key={posts[0]._id}>
+          {/* {console.log('>>>>>>>>>>>>>>>>>> 2511111', posts[0].name)} */}
 
-          {postId.image && postId.image.length > 0 ? (
+          {posts[0].image && posts[0].image.length > 0 ? (
             <View style={styles.baiVietImage}>
-              {postId.image.map((imageUrl, index) => (
+              {posts[0].image.map((imageUrl, index) => (
                 <Image
                   key={index}
                   style={[
                     styles.baiVietImageImage,
                     {
-                      width: 100 / postId.image.length + '%',
+                      width: 100 / posts[0].image.length + '%',
                     },
                   ]}
                   source={{uri: imageUrl}}
                 />
               ))}
-              {/* {console.log('>>>>>>>>>>>>>>>>>> 2511111', postId.image)} */}
+              {/* {console.log('>>>>>>>>>>>>>>>>>> 2511111', posts[0].image)} */}
             </View>
           ) : (
             <View style={{height: 0}} />
@@ -208,7 +196,7 @@ const CommentScreen = ({navigation, route}) => {
           <View style={styles.baiVietLikeCommentShare}>
             <View style={styles.baiVietLike}>
               <TouchableOpacity
-                onPress={() => handleLike(postId._id)}
+                onPress={() => handleLike(posts[0]._id)}
                 style={[
                   styles.baiVietLikeIcon,
                   {
@@ -216,7 +204,7 @@ const CommentScreen = ({navigation, route}) => {
                     paddingLeft: 0,
                   },
                 ]}>
-                {postId.isLiked ? (
+                {posts[0].isLiked ? (
                   <Image
                     style={styles.baiVietLikeIcon}
                     source={require('../../../../assets/icon_like_click.png')}
@@ -228,7 +216,7 @@ const CommentScreen = ({navigation, route}) => {
                   />
                 )}
                 <Text style={styles.baiVietLikeText}>
-                  {postId.likedBy.length}
+                  {posts[0].likedBy.length}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -238,7 +226,7 @@ const CommentScreen = ({navigation, route}) => {
                 source={require('../../../../assets/icon_comment.png')}
               />
               <Text style={styles.baiVietCommentsText}>
-                {postId.comment} bình luận
+                {posts[0].comment} bình luận
               </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.baiVietShare}>
@@ -253,7 +241,7 @@ const CommentScreen = ({navigation, route}) => {
         </View>
         {/* people who like */}
         <View style={styles.container_peopleLike}>
-          {postId.likedBy.length > 0 && (
+          {posts[0].likedBy.length > 0 && (
             <TouchableOpacity
               onPress={() => navigation.navigate('PeopleLike', {postId})}
               style={styles.container_peopleLike}>
@@ -262,17 +250,17 @@ const CommentScreen = ({navigation, route}) => {
                 source={require('../../../../assets/icon_like_click.png')}
               />
               <Text style={styles.text_peopleLike}>
-                {postId.likedBy.map((item, index) => {
+                {posts[0].likedBy.map((item, index) => {
                   if (item === user.id) {
                     return 'Bạn';
                   }
                 })}
-                {postId.likedBy.length > 1 && ' và'}
-                {postId.likedBy.length > 2
-                  ? postId.likedBy.length - 2 + 'và những người khác'
-                  : postId.likedBy.map((item, index) => {
+                {posts[0].likedBy.length > 1 && ' và'}
+                {posts[0].likedBy.length > 2
+                  ? posts[0].likedBy.length - 2 + 'và những người khác'
+                  : posts[0].likedBy.map((item, index) => {
                       if (item !== user.id) {
-                        return ' ' + postId.name;
+                        return ' ' + posts[0].name;
                       }
                     })}
               </Text>
@@ -388,7 +376,7 @@ const CommentScreen = ({navigation, route}) => {
         </TouchableOpacity>
         <TextInput
           style={styles.input_comment}
-          placeholder={`Bình luận dưới tên ${postId.name}`}
+          placeholder={`Bình luận dưới tên ${posts[0].name}`}
         />
       </View>
     </View>

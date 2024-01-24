@@ -6,14 +6,12 @@ export const LoadingScreen = () => {
   return (
     <View
       style={{
-        justifyContent: 'center',
         alignItems: 'center',
         height: '100%',
         width: '100%',
-        paddingTop: 50,
       }}>
       <Image
-        style={{width: 50, height: 50}}
+        style={{width: 40, height: 40}}
         source={require('../../assets/loading.gif')}
       />
     </View>
