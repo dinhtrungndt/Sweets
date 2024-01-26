@@ -5,10 +5,6 @@ import React, {useEffect, useState} from 'react';
 // styles
 import {styles} from '../styles/posts';
 
-// data
-import {postsData} from '../data/posts';
-import {getMedia, getPosts} from '../../../../services/home/homeService';
-
 // library
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,30 +13,12 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import moment from 'moment';
 import Video from 'react-native-video';
-// import Carousel, {Pagination} from 'react-native-snap-carousel';
+import Swiper from 'react-native-swiper';
 
-const PostsScreen = ({posts, media, share}) => {
+const PostsScreen = ({posts}) => {
   const [like, setLike] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
-
-  const renderMediaItem = ({item}) => {
-    if (item.type === 'image') {
-      return (
-        <Image key={item._id} source={{uri: item.url}} style={styles.posts} />
-      );
-    } else if (item.type === 'video') {
-      return (
-        <Video
-          key={item._id}
-          source={{uri: item.url}}
-          style={styles.posts}
-          controls
-        />
-      );
-    }
-    return null;
-  };
 
   const changeIdObject = idObject => {
     if (idObject.name === 'Công khai') {
@@ -75,7 +53,9 @@ const PostsScreen = ({posts, media, share}) => {
     }
   };
 
-  const handleLike = () => {};
+  const handleLike = () => {
+    setLike(!like);
+  };
 
   const handleShowMore = () => {
     setShowMore(!showMore);
@@ -100,6 +80,37 @@ const PostsScreen = ({posts, media, share}) => {
       return `${Math.floor(diffInSeconds / (30 * 24 * 3600))} tháng trước`;
     } else {
       return `${Math.floor(diffInSeconds / (12 * 30 * 24 * 3600))} năm trước`;
+    }
+  };
+
+  const getFeelingIcon = type => {
+    switch (type) {
+      case 'Like':
+        return require('../../../../assets/icon_like_feeling.png');
+      case 'Love':
+        return require('../../../../assets/love_25px.png');
+      case 'Haha':
+        return require('../../../../assets/haha_25px.png');
+      case 'Wow':
+        return require('../../../../assets/wow_25px.png');
+      default:
+        return require('../../../../assets/icon_like_feeling.png');
+    }
+  };
+
+  // danh sách backgroundColor của icon like
+  const backgroundColor = type => {
+    switch (type) {
+      case 'Like':
+        return '#22b6c0';
+      case 'Love':
+        return '#f02849';
+      case 'Haha':
+        return '#f7cb1c';
+      case 'Wow':
+        return '#f7cb1c';
+      default:
+        return '#22b6c0';
     }
   };
 
@@ -164,71 +175,103 @@ const PostsScreen = ({posts, media, share}) => {
             </View>
 
             {/* media */}
-            {/* <Carousel
-              data={media.filter(mediaItem => mediaItem.idPosts === item._id)}
-              renderItem={renderMediaItem}
-              sliderWidth={300}
-              itemWidth={300}
-              onSnapToItem={index => setActiveSlide(index)}
-            />
-            <Pagination
-              dotsLength={
-                media.filter(mediaItem => mediaItem.idPosts === item._id).length
-              }
-              activeDotIndex={activeSlide}
-              containerStyle={{marginTop: -15}}
-              dotStyle={{
-                width: 10,
-                height: 10,
-                borderRadius: 5,
-                marginHorizontal: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.92)',
-              }}
-              inactiveDotStyle={
-                // Optional: Customize inactive dot style
-                {
-                  // Define styles for inactive dots here
-                }
-              }
-              inactiveDotOpacity={0.4}
-              inactiveDotScale={0.6}
-            /> */}
-            {/* feeling */}
-            <View style={styles.container_feeling_commnet_share}>
-              {/* feeling */}
-              <TouchableOpacity style={styles.container_feeling}>
-                <View style={styles.feeling}>
-                  <Image
-                    style={styles.icon_Like_Feeling}
-                    source={require('../../../../assets/icon_like_feeling.png')}
-                  />
-                </View>
-                <Text style={styles.text_feeling}>211</Text>
-              </TouchableOpacity>
-              {/* comment vs share */}
-              <View style={styles.comment_share}>
-                {/* comment */}
-                <TouchableOpacity style={styles.container_comment}>
-                  <Text style={styles.text_comment}>211</Text>
-                  <Text style={[styles.text_comment, {paddingLeft: 5}]}>
-                    bình luận
-                  </Text>
-                </TouchableOpacity>
-                {/* share */}
-                {console.log('>>>>>>>>>>>>> 2199999 ----- ', share)}
-                {share && share.data ? (
-                  <TouchableOpacity style={styles.container_share}>
-                    <Text style={styles.text_share}>{share.data.length}</Text>
-                    <Text style={[styles.text_share, {paddingLeft: 5}]}>
-                      Chia sẻ
-                    </Text>
-                    {console.log('>>>>>>>> 180000', share)}
-                  </TouchableOpacity>
-                ) : (
-                  <View style={{height: 0}} />
-                )}
+            {item.media.length > 0 ? (
+              <View style={styles.container_media}>
+                <Swiper
+                  style={styles.swiper}
+                  showsButtons={false}
+                  loop={false}
+                  paginationStyle={{bottom: 10}}
+                  activeDotColor="#22b6c0"
+                  onIndexChanged={index => setActiveSlide(index)}>
+                  {item.media?.map((media, index) => (
+                    <View key={media._id}>
+                      {media.type === 'image' ? (
+                        <Image source={{uri: media.url}} style={styles.posts} />
+                      ) : (
+                        <Video
+                          source={{uri: media.url}}
+                          style={styles.posts}
+                          resizeMode="cover"
+                          paused={activeSlide !== index}
+                          repeat={true}
+                        />
+                      )}
+                      <View style={styles.imageCountContainer}>
+                        <Text style={styles.imageCountText}>
+                          {index + 1}/{item.media.length}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+                </Swiper>
               </View>
-            </View>
+            ) : (
+              <View style={{height: 0}} />
+            )}
+
+            {/* feeling */}
+            {item.reaction.length > 0 ||
+            item.comment.length > 0 ||
+            item.share.length > 0 ? (
+              <View style={styles.container_feeling_commnet_share}>
+                {/* feeling */}
+                <TouchableOpacity style={styles.container_feeling}>
+                  {item.reaction.map((reaction, index) => (
+                    <View
+                      key={reaction._id}
+                      style={[
+                        styles.feeling,
+                        {
+                          marginLeft: index === 0,
+                          backgroundColor: backgroundColor(reaction.type),
+                        },
+                      ]}>
+                      <Image
+                        style={styles.icon_Like_Feeling}
+                        source={getFeelingIcon(reaction.type)}
+                      />
+                    </View>
+                  ))}
+                  {item.reaction.length > 0 ? (
+                    <Text style={styles.text_feeling}>
+                      {item.reaction.length}
+                    </Text>
+                  ) : (
+                    <View style={{height: 0}} />
+                  )}
+                </TouchableOpacity>
+                {/* comment vs share */}
+                <View style={styles.comment_share}>
+                  {/* comment */}
+                  {item.comment.length > 0 ? (
+                    <TouchableOpacity style={styles.container_comment}>
+                      <Text style={styles.text_comment}>
+                        {item.comment.length}
+                      </Text>
+                      <Text style={[styles.text_comment, {paddingLeft: 5}]}>
+                        Bình luận
+                      </Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={{height: 0}} />
+                  )}
+                  {/* share */}
+                  {item.share.length > 0 ? (
+                    <TouchableOpacity style={styles.container_share}>
+                      <Text style={styles.text_share}>{item.share.length}</Text>
+                      <Text style={[styles.text_share, {paddingLeft: 5}]}>
+                        Chia sẻ
+                      </Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={{height: 0}} />
+                  )}
+                </View>
+              </View>
+            ) : (
+              <View style={{height: 0}} />
+            )}
 
             {/* line */}
             <Text style={styles.linePosts} />

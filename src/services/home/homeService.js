@@ -29,7 +29,7 @@ export const getMedia = async idPosts => {
 export const getShare = async idPosts => {
   try {
     const response = await AxiosInstance().get(`/posts/get-share/${idPosts}`);
-    console.log('get post >>>>>>>>>>>>>>> Service getShare 8 ', response);
+    // console.log('get post >>>>>>>>>>>>>>> Service getShare 8 ', response);
     return response;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi get: 35555555 getShares', error);
@@ -37,14 +37,44 @@ export const getShare = async idPosts => {
   }
 };
 
-// Lấy danh sách bài viết bạn bè theo id
-export const getPostById = async userId => {
+// Lấy cảm xúc theo idPosts
+export const getReaction = async idPosts => {
   try {
-    const response = await AxiosInstance().get(`/friend/${userId}`);
-    // console.log('get post >>>>>>>>>>>>>>> 8 ', response.Data);
-    return response.Data;
+    const response = await AxiosInstance().get(
+      `/reaction/getPostsId/${idPosts}`,
+    );
+    // console.log('get post >>>>>>>>>>>>>>> Service getReaction 8 ', response);
+    return response;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi get: 11 s', error);
+    console.error(' >>>>>>>>> Lỗi get: 4777777 getReaction', error);
+    throw error;
+  }
+};
+
+// Lấy danh sách comments theo idPosts
+export const getComments = async idPosts => {
+  try {
+    const response = await AxiosInstance().get(
+      `/comments/get-comment/${idPosts}`,
+    );
+    // console.log('get post >>>>>>>>>>>>>>> Service getComments 8 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi get: 5999999 getComments', error);
+    throw error;
+  }
+};
+
+// Like bài viết theo idUsers và idPosts
+export const likeByPost = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/reaction/add/${idUsers}/${idPosts}`,
+    );
+    // console.log('get post >>>>>>>>>>>>>>> Service likePost 8 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi get: 5999999 likePost', error);
     throw error;
   }
 };

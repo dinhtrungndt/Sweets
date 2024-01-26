@@ -96,6 +96,7 @@ export const styles = StyleSheet.create({
   feeling: {
     width: 20,
     height: 20,
+    position: 'relative',
     backgroundColor: '#22b6c0',
     borderRadius: 50,
     alignItems: 'center',
@@ -162,5 +163,22 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: 5,
     backgroundColor: '#dedede',
+  },
+  container_media: {},
+  swiper: {
+    height: 400,
+  },
+  imageCountContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+  },
+  imageCountText: {
+    color: '#FFF',
+    fontSize: 12,
   },
 });

@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable react-hooks/exhaustive-deps */
 
 import {RefreshControl, ScrollView, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -13,57 +12,67 @@ import StoryScreen from './story';
 import PostsScreen from './posts';
 
 // data
-import {getMedia, getPosts, getShare} from '../../../services/home/homeService';
+import {
+  getComments,
+  getMedia,
+  getPosts,
+  getReaction,
+  getShare,
+} from '../../../services/home/homeService';
 
 const HomeScreen = () => {
   const [posts, setPosts] = useState([]);
-  const [media, setMedia] = useState([]);
-  const [share, setShare] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const fetchData = async () => {
+  const onGetPosts = async () => {
     try {
-      const response = await getPosts();
-      const data = response;
-      const idPosts = posts.map(item => item._id);
-      setPosts(data);
-      // console.log('>>>>>>>>>>>>>>>>> 29999999 Posts Console', data);
+      const res = await getPosts();
+      const postsWithMedia = await Promise.all(
+        res.map(async post => {
+          const mediaResponse = await getMedia(post._id);
+          const media = mediaResponse;
 
-      const media = await getMedia(idPosts);
-      setMedia(media);
-      // console.log('>>>>>>>>>>>>>>>>> 344444444 Media Console', media);
+          const reactionResponse = await getReaction(post._id);
+          const reaction = reactionResponse;
 
-      const share = await getShare(idPosts);
-      setShare(share);
-      console.log('>>>>>>>>>>>>>>>>> 3888888 Share Console', share);
+          const commentResponse = await getComments(post._id);
+          const comment = commentResponse;
+
+          const shareResponse = await getShare(post._id);
+          const share = shareResponse;
+
+          return {...post, media, reaction, comment, share};
+        }),
+      );
+      setPosts(postsWithMedia);
     } catch (error) {
       console.error('Error fetching data:', error);
-    } finally {
-      setRefreshing(false);
     }
   };
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await fetchData();
+    await onGetPosts();
+    setRefreshing(false);
   }, []);
 
   useEffect(() => {
-    fetchData();
+    onGetPosts();
   }, []);
 
+  console.log('posts', posts);
+
   return (
-    <View style={styles.T}>
+    <ScrollView
+      style={styles.T}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <HeaderScreen />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <StoryScreen />
-        <PostsScreen posts={posts} media={media} share={share} />
-      </ScrollView>
-    </View>
+      <StoryScreen />
+      <PostsScreen posts={posts} />
+    </ScrollView>
   );
 };
 
