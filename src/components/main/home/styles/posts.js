@@ -131,6 +131,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 20,
   },
+  text_share: {
+    fontSize: 14,
+    color: '#666666',
+  },
   linePosts: {
     width: '100%',
     height: 1,

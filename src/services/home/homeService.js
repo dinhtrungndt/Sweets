@@ -4,11 +4,35 @@ import AxiosInstance from '../../helper/Axiosinstance';
 // lấy danh sách bài viết
 export const getPosts = async () => {
   try {
-    const response = await AxiosInstance().get('/post/get-all-post');
-    // console.log('get post >>>>>>>>>>>>>>> 8 ', response.posts);
-    return response.posts;
+    const response = await AxiosInstance().get('/posts/get-all-posts');
+    // console.log('get post >>>>>>>>>>>>>>> Service GetPosts 8 ', response);
+    return response;
   } catch (error) {
     console.error(' >>>>>>>>> Error fetching posts: 11 s', error);
+    throw error;
+  }
+};
+
+// Lấy danh sách media theo idPosts
+export const getMedia = async idPosts => {
+  try {
+    const response = await AxiosInstance().get(`/media/get-media/${idPosts}`);
+    // console.log('get post >>>>>>>>>>>>>>> Service getMedia 8 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi get: 2333333 getMedia', error);
+    throw error;
+  }
+};
+
+// Lấy số lượng share
+export const getShare = async idPosts => {
+  try {
+    const response = await AxiosInstance().get(`/posts/get-share/${idPosts}`);
+    console.log('get post >>>>>>>>>>>>>>> Service getShare 8 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi get: 35555555 getShares', error);
     throw error;
   }
 };
