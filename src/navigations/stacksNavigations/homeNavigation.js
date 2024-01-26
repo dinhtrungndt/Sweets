@@ -13,6 +13,7 @@ import AccountScreen from '../../components/main/account';
 import {HomeStackScreen} from './stacks/homeStack';
 import {ReelsScreen} from '../../components/main/reels';
 
+
 const Tab = createBottomTabNavigator();
 
 const HomeNavigation = () => {
