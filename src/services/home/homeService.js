@@ -49,3 +49,17 @@ export const uploadImageStatus = async form => {
   // console.log(">>>>>>>>>>>>>>>>>> 49" ,response);
   return response;
 };
+
+// Like bài viết theo id
+export const likePost = async (userId, postId) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/post/like/${postId}/${userId}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi like bài viết: 11 s', error.response);
+    throw error;
+  }
+};
