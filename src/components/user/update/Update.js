@@ -1,47 +1,33 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Text, ActivityIndicator,ToastAndroid } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CheckBox from '@react-native-community/checkbox';
 import { request, PERMISSIONS } from 'react-native-permissions';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { update } from '../../../services/user/userService';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 const Update = ({ navigation }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState('Ngày sinh');
   const [isMaleChecked, setMaleChecked] = useState(false);
   const [isFemaleChecked, setFemaleChecked] = useState(false);
   const [valuecheck, setValuecheck] = useState('');
-  const [imageSource, setImageSource] = useState(null);
+  const [imageSource0, setImageSource0] = useState(null);
   const [imageSource1, setImageSource1] = useState(null);
 
- const handleUpdate = async () => { 
-    const data = {
-      date,
-      valuecheck,
-      imageSource,
-      imageSource1,
-    };
-    const response = await update(data);
-    if (response.status == 1) {
-      navigation.navigate('Update');
-      ToastAndroid.show('Cập nhật thành công', ToastAndroid.SHORT);
-    } else {
-      ToastAndroid.show('Cập nhật thất bại', ToastAndroid.SHORT);
-    }
-  };
+  const [loading, setLoading] = useState(false);
 
 
 
-  const layanh = () => {
+  const layanh0 = () => {
     launchImageLibrary({ mediaType: 'photo' }, (response) => {
       if (response.didCancel) {
         return;
       } else if (response.error) {
         return;
       } else {
-        setImageSource(response.assets[0].uri);
+        setImageSource0(response.assets[0].uri);
       }
     });
   }
@@ -77,14 +63,110 @@ const Update = ({ navigation }) => {
     setMaleChecked(newMaleChecked);
     setFemaleChecked(false);
     setValuecheck(newMaleChecked ? 'Nam' : '');
-    console.log(newMaleChecked ? 'Nam' : '');
+
   };
+  const handleUpdateanhbia = async () => {
+    const id = await AsyncStorage.getItem('id');
+    console.log(id);
+    const data = new FormData();
+    setLoading(true);
+    let uploadSuccess = false; 
+
+    try {
+      if (valuecheck == '' || date == 'Ngày sinh') {
+        alert('Vui lòng nhập ngày sinh và giới tính là bắt buộc');
+        setLoading(false);
+        return;
+      } else if (imageSource0 === null && imageSource1 === null) {
+        data.append('_id', id);
+        data.append('ngaysinh', date);
+        data.append('gioitinh', valuecheck);
+        const response = await fetch('http://192.168.1.5:3001/users/update-profile', {
+          method: 'POST',
+          body: data,
+        });
+        const responseJson = await response.json();
+        console.log(responseJson);
+        uploadSuccess = true;
+      } else if (imageSource0 === null) {
+        data.append('avatar', {
+          name: 'image.jpg',
+          type: 'image/jpeg',
+          uri: Platform.OS === 'android' ? imageSource1 : imageSource1.replace('file://', 'null'),
+        });
+        data.append('_id', id);
+        data.append('ngaysinh', date);
+        data.append('gioitinh', valuecheck);
+        const response = await fetch('http://192.168.1.5:3001/users/update-profile', {
+          method: 'POST',
+          body: data,
+        });
+        const responseJson = await response.json();
+        console.log(responseJson);
+        console.log(response.status);
+        uploadSuccess = true;
+      } else if (imageSource1 === null) {
+        data.append('anhbia', {
+          name: 'image.jpg',
+          type: 'image/jpeg',
+          uri: Platform.OS === 'android' ? imageSource0 : imageSource0.replace('file://', 'null'),
+        });
+        data.append('_id', id);
+        data.append('ngaysinh', date);
+        data.append('gioitinh', valuecheck);
+        const response = await fetch('http://192.168.1.5:3001/users/update-profile', {
+          method: 'POST',
+          body: data,
+        });
+        const responseJson = await response.json();
+        console.log(responseJson);
+        response.status == 1;
+        setLoading(true);
+        uploadSuccess = true;
+      } else {
+        data.append('_id', id);
+        data.append('ngaysinh', date);
+        data.append('gioitinh', valuecheck);
+        data.append('anhbia', {
+          name: 'image.jpg',
+          type: 'image/jpeg',
+          uri: Platform.OS === 'android' ? imageSource0 : imageSource0.replace('file://', 'null'),
+        });
+        data.append('avatar', {
+          name: 'image.jpg',
+          type: 'image/jpeg',
+          uri: Platform.OS === 'android' ? imageSource1 : imageSource1.replace('file://', 'null'),
+        });
+        const response = await fetch('http://192.168.1.5:3001/users/update-profile', {
+          method: 'POST',
+          body: data,
+        });
+        const responseJson = await response.json();
+        console.log(responseJson);
+        uploadSuccess = true;
+      }
+
+      if (uploadSuccess) {
+        setLoading(false);
+        ToastAndroid.show('Cập nhật thành công', ToastAndroid.SHORT);
+        // chuyển sang màn hình mới
+      } else {
+
+        setLoading(false);
+        alert('Cập nhật thất bại. Vui lòng thử lại.');
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      alert('Đã xảy ra lỗi. Vui lòng thử lại.');
+    }
+  };
+
   const handleFemaleCheckboxChange = () => {
     const newFemaleChecked = !isFemaleChecked;
     setFemaleChecked(newFemaleChecked);
     setMaleChecked(false);
     setValuecheck(newFemaleChecked ? 'Nữ' : '');
-    console.log(newFemaleChecked ? 'Nữ' : '');
   };
 
   return (
@@ -96,17 +178,15 @@ const Update = ({ navigation }) => {
         <Text style={styles.txt}>Thông tin cá nhân</Text>
       </View>
       <View style={styles.viewbr}>
-        <TouchableOpacity style={styles.br} onPress={layanh}>
-          {imageSource === null ? <View style={styles.anhbia}>
+        <TouchableOpacity style={styles.br} onPress={layanh0}>
+          {imageSource0 === null ? <View style={styles.anhbia}>
             <Image style={styles.imgbr} source={require('../../../assets/bgrw.png')} />
             <Icon name="add-circle-outline" size={30} color="grey" style={styles.add} />
           </View> :
             <View style={styles.anhbia}>
-              <Image style={styles.imgbr} source={{ uri: imageSource }} />
+              <Image style={styles.imgbr} source={{ uri: imageSource0 }} />
             </View>
-
           }
-
         </TouchableOpacity>
         <TouchableOpacity onPress={layanh2}>
           {imageSource1 === null ?
@@ -145,8 +225,8 @@ const Update = ({ navigation }) => {
           <Text style={styles.cb1}>Nữ</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.button} >
-        <Text style={styles.txt3}>Save</Text>
+      <TouchableOpacity style={styles.button} onPress={handleUpdateanhbia} >
+        {loading ? <ActivityIndicator size="small" color="white" /> : <Text style={styles.txt3}>Cập nhật</Text>}
       </TouchableOpacity>
     </View>
   );

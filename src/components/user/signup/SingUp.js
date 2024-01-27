@@ -1,9 +1,57 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { register } from '../../../services/user/userService';
 
 const SingUpScreen = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [conformpassword, setConformpassword] = useState('');
+  const [gioitinh, setGioitinh] = useState('null');
+  const [ngaysinh, setNgaysinh] = useState('null');
+  const [token, setToken] = useState('null');
+  const [avatar, setAvatar] = useState('null');
+  const [anhbia, setAnhbia] = useState('null');
+
+  const handleRegister = async () => {
+    setLoading(true);
+    try {
+      const data = {
+        name,
+        email,
+        password,
+        gioitinh,
+        ngaysinh,
+        token,
+        avatar,
+        anhbia,
+      };
+      if (password != conformpassword) {
+        alert('Mật khẩu không khớp');
+        setLoading(false);
+        return;
+      }
+      const response = await register(data);
+      if (response.status == 1) {
+        setLoading(false);
+        alert('Đăng ký thành công');
+        //  navigation.navigate('Update');
+      }
+      if (response.status == 0) {
+        setLoading(false);
+        alert('Email đã tồn tại');
+      }
+    } catch (error) {
+      console.log('register: ', error);
+      setLoading(false);
+      return error;
+    }
+
+  }
+
   const handlelogin = () => {
     navigation.navigate('LoginScreen');
   };
@@ -27,13 +75,15 @@ const SingUpScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.viewinput}>
-        <TextInput style={styles.input} placeholder="Full Name" placeholderTextColor="grey" />
+        <TextInput value={name} onChangeText={setName} style={styles.input} placeholder="Full Name" placeholderTextColor="grey" />
       </View>
       <View style={styles.viewinput}>
-        <TextInput style={styles.input} placeholder="Enter Email" placeholderTextColor="grey" />
+        <TextInput value={email} onChangeText={setEmail} style={styles.input} placeholder="Enter Email" placeholderTextColor="grey" />
       </View>
       <View style={styles.viewinput}>
         <TextInput
+          value={password}
+          onChangeText={setPassword}
           style={styles.input}
           placeholder="Password"
           placeholderTextColor="grey"
@@ -50,8 +100,11 @@ const SingUpScreen = ({ navigation }) => {
       </View>
       <View style={styles.viewinput}>
         <TextInput
+
+          value={conformpassword}
+          onChangeText={setConformpassword}
           style={styles.input}
-          placeholder="Repeat Password"
+          placeholder="Confirm Password"
           placeholderTextColor="grey"
           secureTextEntry={!passwordVisible1}
         />
@@ -64,8 +117,10 @@ const SingUpScreen = ({ navigation }) => {
           />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.button} >
-        <Text style={styles.txt3}>Register</Text>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        {loading ? (
+
+          <ActivityIndicator size="small" color="white" />) : (<Text style={styles.txt3}>Register</Text>)}
       </TouchableOpacity>
       <View style={styles.acc}>
         <Text style={styles.txt1}>have an account? </Text>
@@ -83,7 +138,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   acc: {
-   
+
     top: '5%',
     width: '100%',
     height: 'auto',
