@@ -19,7 +19,7 @@ const LoginScreen = ({ navigation }) => {
     const response = await login(data);
     if (response.status == 1) {
       setLoading(false);
-      navigation.navigate('Home');
+      navigation.replace('Home');
       ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT);
       // lưu token và id vào storange
       // Xoá token cũ nếu tồn tại
