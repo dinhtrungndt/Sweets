@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text, ActivityIndicator, ToastAndroid } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { register } from '../../../services/user/userService';
-
+import styles from './Style';
 const SingUpScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
@@ -30,19 +30,19 @@ const SingUpScreen = ({ navigation }) => {
         anhbia,
       };
       if (password != conformpassword) {
-        alert('Mật khẩu không khớp');
+        ToastAndroid.show('Nhập lại mật khẩu không khớp', ToastAndroid.SHORT);
         setLoading(false);
         return;
       }
       const response = await register(data);
       if (response.status == 1) {
         setLoading(false);
-        alert('Đăng ký thành công');
-        //  navigation.navigate('Update');
+        ToastAndroid.show('Đăng ký thành công', ToastAndroid.SHORT);
+          navigation.navigate('LoginScreen');
       }
       if (response.status == 0) {
         setLoading(false);
-        alert('Email đã tồn tại');
+        ToastAndroid.show('Email đã tồn tại', ToastAndroid.SHORT);
       }
     } catch (error) {
       console.log('register: ', error);
@@ -132,104 +132,7 @@ const SingUpScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  register: {
-    color: '#d7bd1e',
-    fontSize: 17,
-  },
-  acc: {
 
-    top: '5%',
-    width: '100%',
-    height: 'auto',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  txt3: {
-    color: 'black',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  button: {
-    width: '80%',
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#3cc8bf',
-    borderRadius: 30,
-  },
-  forgot: {
-    width: '100%',
-    height: 'auto',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginLeft: '10%',
-  },
-  icon: {
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    height: 70,
-    paddingLeft: '5%',
-    paddingRight: '5%',
-    color: 'grey',
-    fontSize: 17,
-  },
-  viewinput: {
-    flexDirection: 'row',
-    width: '90%',
-    height: 70,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '5%',
-    borderWidth: 1.5,
-    borderColor: 'grey',
-    borderRadius: 25,
-  },
-  viewif: {
-    width: '100%',
-    height: '10%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: '5%',
-  },
-  txt1: {
-    color: 'white',
-    fontSize: 17,
-  },
-  txt2: {
-    color: '#0ad3c7',
-    fontSize: 17,
-  },
-  txt: {
-    color: 'white',
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  logo: {
-    width: '70%',
-    height: '90%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  viewlogo: {
-    width: '100%',
-    height: '10%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '-10%',
-  },
-  container: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
-  },
-});
 
 export default SingUpScreen;
 

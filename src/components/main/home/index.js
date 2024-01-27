@@ -1,16 +1,16 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import {RefreshControl, ScrollView, View} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import { RefreshControl, ScrollView, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
 import HeaderScreen from '../layout/header';
 
 // styles
-import {styles} from './styles/home';
+ import { styles } from './styles/home';
 
 // components
-import StoryScreen from './story';
-import PostsScreen from './posts';
+ import StoryScreen from './story';
+ import PostsScreen from './posts';
 
 // data
 import {
