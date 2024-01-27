@@ -78,7 +78,7 @@ const Update = ({ navigation }) => {
         data.append('_id', id);
         data.append('ngaysinh', date);
         data.append('gioitinh', valuecheck);
-        const response = await fetch('http://192.168.1.5:3001/users/update-profile', {
+        const response = await fetch('https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile', {
           method: 'POST',
           body: data,
         });
@@ -94,7 +94,7 @@ const Update = ({ navigation }) => {
         data.append('_id', id);
         data.append('ngaysinh', date);
         data.append('gioitinh', valuecheck);
-        const response = await fetch('http://192.168.1.5:3001/users/update-profile', {
+        const response = await fetch('https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile', {
           method: 'POST',
           body: data,
         });
@@ -111,7 +111,7 @@ const Update = ({ navigation }) => {
         data.append('_id', id);
         data.append('ngaysinh', date);
         data.append('gioitinh', valuecheck);
-        const response = await fetch('http://192.168.1.5:3001/users/update-profile', {
+        const response = await fetch('https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile', {
           method: 'POST',
           body: data,
         });
@@ -134,7 +134,7 @@ const Update = ({ navigation }) => {
           type: 'image/jpeg',
           uri: Platform.OS === 'android' ? imageSource1 : imageSource1.replace('file://', 'null'),
         });
-        const response = await fetch('http://192.168.1.5:3001/users/update-profile', {
+        const response = await fetch('https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile', {
           method: 'POST',
           body: data,
         });

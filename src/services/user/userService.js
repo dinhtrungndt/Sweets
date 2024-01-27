@@ -3,8 +3,6 @@ import AxiosInstance from '../../helper/Axiosinstance';
 
 export const register = async (name, email, password, gioitinh, ngaysinh, token, avatar, anhbia) => {
   try {
-
-
     const response = await AxiosInstance().post('/users/post-register', name,
       email,
       password,
