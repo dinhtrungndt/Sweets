@@ -200,8 +200,4 @@ export const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
-  background_bottomSheet: {
-    backgroundColor: '#fff',
-  },
-  content_container: {},
 });

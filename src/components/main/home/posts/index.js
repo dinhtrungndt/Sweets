@@ -260,7 +260,9 @@ const PostsScreen = ({posts, navigation}) => {
               <View style={styles.container_feeling_commnet_share}>
                 {/* feeling */}
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('CommentsScreen')}
+                  onPress={() =>
+                    navigation.navigate('CommentsScreen', {postId: item})
+                  }
                   style={styles.container_feeling}>
                   {item.reaction.map((reaction, index) => (
                     <View
@@ -291,7 +293,9 @@ const PostsScreen = ({posts, navigation}) => {
                   {/* comment */}
                   {item.comment.length > 0 ? (
                     <TouchableOpacity
-                      onPress={() => navigation.navigate('CommentsScreen')}
+                      onPress={() =>
+                        navigation.navigate('CommentsScreen', {postId: item})
+                      }
                       style={styles.container_comment}>
                       <Text style={styles.text_comment}>
                         {item.comment.length}
@@ -306,7 +310,9 @@ const PostsScreen = ({posts, navigation}) => {
                   {/* share */}
                   {item.share.length > 0 ? (
                     <TouchableOpacity
-                      onPress={() => navigation.navigate('CommentsScreen')}
+                      onPress={() =>
+                        navigation.navigate('CommentsScreen', {postId: item})
+                      }
                       style={styles.container_share}>
                       <Text style={styles.text_share}>{item.share.length}</Text>
                       <Text style={[styles.text_share, {paddingLeft: 5}]}>
