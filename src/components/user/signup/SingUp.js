@@ -1,9 +1,57 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text, ActivityIndicator, ToastAndroid } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { register } from '../../../services/user/userService';
+import styles from './Style';
 const SingUpScreen = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [conformpassword, setConformpassword] = useState('');
+  const [gioitinh, setGioitinh] = useState('null');
+  const [ngaysinh, setNgaysinh] = useState('null');
+  const [token, setToken] = useState('null');
+  const [avatar, setAvatar] = useState('null');
+  const [anhbia, setAnhbia] = useState('null');
+
+  const handleRegister = async () => {
+    setLoading(true);
+    try {
+      const data = {
+        name,
+        email,
+        password,
+        gioitinh,
+        ngaysinh,
+        token,
+        avatar,
+        anhbia,
+      };
+      if (password != conformpassword) {
+        ToastAndroid.show('Nhập lại mật khẩu không khớp', ToastAndroid.SHORT);
+        setLoading(false);
+        return;
+      }
+      const response = await register(data);
+      if (response.status == 1) {
+        setLoading(false);
+        ToastAndroid.show('Đăng ký thành công', ToastAndroid.SHORT);
+          navigation.navigate('LoginScreen');
+      }
+      if (response.status == 0) {
+        setLoading(false);
+        ToastAndroid.show('Email đã tồn tại', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.log('register: ', error);
+      setLoading(false);
+      return error;
+    }
+
+  }
+
   const handlelogin = () => {
     navigation.navigate('LoginScreen');
   };
@@ -27,13 +75,15 @@ const SingUpScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.viewinput}>
-        <TextInput style={styles.input} placeholder="Full Name" placeholderTextColor="grey" />
+        <TextInput value={name} onChangeText={setName} style={styles.input} placeholder="Full Name" placeholderTextColor="grey" />
       </View>
       <View style={styles.viewinput}>
-        <TextInput style={styles.input} placeholder="Enter Email" placeholderTextColor="grey" />
+        <TextInput value={email} onChangeText={setEmail} style={styles.input} placeholder="Enter Email" placeholderTextColor="grey" />
       </View>
       <View style={styles.viewinput}>
         <TextInput
+          value={password}
+          onChangeText={setPassword}
           style={styles.input}
           placeholder="Password"
           placeholderTextColor="grey"
@@ -50,8 +100,11 @@ const SingUpScreen = ({ navigation }) => {
       </View>
       <View style={styles.viewinput}>
         <TextInput
+
+          value={conformpassword}
+          onChangeText={setConformpassword}
           style={styles.input}
-          placeholder="Repeat Password"
+          placeholder="Confirm Password"
           placeholderTextColor="grey"
           secureTextEntry={!passwordVisible1}
         />
@@ -64,8 +117,10 @@ const SingUpScreen = ({ navigation }) => {
           />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.button} >
-        <Text style={styles.txt3}>Register</Text>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        {loading ? (
+
+          <ActivityIndicator size="small" color="white" />) : (<Text style={styles.txt3}>Register</Text>)}
       </TouchableOpacity>
       <View style={styles.acc}>
         <Text style={styles.txt1}>have an account? </Text>
@@ -77,104 +132,7 @@ const SingUpScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  register: {
-    color: '#d7bd1e',
-    fontSize: 17,
-  },
-  acc: {
-   
-    top: '5%',
-    width: '100%',
-    height: 'auto',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  txt3: {
-    color: 'black',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  button: {
-    width: '80%',
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#3cc8bf',
-    borderRadius: 30,
-  },
-  forgot: {
-    width: '100%',
-    height: 'auto',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    marginLeft: '10%',
-  },
-  icon: {
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    height: 70,
-    paddingLeft: '5%',
-    paddingRight: '5%',
-    color: 'grey',
-    fontSize: 17,
-  },
-  viewinput: {
-    flexDirection: 'row',
-    width: '90%',
-    height: 70,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '5%',
-    borderWidth: 1.5,
-    borderColor: 'grey',
-    borderRadius: 25,
-  },
-  viewif: {
-    width: '100%',
-    height: '10%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: '5%',
-  },
-  txt1: {
-    color: 'white',
-    fontSize: 17,
-  },
-  txt2: {
-    color: '#0ad3c7',
-    fontSize: 17,
-  },
-  txt: {
-    color: 'white',
-    fontSize: 25,
-    fontWeight: 'bold',
-  },
-  logo: {
-    width: '70%',
-    height: '90%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  viewlogo: {
-    width: '100%',
-    height: '10%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '-10%',
-  },
-  container: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
-  },
-});
+
 
 export default SingUpScreen;
 

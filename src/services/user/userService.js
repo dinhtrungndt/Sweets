@@ -1,17 +1,17 @@
 /* eslint-disable prettier/prettier */
 import AxiosInstance from '../../helper/Axiosinstance';
 
-export const register = async (name, ngaysinh, gioitinh, email, password) => {
+export const register = async (name, email, password, gioitinh, ngaysinh, token, avatar, anhbia) => {
   try {
-    const body = {
-      name,
-      ngaysinh,
-      gioitinh,
+    const response = await AxiosInstance().post('/users/post-register', name,
       email,
       password,
-    };
-    const response = await AxiosInstance().post('/user/post-register', body);
-    console.log('register r ', response);
+      gioitinh,
+      ngaysinh,
+      token,
+      avatar,
+      anhbia,);
+  
     return response;
   } catch (error) {
     console.log('register: ', error);
@@ -21,7 +21,7 @@ export const register = async (name, ngaysinh, gioitinh, email, password) => {
 
 export const login = async (email, password) => {
   try {
-    const response = await AxiosInstance().post('/user/post-login', email, password);
+    const response = await AxiosInstance().post('/users/post-login', email, password);
     return response;
   } catch (error) {
     console.log('register: ', error);
@@ -29,12 +29,4 @@ export const login = async (email, password) => {
   }
 };
 
-export const update = async (data) => {
-  try {
-    const response = await AxiosInstance().post('/user/post-update', data);
-    return response;
-  } catch (error) {
-    console.log('register: ', error);
-    return error;
-  }
-};
+

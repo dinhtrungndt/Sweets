@@ -11,7 +11,7 @@ export const UserProvider = props => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const checkLogin = async () => {
+    const checkLogin = async () => {z
       try {
         const userEmail = await AsyncStorage.getItem('userEmail');
         const userPassword = await AsyncStorage.getItem('userPassword');

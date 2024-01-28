@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native';
 import React,{useEffect} from 'react';
 import UserNavigation from './src/navigations/stacksNavigations/userNavigations';
 import SplashScreen from 'react-native-splash-screen';
+import HomeNavigation from './src/navigations/stacksNavigations/homeNavigation';
 
 
 const App = () => {
@@ -13,14 +14,6 @@ const App = () => {
 }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* <UserProvider>
-        <HomeProvider>
-          <AppNavigations />
-        </HomeProvider>
-      </UserProvider>
-      <Toast ref={ref => Toast.setRef(ref)} /> */}
-
-
       <UserNavigation />
     </SafeAreaView>
   );

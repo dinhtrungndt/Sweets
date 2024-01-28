@@ -1,7 +1,7 @@
 import { Text, View, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import HomeNavigation from '../../../navigations/stacksNavigations/homeNavigation';
 const BoardingScreens = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const checkToken = async () => {
@@ -11,10 +11,11 @@ const BoardingScreens = ({ navigation }) => {
       // Lấy giá trị token từ AsyncStorage
       const token = await AsyncStorage.getItem('token');
       const id = await AsyncStorage.getItem('id');
-      if (token == null) {
+      if (token === null) {
         setLoading(false);
       } else {
-        navigation.replace('Update');
+        navigation.replace('Home');
+        setLoading(false);
         return;
       }
     } catch (error) {
