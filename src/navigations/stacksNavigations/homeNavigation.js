@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import {Text, Image} from 'react-native';
 import React from 'react';
+import {GetRouteNameHome} from '../customs/routeHome';
 
 // bottomTab
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -11,7 +11,7 @@ import {options} from '../customs/tabNavigator';
 import PhoneBookScreen from '../../components/main/phonebook';
 import AccountScreen from '../../components/main/account';
 import {HomeStackScreen} from './stacks/homeStack';
-import {ReelsScreen} from '../../components/main/reels';
+import AddsScreen from '../../components/main/home/uploads/posts';
 
 
 const Tab = createBottomTabNavigator();
@@ -22,7 +22,10 @@ const HomeNavigation = () => {
       <Tab.Screen
         name="HomeStackScreen"
         component={HomeStackScreen}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          tabBarStyle: {display: GetRouteNameHome(route)},
+          headerShown: false,
+        })}
       />
       <Tab.Screen
         name="ChatScreen"
@@ -30,8 +33,8 @@ const HomeNavigation = () => {
         options={{headerShown: false}}
       />
       <Tab.Screen
-        name="ReelsScreen"
-        component={ReelsScreen}
+        name="AddsScreen"
+        component={AddsScreen}
         options={{headerShown: false}}
       />
       <Tab.Screen
