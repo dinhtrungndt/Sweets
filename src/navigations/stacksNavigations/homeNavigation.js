@@ -9,10 +9,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ChatScreen from '../../components/main/chat/ChatScreen';
 import {options} from '../customs/tabNavigator';
 import PhoneBookScreen from '../../components/main/phonebook';
-import AccountScreen from '../../components/main/account';
 import {HomeStackScreen} from './stacks/homeStack';
 import AddsScreen from '../../components/main/home/uploads/posts';
-
+import {AccountStackScreen} from './stacks/accountStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,8 +42,8 @@ const HomeNavigation = () => {
         options={{headerShown: false}}
       />
       <Tab.Screen
-        name="AccountScreen"
-        component={AccountScreen}
+        name="AccountStackScreen"
+        component={AccountStackScreen}
         options={{headerShown: false}}
       />
     </Tab.Navigator>

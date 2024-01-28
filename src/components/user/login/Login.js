@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text, ActivityIndicator, ToastAndroid } from 'react-native';
+/* eslint-disable prettier/prettier */
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  ToastAndroid,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { login } from '../../../services/user/userService';
+import {login} from '../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Style';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,7 +41,10 @@ const LoginScreen = ({ navigation }) => {
       await AsyncStorage.setItem('id', response.id);
     } else {
       setLoading(false);
-      ToastAndroid.show('Tài khoản hoặc mật khẩu không chính xác', ToastAndroid.SHORT);
+      ToastAndroid.show(
+        'Tài khoản hoặc mật khẩu không chính xác',
+        ToastAndroid.SHORT,
+      );
     }
   };
   const handleregister = () => {
@@ -43,7 +56,10 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.viewlogo}>
-        <Image style={styles.logo} source={require('../../../assets/logongang.png')} />
+        <Image
+          style={styles.logo}
+          source={require('../../../assets/logongang.png')}
+        />
       </View>
       <View style={styles.viewlogin}>
         <Text style={styles.txt}> Log In</Text>
@@ -55,7 +71,13 @@ const LoginScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.viewinput}>
-        <TextInput style={styles.input} placeholder="Email" placeholderTextColor="grey" value={email} onChangeText={setEmail} />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="grey"
+          value={email}
+          onChangeText={setEmail}
+        />
       </View>
       <View style={styles.viewinput}>
         <TextInput
@@ -68,7 +90,7 @@ const LoginScreen = ({ navigation }) => {
         />
         <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
           <Icon
-            name={passwordVisible ? "eye-off-outline" : "eye-outline"}
+            name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
             size={30}
             color="grey"
             style={styles.icon}
@@ -94,6 +116,5 @@ const LoginScreen = ({ navigation }) => {
     </View>
   );
 };
-
 
 export default LoginScreen;

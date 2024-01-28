@@ -1,11 +1,18 @@
-import { Text, View, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import React, { useEffect, useState } from 'react';
+/* eslint-disable prettier/prettier */
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeNavigation from '../../../navigations/stacksNavigations/homeNavigation';
-const BoardingScreens = ({ navigation }) => {
+const BoardingScreens = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const checkToken = async () => {
-
     try {
       setLoading(true);
       // Lấy giá trị token từ AsyncStorage
@@ -29,22 +36,30 @@ const BoardingScreens = ({ navigation }) => {
 
   const handlelogin = () => {
     navigation.navigate('LoginScreen');
-  }
+  };
   const handleSignup = () => {
     navigation.navigate('SingUpScreen');
-  }
+  };
 
   return (
     <View style={styles.container}>
-      {loading ? <View>
-        <ActivityIndicator size="large" color="blue" />
-      </View> :
+      {loading ? (
+        <View>
+          <ActivityIndicator size="large" color="blue" />
+        </View>
+      ) : (
         <View style={styles.load}>
           <View style={styles.viewlogo}>
-            <Image style={styles.logo} source={require('../../../assets/logongang.png')} />
+            <Image
+              style={styles.logo}
+              source={require('../../../assets/logongang.png')}
+            />
           </View>
           <View style={styles.viewpeple}>
-            <Image style={styles.imgpeople} source={require('../../../assets/peoples.png')} />
+            <Image
+              style={styles.imgpeople}
+              source={require('../../../assets/peoples.png')}
+            />
           </View>
           <TouchableOpacity style={styles.button} onPress={handleSignup}>
             <Text style={styles.txt}> Sign Up Free</Text>
@@ -52,7 +67,8 @@ const BoardingScreens = ({ navigation }) => {
           <TouchableOpacity style={styles.viewlogin} onPress={handlelogin}>
             <Text style={styles.login}> Login</Text>
           </TouchableOpacity>
-        </View>}
+        </View>
+      )}
     </View>
   );
 };
@@ -80,8 +96,7 @@ const styles = StyleSheet.create({
   login: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold'
-
+    fontWeight: 'bold',
   },
   txt: {
     color: 'black',
@@ -121,6 +136,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black'
-  }
+    backgroundColor: 'black',
+  },
 });

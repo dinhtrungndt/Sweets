@@ -1,20 +1,29 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Image, TouchableOpacity, Text, ActivityIndicator, ToastAndroid } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  ToastAndroid,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { register } from '../../../services/user/userService';
+import {register} from '../../../services/user/userService';
 import styles from './Style';
-const SingUpScreen = ({ navigation }) => {
+const SingUpScreen = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [conformpassword, setConformpassword] = useState('');
-  const [gioitinh, setGioitinh] = useState('null');
-  const [ngaysinh, setNgaysinh] = useState('null');
+  const [gender, setGioitinh] = useState('null');
+  const [date, setNgaysinh] = useState('null');
   const [token, setToken] = useState('null');
   const [avatar, setAvatar] = useState('null');
-  const [anhbia, setAnhbia] = useState('null');
+  const [coverImage, setAnhbia] = useState('null');
 
   const handleRegister = async () => {
     setLoading(true);
@@ -22,12 +31,12 @@ const SingUpScreen = ({ navigation }) => {
       const data = {
         name,
         email,
-        password,
-        gioitinh,
-        ngaysinh,
         token,
+        password,
+        gender,
+        date,
         avatar,
-        anhbia,
+        coverImage,
       };
       if (password != conformpassword) {
         ToastAndroid.show('Nhập lại mật khẩu không khớp', ToastAndroid.SHORT);
@@ -38,7 +47,7 @@ const SingUpScreen = ({ navigation }) => {
       if (response.status == 1) {
         setLoading(false);
         ToastAndroid.show('Đăng ký thành công', ToastAndroid.SHORT);
-          navigation.navigate('LoginScreen');
+        navigation.navigate('LoginScreen');
       }
       if (response.status == 0) {
         setLoading(false);
@@ -49,13 +58,11 @@ const SingUpScreen = ({ navigation }) => {
       setLoading(false);
       return error;
     }
-
-  }
+  };
 
   const handlelogin = () => {
     navigation.navigate('LoginScreen');
   };
-
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordVisible1, setPasswordVisible1] = useState(false);
@@ -63,7 +70,10 @@ const SingUpScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.viewlogo}>
-        <Image style={styles.logo} source={require('../../../assets/logongang.png')} />
+        <Image
+          style={styles.logo}
+          source={require('../../../assets/logongang.png')}
+        />
       </View>
       <View>
         <Text style={styles.txt}>Register</Text>
@@ -75,10 +85,22 @@ const SingUpScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.viewinput}>
-        <TextInput value={name} onChangeText={setName} style={styles.input} placeholder="Full Name" placeholderTextColor="grey" />
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          style={styles.input}
+          placeholder="Full Name"
+          placeholderTextColor="grey"
+        />
       </View>
       <View style={styles.viewinput}>
-        <TextInput value={email} onChangeText={setEmail} style={styles.input} placeholder="Enter Email" placeholderTextColor="grey" />
+        <TextInput
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+          placeholder="Enter Email"
+          placeholderTextColor="grey"
+        />
       </View>
       <View style={styles.viewinput}>
         <TextInput
@@ -91,7 +113,7 @@ const SingUpScreen = ({ navigation }) => {
         />
         <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
           <Icon
-            name={passwordVisible ? "eye-off-outline" : "eye-outline"}
+            name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
             size={30}
             color="grey"
             style={styles.icon}
@@ -100,7 +122,6 @@ const SingUpScreen = ({ navigation }) => {
       </View>
       <View style={styles.viewinput}>
         <TextInput
-
           value={conformpassword}
           onChangeText={setConformpassword}
           style={styles.input}
@@ -108,9 +129,10 @@ const SingUpScreen = ({ navigation }) => {
           placeholderTextColor="grey"
           secureTextEntry={!passwordVisible1}
         />
-        <TouchableOpacity onPress={() => setPasswordVisible1(!passwordVisible1)}>
+        <TouchableOpacity
+          onPress={() => setPasswordVisible1(!passwordVisible1)}>
           <Icon
-            name={passwordVisible1 ? "eye-off-outline" : "eye-outline"}
+            name={passwordVisible1 ? 'eye-off-outline' : 'eye-outline'}
             size={30}
             color="grey"
             style={styles.icon}
@@ -119,8 +141,10 @@ const SingUpScreen = ({ navigation }) => {
       </View>
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         {loading ? (
-
-          <ActivityIndicator size="small" color="white" />) : (<Text style={styles.txt3}>Register</Text>)}
+          <ActivityIndicator size="small" color="white" />
+        ) : (
+          <Text style={styles.txt3}>Register</Text>
+        )}
       </TouchableOpacity>
       <View style={styles.acc}>
         <Text style={styles.txt1}>have an account? </Text>
@@ -132,8 +156,4 @@ const SingUpScreen = ({ navigation }) => {
   );
 };
 
-
-
 export default SingUpScreen;
-
-

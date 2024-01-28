@@ -36,7 +36,7 @@ export const options = ({route}) => ({
       } else {
         return <FontAwesome name="address-book-o" size={22} color="#000" />;
       }
-    } else if (route.name === 'AccountScreen') {
+    } else if (route.name === 'AccountStackScreen') {
       if (focused) {
         return <Ionicons name="person-circle" size={25} color="#22b6c0" />;
       } else {

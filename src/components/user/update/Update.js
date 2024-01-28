@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text, ActivityIndicator,ToastAndroid } from 'react-native';
+/* eslint-disable prettier/prettier */
+import React, {useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  ToastAndroid,
+  Platform,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CheckBox from '@react-native-community/checkbox';
-import { request, PERMISSIONS } from 'react-native-permissions';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import {request, PERMISSIONS} from 'react-native-permissions';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Style';
-const Update = ({ navigation }) => {
+const Update = ({navigation}) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState('Ngày sinh');
   const [isMaleChecked, setMaleChecked] = useState(false);
@@ -18,7 +28,7 @@ const Update = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const layanh0 = () => {
-    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.didCancel) {
         return;
       } else if (response.error) {
@@ -27,9 +37,9 @@ const Update = ({ navigation }) => {
         setImageSource0(response.assets[0].uri);
       }
     });
-  }
+  };
   const layanh2 = () => {
-    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.didCancel) {
         return;
       } else if (response.error) {
@@ -38,7 +48,7 @@ const Update = ({ navigation }) => {
         setImageSource1(response.assets[0].uri);
       }
     });
-  }
+  };
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -48,9 +58,9 @@ const Update = ({ navigation }) => {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = (date) => {
+  const handleConfirm = date => {
     // dịch sang tiếng việt
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    const options = {year: 'numeric', month: 'numeric', day: 'numeric'};
     setDate(date.toLocaleDateString('vi-VN', options));
 
     hideDatePicker();
@@ -60,14 +70,13 @@ const Update = ({ navigation }) => {
     setMaleChecked(newMaleChecked);
     setFemaleChecked(false);
     setValuecheck(newMaleChecked ? 'Nam' : '');
-
   };
   const handleUpdateanhbia = async () => {
     const id = await AsyncStorage.getItem('id');
     console.log(id);
     const data = new FormData();
     setLoading(true);
-    let uploadSuccess = false; 
+    let uploadSuccess = false;
 
     try {
       if (valuecheck == '' || date == 'Ngày sinh') {
@@ -76,12 +85,15 @@ const Update = ({ navigation }) => {
         return;
       } else if (imageSource0 === null && imageSource1 === null) {
         data.append('_id', id);
-        data.append('ngaysinh', date);
-        data.append('gioitinh', valuecheck);
-        const response = await fetch('https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile', {
-          method: 'POST',
-          body: data,
-        });
+        data.append('date', date);
+        data.append('gender', valuecheck);
+        const response = await fetch(
+          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          {
+            method: 'POST',
+            body: data,
+          },
+        );
         const responseJson = await response.json();
         console.log(responseJson);
         uploadSuccess = true;
@@ -89,32 +101,44 @@ const Update = ({ navigation }) => {
         data.append('avatar', {
           name: 'image.jpg',
           type: 'image/jpeg',
-          uri: Platform.OS === 'android' ? imageSource1 : imageSource1.replace('file://', 'null'),
+          uri:
+            Platform.OS === 'android'
+              ? imageSource1
+              : imageSource1.replace('file://', 'null'),
         });
         data.append('_id', id);
-        data.append('ngaysinh', date);
-        data.append('gioitinh', valuecheck);
-        const response = await fetch('https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile', {
-          method: 'POST',
-          body: data,
-        });
+        data.append('date', date);
+        data.append('gender', valuecheck);
+        const response = await fetch(
+          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          {
+            method: 'POST',
+            body: data,
+          },
+        );
         const responseJson = await response.json();
         console.log(responseJson);
         console.log(response.status);
         uploadSuccess = true;
       } else if (imageSource1 === null) {
-        data.append('anhbia', {
+        data.append('coverImage', {
           name: 'image.jpg',
           type: 'image/jpeg',
-          uri: Platform.OS === 'android' ? imageSource0 : imageSource0.replace('file://', 'null'),
+          uri:
+            Platform.OS === 'android'
+              ? imageSource0
+              : imageSource0.replace('file://', 'null'),
         });
         data.append('_id', id);
-        data.append('ngaysinh', date);
-        data.append('gioitinh', valuecheck);
-        const response = await fetch('https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile', {
-          method: 'POST',
-          body: data,
-        });
+        data.append('date', date);
+        data.append('gender', valuecheck);
+        const response = await fetch(
+          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          {
+            method: 'POST',
+            body: data,
+          },
+        );
         const responseJson = await response.json();
         console.log(responseJson);
         response.status == 1;
@@ -122,22 +146,31 @@ const Update = ({ navigation }) => {
         uploadSuccess = true;
       } else {
         data.append('_id', id);
-        data.append('ngaysinh', date);
-        data.append('gioitinh', valuecheck);
-        data.append('anhbia', {
+        data.append('date', date);
+        data.append('gender', valuecheck);
+        data.append('coverImage', {
           name: 'image.jpg',
           type: 'image/jpeg',
-          uri: Platform.OS === 'android' ? imageSource0 : imageSource0.replace('file://', 'null'),
+          uri:
+            Platform.OS === 'android'
+              ? imageSource0
+              : imageSource0.replace('file://', 'null'),
         });
         data.append('avatar', {
           name: 'image.jpg',
           type: 'image/jpeg',
-          uri: Platform.OS === 'android' ? imageSource1 : imageSource1.replace('file://', 'null'),
+          uri:
+            Platform.OS === 'android'
+              ? imageSource1
+              : imageSource1.replace('file://', 'null'),
         });
-        const response = await fetch('https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile', {
-          method: 'POST',
-          body: data,
-        });
+        const response = await fetch(
+          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          {
+            method: 'POST',
+            body: data,
+          },
+        );
         const responseJson = await response.json();
         console.log(responseJson);
         uploadSuccess = true;
@@ -148,7 +181,6 @@ const Update = ({ navigation }) => {
         ToastAndroid.show('Cập nhật thành công', ToastAndroid.SHORT);
         // chuyển sang màn hình mới
       } else {
-
         setLoading(false);
         alert('Cập nhật thất bại. Vui lòng thử lại.');
       }
@@ -169,27 +201,46 @@ const Update = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.viewlogo}>
-        <Image style={styles.logo} source={require('../../../assets/logongang.png')} />
+        <Image
+          style={styles.logo}
+          source={require('../../../assets/logongang.png')}
+        />
       </View>
       <View style={styles.viewlogin}>
         <Text style={styles.txt}>Thông tin cá nhân</Text>
       </View>
       <View style={styles.viewbr}>
         <TouchableOpacity style={styles.br} onPress={layanh0}>
-          {imageSource0 === null ? <View style={styles.anhbia}>
-            <Image style={styles.imgbr} source={require('../../../assets/bgrw.png')} />
-            <Icon name="add-circle-outline" size={30} color="grey" style={styles.add} />
-          </View> :
+          {imageSource0 === null ? (
             <View style={styles.anhbia}>
-              <Image style={styles.imgbr} source={{ uri: imageSource0 }} />
+              <Image
+                style={styles.imgbr}
+                source={require('../../../assets/bgrw.png')}
+              />
+              <Icon
+                name="add-circle-outline"
+                size={30}
+                color="grey"
+                style={styles.add}
+              />
             </View>
-          }
+          ) : (
+            <View style={styles.anhbia}>
+              <Image style={styles.imgbr} source={{uri: imageSource0}} />
+            </View>
+          )}
         </TouchableOpacity>
         <TouchableOpacity onPress={layanh2}>
-          {imageSource1 === null ?
-            <Icon name="camera-outline" size={30} color="grey" style={styles.avt} /> :
-            <Image style={styles.avt1} source={{ uri: imageSource1 }} />
-          }
+          {imageSource1 === null ? (
+            <Icon
+              name="camera-outline"
+              size={30}
+              color="grey"
+              style={styles.avt}
+            />
+          ) : (
+            <Image style={styles.avt1} source={{uri: imageSource1}} />
+          )}
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={showDatePicker} style={styles.datetime}>
@@ -208,7 +259,7 @@ const Update = ({ navigation }) => {
             value={isMaleChecked}
             onValueChange={handleMaleCheckboxChange}
             style={styles.checkbox}
-            tintColors={{ true: 'yellow', false: 'white' }}
+            tintColors={{true: 'yellow', false: 'white'}}
           />
           <Text style={styles.cb1}>Nam</Text>
         </View>
@@ -217,18 +268,20 @@ const Update = ({ navigation }) => {
             value={isFemaleChecked}
             onValueChange={handleFemaleCheckboxChange}
             style={styles.checkbox}
-            tintColors={{ true: 'white', false: 'white' }}
+            tintColors={{true: 'white', false: 'white'}}
           />
           <Text style={styles.cb1}>Nữ</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleUpdateanhbia} >
-        {loading ? <ActivityIndicator size="small" color="white" /> : <Text style={styles.txt3}>Cập nhật</Text>}
+      <TouchableOpacity style={styles.button} onPress={handleUpdateanhbia}>
+        {loading ? (
+          <ActivityIndicator size="small" color="white" />
+        ) : (
+          <Text style={styles.txt3}>Cập nhật</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
 };
-
-
 
 export default Update;

@@ -1,17 +1,29 @@
 /* eslint-disable prettier/prettier */
 import AxiosInstance from '../../helper/Axiosinstance';
 
-export const register = async (name, email, password, gioitinh, ngaysinh, token, avatar, anhbia) => {
+export const register = async (
+  name,
+  email,
+  token,
+  password,
+  gender,
+  date,
+  avatar,
+  coverImage,
+) => {
   try {
-    const response = await AxiosInstance().post('/users/post-register', name,
+    const response = await AxiosInstance().post(
+      '/users/post-register',
+      name,
       email,
-      password,
-      gioitinh,
-      ngaysinh,
       token,
+      password,
+      gender,
+      date,
       avatar,
-      anhbia,);
-  
+      coverImage,
+    );
+
     return response;
   } catch (error) {
     console.log('register: ', error);
@@ -21,12 +33,14 @@ export const register = async (name, email, password, gioitinh, ngaysinh, token,
 
 export const login = async (email, password) => {
   try {
-    const response = await AxiosInstance().post('/users/post-login', email, password);
+    const response = await AxiosInstance().post(
+      '/users/post-login',
+      email,
+      password,
+    );
     return response;
   } catch (error) {
     console.log('register: ', error);
     return error;
   }
 };
-
-
