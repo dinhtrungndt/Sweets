@@ -3,7 +3,6 @@ import { SafeAreaView } from 'react-native';
 import React,{useEffect} from 'react';
 import UserNavigation from './src/navigations/stacksNavigations/userNavigations';
 import SplashScreen from 'react-native-splash-screen';
-import HomeNavigation from './src/navigations/stacksNavigations/homeNavigation';
 
 
 const App = () => {
