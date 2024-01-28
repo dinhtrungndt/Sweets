@@ -20,7 +20,8 @@ import {
   getShare,
 } from '../../../services/home/homeService';
 
-const HomeScreen = () => {
+const HomeScreen = props => {
+  const {navigation} = props;
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -71,7 +72,7 @@ const HomeScreen = () => {
       }>
       <HeaderScreen />
       <StoryScreen />
-      <PostsScreen posts={posts} />
+      <PostsScreen posts={posts} navigation={navigation} />
     </ScrollView>
   );
 };

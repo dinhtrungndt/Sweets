@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
+import {GetRouteNameHome} from '../customs/routeHome';
 
 // bottomTab
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -20,7 +21,10 @@ const HomeNavigation = () => {
       <Tab.Screen
         name="HomeStackScreen"
         component={HomeStackScreen}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          tabBarStyle: {display: GetRouteNameHome(route)},
+          headerShown: false,
+        })}
       />
       <Tab.Screen
         name="ChatScreen"

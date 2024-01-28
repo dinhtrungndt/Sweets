@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 // styles
 import {styles} from '../styles/posts';
@@ -14,11 +14,42 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import moment from 'moment';
 import Video from 'react-native-video';
 import Swiper from 'react-native-swiper';
+import CustomReaction from '../../../customs/reaction/customreaction';
 
-const PostsScreen = ({posts}) => {
-  const [like, setLike] = useState(false);
+const PostsScreen = ({posts, navigation}) => {
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [reaction, setReaction] = useState(false);
+
+  const reactions = [
+    {
+      id: 0,
+      emoji: '👍',
+      name: 'Like',
+    },
+    {
+      id: 1,
+      emoji: '😍',
+      name: 'Love',
+    },
+    {
+      id: 2,
+      emoji: '😂',
+      name: 'Haha',
+    },
+    {
+      id: 3,
+      emoji: '😮',
+      name: 'Wow',
+    },
+    {
+      id: 4,
+      emoji: '😡',
+      name: 'Angry',
+    },
+  ];
+
+  const handleReaction = useRef(null);
 
   const changeIdObject = idObject => {
     if (idObject.name === 'Công khai') {
@@ -51,10 +82,6 @@ const PostsScreen = ({posts}) => {
     } else {
       return <Text style={styles.text_object}>{idObject.name}</Text>;
     }
-  };
-
-  const handleLike = () => {
-    setLike(!like);
   };
 
   const handleShowMore = () => {
@@ -98,7 +125,6 @@ const PostsScreen = ({posts}) => {
     }
   };
 
-  // danh sách backgroundColor của icon like
   const backgroundColor = type => {
     switch (type) {
       case 'Like':
@@ -113,6 +139,23 @@ const PostsScreen = ({posts}) => {
         return '#22b6c0';
     }
   };
+
+  useEffect(() => {
+    handleReaction.current = {
+      handlePressOut: () => {
+        setReaction(false);
+        console.log('press out');
+      },
+      handleLongPress: () => {
+        setReaction(true);
+        console.log('long press');
+      },
+    };
+
+    return () => {
+      handleReaction.current = null;
+    };
+  }, []);
 
   return (
     <View style={styles.T}>
@@ -216,7 +259,9 @@ const PostsScreen = ({posts}) => {
             item.share.length > 0 ? (
               <View style={styles.container_feeling_commnet_share}>
                 {/* feeling */}
-                <TouchableOpacity style={styles.container_feeling}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('CommentsScreen')}
+                  style={styles.container_feeling}>
                   {item.reaction.map((reaction, index) => (
                     <View
                       key={reaction._id}
@@ -245,7 +290,9 @@ const PostsScreen = ({posts}) => {
                 <View style={styles.comment_share}>
                   {/* comment */}
                   {item.comment.length > 0 ? (
-                    <TouchableOpacity style={styles.container_comment}>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('CommentsScreen')}
+                      style={styles.container_comment}>
                       <Text style={styles.text_comment}>
                         {item.comment.length}
                       </Text>
@@ -258,7 +305,9 @@ const PostsScreen = ({posts}) => {
                   )}
                   {/* share */}
                   {item.share.length > 0 ? (
-                    <TouchableOpacity style={styles.container_share}>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('CommentsScreen')}
+                      style={styles.container_share}>
                       <Text style={styles.text_share}>{item.share.length}</Text>
                       <Text style={[styles.text_share, {paddingLeft: 5}]}>
                         Chia sẻ
@@ -275,26 +324,41 @@ const PostsScreen = ({posts}) => {
 
             {/* line */}
             <Text style={styles.linePosts} />
-            {/* like comment share */}
+            {/* like comment share 2 */}
             <View style={styles.container_like_comment_share}>
               {/* like */}
-              <TouchableOpacity style={styles.like_post} onPress={handleLike}>
+              <TouchableOpacity
+                style={styles.like_post}
+                onPress={() => handleReaction.current.handlePressOut()}
+                onLongPress={() => handleReaction.current.handleLongPress()}>
                 <AntDesign
-                  name={like ? 'like1' : 'like2'}
+                  name={reaction ? 'like1' : 'like2'}
                   size={20}
-                  color={like ? '#22b6c0' : '#666666'}
+                  color={reaction ? '#22b6c0' : '#666666'}
                 />
                 <Text
                   style={[
                     styles.text_like_post,
-                    {color: like ? '#22b6c0' : '#666666'},
+                    {color: reaction ? '#22b6c0' : '#666666'},
                   ]}>
                   Thích
                 </Text>
               </TouchableOpacity>
+              {reaction && (
+                <View style={styles.container_reaction}>
+                  <CustomReaction
+                    reactions={reactions}
+                    clone={handleReaction.current.handlePressOut}
+                  />
+                </View>
+              )}
 
               {/* comment */}
-              <TouchableOpacity style={styles.like_post}>
+              <TouchableOpacity
+                style={styles.like_post}
+                onPress={() =>
+                  navigation.navigate('CommentsScreen', {postId: item})
+                }>
                 <MaterialCommunityIcons
                   name="comment-outline"
                   size={20}
