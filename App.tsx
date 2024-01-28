@@ -1,25 +1,18 @@
 /* eslint-disable prettier/prettier */
+import React, {useEffect} from 'react';
+import UserNavigation from './src/navigations/stacksNavigations/userNavigations';
+import SplashScreen from 'react-native-splash-screen';
 import {SafeAreaView} from 'react-native';
-import React from 'react';
-// import Toast from 'react-native-toast-message';
-// import {UserProvider} from './src/contexts/user/userContext';
-// import {HomeProvider} from './src/contexts/home/homeContext';
-// import AppNavigations from './src/navigations/AppNavigations';
-import HomeNavigation from './src/navigations/stacksNavigations/homeNavigation';
-import {NavigationContainer} from '@react-navigation/native';
 
 const App = () => {
+  useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide(); // Ẩn SplashScreen sau thời gian cần thiết
+    }, 2000); // Thời gian hiển thị SplashScreen (đơn vị: milliseconds)
+  }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
-      {/* <UserProvider>
-        <HomeProvider>
-          <AppNavigations />
-        </HomeProvider>
-      </UserProvider>
-      <Toast ref={ref => Toast.setRef(ref)} /> */}
-      <NavigationContainer>
-        <HomeNavigation />
-      </NavigationContainer>
+      <UserNavigation />
     </SafeAreaView>
   );
 };
