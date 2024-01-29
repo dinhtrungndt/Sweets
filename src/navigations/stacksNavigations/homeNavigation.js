@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import {Text, Image} from 'react-native';
 import React from 'react';
+import {GetRouteNameHome} from '../customs/routeHome';
 
 // bottomTab
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -9,8 +9,10 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ChatScreen from '../../components/main/chat/ChatScreen';
 import {options} from '../customs/tabNavigator';
 import PhoneBookScreen from '../../components/main/phonebook';
-import AccountScreen from '../../components/main/account';
 import {HomeStackScreen} from './stacks/homeStack';
+import AddsScreen from '../../components/main/home/uploads/posts';
+import {AccountStackScreen} from './stacks/accountStack';
+import {GetRouteNameAccount} from '../customs/routeAccount';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,11 +22,19 @@ const HomeNavigation = () => {
       <Tab.Screen
         name="HomeStackScreen"
         component={HomeStackScreen}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          tabBarStyle: {display: GetRouteNameHome(route)},
+          headerShown: false,
+        })}
       />
       <Tab.Screen
         name="ChatScreen"
         component={ChatScreen}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="AddsScreen"
+        component={AddsScreen}
         options={{headerShown: false}}
       />
       <Tab.Screen
@@ -33,9 +43,12 @@ const HomeNavigation = () => {
         options={{headerShown: false}}
       />
       <Tab.Screen
-        name="AccountScreen"
-        component={AccountScreen}
-        options={{headerShown: false}}
+        name="AccountStackScreen"
+        component={AccountStackScreen}
+        options={({route}) => ({
+          tabBarStyle: {display: GetRouteNameAccount(route)},
+          headerShown: false,
+        })}
       />
     </Tab.Navigator>
   );

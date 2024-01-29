@@ -1,12 +1,19 @@
 /* eslint-disable prettier/prettier */
+import React, {useEffect} from 'react';
+import UserNavigation from './src/navigations/stacksNavigations/userNavigations';
+import SplashScreen from 'react-native-splash-screen';
 import {SafeAreaView} from 'react-native';
-import React from 'react';
-import Toast from 'react-native-toast-message';
 import {UserProvider} from './src/contexts/user/userContext';
 import {HomeProvider} from './src/contexts/home/homeContext';
 import AppNavigations from './src/navigations/AppNavigations';
 
 const App = () => {
+  useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 2000);
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <UserProvider>
@@ -14,7 +21,10 @@ const App = () => {
           <AppNavigations />
         </HomeProvider>
       </UserProvider>
+<<<<<<< HEAD
       {/* <Toast ref={ref => Toast.setRef(ref)} /> */}
+=======
+>>>>>>> main
     </SafeAreaView>
   );
 };

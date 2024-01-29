@@ -1,140 +1,95 @@
 /* eslint-disable prettier/prettier */
-import {Text, Image} from 'react-native';
+import {Text, Image, View} from 'react-native';
 import React from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // bottomTab
 export const options = ({route}) => ({
   tabBarIcon: ({focused, color, size}) => {
     if (route.name === 'HomeStackScreen') {
       if (focused) {
-        return (
-          <Image
-            style={{width: 20, height: 20}}
-            source={require('../../assets/home_bottomTab_click.png')}
-          />
-        );
+        return <Ionicons name="home" size={23} color="#22b6c0" />;
       } else {
-        return (
-          <Image
-            style={{width: 20, height: 20}}
-            source={require('../../assets/home_bottomTab.png')}
-          />
-        );
+        return <Ionicons name="home-outline" size={23} color="#000" />;
       }
     } else if (route.name === 'ChatScreen') {
       if (focused) {
         return (
-          <Image
-            style={{width: 20, height: 20}}
-            source={require('../../assets/chat_bottomTab_click.png')}
-          />
+          <Ionicons name="chatbox-ellipses-sharp" size={23} color="#22b6c0" />
         );
       } else {
         return (
-          <Image
-            style={{width: 20, height: 20}}
-            source={require('../../assets/chat_bottomTab.png')}
-          />
+          <Ionicons name="chatbox-ellipses-outline" size={23} color="#000" />
         );
+      }
+    } else if (route.name === 'AddsScreen') {
+      if (focused) {
+        return <Octicons name="diff-added" size={23} color="#22b6c0" />;
+      } else {
+        return <Octicons name="diff-added" size={23} color="#000" />;
       }
     } else if (route.name === 'PhoneBookScreen') {
       if (focused) {
-        return (
-          <Image
-            style={{width: 20, height: 20}}
-            source={require('../../assets/danhba_bottomTab_click.png')}
-          />
-        );
+        return <FontAwesome name="address-book" size={22} color="#22b6c0" />;
       } else {
-        return (
-          <Image
-            style={{width: 20, height: 20}}
-            source={require('../../assets/danhba_bottomTab.png')}
-          />
-        );
+        return <FontAwesome name="address-book-o" size={22} color="#000" />;
       }
-    } else if (route.name === 'AccountScreen') {
+    } else if (route.name === 'AccountStackScreen') {
       if (focused) {
-        return (
-          <Image
-            style={{width: 20, height: 20}}
-            source={require('../../assets/account_bottomTab_click.png')}
-          />
-        );
+        return <Ionicons name="person-circle" size={25} color="#22b6c0" />;
       } else {
-        return (
-          <Image
-            style={{width: 20, height: 20}}
-            source={require('../../assets/account_bottomTab.png')}
-          />
-        );
+        return <Ionicons name="person-circle-outline" size={25} color="#000" />;
       }
     }
   },
+  tabBarLabel: () => null,
+});
 
+// topTab
+export const optionsTabsTop = ({route}) => ({
   tabBarLabel: ({focused, color, size}) => {
-    if (route.name === 'HomeStackScreen') {
-      return focused ? (
-        <Text
-          style={{
-            color: '#095fe5',
-          }}>
-          Trang chủ
-        </Text>
-      ) : (
-        <Text> Trang chủ </Text>
-      );
-    } else if (route.name === 'ChatScreen') {
-      return focused ? (
-        <Text
-          style={{
-            color: '#095fe5',
-          }}>
-          Trò chuyện
-        </Text>
-      ) : (
-        <Text> Trò chuyện </Text>
-      );
-    } else if (route.name === 'PhoneBookScreen') {
-      return focused ? (
-        <Text
-          style={{
-            color: '#095fe5',
-          }}>
-          Danh bạ
-        </Text>
-      ) : (
-        <Text> Danh bạ </Text>
-      );
-    } else if (route.name === 'AccountScreen') {
-      return focused ? (
-        <Text
-          style={{
-            color: '#095fe5',
-          }}>
-          Cá nhân
-        </Text>
-      ) : (
-        <Text> Cá nhân </Text>
-      );
-    }
+    const label = route.name === 'HomeFriendTab' ? 'Bạn bè' : 'Thế giới';
+    const opacity = focused ? 1 : 0.5;
+
+    return (
+      <View style={{alignItems: 'center'}}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          {focused && (
+            <View
+              style={{
+                width: 2,
+                height: '80%',
+                backgroundColor: '#000',
+                marginHorizontal: 5,
+              }}
+            />
+          )}
+          <Text
+            style={{
+              color: focused ? '#000' : '#000',
+              textAlign: 'center',
+              opacity,
+            }}>
+            {label}
+          </Text>
+        </View>
+      </View>
+    );
+  },
+  tabBarIndicatorStyle: {
+    height: 0,
   },
   tabBarStyle: {
-    // borderTopLeftRadius: 20,
-    // borderTopRightRadius: 20,
-    bottom: 10,
-    width: '90%',
-    marginLeft: '5%',
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: '#000',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 10,
-      height: 10,
-    },
-    shadowOpacity: 0.51,
-    shadowRadius: 13.16,
-    elevation: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    width: '44%',
+    height: 45,
+    padding: 0,
+    alignSelf: 'center',
+    borderColor: '#fff',
+    marginBottom: 15,
+    borderWidth: 0,
   },
 });

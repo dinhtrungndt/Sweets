@@ -9,6 +9,7 @@ export const UserProvider = props => {
   const {children} = props;
 
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -23,6 +24,8 @@ export const UserProvider = props => {
         }
       } catch (error) {
         console.log('Lỗi khi kiểm tra thông tin đăng nhập:', error);
+      } finally {
+        setLoading(false);
       }
     };
     checkLogin();
@@ -42,17 +45,23 @@ export const UserProvider = props => {
   const onLogin = async (email, password) => {
     try {
       const result = await login(email, password);
-      console.log('Kết quả đăng nhập', result);
       if (result.status === 1 && result.token) {
+        await AsyncStorage.removeItem('token');
+        await AsyncStorage.setItem('token', result.token);
+        await AsyncStorage.setItem('user', JSON.stringify(result.user));
         setUser(result);
         return true;
       }
     } catch (error) {
       console.log('Lỗi khi đăng nhập', error);
     }
-    console.log('Lỗi khi đăng nhập', 'Thất bại');
+    // console.log('Lỗi khi đăng nhập', 'Thất bại');
     return false;
   };
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <UserContext.Provider value={{user, setUser, onLogin, onLogout}}>
