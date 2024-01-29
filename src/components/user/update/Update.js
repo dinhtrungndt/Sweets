@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -13,11 +13,11 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CheckBox from '@react-native-community/checkbox';
-import { request, PERMISSIONS } from 'react-native-permissions';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import {request, PERMISSIONS} from 'react-native-permissions';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Style';
-const Update = ({ route, navigation }) => {
+const Update = ({route, navigation}) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState('Ngày sinh');
   const [isMaleChecked, setMaleChecked] = useState(false);
@@ -26,9 +26,9 @@ const Update = ({ route, navigation }) => {
   const [imageSource0, setImageSource0] = useState(null);
   const [imageSource1, setImageSource1] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { email } = route.params;
+  const {email} = route.params;
   const layanh0 = () => {
-    launchImageLibrary({ mediaType: 'photo' }, response => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.didCancel) {
         return;
       } else if (response.error) {
@@ -39,7 +39,7 @@ const Update = ({ route, navigation }) => {
     });
   };
   const layanh2 = () => {
-    launchImageLibrary({ mediaType: 'photo' }, response => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.didCancel) {
         return;
       } else if (response.error) {
@@ -60,7 +60,7 @@ const Update = ({ route, navigation }) => {
 
   const handleConfirm = date => {
     // dịch sang tiếng việt
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    const options = {year: 'numeric', month: 'numeric', day: 'numeric'};
     setDate(date.toLocaleDateString('vi-VN', options));
 
     hideDatePicker();
@@ -72,8 +72,6 @@ const Update = ({ route, navigation }) => {
     setValuecheck(newMaleChecked ? 'Nam' : '');
   };
   const handleUpdateanhbia = async () => {
-
-
     const data = new FormData();
     setLoading(true);
     let uploadSuccess = false;
@@ -88,7 +86,7 @@ const Update = ({ route, navigation }) => {
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'http://192.168.0.172:3001/users/update-profile',
+          'http://192.168.0.100:3001/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -110,7 +108,7 @@ const Update = ({ route, navigation }) => {
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'http://192.168.0.172:3001/users/update-profile',
+          'http://192.168.0.100:3001/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -134,7 +132,7 @@ const Update = ({ route, navigation }) => {
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'http://192.168.0.172:3001/users/update-profile',
+          'http://192.168.0.100:3001/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -166,7 +164,7 @@ const Update = ({ route, navigation }) => {
               : imageSource1.replace('file://', 'null'),
         });
         const response = await fetch(
-          'http://192.168.0.172:3001/users/update-profile',
+          'http://192.168.0.100:3001/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -181,7 +179,7 @@ const Update = ({ route, navigation }) => {
         setLoading(false);
         ToastAndroid.show('Cập nhật thành công', ToastAndroid.SHORT);
         // chuyển sang màn hình mới
-        navigation.replace('LoginScreen')
+        navigation.replace('LoginScreen');
       } else {
         setLoading(false);
         alert('Cập nhật thất bại. Vui lòng thử lại.');
@@ -228,7 +226,7 @@ const Update = ({ route, navigation }) => {
             </View>
           ) : (
             <View style={styles.anhbia}>
-              <Image style={styles.imgbr} source={{ uri: imageSource0 }} />
+              <Image style={styles.imgbr} source={{uri: imageSource0}} />
             </View>
           )}
         </TouchableOpacity>
@@ -241,7 +239,7 @@ const Update = ({ route, navigation }) => {
               style={styles.avt}
             />
           ) : (
-            <Image style={styles.avt1} source={{ uri: imageSource1 }} />
+            <Image style={styles.avt1} source={{uri: imageSource1}} />
           )}
         </TouchableOpacity>
       </View>
@@ -261,7 +259,7 @@ const Update = ({ route, navigation }) => {
             value={isMaleChecked}
             onValueChange={handleMaleCheckboxChange}
             style={styles.checkbox}
-            tintColors={{ true: 'yellow', false: 'white' }}
+            tintColors={{true: 'yellow', false: 'white'}}
           />
           <Text style={styles.cb1}>Nam</Text>
         </View>
@@ -270,7 +268,7 @@ const Update = ({ route, navigation }) => {
             value={isFemaleChecked}
             onValueChange={handleFemaleCheckboxChange}
             style={styles.checkbox}
-            tintColors={{ true: 'white', false: 'white' }}
+            tintColors={{true: 'white', false: 'white'}}
           />
           <Text style={styles.cb1}>Nữ</Text>
         </View>
