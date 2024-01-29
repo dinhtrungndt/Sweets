@@ -20,11 +20,13 @@ import {
   getShare,
   likeByPost,
 } from '../../../services/home/homeService';
+import {UserContext} from '../../../contexts/user/userContext';
 
 const HomeScreen = props => {
   const {navigation} = props;
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const {user} = useContext(UserContext);
 
   const onGetPosts = async () => {
     try {
@@ -53,7 +55,6 @@ const HomeScreen = props => {
   };
 
   const onRefresh = useCallback(async () => {
-    setRefreshing(true);
     await onGetPosts();
     setRefreshing(false);
   }, []);
@@ -61,6 +62,8 @@ const HomeScreen = props => {
   useEffect(() => {
     onGetPosts();
   }, []);
+
+  console.log('>>>>>>>>>>> user Home ', user);
 
   return (
     <ScrollView

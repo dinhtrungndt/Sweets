@@ -17,7 +17,7 @@ import {request, PERMISSIONS} from 'react-native-permissions';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Style';
-const Update = ({navigation}) => {
+const Update = ({route, navigation}) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [date, setDate] = useState('Ngày sinh');
   const [isMaleChecked, setMaleChecked] = useState(false);
@@ -26,7 +26,7 @@ const Update = ({navigation}) => {
   const [imageSource0, setImageSource0] = useState(null);
   const [imageSource1, setImageSource1] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const {email} = route.params;
   const layanh0 = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.didCancel) {
@@ -72,8 +72,6 @@ const Update = ({navigation}) => {
     setValuecheck(newMaleChecked ? 'Nam' : '');
   };
   const handleUpdateanhbia = async () => {
-    const id = await AsyncStorage.getItem('id');
-    console.log(id);
     const data = new FormData();
     setLoading(true);
     let uploadSuccess = false;
@@ -84,11 +82,11 @@ const Update = ({navigation}) => {
         setLoading(false);
         return;
       } else if (imageSource0 === null && imageSource1 === null) {
-        data.append('_id', id);
+        data.append('email', email);
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          'http://192.168.0.100:3001/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -106,11 +104,11 @@ const Update = ({navigation}) => {
               ? imageSource1
               : imageSource1.replace('file://', 'null'),
         });
-        data.append('_id', id);
+        data.append('email', email);
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          'http://192.168.0.100:3001/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -121,6 +119,7 @@ const Update = ({navigation}) => {
         console.log(response.status);
         uploadSuccess = true;
       } else if (imageSource1 === null) {
+        console.log('imageSource0', imageSource0, email, date, valuecheck);
         data.append('coverImage', {
           name: 'image.jpg',
           type: 'image/jpeg',
@@ -129,11 +128,11 @@ const Update = ({navigation}) => {
               ? imageSource0
               : imageSource0.replace('file://', 'null'),
         });
-        data.append('_id', id);
+        data.append('email', email);
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          'http://192.168.0.100:3001/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -145,7 +144,7 @@ const Update = ({navigation}) => {
         setLoading(true);
         uploadSuccess = true;
       } else {
-        data.append('_id', id);
+        data.append('email', email);
         data.append('date', date);
         data.append('gender', valuecheck);
         data.append('coverImage', {
@@ -165,7 +164,7 @@ const Update = ({navigation}) => {
               : imageSource1.replace('file://', 'null'),
         });
         const response = await fetch(
-          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          'http://192.168.0.100:3001/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -180,6 +179,7 @@ const Update = ({navigation}) => {
         setLoading(false);
         ToastAndroid.show('Cập nhật thành công', ToastAndroid.SHORT);
         // chuyển sang màn hình mới
+        navigation.replace('LoginScreen');
       } else {
         setLoading(false);
         alert('Cập nhật thất bại. Vui lòng thử lại.');
