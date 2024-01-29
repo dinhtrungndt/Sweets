@@ -21,10 +21,6 @@ const App = () => {
           <AppNavigations />
         </HomeProvider>
       </UserProvider>
-<<<<<<< HEAD
-      {/* <Toast ref={ref => Toast.setRef(ref)} /> */}
-=======
->>>>>>> main
     </SafeAreaView>
   );
 };
