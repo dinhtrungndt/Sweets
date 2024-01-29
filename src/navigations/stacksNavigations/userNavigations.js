@@ -13,15 +13,13 @@ const StacK = createNativeStackNavigator();
 
 const UserNavigation = () => {
   return (
-    <NavigationContainer>
-      <StacK.Navigator screenOptions={{headerShown: false}}>
-        <StacK.Screen name="BoardingScreens" component={BoardingScreens} />
-        <StacK.Screen name="SingUpScreen" component={SingUpScreen} />
-        <StacK.Screen name="LoginScreen" component={LoginScreen} />
-        <StacK.Screen name="Update" component={Update} />
-        <StacK.Screen name="Home" component={HomeNavigation} />
-      </StacK.Navigator>
-    </NavigationContainer>
+    <StacK.Navigator screenOptions={{headerShown: false}}>
+      <StacK.Screen name="BoardingScreens" component={BoardingScreens} />
+      <StacK.Screen name="SingUpScreen" component={SingUpScreen} />
+      <StacK.Screen name="LoginScreen" component={LoginScreen} />
+      <StacK.Screen name="Update" component={Update} />
+      <StacK.Screen name="Home" component={HomeNavigation} />
+    </StacK.Navigator>
   );
 };
 

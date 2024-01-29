@@ -16,7 +16,9 @@ const BoardingScreens = ({navigation}) => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem('token');
-      if (token === null) {
+      const userEmail = await AsyncStorage.getItem('userEmail');
+      const userPassword = await AsyncStorage.getItem('userPassword');
+      if ((token === null, userEmail === null, userPassword === null)) {
         setLoading(false);
       } else {
         navigation.replace('Home');
