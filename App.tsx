@@ -3,6 +3,7 @@ import React, {useEffect} from 'react';
 import UserNavigation from './src/navigations/stacksNavigations/userNavigations';
 import SplashScreen from 'react-native-splash-screen';
 import {SafeAreaView} from 'react-native';
+import {UserProvider} from './src/contexts/user/userContext';
 
 const App = () => {
   useEffect(() => {
@@ -12,7 +13,9 @@ const App = () => {
   }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
-      <UserNavigation />
+      <UserProvider>
+        <UserNavigation />
+      </UserProvider>
     </SafeAreaView>
   );
 };

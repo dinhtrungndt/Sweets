@@ -33,11 +33,12 @@ export const register = async (
 
 export const login = async (email, password) => {
   try {
-    const response = await AxiosInstance().post(
-      '/users/post-login',
-      email,
-      password,
-    );
+    const body = {
+      email: email,
+      password: password,
+    };
+    const response = await AxiosInstance().post('/users/post-login', body);
+    // console.log('register r ', response);
     return response;
   } catch (error) {
     console.log('register: ', error);

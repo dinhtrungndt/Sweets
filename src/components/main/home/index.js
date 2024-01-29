@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 import {RefreshControl, ScrollView, View} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, useContext} from 'react';
 import HeaderScreen from '../layout/header';
 
 // styles
@@ -18,6 +18,7 @@ import {
   getPosts,
   getReaction,
   getShare,
+  likeByPost,
 } from '../../../services/home/homeService';
 
 const HomeScreen = props => {
@@ -60,8 +61,6 @@ const HomeScreen = props => {
   useEffect(() => {
     onGetPosts();
   }, []);
-
-  console.log('posts', posts);
 
   return (
     <ScrollView

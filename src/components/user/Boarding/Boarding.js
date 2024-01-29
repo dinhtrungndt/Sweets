@@ -9,15 +9,13 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeNavigation from '../../../navigations/stacksNavigations/homeNavigation';
 const BoardingScreens = ({navigation}) => {
   const [loading, setLoading] = useState(true);
+
   const checkToken = async () => {
     try {
       setLoading(true);
-      // Lấy giá trị token từ AsyncStorage
       const token = await AsyncStorage.getItem('token');
-      const id = await AsyncStorage.getItem('id');
       if (token === null) {
         setLoading(false);
       } else {
@@ -27,12 +25,18 @@ const BoardingScreens = ({navigation}) => {
       }
     } catch (error) {
       setLoading(false);
-      console.error('Lỗi khi kiểm tra token:', error);
+      console.error('Lỗi', error);
     }
   };
+
   useEffect(() => {
-    checkToken();
-  }, []);
+    const unsubscribeFocus = navigation.addListener('focus', () => {
+      checkToken();
+    });
+    return () => {
+      unsubscribeFocus();
+    };
+  }, [navigation]);
 
   const handlelogin = () => {
     navigation.navigate('LoginScreen');
