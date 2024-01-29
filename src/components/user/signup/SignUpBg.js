@@ -7,35 +7,37 @@ import {
   View,
   Pressable,
   Alert,
-  Button,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import CheckBox from '@react-native-community/checkbox';
 
-// import DateTimePicker from '@react-native-community/datetimepicker';
-// import DatePicker from 'react-native-datepicker'
 import DatePicker from 'react-native-date-picker';
-import {register} from '../../../services/user/userService';
 
 const SignUpBg = props => {
-  const {navigation} = props;
+  const { navigation } = props;
 
   const [name, setName] = useState('');
   const [ngaysinh, setNgaysinh] = useState(new Date());
-  const [open, setOpen] = useState(false);
+
   const [gioitinh, setGioitinh] = useState('');
 
-  const handleDateChange = (event, date) => {
-    if (date) {
-      // Parse the date string
-      const parsedDate = new Date(date);
+  const [open, setOpen] = useState(false);
+  const [formattedNgaysinh, setFormattedNgaysinh] = useState('');
 
-      // Extract the day
-      const day = parsedDate.getDate();
+  const onConfirmDate = (date) => {
+    setOpen(false);
 
-      // Update the state with the day
-      setNgaysinh(day.toString());
-    }
+    // Format the date as 'YYYY-MM-DD'
+    const formattedDate = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+
+    // Set the formatted date to the state
+    setFormattedNgaysinh(formattedDate);
+    // Set the raw Date object to the state if needed
+    setNgaysinh(date);
   };
 
   const handleCheckboxChange = gioitinh => {
@@ -47,7 +49,7 @@ const SignUpBg = props => {
       Alert.alert('Please enter your name');
       return;
     }
-    if (ngaysinh.trim().length === 0) {
+    if (!ngaysinh) {
       Alert.alert('Please enter your birthday');
       return;
     }
@@ -56,14 +58,13 @@ const SignUpBg = props => {
       return;
     }
 
-    // gọi api đăng ký
-    const result = await register(name, ngaysinh, gioitinh, email, password);
-    console.log('register result: ', result);
-    if (result.status === 1) {
-      navigation.navigate('LoginScreens');
-    } else {
-      Alert.alert('Register failer!:');
-    }
+    // truyền dữ liệu qua màn hình tiếp theo để gọi api đăng ký
+    navigation.navigate('SignUpScreens', {
+      name: name,
+      ngaysinh: ngaysinh,
+      gioitinh: gioitinh,
+    });
+    console.log(name, ngaysinh, gioitinh, 'okkkkkkkkk')
   };
 
   return (
@@ -81,16 +82,23 @@ const SignUpBg = props => {
       <View style={myStyles.pass}>
         <Text style={myStyles.usernameLayble}>Birthday</Text>
         <View style={myStyles.container}>
-          <Button title="Open" onPress={() => setOpen(true)} />
+          <Pressable
+            style={myStyles.btnDate}
+            onPress={() => setOpen(true)}>
+            <Image style={myStyles.imgDate} source={require('../../../assets/Date.png')} />
+            <TextInput
+              value={formattedNgaysinh}
+              editable={false}
+              placeholder="YYYY-MM-DD"
+              style={myStyles.dateInput}
+            />
+          </Pressable>
           <DatePicker
             modal
             mode="date"
             open={open}
             date={ngaysinh}
-            onConfirm={date => {
-              setOpen(false);
-              setNgaysinh(date);
-            }}
+            onConfirm={onConfirmDate}
             onCancel={() => {
               setOpen(false);
             }}
@@ -122,7 +130,7 @@ const SignUpBg = props => {
       </View>
       <Pressable
         style={myStyles.btnLogin}
-        onPress={() => navigation.navigate('SignUpScreens')}>
+        onPress={onSignUp}>
         <Text style={myStyles.textbtn}>Next</Text>
       </Pressable>
     </View>
@@ -199,9 +207,34 @@ const myStyles = StyleSheet.create({
     borderRadius: 6,
     marginTop: 8,
   },
-  datePicker: {
+  btnDate: {
     width: '100%',
+    height: 60,
     marginTop: 8,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  imgDate: {
+    width: 42,
+    height: 42,
+    position: 'absolute',
+    left: 3,
+    alignItems: 'center',
+    top: 8,
+  },
+  dateInput: {
+    width: 285,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    textAlign: 'center',
+    borderWidth: 1,
+    borderColor: "#4E4B66",
+    borderRadius: 6,
+    marginLeft: 60,
+    color: '#000000',
+    fontSize: 16,
   },
   CheckBox: {
     width: 24,

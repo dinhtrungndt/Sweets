@@ -1,9 +1,12 @@
 /* eslint-disable prettier/prettier */
 import AxiosInstance from '../../helper/Axiosinstance';
 
-export const register = async (email, password) => {
+export const register = async (name, gioitinh, ngaysinh, email, password) => {
   try {
     const body = {
+      name: name,
+      gioitinh: gioitinh,
+      ngaysinh: ngaysinh,
       email: email,
       password: password,
     };

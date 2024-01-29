@@ -16,7 +16,9 @@ import hidePassImage from '../../../assets/eya.png'; // Replace with the actual 
 import {register} from '../../../services/user/userService';
 
 const SignUpScreens = props => {
-  const {navigation} = props;
+  const { navigation, route } = props;
+
+
 
   const [isShowPass, setIsShowPass] = useState(false);
   const [isShowPass2, setIsShowPass2] = useState(false);
@@ -44,7 +46,7 @@ const SignUpScreens = props => {
     }
 
     // gọi api đăng ký
-    const result = await register(email, password);
+    const result = await register(name , gioitinh, ngaysinh, email, password);
     console.log('Đăng ký 666', result);
     if (result.status === 1) {
       Alert.alert('Register success!');
