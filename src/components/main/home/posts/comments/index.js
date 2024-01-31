@@ -460,8 +460,11 @@ const CommentsScreen = ({navigation, route}) => {
                       </View>
                     </View>
                     {console.log(
-                      '>>>>>>>>>>>>>>>> user name',
-                      postId.comment.filter(item => item.idParent),
+                      '>>>>>>>>>>>>>>>>Bình luận con user name',
+                      postId.comment.filter(
+                        subItem =>
+                          subItem.idParent && subItem.idParent._id === item._id,
+                      ),
                     )}
                     {/* Bình luận con */}
                     <View
@@ -471,7 +474,11 @@ const CommentsScreen = ({navigation, route}) => {
                         marginLeft: 18,
                       }}>
                       {postId.comment
-                        .filter(subItem => subItem.idParent === item.id)
+                        .filter(
+                          subItem =>
+                            subItem.idParent &&
+                            subItem.idParent._id === item._id,
+                        )
                         .map((subItem, subIndex) => (
                           <View
                             style={[
@@ -484,7 +491,11 @@ const CommentsScreen = ({navigation, route}) => {
                                 styles.avatar_comment,
                                 {width: 30, height: 30},
                               ]}
-                              source={{uri: subItem.idUsers?.avatar}}
+                              source={
+                                subItem.idUsers.avatar === 'default'
+                                  ? require('../../../../../assets/account.png')
+                                  : {uri: subItem.idUsers?.avatar}
+                              }
                             />
                             <View style={styles.container_comment_content}>
                               <View style={styles.comment_content}>
