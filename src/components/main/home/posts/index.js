@@ -12,9 +12,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import moment from 'moment';
-import Video from 'react-native-video';
 import Swiper from 'react-native-swiper';
 import CustomReaction from '../../../customs/reaction/customreaction';
+import VideoPlayer from 'react-native-video-player';
 
 const PostsScreen = ({posts, navigation}) => {
   const [showMore, setShowMore] = useState(false);
@@ -125,18 +125,26 @@ const PostsScreen = ({posts, navigation}) => {
     }
   };
 
+  const getUniqueReactions = reactions => {
+    const uniqueReactions = [];
+    const reactionTypeSet = new Set();
+
+    reactions.forEach(reaction => {
+      if (!reactionTypeSet.has(reaction.type)) {
+        uniqueReactions.push(reaction);
+        reactionTypeSet.add(reaction.type);
+      }
+    });
+
+    return uniqueReactions;
+  };
+
   const backgroundColor = type => {
     switch (type) {
       case 'Like':
         return '#22b6c0';
       case 'Love':
         return '#f02849';
-      case 'Haha':
-        return '#f7cb1c';
-      case 'Wow':
-        return '#f7cb1c';
-      default:
-        return '#22b6c0';
     }
   };
 
@@ -232,12 +240,13 @@ const PostsScreen = ({posts, navigation}) => {
                       {media.type === 'image' ? (
                         <Image source={{uri: media.url}} style={styles.posts} />
                       ) : (
-                        <Video
-                          source={{uri: media.url}}
+                        <VideoPlayer
+                          video={{uri: media.url}}
+                          videoWidth={1600}
+                          videoHeight={900}
+                          thumbnail={{uri: media.url}}
+                          autoplay={true}
                           style={styles.posts}
-                          resizeMode="cover"
-                          paused={activeSlide !== index}
-                          repeat={true}
                         />
                       )}
                       <View style={styles.imageCountContainer}>
@@ -264,9 +273,9 @@ const PostsScreen = ({posts, navigation}) => {
                     navigation.navigate('CommentsScreen', {postId: item})
                   }
                   style={styles.container_feeling}>
-                  {item.reaction.map((reaction, index) => (
+                  {getUniqueReactions(item.reaction).map((reaction, index) => (
                     <View
-                      key={reaction._id}
+                      key={index}
                       style={[
                         styles.feeling,
                         {
@@ -275,19 +284,23 @@ const PostsScreen = ({posts, navigation}) => {
                         },
                       ]}>
                       <Image
-                        style={styles.icon_Like_Feeling}
+                        style={[
+                          reaction.type === 'Haha' || reaction.type === 'Wow'
+                            ? {width: 25, height: 25}
+                            : styles.icon_Like_Feeling,
+                          ,
+                        ]}
                         source={getFeelingIcon(reaction.type)}
                       />
                     </View>
                   ))}
-                  {item.reaction.length > 0 ? (
+                  {item.reaction.length > 0 && (
                     <Text style={styles.text_feeling}>
                       {item.reaction.length}
                     </Text>
-                  ) : (
-                    <View style={{height: 0}} />
                   )}
                 </TouchableOpacity>
+
                 {/* comment vs share */}
                 <View style={styles.comment_share}>
                   {/* comment */}
