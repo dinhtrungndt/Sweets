@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect} from 'react';
-import UserNavigation from './src/navigations/stacksNavigations/userNavigations';
 import SplashScreen from 'react-native-splash-screen';
 import {SafeAreaView} from 'react-native';
 import {UserProvider} from './src/contexts/user/userContext';

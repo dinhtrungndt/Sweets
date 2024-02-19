@@ -86,7 +86,7 @@ const Update = ({route, navigation}) => {
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'http://192.168.0.100:3001/users/update-profile',
+          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -108,7 +108,7 @@ const Update = ({route, navigation}) => {
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'http://192.168.0.100:3001/users/update-profile',
+          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -132,7 +132,7 @@ const Update = ({route, navigation}) => {
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'http://192.168.0.100:3001/users/update-profile',
+          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -164,7 +164,7 @@ const Update = ({route, navigation}) => {
               : imageSource1.replace('file://', 'null'),
         });
         const response = await fetch(
-          'http://192.168.0.100:3001/users/update-profile',
+          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
           {
             method: 'POST',
             body: data,

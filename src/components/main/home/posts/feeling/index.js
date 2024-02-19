@@ -1,15 +1,22 @@
 /* eslint-disable prettier/prettier */
-import {StyleSheet, Text, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 
-const FeelingComponent = () => {
+// css
+import {styles} from '../../styles/feeling';
+
+// toptab
+import FeelingTop from './tabTop';
+
+const FeelingComponent = ({reactions}) => {
   return (
-    <View>
-      <Text>FeelingComponent</Text>
+    <View style={styles.T}>
+      {/* header */}
+      <View style={styles.header}>
+        <FeelingTop reactions={reactions} />
+      </View>
     </View>
   );
 };
 
 export default FeelingComponent;
-
-const styles = StyleSheet.create({});

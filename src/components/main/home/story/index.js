@@ -38,7 +38,7 @@ const RenderItemStory = ({item}) => {
 const StoryScreen = () => {
   const {user} = useContext(UserContext);
 
-  console.log('>>>>>>>>> ----------- ', user.user.avatar);
+  // console.log('>>>>>>>>> ----------- ', user.user.avatar);
 
   return (
     <View style={styles.T}>
