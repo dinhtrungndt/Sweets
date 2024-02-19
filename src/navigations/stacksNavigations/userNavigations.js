@@ -4,11 +4,10 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../../components/user/login/Login';
 import SingUpScreen from '../../components/user/signup/SingUp';
-import { NavigationContainer } from '@react-navigation/native';
-import SplashScreen from '../../components/user/Splash/SplashScreens';
+
 import BoardingScreens from '../../components/user/Boarding/Boarding';
 import Update from '../../components/user/update/Update';
-import { HomeStackScreen } from './stacks/homeStack';
+
 import HomeNavigation from './homeNavigation';
 
 const StacK = createNativeStackNavigator();

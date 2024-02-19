@@ -5,7 +5,6 @@ import {SafeAreaView} from 'react-native';
 import {UserProvider} from './src/contexts/user/userContext';
 import {HomeProvider} from './src/contexts/home/homeContext';
 import AppNavigations from './src/navigations/AppNavigations';
-
 const App = () => {
   useEffect(() => {
     setTimeout(() => {
