@@ -2,14 +2,14 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const AddsScreen = () => {
+const OtherScreen = () => {
   return (
     <View>
-      <Text>AddsScreen</Text>
+      <Text>OtherScreen</Text>
     </View>
   );
 };
 
-export default AddsScreen;
+export default OtherScreen;
 
 const styles = StyleSheet.create({});

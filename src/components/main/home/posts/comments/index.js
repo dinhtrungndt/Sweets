@@ -492,7 +492,11 @@ const CommentsScreen = ({navigation, route}) => {
                                 {width: 30, height: 30},
                               ]}
                               source={
-                                subItem.idUsers.avatar === 'default'
+                                subItem.idUsers?.avatar === '' ||
+                                subItem.idUsers?.avatar === null ||
+                                subItem.idUsers?.avatar === undefined ||
+                                subItem.idUsers?.avatar === 'default' ||
+                                subItem.idUsers?.avatar === 'null'
                                   ? require('../../../../../assets/account.png')
                                   : {uri: subItem.idUsers?.avatar}
                               }

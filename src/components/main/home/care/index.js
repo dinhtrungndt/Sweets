@@ -2,14 +2,14 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const AddsScreen = () => {
+const CareScreen = () => {
   return (
     <View>
-      <Text>AddsScreen</Text>
+      <Text>CareScreen</Text>
     </View>
   );
 };
 
-export default AddsScreen;
+export default CareScreen;
 
 const styles = StyleSheet.create({});
