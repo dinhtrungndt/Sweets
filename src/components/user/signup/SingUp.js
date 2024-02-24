@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
@@ -11,9 +11,9 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {register} from '../../../services/user/userService';
+import { register } from '../../../services/user/userService';
 import styles from './Style';
-const SingUpScreen = ({navigation}) => {
+const SingUpScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -47,8 +47,8 @@ const SingUpScreen = ({navigation}) => {
       if (response.status == 1) {
         setLoading(false);
         ToastAndroid.show('Đăng ký thành công', ToastAndroid.SHORT);
-        console.log('register id', response.newUser.email);
-        navigation.replace('Update', {email: response.newUser.email});
+        console.log('register id', response.newUser.email)
+        navigation.navigate('Update', { email: response.newUser.email });
       }
       if (response.status == 0) {
         setLoading(false);
