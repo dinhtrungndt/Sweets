@@ -56,13 +56,13 @@ const AccountScreen = (props) => {
           <Text style={styles.text0}>Đã lưu</Text>
         </Pressable>
       </View>
-      <Pressable style={styles.btnHelp} onPress={handleLogout}>
+      <Pressable style={styles.btnHelp} >
         <Text style={styles.textbtn1}>Trợ giúp và hỗ trợ</Text>
       </Pressable>
-      <Pressable style={styles.btnPrivacy} onPress={handleLogout}>
+      <Pressable style={styles.btnPrivacy}>
         <Text style={styles.textbtn1}>Cài đặt và quyền riêng tư</Text>
       </Pressable>
-      <Pressable style={styles.btnSecurity} onPress={handleLogout}>
+      <Pressable style={styles.btnSecurity}>
         <Text style={styles.textbtn1}>Tài khoản và bảo mật</Text>
       </Pressable>
       <Pressable style={styles.btnLogout} onPress={handleLogout}>

@@ -1,19 +1,6 @@
 /* eslint-disable prettier/prettier */
 import AxiosInstance from '../../helper/Axiosinstance';
 
-<<<<<<< HEAD
-export const register = async (name, gioitinh, ngaysinh, email, password) => {
-  try {
-    const body = {
-      name: name,
-      gioitinh: gioitinh,
-      ngaysinh: ngaysinh,
-      email: email,
-      password: password,
-    };
-    const response = await AxiosInstance().post('/user/post-register', body);
-    console.log('register result: ', response);
-=======
 export const register = async (
   name,
   email,
@@ -37,7 +24,6 @@ export const register = async (
       coverImage,
     );
 
->>>>>>> main
     return response;
   } catch (error) {
     console.log('register: ', error);
