@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 
 // styles
 import {styles} from '../styles/posts';
@@ -15,11 +15,19 @@ import moment from 'moment';
 import Swiper from 'react-native-swiper';
 import CustomReaction from '../../../customs/reaction/customreaction';
 import VideoPlayer from 'react-native-video-player';
+import {UserContext} from '../../../../contexts/user/userContext';
 
 const PostsScreen = ({posts, navigation}) => {
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const user = useContext(UserContext);
+
+  const handleLike = () => {
+    setLiked(!liked);
+    setReaction(false);
+  };
 
   const reactions = [
     {
@@ -348,17 +356,17 @@ const PostsScreen = ({posts, navigation}) => {
               {/* like */}
               <TouchableOpacity
                 style={styles.like_post}
-                onPress={() => handleReaction.current.handlePressOut()}
+                onPress={handleLike} // Gọi hàm handleLike khi người dùng nhấn vào nút like
                 onLongPress={() => handleReaction.current.handleLongPress()}>
                 <AntDesign
-                  name={reaction ? 'like1' : 'like2'}
+                  name={liked ? 'like1' : 'like2'} // Sử dụng state liked để chọn biểu tượng like
                   size={20}
-                  color={reaction ? '#22b6c0' : '#666666'}
+                  color={liked ? '#22b6c0' : '#666666'} // Thay đổi màu sắc của biểu tượng like
                 />
                 <Text
                   style={[
                     styles.text_like_post,
-                    {color: reaction ? '#22b6c0' : '#666666'},
+                    {color: liked ? '#22b6c0' : '#666666'}, // Thay đổi màu sắc của văn bản Thích
                   ]}>
                   Thích
                 </Text>
