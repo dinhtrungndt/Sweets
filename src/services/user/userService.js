@@ -12,6 +12,7 @@ export const register = async (
   coverImage,
 ) => {
   try {
+
     const response = await AxiosInstance().post(
       '/users/post-register',
       name,
@@ -23,7 +24,7 @@ export const register = async (
       avatar,
       coverImage,
     );
-
+   
     return response;
   } catch (error) {
     console.log('register: ', error);

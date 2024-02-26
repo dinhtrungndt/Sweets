@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   TextInput,
@@ -11,15 +11,15 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {login} from '../../../services/user/userService';
+import { login } from '../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Style';
-import {UserContext} from '../../../contexts/user/userContext';
+import { UserContext } from '../../../contexts/user/userContext';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const {onLogin} = useContext(UserContext);
+  const { onLogin } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -27,7 +27,7 @@ const LoginScreen = ({navigation}) => {
     const response = await onLogin(email, password);
     if (response) {
       setLoading(false);
-      navigation.replace('Home');
+      navigation.navigate('Home');
       ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT);
       await AsyncStorage.setItem('userEmail', email);
       await AsyncStorage.setItem('userPassword', password);
