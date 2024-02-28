@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import AxiosInstance from '../../helper/Axiosinstance';
 
-// lấy danh sách bài viết
+// lấy danh sách bài viết theo typePosts
 export const getPosts = async () => {
   try {
     const response = await AxiosInstance().get('/posts/get-all-posts');

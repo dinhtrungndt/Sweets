@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 
 // styles
 import {styles} from '../styles/posts';
@@ -15,11 +15,21 @@ import moment from 'moment';
 import Swiper from 'react-native-swiper';
 import CustomReaction from '../../../customs/reaction/customreaction';
 import VideoPlayer from 'react-native-video-player';
+import {UserContext} from '../../../../contexts/user/userContext';
+import {likeByPost} from '../../../../services/home/homeService';
 
-const PostsScreen = ({posts, navigation}) => {
+const PostsScreen = ({posts, navigation, handleLike}) => {
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
+  const {user} = useContext(UserContext);
+
+  console.log('>>>>>>>>>>> postspostsposts', posts);
+  console.log('----->>>>>>>>>>> thông tin user đăng nhập', user.user._id);
+
+  const isUserReacted = (reactions, userId) => {
+    return reactions.some(reaction => reaction.idUsers._id === userId);
+  };
 
   const reactions = [
     {
@@ -348,20 +358,23 @@ const PostsScreen = ({posts, navigation}) => {
               {/* like */}
               <TouchableOpacity
                 style={styles.like_post}
-                onPress={() => handleReaction.current.handlePressOut()}
+                onPress={() => handleLike(item._id)}
                 onLongPress={() => handleReaction.current.handleLongPress()}>
-                <AntDesign
-                  name={reaction ? 'like1' : 'like2'}
-                  size={20}
-                  color={reaction ? '#22b6c0' : '#666666'}
-                />
-                <Text
-                  style={[
-                    styles.text_like_post,
-                    {color: reaction ? '#22b6c0' : '#666666'},
-                  ]}>
-                  Thích
-                </Text>
+                {isUserReacted(item.reaction, user.user._id) ? (
+                  <>
+                    <AntDesign name="like1" size={20} color="#22b6c0" />
+                    <Text style={[styles.text_like_post, {color: '#22b6c0'}]}>
+                      Thích
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <AntDesign name="like2" size={20} color="#666666" />
+                    <Text style={[styles.text_like_post, {color: '#666666'}]}>
+                      Thích
+                    </Text>
+                  </>
+                )}
               </TouchableOpacity>
               {reaction && (
                 <View style={styles.container_reaction}>

@@ -20,7 +20,7 @@ const CustomReaction = ({reactions, clone}) => {
         <TouchableOpacity
           key={reaction.id}
           onPress={() => handlePress(reaction)}>
-          <Text style={{fontSize: 20, marginRight: 10}}>
+          <Text style={{fontSize: 30, marginRight: 10, color: '#000'}}>
             {selectedReaction && selectedReaction.id === reaction.id
               ? reaction.emoji
               : reaction.emoji}

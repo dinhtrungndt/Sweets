@@ -1,5 +1,13 @@
 /* eslint-disable prettier/prettier */
-import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import React, {useContext, useState} from 'react';
 
 // styles
@@ -9,16 +17,16 @@ import {styles} from '../styles/story';
 import {storyData} from '../data/story';
 
 // Library
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import {UserContext} from '../../../../contexts/user/userContext';
 
-const RenderItemStory = ({item}) => {
+const RenderItemStory = ({story, navigation}) => {
   const [seenStory, setSeenStory] = useState(false);
   const handleSeenStory = () => {
+    navigation.navigate('StoryScreen', {story});
     setSeenStory(true);
   };
 
-  let name = item.name;
+  let name = story.idUsers.name;
   if (name.length > 10) {
     name = name.substring(0, 10 - 3) + '...';
   }
@@ -28,17 +36,18 @@ const RenderItemStory = ({item}) => {
       <TouchableOpacity
         style={seenStory ? styles.border_story_seen : styles.border_story}
         onPress={handleSeenStory}>
-        <Image style={styles.avatar_story} source={item.avatar} />
+        <Image
+          style={styles.avatar_story}
+          source={{uri: story.idUsers.avatar}}
+        />
       </TouchableOpacity>
       <Text style={styles.name_story}>{name}</Text>
     </View>
   );
 };
 
-const StoryScreen = () => {
+const StoryScreen = ({navigation, story}) => {
   const {user} = useContext(UserContext);
-
-  // console.log('>>>>>>>>> ----------- ', user.user.avatar);
 
   return (
     <View style={styles.T}>
@@ -81,9 +90,11 @@ const StoryScreen = () => {
           <Text style={styles.name_me}>Your Story</Text>
         </View> */}
         <FlatList
-          data={storyData}
-          renderItem={({item}) => <RenderItemStory item={item} />}
-          keyExtractor={item => item.id}
+          data={story}
+          renderItem={({item}) => (
+            <RenderItemStory story={item} navigation={navigation} />
+          )}
+          keyExtractor={story._id}
           showsVerticalScrollIndicator={false}
           initialNumToRender={15}
           maxToRenderPerBatch={15}

@@ -78,6 +78,8 @@ const Update = ({ route, navigation }) => {
     });
   }
   const handleUpdateanhbia = async () => {
+
+
     const data = new FormData();
     setLoading(true);
     let uploadSuccess = false;
@@ -185,7 +187,7 @@ const Update = ({ route, navigation }) => {
         setLoading(false);
         ToastAndroid.show('Cập nhật thành công', ToastAndroid.SHORT);
         // chuyển sang màn hình mới
-        navigation.replace('LoginScreen');
+        navigation.replace('LoginScreen')
       } else {
         setLoading(false);
         alert('Cập nhật thất bại. Vui lòng thử lại.');

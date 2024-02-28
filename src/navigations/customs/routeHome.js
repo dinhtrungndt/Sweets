@@ -7,6 +7,8 @@ export const GetRouteNameHome = route => {
   const routeName = getFocusedRouteNameFromRoute(route);
   if (routeName?.includes('CommentsScreen')) {
     return 'none';
+  } else if (routeName?.includes('StoryScreen')) {
+    return 'none';
   }
   return 'flex';
 };

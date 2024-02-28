@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {GetRouteNameHome} from '../customs/routeHome';
 
 // bottomTab
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -10,9 +9,10 @@ import ChatScreen from '../../components/main/chat/ChatScreen';
 import {options} from '../customs/tabNavigator';
 import PhoneBookScreen from '../../components/main/phonebook';
 import {HomeStackScreen} from './stacks/homeStack';
-import AddsScreen from '../../components/main/home/uploads/posts';
+import {AddsScreen} from '../../components/main/home/uploads/posts';
 import {AccountStackScreen} from './stacks/accountStack';
 import {GetRouteNameAccount} from '../customs/routeAccount';
+import {GetRouteNameHome} from '../customs/routeHome';
 
 const Tab = createBottomTabNavigator();
 

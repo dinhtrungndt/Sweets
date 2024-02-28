@@ -387,9 +387,20 @@ const CommentsScreen = ({navigation, route}) => {
                       ),
                     )}
                     {item.reaction.length > 0 && (
-                      <Text style={styles.text_feeling}>
-                        {item.reaction.length}
-                      </Text>
+                      <>
+                        <Text style={styles.text_peopleLike}>
+                          {item.reaction.length > 1 && ' Bạn'}
+                          {item.reaction.length > 2
+                            ? item.reaction.length - 2 + 'và những người khác'
+                            : item.reaction.map((item, index) => {
+                                if (item !== item.id) {
+                                  return (
+                                    ' ' + item.reaction.map(item => item.name)
+                                  );
+                                }
+                              })}
+                        </Text>
+                      </>
                     )}
                   </TouchableOpacity>
                   {/* line */}
@@ -492,7 +503,11 @@ const CommentsScreen = ({navigation, route}) => {
                                 {width: 30, height: 30},
                               ]}
                               source={
-                                subItem.idUsers.avatar === 'default'
+                                subItem.idUsers?.avatar === '' ||
+                                subItem.idUsers?.avatar === null ||
+                                subItem.idUsers?.avatar === undefined ||
+                                subItem.idUsers?.avatar === 'default' ||
+                                subItem.idUsers?.avatar === 'null'
                                   ? require('../../../../../assets/account.png')
                                   : {uri: subItem.idUsers?.avatar}
                               }

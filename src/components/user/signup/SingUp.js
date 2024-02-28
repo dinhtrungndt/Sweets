@@ -57,8 +57,6 @@ const SingUpScreen = ({ navigation }) => {
       if (response.status == 1) {
         setLoading(false);
         ToastAndroid.show('Đăng ký thành công', ToastAndroid.SHORT);
-        console.log('register id', response.newUser.email);
-        navigation.replace('Update', { email: response.newUser.email });
       }
       if (response.status == 0) {
         setLoading(false);
