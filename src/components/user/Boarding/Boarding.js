@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     top: '5%',
   },
   login: {
-    color: 'white',
+    color: 'black',
     fontSize: 20,
     fontWeight: 'bold',
   },
@@ -142,6 +142,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: 'white',
   },
 });

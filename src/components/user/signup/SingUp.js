@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
@@ -11,9 +11,9 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {register} from '../../../services/user/userService';
+import { register } from '../../../services/user/userService';
 import styles from './Style';
-const SingUpScreen = ({navigation}) => {
+const SingUpScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -24,7 +24,7 @@ const SingUpScreen = ({navigation}) => {
   const [token, setToken] = useState('null');
   const [avatar, setAvatar] = useState('null');
   const [coverImage, setAnhbia] = useState('null');
-
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const handleRegister = async () => {
     setLoading(true);
     try {
@@ -38,6 +38,16 @@ const SingUpScreen = ({navigation}) => {
         avatar,
         coverImage,
       };
+      if (!name || !email || !password || !conformpassword || name == '' || email == '' || password == '' || conformpassword == '' || !name.trim() || !email.trim() || !password.trim() || !conformpassword.trim()) {
+        ToastAndroid.show('Vui lòng nhập đầy đủ thông tin', ToastAndroid.SHORT);
+        setLoading(false);
+        return;
+      }
+      if (!email.trim() || !emailRegex.test(email.trim())) {
+        ToastAndroid.show('Vui lòng nhập một địa chỉ email hợp lệ', ToastAndroid.SHORT);
+        setLoading(false);
+        return;
+      }
       if (password != conformpassword) {
         ToastAndroid.show('Nhập lại mật khẩu không khớp', ToastAndroid.SHORT);
         setLoading(false);
@@ -48,7 +58,7 @@ const SingUpScreen = ({navigation}) => {
         setLoading(false);
         ToastAndroid.show('Đăng ký thành công', ToastAndroid.SHORT);
         console.log('register id', response.newUser.email);
-        navigation.replace('Update', {email: response.newUser.email});
+        navigation.replace('Update', { email: response.newUser.email });
       }
       if (response.status == 0) {
         setLoading(false);
@@ -114,7 +124,7 @@ const SingUpScreen = ({navigation}) => {
         />
         <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
           <Icon
-            name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
+            name={passwordVisible ? 'eye-outline' : 'eye-off-outline'}
             size={30}
             color="grey"
             style={styles.icon}
@@ -133,7 +143,7 @@ const SingUpScreen = ({navigation}) => {
         <TouchableOpacity
           onPress={() => setPasswordVisible1(!passwordVisible1)}>
           <Icon
-            name={passwordVisible1 ? 'eye-off-outline' : 'eye-outline'}
+            name={passwordVisible1 ? 'eye-outline' : 'eye-off-outline'}
             size={30}
             color="grey"
             style={styles.icon}

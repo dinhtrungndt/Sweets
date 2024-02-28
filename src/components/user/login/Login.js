@@ -27,7 +27,10 @@ const LoginScreen = ({ navigation }) => {
     const response = await onLogin(email, password);
     if (response) {
       setLoading(false);
-      navigation.navigate('Home');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
       ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT);
       await AsyncStorage.setItem('userEmail', email);
       await AsyncStorage.setItem('userPassword', password);
@@ -82,7 +85,7 @@ const LoginScreen = ({ navigation }) => {
         />
         <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
           <Icon
-            name={passwordVisible ? 'eye-off-outline' : 'eye-outline'}
+            name={passwordVisible ? 'eye-outline' : 'eye-off-outline'}
             size={30}
             color="grey"
             style={styles.icon}
