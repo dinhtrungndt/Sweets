@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 
-import {RefreshControl, ScrollView, View} from 'react-native';
-import React, {useCallback, useEffect, useState, useContext} from 'react';
+import {RefreshControl, ScrollView} from 'react-native';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import HeaderScreen from '../layout/header';
 
 // styles
@@ -20,11 +20,19 @@ import {
   getShare,
   likeByPost,
 } from '../../../services/home/homeService';
+import {UserContext} from '../../../contexts/user/userContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = props => {
   const {navigation} = props;
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const {user} = useContext(UserContext);
+
+  // console.log(
+  //   '>>>>>>>>>>>>>> posts',
+  //   posts.map(item => item.reaction),
+  // );
 
   const onGetPosts = async () => {
     try {
@@ -57,9 +65,38 @@ const HomeScreen = props => {
     setRefreshing(false);
   }, []);
 
+  const handleLike = async idPosts => {
+    try {
+      const idUsers = user.id;
+      const response = await likeByPost(idUsers, idPosts);
+      if (response.status === 1) {
+        const updatedPosts = posts.map(post => {
+          if (post._id === idPosts) {
+            return {
+              ...post,
+              type: response.idPosts.likedBy,
+            };
+          }
+          return post;
+        });
+        setPosts(updatedPosts);
+      } else {
+        console.error('Lỗi khi thay đổi trạng thái like:', response.message);
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu API:', error);
+    }
+  };
+
   useEffect(() => {
     onGetPosts();
   }, []);
+
+  // Lọc bài viết theo typePosts
+  const filteredPosts = posts.filter(
+    post => post.idTypePosts.name === 'Bài viết',
+  );
+  const filteredStore = posts.filter(post => post.idTypePosts.name === 'Story');
 
   return (
     <ScrollView
@@ -69,8 +106,12 @@ const HomeScreen = props => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <HeaderScreen />
-      <StoryScreen />
-      <PostsScreen posts={posts} navigation={navigation} />
+      <StoryScreen story={filteredStore} navigation={navigation} />
+      <PostsScreen
+        posts={filteredPosts}
+        navigation={navigation}
+        handleLike={handleLike}
+      />
     </ScrollView>
   );
 };

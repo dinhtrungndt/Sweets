@@ -38,9 +38,8 @@ export const UserProvider = props => {
       setUser(null);
     } catch (error) {
       console.log('Lỗi khi đăng xuất:', error);
-    } 
-    
-  }
+    }
+  };
 
   const onLogin = async (email, password) => {
     try {
