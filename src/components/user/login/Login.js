@@ -31,6 +31,7 @@ const LoginScreen = ({ navigation }) => {
       ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT);
       await AsyncStorage.setItem('userEmail', email);
       await AsyncStorage.setItem('userPassword', password);
+      console.log(response.status)
     } else {
       setLoading(false);
       ToastAndroid.show(
