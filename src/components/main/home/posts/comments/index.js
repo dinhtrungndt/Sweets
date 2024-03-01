@@ -389,19 +389,18 @@ const CommentsScreen = ({navigation, route}) => {
                     {item.reaction.length > 0 && (
                       <>
                         <Text style={styles.text_peopleLike}>
-                          {item.reaction.length > 1 && ' Bạn'}
+                          {item.reaction.length > 1 && ' Bạn,'}
                           {item.reaction.length > 2
                             ? item.reaction.length - 2 + 'và những người khác'
                             : item.reaction.map((item, index) => {
-                                if (item !== item.id) {
-                                  return (
-                                    ' ' + item.reaction.map(item => item.name)
-                                  );
+                                if (item !== item._id) {
+                                  return ' ' + item.idUsers.name + ' và';
                                 }
                               })}
                         </Text>
                       </>
                     )}
+                    {/* {console.log('>>>>>>>>>>.. comment reaction', item._id)} */}
                   </TouchableOpacity>
                   {/* line */}
                   <Text style={styles.linePostsEnd} />
@@ -470,13 +469,13 @@ const CommentsScreen = ({navigation, route}) => {
                         </View>
                       </View>
                     </View>
-                    {console.log(
+                    {/* {console.log(
                       '>>>>>>>>>>>>>>>>Bình luận con user name',
                       postId.comment.filter(
                         subItem =>
                           subItem.idParent && subItem.idParent._id === item._id,
                       ),
-                    )}
+                    )} */}
                     {/* Bình luận con */}
                     <View
                       style={{
