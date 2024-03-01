@@ -22,12 +22,14 @@ import {
 } from '../../../services/home/homeService';
 import {UserContext} from '../../../contexts/user/userContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {LoadingScreen} from '../../../utils/loading';
 
 const HomeScreen = props => {
   const {navigation} = props;
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const {user} = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(true);
 
   // console.log(
   //   '>>>>>>>>>>>>>> posts',
@@ -55,6 +57,7 @@ const HomeScreen = props => {
         }),
       );
       setPosts(postsWithMedia);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -68,13 +71,20 @@ const HomeScreen = props => {
   const handleLike = async idPosts => {
     try {
       const idUsers = user.id;
-      const response = await likeByPost(idUsers, idPosts);
+      const type = 'Like';
+      const response = await likeByPost(idUsers, idPosts, type);
       if (response.status === 1) {
         const updatedPosts = posts.map(post => {
           if (post._id === idPosts) {
+            const updatedReaction = post.reaction.map(reactionItem => {
+              if (reactionItem.idUsers._id === user.id) {
+                return {...reactionItem, type: 'Like'};
+              }
+              return reactionItem;
+            });
             return {
               ...post,
-              type: response.idPosts.likedBy,
+              reaction: updatedReaction,
             };
           }
           return post;
@@ -98,21 +108,25 @@ const HomeScreen = props => {
   );
   const filteredStore = posts.filter(post => post.idTypePosts.name === 'Story');
 
-  return (
-    <ScrollView
-      style={styles.T}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
-      <HeaderScreen />
-      <StoryScreen story={filteredStore} navigation={navigation} />
-      <PostsScreen
-        posts={filteredPosts}
-        navigation={navigation}
-        handleLike={handleLike}
-      />
-    </ScrollView>
+  return isLoading ? (
+    <LoadingScreen />
+  ) : (
+    <>
+      <ScrollView
+        style={styles.T}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <HeaderScreen />
+        <StoryScreen story={filteredStore} navigation={navigation} />
+        <PostsScreen
+          posts={filteredPosts}
+          navigation={navigation}
+          handleLike={handleLike}
+        />
+      </ScrollView>
+    </>
   );
 };
 
