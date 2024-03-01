@@ -1,24 +1,35 @@
 /* eslint-disable prettier/prettier */
-import { StyleSheet, Text, View, Pressable, Image, Button} from 'react-native';
-import React, { useContext, useState } from 'react';
+import { StyleSheet, Text, View, Pressable, Image, TouchableOpacity } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../../../contexts/user/userContext';
 
 const AccountScreen = (props) => {
   const { navigation } = props;
 
+  const { user } = useContext(UserContext);
   const { onLogout } = useContext(UserContext);
-  const [loading, setLoading] = useState(false);
+  console.log(">>>>>>>>> userrrrrr", user.user.name);
 
-  const [error, setError] = useState(false);
-  const [errorText, setErrorText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showConfirmLogout, setShowConfirmLogout] = useState(false);
 
   const handleLogout = async () => {
+    // Nếu đang hiển thị hộp thoại xác nhận, không thực hiện đăng xuất
+    if (showConfirmLogout) {
+      setShowConfirmLogout(false);
+      return;
+    }
+    // Hiển thị hộp thoại xác nhận
+    setShowConfirmLogout(true);
+  }
+
+  const confirmLogout = async () => {
     setLoading(true);
     const result = await onLogout();
     if (!result) {
-      setError(true);
-      setErrorText('Đăng xuất thất bại, Vui lòng kiểm tra lại !');
+      setLoading(false);
+      setShowConfirmLogout(false);
     } else {
       try {
         await AsyncStorage.removeItem('userEmail');
@@ -30,44 +41,65 @@ const AccountScreen = (props) => {
     }
   }
 
-
   return (
     <View style={styles.body}>
-      <View style={styles.container}>
-        <Image style={styles.imgAvatar} source={require('../../../assets/dog.jpg')}/>
-        <Text style={styles.textName}>Nguyễn Phúc Chinh</Text>
+      <TouchableOpacity style={styles.container}>
+        <Image style={styles.imgAvatar} source={user && user.user.avatar ? { uri: user.user.avatar } : require('../../../assets/diana.jpg')} />
+        <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
         <Text style={styles.textU}>Xem trang cá nhân</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Account_Transfer')}
+          style={{ alignSelf: 'center' }}>
+          <Image style={styles.userIcon} source={require('../../../assets/icon_user.png')} />
+        </TouchableOpacity>
+      </TouchableOpacity>
+      <View style={styles.bodyBtnIcon}>
+        <TouchableOpacity style={styles.btnIcon}>
+          <Image style={styles.imgIcon} source={require('../../../assets/icon_image2.png')} />
+          <Text style={styles.text0}>Ảnh của tôi</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnIcon}>
+          <Image style={styles.imgIcon} source={require('../../../assets/icon_video.png')} />
+          <Text style={styles.text0}>Video của tôi</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.bodyBtnIcon}>
-        <Pressable style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_image2.png')}/>
-          <Text style={styles.text0}>Ảnh</Text>
-        </Pressable>
-        <Pressable style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_video.png')}/>
-          <Text style={styles.text0}>Video</Text>
-        </Pressable>
-        <Pressable style={styles.btnIcon}>
-          <Image style={styles.imgIconMmr} source={require('../../../assets/icon_memories.png')}/>
+        <TouchableOpacity style={styles.btnIcon}>
+          <Image style={styles.imgIconMmr} source={require('../../../assets/icon_memories.png')} />
           <Text style={styles.text0}>Kỷ niệm</Text>
-        </Pressable>
-        <Pressable style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_image2.png')}/>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnIcon}>
+          <Image style={styles.imgIcon} source={require('../../../assets/icon_image2.png')} />
           <Text style={styles.text0}>Đã lưu</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
-      <Pressable style={styles.btnHelp} >
-        <Text style={styles.textbtn1}>Trợ giúp và hỗ trợ</Text>
-      </Pressable>
-      <Pressable style={styles.btnPrivacy}>
-        <Text style={styles.textbtn1}>Cài đặt và quyền riêng tư</Text>
-      </Pressable>
-      <Pressable style={styles.btnSecurity}>
-        <Text style={styles.textbtn1}>Tài khoản và bảo mật</Text>
-      </Pressable>
-      <Pressable style={styles.btnLogout} onPress={handleLogout}>
+      <TouchableOpacity style={styles.btnHelp} >
+        <Text style={styles.textbtn1}>Trợ giúp & hỗ trợ</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.btnPrivacy}>
+        <Text style={styles.textbtn1}>Cài đặt & quyền riêng tư</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.btnSecurity}>
+        <Text style={styles.textbtn1}>Tài khoản & bảo mật</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.btnLogout} onPress={handleLogout}>
         <Text style={styles.textbtn}>Đăng xuất</Text>
-      </Pressable>
+      </TouchableOpacity>
+
+      {/* Hiển thị hộp thoại xác nhận */}
+      {showConfirmLogout && (
+        <View style={styles.confirmLogoutContainer}>
+          <Text style={styles.confirmLogoutText}>Đăng xuất khỏi tài khoản của bạn?</Text>
+          <View style={styles.confirmLogoutButtons}>
+            <TouchableOpacity style={styles.confirmLogoutButton} onPress={() => setShowConfirmLogout(false)}>
+              <Text style={styles.confirmLogoutButtonText}>Hủy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.confirmLogoutButton} onPress={confirmLogout}>
+              <Text style={styles.confirmLogoutButtonText}>Đồng ý</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -80,51 +112,62 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
   },
   container: {
+    marginTop: 16,
     width: '100%',
-    height: 270,
-    position: 'asolute',
+    height: 90,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
   },
   imgAvatar: {
-    width: 120,
-    height: 120,
+    width: 60,
+    height: 60,
     borderRadius: 100,
-    marginTop: 60,
     alignSelf: 'center',
   },
   textName: {
+    width: 142,
     fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontWeight: 'bold',
-    fontSize: 24,
-    lineHeight: 36,
-    textAlign: 'center',
-    marginTop: 12,
+    fontSize: 16,
     color: '#000000',
+    marginTop: 12,
+    marginLeft: 16,
+    justifyContent: 'center',
   },
   textU: {
     fontFamily: 'Poppins',
     fontStyle: 'normal',
-    fontSize: 18,
-    lineHeight: 24,
-    textAlign: 'center',
+    fontSize: 14,
     color: '#1877F2',
+    marginTop: 33,
+    marginLeft: -141,
+  },
+  userIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 126,
   },
   bodyBtnIcon: {
     width: '100%',
     height: 60,
+    marginTop: 16,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'center',
+    // alignItems: 'center',
   },
   btnIcon: {
-    width: 120,
+    width: 150,
     height: 60,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f3f6f4',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
-    marginLeft: 16,
+    marginHorizontal: 10,
   },
   text0: {
     color: '#000000',
@@ -147,44 +190,37 @@ const styles = StyleSheet.create({
   btnHelp: {
     width: '100%',
     height: 60,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f3f6f4',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    bottom: 180,
+    marginTop: 16,
     borderTopWidth: 1,
     borderTopColor: '#E5E5E5',
   },
   btnPrivacy: {
     width: '100%',
     height: 60,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f3f6f4',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    bottom: 120,
     borderTopWidth: 1,
     borderTopColor: '#E5E5E5',
   },
   btnSecurity: {
     width: '100%',
     height: 60,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f3f6f4',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    bottom: 60,
     borderTopWidth: 1,
     borderTopColor: '#E5E5E5',
   },
   btnLogout: {
     width: '100%',
     height: 60,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f3f6f4',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    bottom: 0,
     borderTopWidth: 1,
     borderTopColor: '#E5E5E5',
   },
@@ -201,5 +237,41 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontSize: 18,
     lineHeight: 24,
+  },
+  confirmLogoutContainer: {
+    position: 'absolute',
+    bottom: 240,
+    width: '90%',
+    backgroundColor: '#FFFFFF',
+    padding: 18,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E5E5',
+    alignSelf: 'center',
+    borderRadius: 10,
+  },
+  confirmLogoutText: {
+    fontFamily: 'Poppins',
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: 'center',
+    color: '#000000',
+  },
+  confirmLogoutButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  confirmLogoutButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginHorizontal: 5,
+    borderRadius: 5,
+    backgroundColor: '#E5E5E5',
+  },
+  confirmLogoutButtonText: {
+    fontFamily: 'Poppins',
+    fontSize: 16,
+    color: '#000000',
   },
 });
