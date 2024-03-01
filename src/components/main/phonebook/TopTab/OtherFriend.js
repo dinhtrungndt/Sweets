@@ -37,7 +37,7 @@ const OtherFriend = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Other Friends</Text>
+      <Text style={styles.title}>Có thể bạn muốn kết bạn</Text>
 
       {filteredUsers.length > 0 ? (
         <FlatList
