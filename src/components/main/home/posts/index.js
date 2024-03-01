@@ -24,9 +24,6 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
   const [reaction, setReaction] = useState(false);
   const {user} = useContext(UserContext);
 
-  console.log('>>>>>>>>>>> postspostsposts', posts);
-  console.log('----->>>>>>>>>>> thông tin user đăng nhập', user.user._id);
-
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
   };
@@ -376,6 +373,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   </>
                 )}
               </TouchableOpacity>
+
               {reaction && (
                 <View style={styles.container_reaction}>
                   <CustomReaction
