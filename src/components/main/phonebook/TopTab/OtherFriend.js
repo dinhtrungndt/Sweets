@@ -1,5 +1,5 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { Text, View, FlatList, TouchableOpacity, Image } from 'react-native';
+import React, {useEffect, useContext, useState} from 'react';
+import {Text, View, FlatList, TouchableOpacity, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import styles from '../styles/OtherFriendStyles';
@@ -22,7 +22,9 @@ const OtherFriend = () => {
         const friendsArray = JSON.parse(friendsFromStorage) || [];
 
         // Lọc ra những người dùng không phải là bạn bè của tôi và không phải là tôi
-        const filteredFriends = friends.filter(user => user._id !== userId && !friendsArray.includes(user._id));
+        const filteredFriends = friends.filter(
+          user => user._id !== userId && !friendsArray.includes(user._id),
+        );
 
         console.log(filteredFriends);
 
@@ -43,14 +45,26 @@ const OtherFriend = () => {
         <FlatList
           data={filteredUsers}
           keyExtractor={item => item._id}
-          renderItem={({ item }) => (
-           <View>
-            <TouchableOpacity style={styles.friendItem}>
-             <Image source={{ uri: item.avatar || 'https://res.cloudinary.com/dztqqxnqr/image/upload/v1704255997/p1vdyjxbnmt8btfuqoab.jpg' }} style={styles.avatar} />
-             <Text style={styles.friendItemText}>{item.name}</Text>
-            </TouchableOpacity>
-           
-           </View>
+          renderItem={({item}) => (
+            <View>
+              <View style={{flexDirection:'row',justifyContent:'space-between',marginVertical:5}}>
+                <TouchableOpacity style={styles.friendItem}>
+                  <Image
+                    source={{
+                      uri:
+                        item.avatar ||
+                        'https://res.cloudinary.com/dztqqxnqr/image/upload/v1704255997/p1vdyjxbnmt8btfuqoab.jpg',
+                    }}
+                    style={styles.avatar}
+                  />
+                  <Text style={styles.friendItemText}>{item.name}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.imgOption}>
+                  <Image style={styles.imgOption} source={require('../../../../assets/option.png')} />
+                </TouchableOpacity>
+              </View>
+            </View>
           )}
         />
       ) : (
