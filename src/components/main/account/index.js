@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { StyleSheet, Text, View, Pressable, Image, Button} from 'react-native';
-import React, { useContext, useState } from 'react';
+import {StyleSheet, Text, View, Pressable, Image, Button} from 'react-native';
+import React, {useContext, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserContext } from '../../../contexts/user/userContext';
+import {UserContext} from '../../../contexts/user/userContext';
 
-const AccountScreen = (props) => {
-  const { navigation } = props;
+const AccountScreen = props => {
+  const {navigation} = props;
 
-  const { onLogout } = useContext(UserContext);
+  const {onLogout} = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState(false);
@@ -28,35 +28,49 @@ const AccountScreen = (props) => {
         console.log('Lỗi khi đăng xuất:', error);
       }
     }
-  }
-
+  };
 
   return (
     <View style={styles.body}>
       <View style={styles.container}>
-        <Image style={styles.imgAvatar} source={require('../../../assets/dog.jpg')}/>
+        <Image
+          style={styles.imgAvatar}
+          source={require('../../../assets/dog.jpg')}
+        />
         <Text style={styles.textName}>Nguyễn Phúc Chinh</Text>
         <Text style={styles.textU}>Xem trang cá nhân</Text>
       </View>
       <View style={styles.bodyBtnIcon}>
         <Pressable style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_image2.png')}/>
+          <Image
+            style={styles.imgIcon}
+            source={require('../../../assets/icon_image2.png')}
+          />
           <Text style={styles.text0}>Ảnh</Text>
         </Pressable>
         <Pressable style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_video.png')}/>
+          <Image
+            style={styles.imgIcon}
+            source={require('../../../assets/icon_video.png')}
+          />
           <Text style={styles.text0}>Video</Text>
         </Pressable>
         <Pressable style={styles.btnIcon}>
-          <Image style={styles.imgIconMmr} source={require('../../../assets/icon_memories.png')}/>
+          <Image
+            style={styles.imgIconMmr}
+            source={require('../../../assets/icon_memories.png')}
+          />
           <Text style={styles.text0}>Kỷ niệm</Text>
         </Pressable>
         <Pressable style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_image2.png')}/>
+          <Image
+            style={styles.imgIcon}
+            source={require('../../../assets/icon_image2.png')}
+          />
           <Text style={styles.text0}>Đã lưu</Text>
         </Pressable>
       </View>
-      <Pressable style={styles.btnHelp} >
+      <Pressable style={styles.btnHelp}>
         <Text style={styles.textbtn1}>Trợ giúp và hỗ trợ</Text>
       </Pressable>
       <Pressable style={styles.btnPrivacy}>
@@ -142,7 +156,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     // quay cả hình sang trái
-    transform: [{ rotate: '180deg' }],
+    transform: [{rotate: '180deg'}],
   },
   btnHelp: {
     width: '100%',

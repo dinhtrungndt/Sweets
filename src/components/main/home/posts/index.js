@@ -16,17 +16,16 @@ import Swiper from 'react-native-swiper';
 import CustomReaction from '../../../customs/reaction/customreaction';
 import VideoPlayer from 'react-native-video-player';
 import {UserContext} from '../../../../contexts/user/userContext';
+import {likeByPost} from '../../../../services/home/homeService';
 
-const PostsScreen = ({posts, navigation}) => {
+const PostsScreen = ({posts, navigation, handleLike}) => {
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
-  const [liked, setLiked] = useState(false);
-  const user = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
-  const handleLike = () => {
-    setLiked(!liked);
-    setReaction(false);
+  const isUserReacted = (reactions, userId) => {
+    return reactions.some(reaction => reaction.idUsers._id === userId);
   };
 
   const reactions = [
@@ -356,21 +355,25 @@ const PostsScreen = ({posts, navigation}) => {
               {/* like */}
               <TouchableOpacity
                 style={styles.like_post}
-                onPress={handleLike} // Gọi hàm handleLike khi người dùng nhấn vào nút like
+                onPress={() => handleLike(item._id)}
                 onLongPress={() => handleReaction.current.handleLongPress()}>
-                <AntDesign
-                  name={liked ? 'like1' : 'like2'} // Sử dụng state liked để chọn biểu tượng like
-                  size={20}
-                  color={liked ? '#22b6c0' : '#666666'} // Thay đổi màu sắc của biểu tượng like
-                />
-                <Text
-                  style={[
-                    styles.text_like_post,
-                    {color: liked ? '#22b6c0' : '#666666'}, // Thay đổi màu sắc của văn bản Thích
-                  ]}>
-                  Thích
-                </Text>
+                {isUserReacted(item.reaction, user.user._id) ? (
+                  <>
+                    <AntDesign name="like1" size={20} color="#22b6c0" />
+                    <Text style={[styles.text_like_post, {color: '#22b6c0'}]}>
+                      Thích
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <AntDesign name="like2" size={20} color="#666666" />
+                    <Text style={[styles.text_like_post, {color: '#666666'}]}>
+                      Thích
+                    </Text>
+                  </>
+                )}
               </TouchableOpacity>
+
               {reaction && (
                 <View style={styles.container_reaction}>
                   <CustomReaction
