@@ -36,7 +36,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
     },
     {
       id: 1,
-      emoji: '😍',
+      emoji: '❤️',
       name: 'Love',
     },
     {
