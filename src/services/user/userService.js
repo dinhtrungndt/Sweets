@@ -12,7 +12,6 @@ export const register = async (
   coverImage,
 ) => {
   try {
-
     const response = await AxiosInstance().post(
       '/users/post-register',
       name,
@@ -24,7 +23,7 @@ export const register = async (
       avatar,
       coverImage,
     );
-   
+
     return response;
   } catch (error) {
     console.log('register: ', error);
@@ -43,6 +42,16 @@ export const login = async (email, password) => {
     return response;
   } catch (error) {
     console.log('register: ', error);
+    return error;
+  }
+};
+
+export const GetListUser = async () => {
+  try {
+    const res = await AxiosInstance().get('/users/get-users');
+    return res.users;
+  } catch (error) {
+    console.log('getListUser error', error);
     return error;
   }
 };

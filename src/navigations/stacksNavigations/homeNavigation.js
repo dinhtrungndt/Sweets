@@ -5,16 +5,15 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 // Screens
-import ChatScreen from '../../components/main/chat/ChatScreen';
 import {options} from '../customs/tabNavigator';
-import PhoneBookScreen from '../../components/main/phonebook';
 import {HomeStackScreen} from './stacks/homeStack';
 import {AddsScreen} from '../../components/main/home/uploads/posts';
 import {AccountStackScreen} from './stacks/accountStack';
 import {GetRouteNameAccount} from '../customs/routeAccount';
 import {GetRouteNameHome} from '../customs/routeHome';
-import { GetRouteNamePhone } from '../customs/routePhone';
-import { PhoneBookStack } from './stacks/PhoneBookStack';
+import {GetRouteNamePhone} from '../customs/routePhone';
+import {PhoneBookStack} from './stacks/PhoneBookStack';
+import {ChatScreenStack} from './stacks/chatStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,7 +30,7 @@ const HomeNavigation = () => {
       />
       <Tab.Screen
         name="ChatScreen"
-        component={ChatScreen}
+        component={ChatScreenStack}
         options={{headerShown: false}}
       />
       <Tab.Screen
