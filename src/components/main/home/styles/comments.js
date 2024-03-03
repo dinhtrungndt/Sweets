@@ -137,7 +137,13 @@ export const styles = StyleSheet.create({
   },
   text_share: {
     fontSize: 14,
-    color: '#666666',
+    color: '#212121',
+  },
+  text_peopleLike: {
+    fontSize: 16,
+    paddingLeft: 5,
+    color: '#000',
+    fontWeight: '600',
   },
   linePosts: {
     width: '100%',

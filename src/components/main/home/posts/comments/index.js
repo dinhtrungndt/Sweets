@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 
 // styles
 import {styles} from '../../styles/comments';
@@ -30,20 +30,26 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet from '@gorhom/bottom-sheet';
 import FeelingComponent from '../feeling';
+import {UserContext} from '../../../../../contexts/user/userContext';
 
 const CommentsScreen = ({navigation, route}) => {
-  const {postId} = route.params;
+  const {postId, handleLike} = route.params;
   const [posts, setPosts] = useState([postId]);
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
-  const snapPoints = useMemo(() => ['60%', '90%'], []);
+  const snapPoints = useMemo(() => ['90%', '60%'], []);
   const bottomSheetRef = useRef(null);
+  const {user} = useContext(UserContext);
 
   // console.log('>>>>>>>>> CommentsScreen postId', postId);
 
   const handleCloneBottomSheet = () => bottomSheetRef.current?.close();
   const handleOnpenBottomSheet = () => bottomSheetRef.current?.expand();
+
+  const isUserReacted = (reactions, userId) => {
+    return reactions.some(reaction => reaction.idUsers._id === userId);
+  };
 
   const reactions = [
     {
@@ -53,7 +59,7 @@ const CommentsScreen = ({navigation, route}) => {
     },
     {
       id: 1,
-      emoji: '😍',
+      emoji: '❤️',
       name: 'Love',
     },
     {
@@ -171,8 +177,6 @@ const CommentsScreen = ({navigation, route}) => {
         return '#f02849';
     }
   };
-
-  const handleBottomSheet = () => {};
 
   useEffect(() => {
     handleReaction.current = {
@@ -304,21 +308,25 @@ const CommentsScreen = ({navigation, route}) => {
                 {/* like */}
                 <TouchableOpacity
                   style={styles.like_post}
-                  onPress={() => handleReaction.current.handlePressOut()}
+                  onPress={() => handleLike(item._id)}
                   onLongPress={() => handleReaction.current.handleLongPress()}>
-                  <AntDesign
-                    name={reaction ? 'like1' : 'like2'}
-                    size={20}
-                    color={reaction ? '#22b6c0' : '#666666'}
-                  />
-                  <Text
-                    style={[
-                      styles.text_like_post,
-                      {color: reaction ? '#22b6c0' : '#666666'},
-                    ]}>
-                    Thích
-                  </Text>
+                  {isUserReacted(item.reaction, user.user._id) ? (
+                    <>
+                      <AntDesign name="like1" size={20} color="#22b6c0" />
+                      <Text style={[styles.text_like_post, {color: '#22b6c0'}]}>
+                        Thích
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <AntDesign name="like2" size={20} color="#666666" />
+                      <Text style={[styles.text_like_post, {color: '#666666'}]}>
+                        Thích
+                      </Text>
+                    </>
+                  )}
                 </TouchableOpacity>
+
                 {reaction && (
                   <View style={styles.container_reaction}>
                     <CustomReaction
@@ -358,9 +366,7 @@ const CommentsScreen = ({navigation, route}) => {
                 <View style={styles.container_feeling_commnet_share}>
                   {/* feeling */}
                   <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('CommentsScreen', {postId: item})
-                    }
+                    onPress={handleOnpenBottomSheet}
                     style={styles.container_feeling}>
                     {getUniqueReactions(item.reaction).map(
                       (reaction, index) => (
@@ -386,21 +392,54 @@ const CommentsScreen = ({navigation, route}) => {
                         </View>
                       ),
                     )}
+                    {console.log(
+                      '>>>>>>>>>> reactttttttt ',
+                      item.reaction.map(item => item.idUsers.name).join(),
+                    )}
                     {item.reaction.length > 0 && (
                       <>
-                        <Text style={styles.text_peopleLike}>
-                          {item.reaction.length > 1 && ' Bạn,'}
-                          {item.reaction.length > 2
-                            ? item.reaction.length - 2 + 'và những người khác'
-                            : item.reaction.map((item, index) => {
-                                if (item !== item._id) {
-                                  return ' ' + item.idUsers.name + ' và';
-                                }
-                              })}
-                        </Text>
+                        {item.reaction.map(item => item.idUsers._id).join() ===
+                        user.user._id ? (
+                          <Text style={styles.text_peopleLike}>Bạn</Text>
+                        ) : item.reaction
+                            .map(item => item.idUsers._id)
+                            .join() === user.user._id ||
+                          item.reaction.length > 2 ? (
+                          <Text style={styles.text_peopleLike}>
+                            Bạn,{' '}
+                            {item.reaction
+                              .filter(
+                                reaction =>
+                                  reaction.idUsers._id !== user.user._id &&
+                                  item.reaction.splice(0, 1),
+                              )
+                              .map(reaction => reaction.idUsers.name)
+                              .join(', ')}{' '}
+                            và những người khác
+                          </Text>
+                        ) : item.reaction
+                            .map(item => item.idUsers._id)
+                            .join() !== user.user._id ? (
+                          <Text style={styles.text_peopleLike}>
+                            {item.reaction
+                              .map(item => item.idUsers.name)
+                              .join(', ')}
+                          </Text>
+                        ) : item.reaction
+                            .map(item => item.idUsers._id)
+                            .join() !== user.user._id ||
+                          item.reaction.length > 2 ? (
+                          <Text style={styles.text_peopleLike}>
+                            {item.reaction
+                              .map(item => item.idUsers.name)
+                              .join()}{' '}
+                            và những người khác
+                          </Text>
+                        ) : (
+                          <Text>No</Text>
+                        )}
                       </>
                     )}
-                    {/* {console.log('>>>>>>>>>>.. comment reaction', item._id)} */}
                   </TouchableOpacity>
                   {/* line */}
                   <Text style={styles.linePostsEnd} />
@@ -566,8 +605,7 @@ const CommentsScreen = ({navigation, route}) => {
           ref={bottomSheetRef}
           index={0}
           snapPoints={snapPoints}
-          enablePanDownToClose={true}
-          onChange={handleBottomSheet}>
+          enablePanDownToClose={true}>
           <FeelingComponent
             reactions={postId.reaction}
             clone={handleCloneBottomSheet}
