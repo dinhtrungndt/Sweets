@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 
-import {RefreshControl, ScrollView, View} from 'react-native';
-import React, {useCallback, useEffect, useState, useContext} from 'react';
+import {RefreshControl, ScrollView} from 'react-native';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import HeaderScreen from '../layout/header';
 
 // styles
@@ -21,12 +21,20 @@ import {
   likeByPost,
 } from '../../../services/home/homeService';
 import {UserContext} from '../../../contexts/user/userContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {LoadingScreen} from '../../../utils/loading';
 
 const HomeScreen = props => {
   const {navigation} = props;
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const {user} = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // console.log(
+  //   '>>>>>>>>>>>>>> posts',
+  //   posts.map(item => item.reaction),
+  // );
 
   const onGetPosts = async () => {
     try {
@@ -49,6 +57,7 @@ const HomeScreen = props => {
         }),
       );
       setPosts(postsWithMedia);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -59,23 +68,65 @@ const HomeScreen = props => {
     setRefreshing(false);
   }, []);
 
+  const handleLike = async idPosts => {
+    try {
+      const idUsers = user.id;
+      const type = 'Like';
+      const response = await likeByPost(idUsers, idPosts, type);
+      if (response.status === 1) {
+        const updatedPosts = posts.map(post => {
+          if (post._id === idPosts) {
+            const updatedReaction = post.reaction.map(reactionItem => {
+              if (reactionItem.idUsers._id === user.id) {
+                return {...reactionItem, type: 'Like'};
+              }
+              return reactionItem;
+            });
+            return {
+              ...post,
+              reaction: updatedReaction,
+            };
+          }
+          return post;
+        });
+        setPosts(updatedPosts);
+      } else {
+        console.error('Lỗi khi thay đổi trạng thái like:', response.message);
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu API:', error);
+    }
+  };
+
   useEffect(() => {
     onGetPosts();
   }, []);
 
-  console.log('>>>>>>>>>>> user Home ', user);
+  // Lọc bài viết theo typePosts
+  const filteredPosts = posts.filter(
+    post => post.idTypePosts.name === 'Bài viết',
+  );
+  const filteredStore = posts.filter(post => post.idTypePosts.name === 'Story');
 
-  return (
-    <ScrollView
-      style={styles.T}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
-      <HeaderScreen />
-      <StoryScreen />
-      <PostsScreen posts={posts} navigation={navigation} />
-    </ScrollView>
+  return isLoading ? (
+    <LoadingScreen />
+  ) : (
+    <>
+      <ScrollView
+        style={styles.T}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <HeaderScreen />
+        <StoryScreen story={filteredStore} navigation={navigation} />
+        <PostsScreen
+          posts={filteredPosts}
+          navigation={navigation}
+          handleLike={handleLike}
+        />
+      </ScrollView>
+    </>
   );
 };
 

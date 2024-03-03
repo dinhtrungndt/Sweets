@@ -38,9 +38,33 @@ export const UserProvider = props => {
       setUser(null);
     } catch (error) {
       console.log('Lỗi khi đăng xuất:', error);
-    } 
-    
-  }
+    }
+  };
+
+  // const getUserFriends = async () => {
+  //   console.log('Bắt đầu hàm getUserFriends');
+  //   try {
+  //     const token = await AsyncStorage.getItem('token');
+  //     console.log('users:', user);
+  //     console.log('user._id:', user._id);
+  
+  //     if (token && user && user._id) {
+  //       const response = await AxiosInstance().get(`/users/get-users/${user._id}`);
+        
+  //       console.log('API response:', response);
+  
+  //       if (response && response.status === 1) {
+  //         // Cập nhật thông tin bạn bè vào context
+  //         setUser({ ...user, friends: response.friends });
+  //         return response.friends;
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Lỗi khi lấy danh sách bạn bè:', error);
+  //   }
+  //   return [];
+  // };
+  
 
   const onUserInformation = async (name, avatar) => {
     try {
@@ -59,10 +83,23 @@ export const UserProvider = props => {
     try {
       const result = await login(email, password);
       if (result.status === 1 && result.token) {
+
+        const userId = result.user._id;
+
+        // Lưu _id vào AsyncStorage
+        await AsyncStorage.setItem('userId', userId);
+
+        console.log(userId)
         await AsyncStorage.removeItem('token');
         await AsyncStorage.setItem('token', result.token);
         await AsyncStorage.setItem('user', JSON.stringify(result.user));
         setUser(result);
+        if (result.user.friends) {
+          console.log('Friends:', result.user.friends);
+          await AsyncStorage.setItem('friends', JSON.stringify(result.user.friends));
+        } else {
+          console.log('No friends information available');
+        }
         return true;
       }
     } catch (error) {
@@ -82,3 +119,4 @@ export const UserProvider = props => {
     </UserContext.Provider>
   );
 };
+

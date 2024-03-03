@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 
 // styles
 import {styles} from '../styles/posts';
@@ -12,14 +12,21 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import moment from 'moment';
-import Video from 'react-native-video';
 import Swiper from 'react-native-swiper';
 import CustomReaction from '../../../customs/reaction/customreaction';
+import VideoPlayer from 'react-native-video-player';
+import {UserContext} from '../../../../contexts/user/userContext';
+import {likeByPost} from '../../../../services/home/homeService';
 
-const PostsScreen = ({posts, navigation}) => {
+const PostsScreen = ({posts, navigation, handleLike}) => {
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
+  const {user} = useContext(UserContext);
+
+  const isUserReacted = (reactions, userId) => {
+    return reactions.some(reaction => reaction.idUsers._id === userId);
+  };
 
   const reactions = [
     {
@@ -125,18 +132,26 @@ const PostsScreen = ({posts, navigation}) => {
     }
   };
 
+  const getUniqueReactions = reactions => {
+    const uniqueReactions = [];
+    const reactionTypeSet = new Set();
+
+    reactions.forEach(reaction => {
+      if (!reactionTypeSet.has(reaction.type)) {
+        uniqueReactions.push(reaction);
+        reactionTypeSet.add(reaction.type);
+      }
+    });
+
+    return uniqueReactions;
+  };
+
   const backgroundColor = type => {
     switch (type) {
       case 'Like':
         return '#22b6c0';
       case 'Love':
         return '#f02849';
-      case 'Haha':
-        return '#f7cb1c';
-      case 'Wow':
-        return '#f7cb1c';
-      default:
-        return '#22b6c0';
     }
   };
 
@@ -232,12 +247,13 @@ const PostsScreen = ({posts, navigation}) => {
                       {media.type === 'image' ? (
                         <Image source={{uri: media.url}} style={styles.posts} />
                       ) : (
-                        <Video
-                          source={{uri: media.url}}
+                        <VideoPlayer
+                          video={{uri: media.url}}
+                          videoWidth={1600}
+                          videoHeight={900}
+                          thumbnail={{uri: media.url}}
+                          autoplay={true}
                           style={styles.posts}
-                          resizeMode="cover"
-                          paused={activeSlide !== index}
-                          repeat={true}
                         />
                       )}
                       <View style={styles.imageCountContainer}>
@@ -264,9 +280,9 @@ const PostsScreen = ({posts, navigation}) => {
                     navigation.navigate('CommentsScreen', {postId: item})
                   }
                   style={styles.container_feeling}>
-                  {item.reaction.map((reaction, index) => (
+                  {getUniqueReactions(item.reaction).map((reaction, index) => (
                     <View
-                      key={reaction._id}
+                      key={index}
                       style={[
                         styles.feeling,
                         {
@@ -275,19 +291,23 @@ const PostsScreen = ({posts, navigation}) => {
                         },
                       ]}>
                       <Image
-                        style={styles.icon_Like_Feeling}
+                        style={[
+                          reaction.type === 'Haha' || reaction.type === 'Wow'
+                            ? {width: 25, height: 25}
+                            : styles.icon_Like_Feeling,
+                          ,
+                        ]}
                         source={getFeelingIcon(reaction.type)}
                       />
                     </View>
                   ))}
-                  {item.reaction.length > 0 ? (
+                  {item.reaction.length > 0 && (
                     <Text style={styles.text_feeling}>
                       {item.reaction.length}
                     </Text>
-                  ) : (
-                    <View style={{height: 0}} />
                   )}
                 </TouchableOpacity>
+
                 {/* comment vs share */}
                 <View style={styles.comment_share}>
                   {/* comment */}
@@ -335,21 +355,25 @@ const PostsScreen = ({posts, navigation}) => {
               {/* like */}
               <TouchableOpacity
                 style={styles.like_post}
-                onPress={() => handleReaction.current.handlePressOut()}
+                onPress={() => handleLike(item._id)}
                 onLongPress={() => handleReaction.current.handleLongPress()}>
-                <AntDesign
-                  name={reaction ? 'like1' : 'like2'}
-                  size={20}
-                  color={reaction ? '#22b6c0' : '#666666'}
-                />
-                <Text
-                  style={[
-                    styles.text_like_post,
-                    {color: reaction ? '#22b6c0' : '#666666'},
-                  ]}>
-                  Thích
-                </Text>
+                {isUserReacted(item.reaction, user.user._id) ? (
+                  <>
+                    <AntDesign name="like1" size={20} color="#22b6c0" />
+                    <Text style={[styles.text_like_post, {color: '#22b6c0'}]}>
+                      Thích
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <AntDesign name="like2" size={20} color="#666666" />
+                    <Text style={[styles.text_like_post, {color: '#666666'}]}>
+                      Thích
+                    </Text>
+                  </>
+                )}
               </TouchableOpacity>
+
               {reaction && (
                 <View style={styles.container_reaction}>
                   <CustomReaction

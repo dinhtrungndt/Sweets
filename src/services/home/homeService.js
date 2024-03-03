@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import AxiosInstance from '../../helper/Axiosinstance';
 
-// lấy danh sách bài viết
+// lấy danh sách bài viết theo typePosts
 export const getPosts = async () => {
   try {
     const response = await AxiosInstance().get('/posts/get-all-posts');
@@ -65,16 +65,16 @@ export const getComments = async idPosts => {
   }
 };
 
-// Like bài viết theo idUsers và idPosts
-export const likeByPost = async (idUsers, idPosts) => {
+// Like bài viết theo idUsers và idPosts và type
+export const likeByPost = async (idUsers, idPosts, type) => {
   try {
     const response = await AxiosInstance().post(
       `/reaction/add/${idUsers}/${idPosts}`,
+      {type},
     );
-    // console.log('get post >>>>>>>>>>>>>>> Service likePost 8 ', response);
     return response;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi get: 5999999 likePost', error);
+    console.error('Lỗi khi gửi yêu cầu API:', error);
     throw error;
   }
 };

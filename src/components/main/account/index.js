@@ -2,10 +2,10 @@
 import { StyleSheet, Text, View, Pressable, Image, TouchableOpacity } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserContext } from '../../../contexts/user/userContext';
+import {UserContext} from '../../../contexts/user/userContext';
 
-const AccountScreen = (props) => {
-  const { navigation } = props;
+const AccountScreen = props => {
+  const {navigation} = props;
 
   const { user } = useContext(UserContext);
   const { onLogout } = useContext(UserContext);
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     // quay cả hình sang trái
-    transform: [{ rotate: '180deg' }],
+    transform: [{rotate: '180deg'}],
   },
   btnHelp: {
     width: '100%',
