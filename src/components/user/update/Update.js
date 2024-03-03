@@ -71,6 +71,12 @@ const Update = ({ route, navigation }) => {
     setFemaleChecked(false);
     setValuecheck(newMaleChecked ? 'Nam' : '');
   };
+  const handlenext = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'LoginScreen' }],
+    });
+  }
   const handleUpdateanhbia = async () => {
 
 
@@ -88,7 +94,7 @@ const Update = ({ route, navigation }) => {
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          'https://sweets-nodejs.onrender.com/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -110,7 +116,7 @@ const Update = ({ route, navigation }) => {
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          'https://sweets-nodejs.onrender.com/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -134,7 +140,7 @@ const Update = ({ route, navigation }) => {
         data.append('date', date);
         data.append('gender', valuecheck);
         const response = await fetch(
-          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          'https://sweets-nodejs.onrender.com/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -166,7 +172,7 @@ const Update = ({ route, navigation }) => {
               : imageSource1.replace('file://', 'null'),
         });
         const response = await fetch(
-          'https://sweets-bf2818fd7e8e.herokuapp.com/users/update-profile',
+          'https://sweets-nodejs.onrender.com/users/update-profile',
           {
             method: 'POST',
             body: data,
@@ -280,6 +286,13 @@ const Update = ({ route, navigation }) => {
           <ActivityIndicator size="small" color="white" />
         ) : (
           <Text style={styles.txt3}>Cập nhật</Text>
+        )}
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handlenext}>
+        {loading ? (
+          <ActivityIndicator size="small" color="white" />
+        ) : (
+          <Text style={styles.txt3}>Bỏ qua</Text>
         )}
       </TouchableOpacity>
     </View>
