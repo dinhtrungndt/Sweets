@@ -392,10 +392,6 @@ const CommentsScreen = ({navigation, route}) => {
                         </View>
                       ),
                     )}
-                    {console.log(
-                      '>>>>>>>>>> reactttttttt ',
-                      item.reaction.map(item => item.idUsers.name).join(),
-                    )}
                     {item.reaction.length > 0 && (
                       <>
                         {item.reaction.map(item => item.idUsers._id).join() ===
@@ -411,7 +407,7 @@ const CommentsScreen = ({navigation, route}) => {
                               .filter(
                                 reaction =>
                                   reaction.idUsers._id !== user.user._id &&
-                                  item.reaction.splice(0, 1),
+                                  item.reaction.slice(0, 1),
                               )
                               .map(reaction => reaction.idUsers.name)
                               .join(', ')}{' '}
