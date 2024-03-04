@@ -4,7 +4,11 @@ import styles from '../styles/NearFriendStyles'
 const NearFriend = () => {
   return (
     <View>
-      <Text>NearFriend</Text>
+   
+   <View style={{flexDirection:'row',justifyContent:'space-between',margin:10}}>
+   <Text>Bạn bè mới gần đây</Text>
+   <Text>Quản lí</Text>
+   </View>
     </View>
   )
 }
