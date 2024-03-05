@@ -32,12 +32,12 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
     {
       id: 0,
       emoji: '👍',
-      name: 'Like',
+      name: 'Thích',
     },
     {
       id: 1,
       emoji: '❤️',
-      name: 'Love',
+      name: 'Yêu thích',
     },
     {
       id: 2,
@@ -52,7 +52,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
     {
       id: 4,
       emoji: '😡',
-      name: 'Angry',
+      name: 'Tức giận',
     },
   ];
 
@@ -119,16 +119,35 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
 
   const getFeelingIcon = type => {
     switch (type) {
-      case 'Like':
+      case 'Thích':
         return require('../../../../assets/icon_like_feeling.png');
-      case 'Love':
+      case 'Yêu thích':
         return require('../../../../assets/love_25px.png');
       case 'Haha':
         return require('../../../../assets/haha_25px.png');
       case 'Wow':
         return require('../../../../assets/wow_25px.png');
+      case 'Tức giận':
+        return require('../../../../assets/angry_25px.png');
       default:
         return require('../../../../assets/icon_like_feeling.png');
+    }
+  };
+
+  const ColorTextLikePost = type => {
+    switch (type) {
+      case 'Thích':
+        return '#22b6c0';
+      case 'Yêu thích':
+        return '#ff0000';
+      case 'Haha':
+        return '#ff9900';
+      case 'Wow':
+        return '#ff00ff';
+      case 'Tức giận':
+        return '#ff0000';
+      default:
+        return '#000000';
     }
   };
 
@@ -144,15 +163,6 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
     });
 
     return uniqueReactions;
-  };
-
-  const backgroundColor = type => {
-    switch (type) {
-      case 'Like':
-        return '#22b6c0';
-      case 'Love':
-        return '#f02849';
-    }
   };
 
   useEffect(() => {
@@ -252,7 +262,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                           videoWidth={1600}
                           videoHeight={900}
                           thumbnail={{uri: media.url}}
-                          autoplay={true}
+                          // autoplay={true}
                           style={styles.posts}
                         />
                       )}
@@ -290,13 +300,14 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                         styles.feeling,
                         {
                           marginLeft: index === 0,
-                          backgroundColor: backgroundColor(reaction.type),
                         },
                       ]}>
                       <Image
                         style={[
-                          reaction.type === 'Haha' || reaction.type === 'Wow'
-                            ? {width: 25, height: 25}
+                          reaction.type === 'Haha' ||
+                          reaction.type === 'Wow' ||
+                          reaction.type === 'Tức giận'
+                            ? {width: 22, height: 22}
                             : styles.icon_Like_Feeling,
                           ,
                         ]}
@@ -359,12 +370,39 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
               <TouchableOpacity
                 style={styles.like_post}
                 onPress={() => handleLike(item._id)}
-                onLongPress={() => handleReaction.current.handleLongPress()}>
+                onLongPress={() =>
+                  handleReaction.current.handleLongPress(item._id)
+                }>
                 {isUserReacted(item.reaction, user.user._id) ? (
                   <>
-                    <AntDesign name="like1" size={20} color="#22b6c0" />
-                    <Text style={[styles.text_like_post, {color: '#22b6c0'}]}>
-                      Thích
+                    {item.reaction
+                      .filter(
+                        reaction => reaction.idUsers._id === user.user._id,
+                      )
+                      .map(reaction => (
+                        <Image
+                          key={reaction.type}
+                          source={getFeelingIcon(reaction.type)}
+                          style={styles.feelingIcon}
+                        />
+                      ))}
+                    <Text
+                      style={[
+                        styles.text_like_post,
+                        {
+                          color: ColorTextLikePost(
+                            item.reaction.find(
+                              reaction =>
+                                reaction.idUsers._id === user.user._id,
+                            ).type,
+                          ),
+                        },
+                      ]}>
+                      {item.reaction
+                        .filter(
+                          reaction => reaction.idUsers._id === user.user._id,
+                        )
+                        .map(reaction => reaction.type)}
                     </Text>
                   </>
                 ) : (
@@ -382,6 +420,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   <CustomReaction
                     reactions={reactions}
                     clone={handleReaction.current.handlePressOut}
+                    posts={item}
                   />
                 </View>
               )}

@@ -71,7 +71,7 @@ const HomeScreen = props => {
   const handleLike = async idPosts => {
     try {
       const idUsers = user.id;
-      const type = 'Like';
+      const type = 'Thích';
       const response = await likeByPost(idUsers, idPosts, type);
 
       // Kiểm tra response.message để xác định trạng thái của reaction
@@ -84,7 +84,7 @@ const HomeScreen = props => {
           if (post._id === idPosts) {
             const updatedReaction = post.reaction.map(reactionItem => {
               if (reactionItem.idUsers._id === user.id) {
-                return {...reactionItem, type: 'Like'};
+                return {...reactionItem, type: 'Thích'};
               }
               return reactionItem;
             });

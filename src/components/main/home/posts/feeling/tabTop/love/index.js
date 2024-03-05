@@ -17,14 +17,16 @@ const LoveFeeling = ({route}) => {
 
   const getIcon = type => {
     switch (type) {
-      case 'Like':
+      case 'Thích':
         return '👍';
-      case 'Love':
+      case 'Yêu thích':
         return '❤';
       case 'Haha':
         return '😂';
       case 'Wow':
         return '😮';
+      case 'Tức giận':
+        return '😡';
       default:
         return '';
     }

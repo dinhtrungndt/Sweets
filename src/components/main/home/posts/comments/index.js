@@ -55,12 +55,12 @@ const CommentsScreen = ({navigation, route}) => {
     {
       id: 0,
       emoji: '👍',
-      name: 'Like',
+      name: 'Thích',
     },
     {
       id: 1,
       emoji: '❤️',
-      name: 'Love',
+      name: 'Yêu thích',
     },
     {
       id: 2,
@@ -75,7 +75,7 @@ const CommentsScreen = ({navigation, route}) => {
     {
       id: 4,
       emoji: '😡',
-      name: 'Angry',
+      name: 'Tức giận',
     },
   ];
 
@@ -142,16 +142,35 @@ const CommentsScreen = ({navigation, route}) => {
 
   const getFeelingIcon = type => {
     switch (type) {
-      case 'Like':
+      case 'Thích':
         return require('../../../../../assets/icon_like_feeling.png');
-      case 'Love':
+      case 'Yêu thích':
         return require('../../../../../assets/love_25px.png');
       case 'Haha':
         return require('../../../../../assets/haha_25px.png');
       case 'Wow':
         return require('../../../../../assets/wow_25px.png');
+      case 'Tức giận':
+        return require('../../../../../assets/angry_25px.png');
       default:
         return require('../../../../../assets/icon_like_feeling.png');
+    }
+  };
+
+  const ColorTextLikePost = type => {
+    switch (type) {
+      case 'Thích':
+        return '#22b6c0';
+      case 'Yêu thích':
+        return '#ff0000';
+      case 'Haha':
+        return '#ff9900';
+      case 'Wow':
+        return '#ff00ff';
+      case 'Tức giận':
+        return '#ff0000';
+      default:
+        return '#000000';
     }
   };
 
@@ -167,15 +186,6 @@ const CommentsScreen = ({navigation, route}) => {
     });
 
     return uniqueReactions;
-  };
-
-  const backgroundColor = type => {
-    switch (type) {
-      case 'Like':
-        return '#22b6c0';
-      case 'Love':
-        return '#f02849';
-    }
   };
 
   useEffect(() => {
@@ -284,7 +294,7 @@ const CommentsScreen = ({navigation, route}) => {
                             videoWidth={1600}
                             videoHeight={900}
                             thumbnail={{uri: media.url}}
-                            autoplay={true}
+                            // autoplay={true}
                             style={styles.posts}
                           />
                         )}
@@ -312,9 +322,34 @@ const CommentsScreen = ({navigation, route}) => {
                   onLongPress={() => handleReaction.current.handleLongPress()}>
                   {isUserReacted(item.reaction, user.user._id) ? (
                     <>
-                      <AntDesign name="like1" size={20} color="#22b6c0" />
-                      <Text style={[styles.text_like_post, {color: '#22b6c0'}]}>
-                        Thích
+                      {item.reaction
+                        .filter(
+                          reaction => reaction.idUsers._id === user.user._id,
+                        )
+                        .map(reaction => (
+                          <Image
+                            key={reaction.type}
+                            source={getFeelingIcon(reaction.type)}
+                            style={styles.feelingIcon}
+                          />
+                        ))}
+                      <Text
+                        style={[
+                          styles.text_like_post,
+                          {
+                            color: ColorTextLikePost(
+                              item.reaction.find(
+                                reaction =>
+                                  reaction.idUsers._id === user.user._id,
+                              ).type,
+                            ),
+                          },
+                        ]}>
+                        {item.reaction
+                          .filter(
+                            reaction => reaction.idUsers._id === user.user._id,
+                          )
+                          .map(reaction => reaction.type)}
                       </Text>
                     </>
                   ) : (
@@ -376,7 +411,6 @@ const CommentsScreen = ({navigation, route}) => {
                             styles.feeling,
                             {
                               marginLeft: index === 0,
-                              backgroundColor: backgroundColor(reaction.type),
                             },
                           ]}>
                           <Image
