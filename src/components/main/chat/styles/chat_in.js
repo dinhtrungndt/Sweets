@@ -1,7 +1,22 @@
 /* eslint-disable prettier/prettier */
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  loadMoreContainer: {
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: 'lightgray',
+  },
+  loadMoreText: {
+    fontWeight: 'bold',
+  },
+  contentreceiver: {
+    backgroundColor: '#d9d9d9',
+    padding: 10,
+    borderRadius: 8,
+    alignSelf: 'flex-end',
+    marginBottom: 5,
+  },
   T: {
     width: '100%',
     height: '100%',
@@ -60,8 +75,9 @@ export const styles = StyleSheet.create({
   },
 
   receivedMessage: {
-    width: '50%',
-    backgroundColor: '#d9d9d9',
+    maxWidth: '50%',
+    width: 'auto',
+   
     textAlign: 'left',
     padding: 10,
     borderRadius: 8,
@@ -70,6 +86,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 5,
     flexDirection: 'row',
     marginBottom: 5,
+    
   },
   avatarChat: {
     width: 30,
@@ -87,12 +104,14 @@ export const styles = StyleSheet.create({
   receivedText: {
     color: '#000',
   },
+
   chat: {
     padding: 10,
+
   },
   input: {
-    position: 'absolute',
-    bottom: 20,
+
+  
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

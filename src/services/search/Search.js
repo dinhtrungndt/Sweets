@@ -10,7 +10,7 @@ export const searchuser = async (name) => {
             return
         }
         const response = await AxiosInstance().post(
-            `user/search-user`,
+            `users/search-user`,
             { name: name }
         );
 
@@ -27,7 +27,7 @@ export const searchpost = async (name) => {
             return;
         }
         const response = await AxiosInstance().post(
-            `user/search-all-post`,
+            `posts/search-all-post`,
             { name: name }
         );
         return response;

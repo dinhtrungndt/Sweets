@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   TextInput,
@@ -12,8 +12,12 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { register } from '../../../services/user/userService';
+import { UserContext } from '../../../contexts/user/userContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import styles from './Style';
 const SingUpScreen = ({ navigation }) => {
+  const { onLogin } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -22,7 +26,7 @@ const SingUpScreen = ({ navigation }) => {
   const [gender, setGioitinh] = useState('null');
   const [date, setNgaysinh] = useState('null');
   const [token, setToken] = useState('null');
-  const [avatar, setAvatar] = useState('null');
+  const [avatar, setAvatar] = useState('https://res.cloudinary.com/dwxly01ng/image/upload/v1709527273/account_vpss3t.png');
   const [coverImage, setAnhbia] = useState('null');
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const handleRegister = async () => {
@@ -57,6 +61,18 @@ const SingUpScreen = ({ navigation }) => {
       if (response.status == 1) {
         setLoading(false);
         ToastAndroid.show('Đăng ký thành công', ToastAndroid.SHORT);
+        const response1 = await onLogin(email, password);
+        if (response1) {
+          setLoading(false);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
+          ToastAndroid.show('Đăng nhập thành công vui lòng chờ 1 chút để đăng nhập', ToastAndroid.SHORT);
+          await AsyncStorage.setItem('userEmail', email);
+          await AsyncStorage.setItem('userPassword', password);
+          console.log(response.status)
+        }
       }
       if (response.status == 0) {
         setLoading(false);
