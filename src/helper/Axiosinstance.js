@@ -6,7 +6,7 @@ const AxiosInstance = (contentType = 'application/json') => {
   const axiosInstance = axios.create({
     // baseURL: 'https://sweets-nodejs.onrender.com/',
     // baseURL: 'http://192.168.2.209:3001/',
-    baseURL: 'http://192.168.1.16:3001/',
+    baseURL: 'http://192.168.1.14:3001/',
   });
 
   axiosInstance.interceptors.request.use(

@@ -97,10 +97,10 @@ export const uploadPost = async (userId, postDetails) => {
 // Upload ảnh status
 export const uploadImageStatus = async form => {
   const response = await AxiosInstance('multipart/form-data').post(
-    'post/upload-imageStatus',
+    'media/upload-imageStatus',
     form,
   );
-  // console.log(">>>>>>>>>>>>>>>>>> 49" ,response);
+  console.log('>>>>>>>>>>>>>>>>>> 49 MEdiA imageStatus', response);
   return response;
 };
 
@@ -114,6 +114,36 @@ export const likePost = async (userId, postId) => {
     return response;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi like bài viết: 11 s', error.response);
+    throw error;
+  }
+};
+
+// Comment theo idUsers và idPosts
+export const submitComments = async (userId, postId, content) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/comments/add/${userId}/${postId}`,
+      {content},
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response.data;
+  } catch (error) {
+    // console.error(' >>>>>>>>> Lỗi like bài viết: 11 s', error.response);
+    throw error;
+  }
+};
+
+// Comment theo idUsers, idPosts và idParent
+export const submitCommentsC = async (userId, postId, parentId, content) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/comments/add/${userId}/${postId}/${parentId}`,
+      {content},
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response.data;
+  } catch (error) {
+    // console.error(' >>>>>>>>> Lỗi like bài viết: 11 s', error.response);
     throw error;
   }
 };

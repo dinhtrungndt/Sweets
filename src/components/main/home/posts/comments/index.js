@@ -1,8 +1,11 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
+  ActivityIndicator,
   Button,
   FlatList,
   Image,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,7 +13,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 // styles
 import {styles} from '../../styles/comments';
@@ -31,6 +41,13 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet from '@gorhom/bottom-sheet';
 import FeelingComponent from '../feeling';
 import {UserContext} from '../../../../../contexts/user/userContext';
+import {
+  getComments,
+  submitComments,
+  submitCommentsC,
+  uploadImageStatus,
+} from '../../../../../services/home/homeService';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 const CommentsScreen = ({navigation, route}) => {
   const {postId, handleLike} = route.params;
@@ -38,11 +55,21 @@ const CommentsScreen = ({navigation, route}) => {
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
-  const snapPoints = useMemo(() => ['90%', '60%'], []);
+  const snapPoints = useMemo(() => ['60%', '90%'], []);
   const bottomSheetRef = useRef(null);
   const {user} = useContext(UserContext);
+  const [image, setImage] = useState([]);
+  const [imagePath, setImagePath] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [commentContent, setCommentContent] = useState('');
+  const [comments, setComments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const commentInputRef = useRef(null);
+  const [parentId, setParentId] = useState(null);
+  const [parentUserName, setParentUserName] = useState('');
 
   // console.log('>>>>>>>>> CommentsScreen postId', postId);
+  // console.log('>>>>>>>>> comments comments', comments);
 
   const handleCloneBottomSheet = () => bottomSheetRef.current?.close();
   const handleOnpenBottomSheet = () => bottomSheetRef.current?.expand();
@@ -188,6 +215,88 @@ const CommentsScreen = ({navigation, route}) => {
     return uniqueReactions;
   };
 
+  const takePhoto = useCallback(async response => {
+    if (response.didCancel || response.errorCode || response.errorMessage) {
+      return;
+    }
+    if (response.assets && response.assets.length > 0) {
+      const selectedImages = response.assets.map(asset => ({
+        uri: asset.uri,
+        type: asset.type,
+        name: asset.fileName,
+      }));
+      setImage(selectedImages);
+      const formData = new FormData();
+
+      selectedImages.forEach((image, index) => {
+        formData.append('imageStatus', image);
+      });
+
+      const data = await uploadImageStatus(formData);
+      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      setImagePath(data.urls);
+      console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
+    }
+  }, []);
+
+  const openCamera = useCallback(async () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      saveToPhotos: true,
+    };
+    await launchCamera(options, takePhoto);
+  }, []);
+
+  const openLibrary = useCallback(async () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 5,
+      saveToPhotos: true,
+      selectionLimit: 5,
+      multiple: true,
+    };
+    await launchImageLibrary(options, takePhoto);
+    setModalVisible(false);
+  }, []);
+
+  const reloadComments = async () => {
+    try {
+      const response = await getComments(postId._id);
+      const data = await response;
+      if (parentId) {
+        setComments(data.reverse());
+      } else {
+        setComments(data);
+      }
+    } catch (error) {
+      console.error('Lỗi khi tải danh sách bình luận:', error);
+    }
+  };
+
+  const submitComment = async () => {
+    try {
+      setIsLoading(true);
+      if (parentId) {
+        await submitCommentsC(
+          user.user._id,
+          postId._id,
+          parentId,
+          commentContent,
+        );
+      } else {
+        await submitComments(user.user._id, postId._id, commentContent);
+      }
+      setCommentContent('');
+      await reloadComments();
+      setIsLoading(false);
+      commentInputRef.current.clear();
+    } catch (error) {
+      console.error('Lỗi khi gửi comment:', error);
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     handleReaction.current = {
       handlePressOut: () => {
@@ -204,6 +313,10 @@ const CommentsScreen = ({navigation, route}) => {
       handleReaction.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    reloadComments();
+  }, [route.params.postId]);
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -413,61 +526,34 @@ const CommentsScreen = ({navigation, route}) => {
                               marginLeft: index === 0,
                             },
                           ]}>
-                          <Image
-                            style={[
-                              reaction.type === 'Haha' ||
-                              reaction.type === 'Wow'
-                                ? {width: 25, height: 25}
-                                : styles.icon_Like_Feeling,
-                              ,
-                            ]}
-                            source={getFeelingIcon(reaction.type)}
-                          />
+                          {index < 2 && (
+                            <Image
+                              style={[
+                                reaction.type === 'Haha' ||
+                                reaction.type === 'Wow' ||
+                                reaction.type === 'Tức giận'
+                                  ? {width: 22, height: 22}
+                                  : styles.icon_Like_Feeling,
+                                ,
+                              ]}
+                              source={getFeelingIcon(reaction.type)}
+                            />
+                          )}
                         </View>
                       ),
                     )}
                     {item.reaction.length > 0 && (
                       <>
-                        {item.reaction.map(item => item.idUsers._id).join() ===
-                        user.user._id ? (
-                          <Text style={styles.text_peopleLike}>Bạn</Text>
-                        ) : item.reaction
-                            .map(item => item.idUsers._id)
-                            .join() === user.user._id ||
-                          item.reaction.length > 2 ? (
-                          <Text style={styles.text_peopleLike}>
-                            Bạn,{' '}
-                            {item.reaction
-                              .filter(
-                                reaction =>
-                                  reaction.idUsers._id !== user.user._id &&
-                                  item.reaction.slice(0, 1),
-                              )
-                              .map(reaction => reaction.idUsers.name)
-                              .join(', ')}{' '}
-                            và những người khác
-                          </Text>
-                        ) : item.reaction
-                            .map(item => item.idUsers._id)
-                            .join() !== user.user._id ? (
-                          <Text style={styles.text_peopleLike}>
-                            {item.reaction
-                              .map(item => item.idUsers.name)
-                              .join(', ')}
-                          </Text>
-                        ) : item.reaction
-                            .map(item => item.idUsers._id)
-                            .join() !== user.user._id ||
-                          item.reaction.length > 2 ? (
-                          <Text style={styles.text_peopleLike}>
-                            {item.reaction
-                              .map(item => item.idUsers.name)
-                              .join()}{' '}
-                            và những người khác
-                          </Text>
-                        ) : (
-                          <Text>No</Text>
-                        )}
+                        <Text style={styles.text_peopleLike}>
+                          {item.reaction.length > 1 && ' Bạn,'}
+                          {item.reaction.length > 2
+                            ? item.reaction.length - 2 + 'và những người khác'
+                            : item.reaction.map((item, index) => {
+                                if (item !== item._id) {
+                                  return ' ' + item.idUsers.name;
+                                }
+                              })}
+                        </Text>
                       </>
                     )}
                   </TouchableOpacity>
@@ -500,135 +586,153 @@ const CommentsScreen = ({navigation, route}) => {
           </TouchableOpacity>
 
           {/* comment */}
-          <View style={styles.comment}>
-            {postId.comment.map((item, index) => {
-              if (item.idParent === null) {
-                // comment father
-                return (
-                  <View style={styles.container_comment} key={index}>
-                    {/* Bình luận cha */}
-                    <View style={styles.container_comment_header}>
-                      <Image
-                        style={styles.avatar_comment}
-                        source={{uri: item.idUsers?.avatar}}
-                      />
-                      <View style={styles.container_comment_content}>
-                        <View style={styles.comment_content}>
-                          <Text style={styles.name_comment}>
-                            {item.idUsers?.name}
-                          </Text>
-                          <Text style={styles.content_comment}>
-                            {item.content}
-                          </Text>
-                        </View>
-                        <View style={styles.comment_time_like}>
-                          <Text style={styles.time_comment}>
-                            {' '}
-                            {formatTime(item.createAt)}
-                          </Text>
-                          <TouchableOpacity style={styles.like_like_comment}>
-                            <Text style={styles.like_like_comment}> Thích</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={styles.like_like_comment}>
-                            <Text style={styles.like_like_comment}>
-                              {' '}
-                              Phản hồi
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#22b6c0" />
+          ) : (
+            <View style={styles.comment}>
+              {comments.map((item, index) => {
+                if (item.idParent === null) {
+                  // comment father
+                  return (
+                    <View style={styles.container_comment} key={index}>
+                      {/* Bình luận cha */}
+                      <View style={styles.container_comment_header}>
+                        <Image
+                          style={styles.avatar_comment}
+                          source={{uri: item.idUsers?.avatar}}
+                        />
+                        <View style={styles.container_comment_content}>
+                          <View style={styles.comment_content}>
+                            <Text style={styles.name_comment}>
+                              {item.idUsers?.name}
                             </Text>
-                          </TouchableOpacity>
+                            <Text style={styles.content_comment}>
+                              {item.content}
+                            </Text>
+                          </View>
+                          <View style={styles.comment_time_like}>
+                            <Text style={styles.time_comment}>
+                              {' '}
+                              {formatTime(item.createAt)}
+                            </Text>
+                            <TouchableOpacity style={styles.like_like_comment}>
+                              <Text style={styles.like_like_comment}>
+                                {' '}
+                                Thích
+                              </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={styles.like_like_comment}
+                              onPress={() => {
+                                setParentId(item._id),
+                                  setParentUserName(item.idUsers.name);
+                              }}>
+                              <Text style={styles.like_like_comment}>
+                                {' '}
+                                Phản hồi
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                    {/* {console.log(
-                      '>>>>>>>>>>>>>>>>Bình luận con user name',
-                      postId.comment.filter(
-                        subItem =>
-                          subItem.idParent && subItem.idParent._id === item._id,
-                      ),
-                    )} */}
-                    {/* Bình luận con */}
-                    <View
-                      style={{
-                        borderLeftWidth: 2,
-                        borderColor: '#ccc',
-                        marginLeft: 18,
-                      }}>
-                      {postId.comment
-                        .filter(
-                          subItem =>
-                            subItem.idParent &&
-                            subItem.idParent._id === item._id,
-                        )
-                        .map((subItem, subIndex) => (
-                          <View
-                            style={[
-                              styles.container_comment_body,
-                              styles.childComment,
-                            ]}
-                            key={subIndex}>
-                            <Image
+                      {/* Bình luận con */}
+                      <View
+                        style={{
+                          borderLeftWidth: 2,
+                          borderColor: '#ccc',
+                          marginLeft: 18,
+                        }}>
+                        {comments
+                          .filter(
+                            subItem =>
+                              subItem.idParent &&
+                              subItem.idParent._id === item._id,
+                          )
+                          .map((subItem, subIndex) => (
+                            <View
                               style={[
-                                styles.avatar_comment,
-                                {width: 30, height: 30},
+                                styles.container_comment_body,
+                                styles.childComment,
                               ]}
-                              source={
-                                subItem.idUsers?.avatar === '' ||
-                                subItem.idUsers?.avatar === null ||
-                                subItem.idUsers?.avatar === undefined ||
-                                subItem.idUsers?.avatar === 'default' ||
-                                subItem.idUsers?.avatar === 'null'
-                                  ? require('../../../../../assets/account.png')
-                                  : {uri: subItem.idUsers?.avatar}
-                              }
-                            />
-                            <View style={styles.container_comment_content}>
-                              <View style={styles.comment_content}>
-                                <Text style={styles.name_comment}>
-                                  {subItem.idUsers?.name}
-                                </Text>
-                                <Text style={styles.content_comment}>
-                                  {subItem.content}
-                                </Text>
-                              </View>
-                              <View style={styles.comment_time_like}>
-                                <Text style={styles.time_comment}>
-                                  {formatTime(subItem.createAt)}
-                                </Text>
-                                <TouchableOpacity
-                                  style={styles.like_like_comment}>
-                                  <Text style={styles.like_like_comment}>
-                                    Thích
+                              key={subIndex}>
+                              <Image
+                                style={[
+                                  styles.avatar_comment,
+                                  {width: 30, height: 30},
+                                ]}
+                                source={
+                                  subItem.idUsers?.avatar === '' ||
+                                  subItem.idUsers?.avatar === null ||
+                                  subItem.idUsers?.avatar === undefined ||
+                                  subItem.idUsers?.avatar === 'default' ||
+                                  subItem.idUsers?.avatar === 'null'
+                                    ? require('../../../../../assets/account.png')
+                                    : {uri: subItem.idUsers?.avatar}
+                                }
+                              />
+                              <View style={styles.container_comment_content}>
+                                <View style={styles.comment_content}>
+                                  <Text style={styles.name_comment}>
+                                    {subItem.idUsers?.name}
                                   </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                  style={styles.like_like_comment}>
-                                  <Text style={styles.like_like_comment}>
-                                    Phản hồi
+                                  <Text style={styles.content_comment}>
+                                    {subItem.content}
                                   </Text>
-                                </TouchableOpacity>
+                                </View>
+                                <View style={styles.comment_time_like}>
+                                  <Text style={styles.time_comment}>
+                                    {formatTime(subItem.createAt)}
+                                  </Text>
+                                  <TouchableOpacity
+                                    style={styles.like_like_comment}>
+                                    <Text style={styles.like_like_comment}>
+                                      Thích
+                                    </Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity
+                                    style={styles.like_like_comment}
+                                    onPress={() => {
+                                      setParentId(subItem.idParent._id);
+                                      setParentUserName(subItem.idUsers.name);
+                                    }}>
+                                    <Text style={styles.like_like_comment}>
+                                      Phản hồi
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
                               </View>
                             </View>
-                          </View>
-                        ))}
+                          ))}
+                      </View>
                     </View>
-                  </View>
-                );
-              }
-              return null;
-            })}
-          </View>
+                  );
+                }
+                return null;
+              })}
+            </View>
+          )}
         </ScrollView>
         {/* Reply Comment */}
         <View style={styles.container_reply_comment}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Image
               style={styles.icon_comment}
               source={require('../../../../../assets/icon_camera_comment.png')}
             />
           </TouchableOpacity>
           <TextInput
+            ref={commentInputRef}
             style={styles.input_comment}
             placeholder={`Bình luận dưới tên ${postId.idUsers?.name}`}
-          />
+            onChangeText={text => setCommentContent(text)}>
+            <Text style={styles.parentUserName}>{parentUserName}</Text>{' '}
+          </TextInput>
+          <TouchableOpacity onPress={submitComment}>
+            <Image
+              style={styles.icon_comment_send}
+              source={require('../../../../../assets/send_comment_icon.png')}
+            />
+          </TouchableOpacity>
         </View>
         {/* bottom sheet */}
         <BottomSheet
@@ -641,6 +745,44 @@ const CommentsScreen = ({navigation, route}) => {
             clone={handleCloneBottomSheet}
           />
         </BottomSheet>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {}}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+              <TouchableOpacity
+                style={styles.button_select_camera}
+                onPress={openCamera}>
+                <Image
+                  style={styles.icon_comment_send}
+                  source={require('../../../../../assets/camera_50px_pick_modal.png')}
+                />
+                <Text style={styles.text_camera_modal}>Chụp ảnh</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.button_select_camera}
+                onPress={openLibrary}>
+                <Image
+                  style={styles.icon_comment_send}
+                  source={require('../../../../../assets/photo_video_50px_pick_camera.png')}
+                />
+                <Text style={styles.text_camera_modal}>Chọn ảnh</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button_select_camera}
+                onPress={() => setModalVisible(false)}>
+                <Image
+                  style={styles.icon_comment_send}
+                  source={require('../../../../../assets/cancel_50px_pick_camera.png')}
+                />
+                <Text style={styles.text_camera_modal}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     </GestureHandlerRootView>
   );

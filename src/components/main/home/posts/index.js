@@ -143,7 +143,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
       case 'Haha':
         return '#ff9900';
       case 'Wow':
-        return '#ff00ff';
+        return '#ff9900';
       case 'Tức giận':
         return '#ff0000';
       default:
@@ -169,7 +169,6 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
     handleReaction.current = {
       handlePressOut: () => {
         setReaction(false);
-        console.log('press out');
       },
       handleLongPress: () => {
         setReaction(true);
@@ -302,21 +301,28 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                           marginLeft: index === 0,
                         },
                       ]}>
-                      <Image
-                        style={[
-                          reaction.type === 'Haha' ||
-                          reaction.type === 'Wow' ||
-                          reaction.type === 'Tức giận'
-                            ? {width: 22, height: 22}
-                            : styles.icon_Like_Feeling,
-                          ,
-                        ]}
-                        source={getFeelingIcon(reaction.type)}
-                      />
+                      {index < 2 && (
+                        <Image
+                          style={[
+                            reaction.type === 'Haha' ||
+                            reaction.type === 'Wow' ||
+                            reaction.type === 'Tức giận'
+                              ? {width: 22, height: 22}
+                              : styles.icon_Like_Feeling,
+                            ,
+                          ]}
+                          source={getFeelingIcon(reaction.type)}
+                        />
+                      )}
                     </View>
                   ))}
-                  {item.reaction.length > 0 && (
+
+                  {item.reaction.length <= 2 ? (
                     <Text style={styles.text_feeling}>
+                      {item.reaction.length}
+                    </Text>
+                  ) : (
+                    <Text style={styles.text_feeling2}>
                       {item.reaction.length}
                     </Text>
                   )}

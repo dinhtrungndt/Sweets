@@ -108,7 +108,6 @@ const HomeScreen = props => {
     onGetPosts();
   }, []);
 
-  // Lọc bài viết theo typePosts
   const filteredPosts = posts.filter(
     post => post.idTypePosts.name === 'Bài viết',
   );

@@ -22,7 +22,7 @@ const CustomReaction = ({reactions, clone, posts}) => {
   //   '??>>>>>>>>>>>>>>>>>>.:',
   //   post.reaction.map(item => item.idUsers._id),
   // );
-  console.log('??>>>>>>>>>>>>>>>>>>. đã chọn :', reaction);
+  // console.log('??>>>>>>>>>>>>>>>>>>. đã chọn :', reaction);
 
   const handleSelectReaction = async (idPosts, reactionType) => {
     try {

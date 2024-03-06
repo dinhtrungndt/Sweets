@@ -112,6 +112,13 @@ export const styles = StyleSheet.create({
     color: '#666666',
     marginLeft: 5,
   },
+  text_feeling2: {
+    fontSize: 14,
+    color: '#666666',
+    left: 44,
+    top: 2,
+    position: 'absolute',
+  },
   feelingIcon: {
     width: 25,
     height: 25,
