@@ -111,19 +111,22 @@ export const styles = StyleSheet.create({
     width: 20,
     height: 20,
     position: 'relative',
-    backgroundColor: '#22b6c0',
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
   icon_Like_Feeling: {
-    width: 12,
-    height: 12,
+    width: 20,
+    height: 20,
   },
   text_feeling: {
     fontSize: 14,
     color: '#666666',
     marginLeft: 5,
+  },
+  feelingIcon: {
+    width: 25,
+    height: 25,
   },
   comment_share: {
     flexDirection: 'row',
@@ -137,7 +140,13 @@ export const styles = StyleSheet.create({
   },
   text_share: {
     fontSize: 14,
-    color: '#666666',
+    color: '#212121',
+  },
+  text_peopleLike: {
+    fontSize: 16,
+    paddingLeft: 5,
+    color: '#000',
+    fontWeight: '600',
   },
   linePosts: {
     width: '100%',
@@ -297,7 +306,13 @@ export const styles = StyleSheet.create({
   icon_comment: {
     width: 20,
     height: 20,
-    marginRight: 10,
+    marginRight: 6,
+    marginLeft: 6,
+  },
+  icon_comment_send: {
+    width: 30,
+    height: 30,
+    marginLeft: 10,
   },
   input_comment: {
     width: '80%',
@@ -306,5 +321,40 @@ export const styles = StyleSheet.create({
     paddingLeft: 15,
     borderRadius: 20,
     backgroundColor: '#e4e6eb',
+  },
+  parentUserName: {
+    color: '#22b6c0',
+  },
+  modalView: {
+    width: '100%',
+    height: 300,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button_select_camera: {
+    width: '80%',
+    margin: 12,
+    borderRadius: 14,
+    borderWidth: 5,
+    borderColor: '#22b6c0',
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 20,
+  },
+  text_camera_modal: {
+    textAlign: 'center',
+    paddingLeft: 12,
   },
 });

@@ -72,7 +72,7 @@ export default styles = StyleSheet.create({
         marginBottom: '5%',
       },
       txt1: {
-        color: 'white',
+        color: 'black',
         fontSize: 17,
       },
       txt2: {
@@ -80,7 +80,7 @@ export default styles = StyleSheet.create({
         fontSize: 17,
       },
       txt: {
-        color: 'white',
+        color: 'black',
         fontSize: 25,
         fontWeight: 'bold',
       },
@@ -102,6 +102,6 @@ export default styles = StyleSheet.create({
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'black',
+        backgroundColor: 'white',
       },
 });

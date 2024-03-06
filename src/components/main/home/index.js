@@ -71,14 +71,20 @@ const HomeScreen = props => {
   const handleLike = async idPosts => {
     try {
       const idUsers = user.id;
-      const type = 'Like';
+      const type = 'Thích';
       const response = await likeByPost(idUsers, idPosts, type);
+
+      // Kiểm tra response.message để xác định trạng thái của reaction
+      const likeStatus =
+        response.message === 'Thêm mới reaction thành công' ? true : false;
+      console.log('Trạng thái của like:', likeStatus);
+
       if (response.status === 1) {
         const updatedPosts = posts.map(post => {
           if (post._id === idPosts) {
             const updatedReaction = post.reaction.map(reactionItem => {
               if (reactionItem.idUsers._id === user.id) {
-                return {...reactionItem, type: 'Like'};
+                return {...reactionItem, type: 'Thích'};
               }
               return reactionItem;
             });
@@ -102,7 +108,6 @@ const HomeScreen = props => {
     onGetPosts();
   }, []);
 
-  // Lọc bài viết theo typePosts
   const filteredPosts = posts.filter(
     post => post.idTypePosts.name === 'Bài viết',
   );
