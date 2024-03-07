@@ -100,7 +100,7 @@ export const uploadImageStatus = async form => {
     'media/upload-imageStatus',
     form,
   );
-  console.log('>>>>>>>>>>>>>>>>>> 49 MEdiA imageStatus', response);
+  // console.log('>>>>>>>>>>>>>>>>>> 49 MEdiA imageStatus', response);
   return response;
 };
 
@@ -128,7 +128,7 @@ export const submitComments = async (userId, postId, content) => {
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
   } catch (error) {
-    // console.error(' >>>>>>>>> Lỗi like bài viết: 11 s', error.response);
+    console.error(' >>>>>>>>> Lỗi comments bài viết: 11 s', error);
     throw error;
   }
 };
@@ -143,7 +143,7 @@ export const submitCommentsC = async (userId, postId, parentId, content) => {
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
   } catch (error) {
-    // console.error(' >>>>>>>>> Lỗi like bài viết: 11 s', error.response);
+    console.error(' >>>>>>>>> Lỗi commentsC bài viết: 11 s', error.response);
     throw error;
   }
 };

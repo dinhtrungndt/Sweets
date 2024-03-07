@@ -16,6 +16,7 @@ const CustomReaction = ({reactions, clone, posts}) => {
   const handlePress = reaction => {
     setSelectedReaction(reaction);
     setReaction(reaction.name);
+    clone();
   };
 
   // console.log(

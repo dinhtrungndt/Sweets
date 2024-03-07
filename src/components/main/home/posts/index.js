@@ -23,6 +23,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
   const {user} = useContext(UserContext);
+  const [selectedPostId, setSelectedPostId] = useState(null);
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -170,9 +171,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
       handlePressOut: () => {
         setReaction(false);
       },
-      handleLongPress: () => {
+      handleLongPress: postId => {
         setReaction(true);
-        console.log('long press');
+        setSelectedPostId(postId);
       },
     };
 
@@ -418,7 +419,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                 )}
               </TouchableOpacity>
 
-              {reaction && (
+              {selectedPostId === item._id && reaction && (
                 <View style={styles.container_reaction}>
                   <CustomReaction
                     reactions={reactions}
