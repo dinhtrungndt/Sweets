@@ -48,6 +48,7 @@ import {
   uploadImageStatus,
 } from '../../../../../services/home/homeService';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import BottomSheetFit from '../../../../customs/bottomsheet/bottomSheetFit';
 
 const CommentsScreen = ({navigation, route}) => {
   const {postId, handleLike} = route.params;
@@ -55,8 +56,11 @@ const CommentsScreen = ({navigation, route}) => {
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
-  const snapPoints = useMemo(() => ['60%', '90%'], []);
+  const snapPoints = useMemo(() => ['90%', '60%'], []);
+  const snapPointsFit = useMemo(() => ['45%'], []);
   const bottomSheetRef = useRef(null);
+  const initialSnapIndex = -1;
+  const bottomSheetRefFit = useRef(null);
   const {user} = useContext(UserContext);
   const [image, setImage] = useState([]);
   const [imagePath, setImagePath] = useState(null);
@@ -73,6 +77,7 @@ const CommentsScreen = ({navigation, route}) => {
 
   const handleCloneBottomSheet = () => bottomSheetRef.current?.close();
   const handleOnpenBottomSheet = () => bottomSheetRef.current?.expand();
+  const handleOnpenBottomSheetFit = () => bottomSheetRefFit.current?.expand();
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -317,6 +322,10 @@ const CommentsScreen = ({navigation, route}) => {
   useEffect(() => {
     reloadComments();
   }, [route.params.postId]);
+
+  // useEffect(() => {
+  //   commentInputRef.current.focus();
+  // }, []);
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -580,7 +589,9 @@ const CommentsScreen = ({navigation, route}) => {
             </View>
           ))}
 
-          <TouchableOpacity style={styles.container_phuhop}>
+          <TouchableOpacity
+            style={styles.container_phuhop}
+            onPress={handleOnpenBottomSheetFit}>
             <Text style={styles.text_phuhop}>Phù hợp nhất</Text>
             <Icon name="chevron-down" size={12} color="#666666" />
           </TouchableOpacity>
@@ -737,13 +748,20 @@ const CommentsScreen = ({navigation, route}) => {
         {/* bottom sheet */}
         <BottomSheet
           ref={bottomSheetRef}
-          index={0}
+          index={initialSnapIndex}
           snapPoints={snapPoints}
           enablePanDownToClose={true}>
           <FeelingComponent
             reactions={postId.reaction}
             clone={handleCloneBottomSheet}
           />
+        </BottomSheet>
+        <BottomSheet
+          ref={bottomSheetRefFit}
+          index={initialSnapIndex}
+          snapPoints={snapPointsFit}
+          enablePanDownToClose={true}>
+          <BottomSheetFit comment={comments} />
         </BottomSheet>
         <Modal
           animationType="fade"

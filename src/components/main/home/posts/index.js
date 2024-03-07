@@ -286,10 +286,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                 {/* feeling */}
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate('CommentsScreen', {
-                      postId: item,
-                      handleLike: handleLike,
-                    })
+                    navigation.navigate('CommentsScreen', {postId: item})
                   }
                   style={styles.container_feeling}>
                   {getUniqueReactions(item.reaction).map((reaction, index) => (
