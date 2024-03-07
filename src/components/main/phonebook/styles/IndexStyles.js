@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     borderWidth: 1.2,
-    marginHorizontal: 11,
+    marginHorizontal: 15,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: '#3498db',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#3498db', // Màu chữ button
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
     
   },
 
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   txtFlatlist:{
     fontSize:15,
     fontWeight:'bold',
-    marginHorizontal:7,
+    marginHorizontal:10,
     marginVertical:2,
     color:'#0969da'
   }

@@ -15,10 +15,10 @@ import QRCODE from './Feature/QRCODE';
 const Tab = createMaterialTopTabNavigator();
 
 const data = [
-  { id: '1', title: require('../../../assets/hppn.png'),name:'Sự kiện' },
-  { id: '2', title: require('../../../assets/friends.png'),name:'Lời mời' },
-  { id: '3', title: require('../../../assets/qr-scan.png'),name :'Quét mã' },
-  { id: '4', title: require('../../../assets/cluold.png'),name:'Thời tiết' },
+  { id: '1', title: require('../../../assets/hppn2.png'),name:'Sự kiện' },
+  { id: '2', title: require('../../../assets/friends2.png'),name:'Lời mời' },
+  { id: '3', title: require('../../../assets/qr-scan2.png'),name :'Quét mã' },
+  { id: '4', title: require('../../../assets/cluold2.png'),name:'Thời tiết' },
 ];
 const PhoneBookScreen = props => {
   const {navigation} = props;
