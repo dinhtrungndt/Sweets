@@ -7,13 +7,13 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 // Screens
 import {options} from '../customs/tabNavigator';
 import {HomeStackScreen} from './stacks/homeStack';
-import {AddsScreen} from '../../components/main/home/uploads/posts';
 import {AccountStackScreen} from './stacks/accountStack';
 import {GetRouteNameAccount} from '../customs/routeAccount';
 import {GetRouteNameHome} from '../customs/routeHome';
 import {GetRouteNamePhone} from '../customs/routePhone';
 import {PhoneBookStack} from './stacks/PhoneBookStack';
 import {ChatScreenStack} from './stacks/chatStack';
+import {AddsScreen} from '../../components/main/home/uploads/posts';
 
 const Tab = createBottomTabNavigator();
 

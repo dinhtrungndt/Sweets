@@ -10,21 +10,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // Screens
 import BottomSheetComponents from '../../../components/customs/bottomsheet';
 import CommentsScreen from '../../../components/main/home/posts/comments';
-import StoryScreen from '../../../components/main/home/story';
-import PickStory from '../../../components/main/home/story/pickStory';
+import StoryScreen from '../../../components/main/home/uploads/story';
+import PickStory from '../../../components/main/home/uploads/story/pickStory';
 import PostsScreen from '../../../components/main/home/posts';
 
 const Stack = createNativeStackNavigator();
-export function Story() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="PickStory" component={PickStory} />
-    </Stack.Navigator>
-  );
-}
+
 export function HomeStackScreen() {
   return (
     <Stack.Navigator
@@ -38,7 +29,8 @@ export function HomeStackScreen() {
       />
       <Stack.Screen name="PostsScreen" component={PostsScreen} />
       <Stack.Screen name="CommentsScreen" component={CommentsScreen} />
-      <Stack.Screen name="StoryScreen" component={Story} />
+      <Stack.Screen name="PickStory" component={PickStory} />
+      <Stack.Screen name="StoryScreen" component={StoryScreen} />
     </Stack.Navigator>
   );
 }

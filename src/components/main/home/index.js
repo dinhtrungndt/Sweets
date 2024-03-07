@@ -8,7 +8,7 @@ import HeaderScreen from '../layout/header';
 import {styles} from './styles/home';
 
 // components
-import StoryScreen from './story';
+import StoryScreen from './uploads/story';
 import PostsScreen from './posts';
 
 // data

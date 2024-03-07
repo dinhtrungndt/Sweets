@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   StyleSheet,
   Text,
@@ -14,79 +13,14 @@ import {
 import React, {useRef, useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
+import {styles} from '../styles/story';
 
 const {height, width} = Dimensions.get('window');
 const PickStory = ({route}) => {
   const navigation = useNavigation();
-  const {story} = route.params?.story || {};
+  const {story} = route.params;
 
-  // console.log('>>>>>>>>> storystory', story);
   const [current, setCurrent] = useState(0);
-  const [content, setContent] = useState([
-    {
-      id: 1,
-      content: require('../../../../assets/test.png'),
-      type: 'image',
-      time: '3 giờ trước',
-      finish: 0,
-    },
-    {
-      id: 2,
-      content: require('../../../../assets/account_bottomTab.png'),
-      type: 'image',
-      time: '2 giờ trước',
-      finish: 0,
-    },
-    {
-      id: 3,
-      content: require('../../../../assets/chat_bottomTab.png'),
-      type: 'image',
-      time: '3 giờ trước',
-      finish: 0,
-    },
-    {
-      id: 4,
-      content: require('../../../../assets/icon_album.png'),
-      type: 'image',
-      time: '3 giờ trước',
-      finish: 0,
-    },
-    {
-      id: 5,
-      content: require('../../../../assets/icon_chat.png'),
-      type: 'image',
-      time: '3 giờ trước',
-      finish: 0,
-    },
-    {
-      id: 6,
-      content: require('../../../../assets/icon_all_friend.png'),
-      type: 'image',
-      time: '3 giờ trước',
-      finish: 0,
-    },
-    {
-      id: 7,
-      content: require('../../../../assets/icon_account_tich.png'),
-      type: 'image',
-      time: '3 giờ trước',
-      finish: 0,
-    },
-    {
-      id: 8,
-      content: require('../../../../assets/upstory_world_icon.png'),
-      type: 'image',
-      time: '3 giờ trước',
-      finish: 0,
-    },
-    {
-      id: 9,
-      content: require('../../../../assets/icon_add.png'),
-      type: 'image',
-      time: '3 giờ trước',
-      finish: 0,
-    },
-  ]);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
 
   const showBottomSheet = () => {
@@ -107,11 +41,7 @@ const PickStory = ({route}) => {
   };
 
   const next = () => {
-    if (current != content.length - 1) {
-      let tempData = content;
-      tempData[current].finish = 1;
-      setContent(tempData);
-      progress.setValue(0);
+    if (current < story.media.length - 1) {
       setCurrent(current + 1);
     } else {
       close();
@@ -120,10 +50,6 @@ const PickStory = ({route}) => {
 
   const previous = () => {
     if (current - 1 >= 0) {
-      let tempData = content;
-      tempData[current].finish = 0;
-      setContent(tempData);
-      progress.setValue(0);
       setCurrent(current - 1);
     } else {
       close();
@@ -131,7 +57,6 @@ const PickStory = ({route}) => {
   };
 
   const close = () => {
-    progress.setValue(0);
     navigation.goBack();
   };
 
@@ -146,22 +71,26 @@ const PickStory = ({route}) => {
 
   useEffect(() => {
     start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#000',
-      }}>
-      <Image
-        source={content[current].content}
-        onLoadEnd={() => {
-          progress.setValue(0);
-          start();
-        }}
-        style={{width: width, height: height}}
-      />
+    <View style={{flex: 1, backgroundColor: '#000'}}>
+      {story.media.map(item => item.url).join() !== '' ? (
+        <Image
+          source={{uri: story.media.map(item => item.url)[current]}}
+          onLoadEnd={() => {
+            progress.setValue(0);
+            start();
+          }}
+          style={{width: width, height: height}}
+        />
+      ) : (
+        <View style={styles.container_content}>
+          <Text style={styles.content}>{story.content}</Text>
+        </View>
+      )}
+
       <View
         style={{
           width: width,
@@ -171,7 +100,7 @@ const PickStory = ({route}) => {
           alignItems: 'center',
           flexDirection: 'row',
         }}>
-        {content.map((item, index) => {
+        {story.media.map((item, index) => {
           return (
             <View
               key={index}
@@ -183,7 +112,7 @@ const PickStory = ({route}) => {
               }}>
               <Animated.View
                 style={{
-                  flex: current == index ? content[index].finish : progress,
+                  flex: current === index ? 1 : progress,
                   height: 3,
                   backgroundColor: 'rgba(255,255,255,1)',
                 }}
@@ -203,19 +132,17 @@ const PickStory = ({route}) => {
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Image
-            source={require('../../../../assets/avatar.jpg')}
+            source={{uri: story.idUsers.avatar}}
             style={{width: 40, height: 40, borderRadius: 20, marginLeft: 10}}
           />
           <Text style={{color: '#fff', marginLeft: 10, fontWeight: 'bold'}}>
-            Nguyễn Văn A
+            {story.idUsers.name}
           </Text>
-          <Text style={{color: '#fff', marginLeft: 10}}>
-            {content[current].time}
-          </Text>
+          <Text style={{color: '#fff', marginLeft: 10}}>{story.time}</Text>
         </View>
         <TouchableOpacity onPress={showBottomSheet}>
           <Image
-            source={require('../../../../assets/icon_more_story.png')}
+            source={require('../../../../../assets/icon_more_story.png')}
             style={{width: 20, height: 20, marginLeft: 60, marginTop: 13}}
           />
         </TouchableOpacity>
@@ -266,11 +193,9 @@ const PickStory = ({route}) => {
         </View>
         <TouchableOpacity
           style={{marginRight: 20, marginTop: 10}}
-          onPress={() => {
-            close();
-          }}>
+          onPress={close}>
           <Image
-            source={require('../../../../assets/icon_delete_white.png')}
+            source={require('../../../../../assets/icon_delete_white.png')}
             style={{
               width: 24,
               height: 24,
@@ -291,16 +216,10 @@ const PickStory = ({route}) => {
         }}>
         <TouchableOpacity
           style={{width: '30%', height: '100%'}}
-          onPress={() => {
-            previous();
-          }}>
+          onPress={previous}>
           <View />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{width: '30%', height: '100%'}}
-          onPress={() => {
-            next();
-          }}>
+        <TouchableOpacity style={{width: '30%', height: '100%'}} onPress={next}>
           <View />
         </TouchableOpacity>
       </View>
@@ -319,7 +238,7 @@ const PickStory = ({route}) => {
           borderRadius: 20,
         }}>
         <Image
-          source={require('../../../../assets/icon_comment.png')}
+          source={require('../../../../../assets/icon_comment.png')}
           style={{
             width: 25,
             height: 25,

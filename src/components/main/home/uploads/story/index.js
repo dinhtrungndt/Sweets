@@ -11,18 +11,19 @@ import {
 import React, {useContext, useState} from 'react';
 
 // styles
-import {styles} from '../styles/story';
+import {styles} from '../../styles/story';
 
 // data
-import {storyData} from '../data/story';
+import {storyData} from '../../data/story';
+import {UserContext} from '../../../../../contexts/user/userContext';
 
 // Library
-import {UserContext} from '../../../../contexts/user/userContext';
 
 const RenderItemStory = ({story, navigation}) => {
   const [seenStory, setSeenStory] = useState(false);
+
   const handleSeenStory = () => {
-    navigation.navigate('StoryScreen', {story});
+    navigation.navigate('PickStory', {story: story});
     setSeenStory(true);
   };
 
@@ -73,7 +74,7 @@ const StoryScreen = ({navigation, story}) => {
               )}
             </View>
             <View style={styles.iconAdd}>
-              <Image source={require('../../../../assets/add_25px.png')} />
+              <Image source={require('../../../../../assets/add_25px.png')} />
             </View>
           </TouchableOpacity>
           <Text style={styles.name_me}>Tin của bạn</Text>
