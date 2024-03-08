@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import {RefreshControl, ScrollView} from 'react-native';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
@@ -53,7 +54,21 @@ const HomeScreen = props => {
           const shareResponse = await getShare(post._id);
           const share = shareResponse;
 
-          return {...post, media, reaction, comment, share};
+          const likedByCurrentUser = reaction.some(
+            reactionItem =>
+              reactionItem.idUsers._id === user.id &&
+              reactionItem.type === 'Thích',
+          );
+
+          console.log('>>>>>>>>>>>>>>> likedByCurrentUser', likedByCurrentUser);
+          return {
+            ...post,
+            media,
+            reaction,
+            comment,
+            share,
+            isLiked: likedByCurrentUser,
+          };
         }),
       );
       setPosts(postsWithMedia);

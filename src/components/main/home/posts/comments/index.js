@@ -734,7 +734,7 @@ const CommentsScreen = ({navigation, route}) => {
           <TextInput
             ref={commentInputRef}
             style={styles.input_comment}
-            placeholder={`Bình luận dưới tên ${postId.idUsers?.name}`}
+            placeholder={`Bình luận dưới tên ${user.user.name}`}
             onChangeText={text => setCommentContent(text)}>
             <Text style={styles.parentUserName}>{parentUserName}</Text>{' '}
           </TextInput>
