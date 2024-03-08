@@ -8,6 +8,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AccountScreen from '../../../components/main/account';
 import LoginScreen from '../../../components/user/login/Login';
 import Account_Transfer from '../../../components/main/account/account_transfer/Account_Transfer';
+import Profile from '../../../components/main/account/Profile/Profile';
+import EditProfile from '../../../components/main/account/EditProfile/EditProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +22,8 @@ export function AccountStackScreen() {
       <Stack.Screen name="AccountStackScr" component={AccountScreen} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="Account_Transfer" component={Account_Transfer} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
     </Stack.Navigator>
   );
 }

@@ -64,20 +64,6 @@ export const UserProvider = props => {
   //   }
   //   return [];
   // };
-  
-
-  const onUserInformation = async (name, avatar) => {
-    try {
-      const result = await AsyncStorage.setItem('name', name);
-      const result1 = await AsyncStorage.setItem('avatar', avatar);
-      if (result && result1) {
-        return true;
-      }
-    } catch (error) {
-      console.log('Lỗi khi lưu thông tin người dùng:', error);
-    }
-    return false;
-  }
 
   const onLogin = async (email, password) => {
     try {

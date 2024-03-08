@@ -2,14 +2,14 @@
 import { StyleSheet, Text, View, Pressable, Image, TouchableOpacity } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {UserContext} from '../../../contexts/user/userContext';
+import { UserContext } from '../../../contexts/user/userContext';
 
 const AccountScreen = props => {
-  const {navigation} = props;
+  const { navigation } = props;
 
   const { user } = useContext(UserContext);
   const { onLogout } = useContext(UserContext);
-  console.log(">>>>>>>>> userrrrrr", user.user.name);
+  console.log(">>>>>>>>> test user", user.user.name);
 
   const [loading, setLoading] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
@@ -43,7 +43,9 @@ const AccountScreen = props => {
 
   return (
     <View style={styles.body}>
-      <TouchableOpacity style={styles.container}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Profile')}
+        style={styles.container}>
         <Image style={styles.imgAvatar} source={user && user.user.avatar ? { uri: user.user.avatar } : require('../../../assets/diana.jpg')} />
         <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
         <Text style={styles.textU}>Xem trang cá nhân</Text>
@@ -55,16 +57,6 @@ const AccountScreen = props => {
       </TouchableOpacity>
       <View style={styles.bodyBtnIcon}>
         <TouchableOpacity style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_image2.png')} />
-          <Text style={styles.text0}>Ảnh của tôi</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_video.png')} />
-          <Text style={styles.text0}>Video của tôi</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.bodyBtnIcon}>
-        <TouchableOpacity style={styles.btnIcon}>
           <Image style={styles.imgIconMmr} source={require('../../../assets/icon_memories.png')} />
           <Text style={styles.text0}>Kỷ niệm</Text>
         </TouchableOpacity>
@@ -73,6 +65,7 @@ const AccountScreen = props => {
           <Text style={styles.text0}>Đã lưu</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.setting}>
       <TouchableOpacity style={styles.btnHelp} >
         <Text style={styles.textbtn1}>Trợ giúp & hỗ trợ</Text>
       </TouchableOpacity>
@@ -85,7 +78,7 @@ const AccountScreen = props => {
       <TouchableOpacity style={styles.btnLogout} onPress={handleLogout}>
         <Text style={styles.textbtn}>Đăng xuất</Text>
       </TouchableOpacity>
-
+      </View>
       {/* Hiển thị hộp thoại xác nhận */}
       {showConfirmLogout && (
         <View style={styles.confirmLogoutContainer}>
@@ -112,14 +105,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
   },
   container: {
-    marginTop: 16,
+    marginTop: 20,
     width: '100%',
     height: 90,
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     padding: 16,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    elevation: 10,
   },
   imgAvatar: {
     width: 60,
@@ -154,7 +151,7 @@ const styles = StyleSheet.create({
   bodyBtnIcon: {
     width: '100%',
     height: 60,
-    marginTop: 16,
+    marginTop: 30,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
@@ -185,7 +182,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     // quay cả hình sang trái
-    transform: [{rotate: '180deg'}],
+    transform: [{ rotate: '180deg' }],
   },
   btnHelp: {
     width: '100%',
@@ -274,4 +271,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000000',
   },
+  setting:{
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+  }
 });

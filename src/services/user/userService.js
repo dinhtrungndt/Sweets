@@ -46,3 +46,43 @@ export const login = async (email, password) => {
     return error;
   }
 };
+
+export const updateProfile = async (_id, name, gender, date) => {
+  try {
+    const response = await AxiosInstance().post('/users/update-thongtin', {
+      _id: _id,
+      name: name,
+      gender: gender,
+      date: date,
+    });
+    return response;
+  } catch (error) {
+    console.log('updateProfile err: ', error);
+    return error;
+  }
+};
+
+export const updateAvatar = async (avatar, coverImage) => {
+  try {
+    const response = await AxiosInstance().post('/users/update-profile', {
+      coverImage: coverImage,
+      avatar: avatar,
+    });
+    return response;
+  } catch (error) {
+    console.log('updateAvatar error: ', error);
+    return error;
+  }
+};
+
+export const updateCoverImage = async (coverImage) => {
+  try {
+    const response = await AxiosInstance().post('/users/update-profile', {
+      coverImage: v,
+    });
+    return response;
+  } catch (error) {
+    console.log('updateCoverImage err: ', error);
+    return error;
+  }
+};
