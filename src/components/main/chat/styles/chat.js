@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   txtnotification: {
@@ -15,7 +15,6 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
 
   receivedMessage1: {
@@ -105,7 +104,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
 
     marginBottom: 20,
-
   },
   nameChat: {
     fontSize: 16,

@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
+    color:'black'
   },
   friendItem: {
     flexDirection: 'row',
@@ -32,11 +33,17 @@ const styles = StyleSheet.create({
   },
   friendItemText: {
     fontSize: 17,
-    fontWeight:'bold'
+    fontWeight:'bold',
+    color:'#0969da'
   },
   noFriendsMessage: {
     fontSize: 16,
     textAlign: 'center',
+  },
+  imgOption:{
+    width:20,
+    height:20,
+    marginTop:5
   },
 })
 

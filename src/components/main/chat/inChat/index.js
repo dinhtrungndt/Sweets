@@ -1,15 +1,24 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
-import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import React, {useContext, useEffect, useState, useRef} from 'react';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import io from 'socket.io-client';
-import { GetMessageSR } from '../../../../services/home/chatService';
-import { UserContext } from '../../../../contexts/user/userContext';
-import { styles } from '../styles/chat_in';
+import {GetMessageSR} from '../../../../services/home/chatService';
+import {UserContext} from '../../../../contexts/user/userContext';
+import {styles} from '../styles/chat_in';
 const socket = io('https://sweets-nodejs.onrender.com/');
 
-const ChatScreenIn = ({ route, navigation }) => {
-  const { receiver } = route.params;
-  const { user } = useContext(UserContext);
+const ChatScreenIn = ({route, navigation}) => {
+  const {receiver} = route.params;
+  const {user} = useContext(UserContext);
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -30,14 +39,12 @@ const ChatScreenIn = ({ route, navigation }) => {
   }, [messages]);
   useFocusEffect(
     React.useCallback(() => {
-      fetchData()
+      fetchData();
       return () => {
-        console.log("unfocus hidden")
-      }
-    }, [])
-  )
-     
- 
+        console.log('unfocus hidden');
+      };
+    }, []),
+  );
 
   const fetchData = async () => {
     try {
@@ -49,7 +56,9 @@ const ChatScreenIn = ({ route, navigation }) => {
   };
 
   const sendMessage = () => {
-    if (messageInput === '' || !messageInput.trim()) return;
+    if (messageInput === '' || !messageInput.trim()) {
+      return;
+    }
     const newMessage = {
       idSender: user.user._id,
       idReceiver: receiver._id,
@@ -61,11 +70,17 @@ const ChatScreenIn = ({ route, navigation }) => {
   };
 
   const loadMoreMessages = async () => {
-    if (loadingMore) return; // Đừng cho phép người dùng nhấn nút nhiều lần
+    if (loadingMore) {
+      return;
+    } // Đừng cho phép người dùng nhấn nút nhiều lần
 
     setLoadingMore(true);
     try {
-      const response = await GetMessageSR(user.user._id, receiver._id, messages.length);
+      const response = await GetMessageSR(
+        user.user._id,
+        receiver._id,
+        messages.length,
+      );
       setMessages(prevMessages => [...prevMessages, ...response]);
       console.log('check response:', response);
     } catch (error) {
@@ -88,7 +103,7 @@ const ChatScreenIn = ({ route, navigation }) => {
     }
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <View style={styles.chat}>
         {item.idSender === user.user._id ? (
@@ -110,19 +125,30 @@ const ChatScreenIn = ({ route, navigation }) => {
     <View style={styles.T}>
       {/* header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.back_user} onPress={() => navigation.goBack()}>
-          <Image style={styles.back} source={require('../../../../assets/back_50px.png')} />
+        <TouchableOpacity
+          style={styles.back_user}
+          onPress={() => navigation.goBack()}>
+          <Image
+            style={styles.back}
+            source={require('../../../../assets/back_50px.png')}
+          />
           <TouchableOpacity style={styles.account}>
-            <Image source={{ uri: receiver.avatar }} style={styles.avatar} />
+            <Image source={{uri: receiver.avatar}} style={styles.avatar} />
             <Text style={styles.name_user}>{receiver.name}</Text>
           </TouchableOpacity>
         </TouchableOpacity>
         <View style={styles.call_video}>
           <TouchableOpacity>
-            <Image style={styles.back} source={require('../../../../assets/call_50px.png')} />
+            <Image
+              style={styles.back}
+              source={require('../../../../assets/call_50px.png')}
+            />
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: 15 }}>
-            <Image style={styles.back} source={require('../../../../assets/call_video.png')} />
+          <TouchableOpacity style={{marginLeft: 15}}>
+            <Image
+              style={styles.back}
+              source={require('../../../../assets/call_video.png')}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -137,10 +163,7 @@ const ChatScreenIn = ({ route, navigation }) => {
         // onEndReachedThreshold={0.1}
         // onRefresh={refreshMessages}
         // refreshing={refreshing}
-        renderItem={({ item }) => (
-          renderItem({ item })
-        )}
-
+        renderItem={({item}) => renderItem({item})}
       />
       {loadingMore && <ActivityIndicator size="small" color="#0000ff" />}
       {/* Input */}
@@ -153,7 +176,10 @@ const ChatScreenIn = ({ route, navigation }) => {
           onChangeText={text => setMessageInput(text)}
         />
         <TouchableOpacity style={styles.send} onPress={sendMessage}>
-          <Image style={styles.back} source={require('../../../../assets/email_send_50px.png')} />
+          <Image
+            style={styles.back}
+            source={require('../../../../assets/email_send_50px.png')}
+          />
         </TouchableOpacity>
       </View>
     </View>

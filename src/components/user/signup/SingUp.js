@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   TextInput,
@@ -11,13 +11,13 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { register } from '../../../services/user/userService';
-import { UserContext } from '../../../contexts/user/userContext';
+import {register} from '../../../services/user/userService';
+import {UserContext} from '../../../contexts/user/userContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from './Style';
-const SingUpScreen = ({ navigation }) => {
-  const { onLogin } = useContext(UserContext);
+const SingUpScreen = ({navigation}) => {
+  const {onLogin} = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -26,7 +26,9 @@ const SingUpScreen = ({ navigation }) => {
   const [gender, setGioitinh] = useState('null');
   const [date, setNgaysinh] = useState('null');
   const [token, setToken] = useState('null');
-  const [avatar, setAvatar] = useState('https://res.cloudinary.com/dwxly01ng/image/upload/v1709527273/account_vpss3t.png');
+  const [avatar, setAvatar] = useState(
+    'https://res.cloudinary.com/dwxly01ng/image/upload/v1709527273/account_vpss3t.png',
+  );
   const [coverImage, setAnhbia] = useState('null');
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const handleRegister = async () => {
@@ -42,13 +44,29 @@ const SingUpScreen = ({ navigation }) => {
         avatar,
         coverImage,
       };
-      if (!name || !email || !password || !conformpassword || name == '' || email == '' || password == '' || conformpassword == '' || !name.trim() || !email.trim() || !password.trim() || !conformpassword.trim()) {
+      if (
+        !name ||
+        !email ||
+        !password ||
+        !conformpassword ||
+        name == '' ||
+        email == '' ||
+        password == '' ||
+        conformpassword == '' ||
+        !name.trim() ||
+        !email.trim() ||
+        !password.trim() ||
+        !conformpassword.trim()
+      ) {
         ToastAndroid.show('Vui lòng nhập đầy đủ thông tin', ToastAndroid.SHORT);
         setLoading(false);
         return;
       }
       if (!email.trim() || !emailRegex.test(email.trim())) {
-        ToastAndroid.show('Vui lòng nhập một địa chỉ email hợp lệ', ToastAndroid.SHORT);
+        ToastAndroid.show(
+          'Vui lòng nhập một địa chỉ email hợp lệ',
+          ToastAndroid.SHORT,
+        );
         setLoading(false);
         return;
       }
@@ -66,12 +84,15 @@ const SingUpScreen = ({ navigation }) => {
           setLoading(false);
           navigation.reset({
             index: 0,
-            routes: [{ name: 'Home' }],
+            routes: [{name: 'Home'}],
           });
-          ToastAndroid.show('Đăng nhập thành công vui lòng chờ 1 chút để đăng nhập', ToastAndroid.SHORT);
+          ToastAndroid.show(
+            'Đăng nhập thành công vui lòng chờ 1 chút để đăng nhập',
+            ToastAndroid.SHORT,
+          );
           await AsyncStorage.setItem('userEmail', email);
           await AsyncStorage.setItem('userPassword', password);
-          console.log(response.status)
+          console.log(response.status);
         }
       }
       if (response.status == 0) {

@@ -20,8 +20,6 @@ export function ChatScreenStack() {
       <Stack.Screen name="ChatScreenHome" component={ChatScreen} />
       <Stack.Screen name="SearchScreens" component={User} />
       <Stack.Screen name="ChatScreenIn" component={ChatScreenIn} />
-     
-
     </Stack.Navigator>
   );
 }
