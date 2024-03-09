@@ -60,7 +60,7 @@ const HomeScreen = props => {
               reactionItem.type === 'Thích',
           );
 
-          console.log('>>>>>>>>>>>>>>> likedByCurrentUser', likedByCurrentUser);
+          // console.log('>>>>>>>>>>>>>>> likedByCurrentUser', likedByCurrentUser);
           return {
             ...post,
             media,

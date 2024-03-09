@@ -77,6 +77,7 @@ export const styles = StyleSheet.create({
   iconAdd: {
     position: 'absolute',
     bottom: 0,
+    top: 40,
     right: 0,
   },
   name_me: {

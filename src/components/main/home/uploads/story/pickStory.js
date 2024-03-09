@@ -14,14 +14,22 @@ import React, {useRef, useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {styles} from '../styles/story';
+import moment from 'moment';
+import VideoPlayer from 'react-native-video-player';
 
 const {height, width} = Dimensions.get('window');
+
 const PickStory = ({route}) => {
   const navigation = useNavigation();
   const {story} = route.params;
 
   const [current, setCurrent] = useState(0);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const handleVideoPress = () => {
+    setIsPaused(!isPaused);
+  };
 
   const showBottomSheet = () => {
     setBottomSheetVisible(true);
@@ -41,7 +49,7 @@ const PickStory = ({route}) => {
   };
 
   const next = () => {
-    if (current < story.media.length - 1) {
+    if (current < (story.media ? story.media.length - 1 : 0)) {
       setCurrent(current + 1);
     } else {
       close();
@@ -69,6 +77,28 @@ const PickStory = ({route}) => {
     });
   };
 
+  const formatTime = createdAt => {
+    const currentTime = moment();
+    const postTime = moment(createdAt);
+    const diffInSeconds = currentTime.diff(postTime, 'seconds');
+
+    if (diffInSeconds < 1) {
+      return 'Vừa đăng';
+    } else if (diffInSeconds < 60) {
+      return `${diffInSeconds} giây trước`;
+    } else if (diffInSeconds < 3600) {
+      return `${Math.floor(diffInSeconds / 60)} phút trước`;
+    } else if (diffInSeconds < 24 * 3600) {
+      return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
+    } else if (diffInSeconds < 30 * 24 * 3600) {
+      return `${Math.floor(diffInSeconds / (24 * 3600))} ngày trước`;
+    } else if (diffInSeconds < 12 * 30 * 24 * 3600) {
+      return `${Math.floor(diffInSeconds / (30 * 24 * 3600))} tháng trước`;
+    } else {
+      return `${Math.floor(diffInSeconds / (12 * 30 * 24 * 3600))} năm trước`;
+    }
+  };
+
   useEffect(() => {
     start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,18 +106,40 @@ const PickStory = ({route}) => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#000'}}>
-      {story.media.map(item => item.url).join() !== '' ? (
-        <Image
-          source={{uri: story.media.map(item => item.url)[current]}}
-          onLoadEnd={() => {
-            progress.setValue(0);
-            start();
-          }}
-          style={{width: width, height: height}}
-        />
+      {story.media && story.media.map(item => item.url).join() !== '' ? (
+        <>
+          {story.media[current].type === 'image' ? (
+            <Image
+              source={{uri: story.media[current].url}}
+              onLoadEnd={() => {
+                progress.setValue(0);
+                start();
+              }}
+              style={{width: width, height: height}}
+            />
+          ) : (
+            <TouchableOpacity onPress={handleVideoPress} style={{opacity: 1}}>
+              <VideoPlayer
+                video={{uri: story.media[current].url}}
+                videoWidth={1600}
+                videoHeight={900}
+                thumbnail={{uri: story.media[current].url}}
+                autoplay={true}
+                hideControls={true}
+                showOnStart={true}
+                paused={isPaused}
+                style={styles.video_story}
+              />
+            </TouchableOpacity>
+          )}
+        </>
       ) : (
         <View style={styles.container_content}>
-          <Text style={styles.content}>{story.content}</Text>
+          {story.content ? (
+            <Text style={styles.content}>{story.content}</Text>
+          ) : (
+            <Text style={styles.content}>{story[current].content}</Text>
+          )}
         </View>
       )}
 
@@ -100,26 +152,28 @@ const PickStory = ({route}) => {
           alignItems: 'center',
           flexDirection: 'row',
         }}>
-        {story.media.map((item, index) => {
-          return (
-            <View
-              key={index}
-              style={{
-                flex: 1,
-                height: 3,
-                backgroundColor: 'rgba(255,255,255,0.5)',
-                marginLeft: 5,
-              }}>
-              <Animated.View
+        {story.media &&
+          Array.isArray(story.media) &&
+          story.media.map((item, index) => {
+            return (
+              <View
+                key={index}
                 style={{
-                  flex: current === index ? 1 : progress,
+                  flex: 1,
                   height: 3,
-                  backgroundColor: 'rgba(255,255,255,1)',
-                }}
-              />
-            </View>
-          );
-        })}
+                  backgroundColor: 'rgba(255,255,255,0.5)',
+                  marginLeft: 5,
+                }}>
+                <Animated.View
+                  style={{
+                    flex: current === index ? 1 : progress,
+                    height: 3,
+                    backgroundColor: 'rgba(255,255,255,1)',
+                  }}
+                />
+              </View>
+            );
+          })}
       </View>
       <View
         style={{
@@ -131,19 +185,74 @@ const PickStory = ({route}) => {
           top: 30,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Image
-            source={{uri: story.idUsers.avatar}}
-            style={{width: 40, height: 40, borderRadius: 20, marginLeft: 10}}
-          />
-          <Text style={{color: '#fff', marginLeft: 10, fontWeight: 'bold'}}>
-            {story.idUsers.name}
-          </Text>
-          <Text style={{color: '#fff', marginLeft: 10}}>{story.time}</Text>
+          {story.idUsers ? (
+            <>
+              <Image
+                source={{uri: story.idUsers.avatar}}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  marginLeft: 10,
+                }}
+              />
+              <View
+                style={{
+                  position: 'absolute',
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    left: 60,
+                    fontWeight: 'bold',
+                  }}>
+                  {story.idUsers.name}
+                </Text>
+                <Text style={{color: '#fff', left: 60}}>
+                  {formatTime(story.createAt)}
+                </Text>
+              </View>
+            </>
+          ) : (
+            <>
+              <Image
+                source={{uri: story[current].idUsers.avatar}}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  marginLeft: 10,
+                }}
+              />
+              <View
+                style={{
+                  position: 'absolute',
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    left: 60,
+                    fontWeight: 'bold',
+                  }}>
+                  {story[current].idUsers.name}
+                </Text>
+                <Text style={{color: '#fff', left: 60}}>
+                  {formatTime(story[current].createAt)}
+                </Text>
+              </View>
+            </>
+          )}
         </View>
         <TouchableOpacity onPress={showBottomSheet}>
           <Image
             source={require('../../../../../assets/icon_more_story.png')}
-            style={{width: 20, height: 20, marginLeft: 60, marginTop: 13}}
+            style={{
+              width: 20,
+              height: 20,
+              left: 100,
+              top: 13,
+              position: 'absolute',
+            }}
           />
         </TouchableOpacity>
         <View

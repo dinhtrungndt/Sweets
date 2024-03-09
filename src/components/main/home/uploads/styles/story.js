@@ -24,4 +24,11 @@ export const styles = StyleSheet.create({
     paddingBottom: 50,
     borderRadius: 20,
   },
+  video_story: {
+    width: '100%',
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 100,
+  },
 });
