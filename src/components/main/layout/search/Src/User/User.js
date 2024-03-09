@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, TextInput, ToastAndroid } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { searchuser } from '../../../../../../services/search/Search';
 import styles from '../../Styles/User/User';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-const User = () => {
+const User = ({ navigation }) => {
   const route = useRoute();
-  const parentRouteList = Object.values(route.params || {});
-  const name = parentRouteList.join('');
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [name, setname] = useState('');
 
   const searchUser = async () => {
     try {
@@ -22,10 +23,13 @@ const User = () => {
       setLoading(false);
     }
   };
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+  const handleprofile = () => {
+    ToastAndroid.show('Chức năng đang phát triển', ToastAndroid.SHORT);
+  }
 
-  useEffect(() => {
-    searchUser();
-  }, [name]);
 
   const renderItem = ({ item }) => {
     return (
@@ -41,13 +45,18 @@ const User = () => {
               <Text>{item.name}</Text>
             </View>
             <View>
-              <Text>{item.ngaysinh}</Text>
+              <Text >{item.date == 'null' ? 'Chưa cập nhật' : item.date}</Text>
             </View>
           </View>
         </View>
         <View style={styles.item2}>
-          <Text style={styles.txtprofile}>
-            Xem Profile
+          <Text style={styles.txtprofile} onPress={() =>
+            navigation.navigate('ChatScreenIn', { receiver: item })
+          }>
+            Nhắn tin
+          </Text>
+          <Text style={styles.txtprofile} onPress={handleprofile}>
+            Xem profile
           </Text>
         </View>
       </View>
@@ -56,6 +65,16 @@ const User = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.container1}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleBackPress}>
+            <Image style={styles.back} source={require('../../../../../../assets/back_50px.png')} />
+          </TouchableOpacity>
+          <TextInput value={name} onChangeText={setname} placeholder='Tìm kiếm' style={styles.headerinput} onSubmitEditing={searchUser} />
+        </View>
+
+      </View>
+
       <Text style={styles.moinguoi}>Mọi người</Text>
       {loading ? (
         <ActivityIndicator size="large" color="blue" />
@@ -66,16 +85,18 @@ const User = () => {
               data={users}
               renderItem={renderItem}
               keyExtractor={item => item._id}
-              style={{ marginTop: '5%' }}
+              style={{ marginTop: '5%', width: '90%', marginLeft: '5%' }}
               refreshing={loading}
             />
           ) : (
-            <View style={{ marginTop: '5%' }}>
-              <Text>{users ? 'Không có người dùng.' : 'Không có người dùng.'}</Text>
+            <View style={{ marginTop: '5%', marginLeft: '5%' }}>
+              <Text>{users ? 'Vui lòng tìm kiếm' : 'Không có người dùng.'}</Text>
             </View>
           )}
         </>
       )}
+
+
     </View>
   );
 };

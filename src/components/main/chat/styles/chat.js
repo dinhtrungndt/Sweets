@@ -1,7 +1,30 @@
 /* eslint-disable prettier/prettier */
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  txtnotification: {
+    color: 'white',
+  },
+  notificaiton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#ff4500',
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+  },
+
+  receivedMessage1: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 8,
+    alignSelf: 'flex-end',
+    marginBottom: 5,
+  },
   T: {
     width: '100%',
     height: '100%',
@@ -74,14 +97,15 @@ export const styles = StyleSheet.create({
   },
   line: {
     width: '100%',
-    height: 1,
-    backgroundColor: '#dedede',
-    marginBottom: 20,
+
+    marginBottom: 5,
   },
   container_chat: {
     flexDirection: 'row',
     alignItems: 'center',
+
     marginBottom: 20,
+
   },
   nameChat: {
     fontSize: 16,
