@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import {RefreshControl, ScrollView} from 'react-native';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
@@ -8,7 +9,7 @@ import HeaderScreen from '../layout/header';
 import {styles} from './styles/home';
 
 // components
-import StoryScreen from './story';
+import StoryScreen from './uploads/story';
 import PostsScreen from './posts';
 
 // data
@@ -53,7 +54,21 @@ const HomeScreen = props => {
           const shareResponse = await getShare(post._id);
           const share = shareResponse;
 
-          return {...post, media, reaction, comment, share};
+          const likedByCurrentUser = reaction.some(
+            reactionItem =>
+              reactionItem.idUsers._id === user.id &&
+              reactionItem.type === 'Thích',
+          );
+
+          // console.log('>>>>>>>>>>>>>>> likedByCurrentUser', likedByCurrentUser);
+          return {
+            ...post,
+            media,
+            reaction,
+            comment,
+            share,
+            isLiked: likedByCurrentUser,
+          };
         }),
       );
       setPosts(postsWithMedia);
@@ -71,14 +86,15 @@ const HomeScreen = props => {
   const handleLike = async idPosts => {
     try {
       const idUsers = user.id;
-      const type = 'Like';
+      const type = 'Thích';
       const response = await likeByPost(idUsers, idPosts, type);
+
       if (response.status === 1) {
         const updatedPosts = posts.map(post => {
           if (post._id === idPosts) {
             const updatedReaction = post.reaction.map(reactionItem => {
               if (reactionItem.idUsers._id === user.id) {
-                return {...reactionItem, type: 'Like'};
+                return {...reactionItem, type: 'Thích'};
               }
               return reactionItem;
             });
@@ -102,7 +118,6 @@ const HomeScreen = props => {
     onGetPosts();
   }, []);
 
-  // Lọc bài viết theo typePosts
   const filteredPosts = posts.filter(
     post => post.idTypePosts.name === 'Bài viết',
   );

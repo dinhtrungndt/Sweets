@@ -12,6 +12,7 @@ export const optionsTabsTop = ({route}) => {
     LoveFeeling: '#f02849',
     HahaFeeling: '#f7cb0a',
     WowFeeling: '#f7cb0a',
+    angryFeeling: '#ff0000',
   };
 
   return {
@@ -37,12 +38,12 @@ const getTabLabel = (routeName, reactionTypes) => {
     case 'AllFeeling':
       return 'Tất cả';
     case 'LikeFeeling':
-      return reactionTypes.includes('Like')
-        ? '👍 ' + countReactions('Like', reactionTypes)
+      return reactionTypes.includes('Thích')
+        ? '👍 ' + countReactions('Thích', reactionTypes)
         : null;
     case 'LoveFeeling':
-      return reactionTypes.includes('Love')
-        ? '❤ ' + countReactions('Love', reactionTypes)
+      return reactionTypes.includes('Yêu thích')
+        ? '❤ ' + countReactions('Yêu thích', reactionTypes)
         : null;
     case 'HahaFeeling':
       return reactionTypes.includes('Haha')
@@ -51,6 +52,10 @@ const getTabLabel = (routeName, reactionTypes) => {
     case 'WowFeeling':
       return reactionTypes.includes('Wow')
         ? '😮 ' + countReactions('Wow', reactionTypes)
+        : null;
+    case 'angryFeeling':
+      return reactionTypes.includes('Tức giận')
+        ? '😡 ' + countReactions('Tức giận', reactionTypes)
         : null;
     default:
       return null;

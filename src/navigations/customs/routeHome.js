@@ -9,6 +9,8 @@ export const GetRouteNameHome = route => {
     return 'none';
   } else if (routeName?.includes('StoryScreen')) {
     return 'none';
+  } else if (routeName?.includes('PickStory')) {
+    return 'none';
   }
   return 'flex';
 };

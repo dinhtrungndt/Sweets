@@ -99,19 +99,29 @@ export const styles = StyleSheet.create({
     width: 20,
     height: 20,
     position: 'relative',
-    backgroundColor: '#22b6c0',
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
   icon_Like_Feeling: {
-    width: 12,
-    height: 12,
+    width: 20,
+    height: 20,
   },
   text_feeling: {
     fontSize: 14,
     color: '#666666',
     marginLeft: 5,
+  },
+  text_feeling2: {
+    fontSize: 14,
+    color: '#666666',
+    left: 44,
+    top: 2,
+    position: 'absolute',
+  },
+  feelingIcon: {
+    width: 25,
+    height: 25,
   },
   comment_share: {
     flexDirection: 'row',

@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 10,
+    color:'#0969da'
   },
   button: {
     width: 50,
@@ -29,7 +30,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#3498db', // Màu chữ button
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
+    
   },
 
   buttonImg: {
@@ -64,9 +66,11 @@ const styles = StyleSheet.create({
     margin: 10, 
   },
   txtFlatlist:{
-    fontSize:17,
+    fontSize:15,
     fontWeight:'bold',
-    marginHorizontal:7
+    marginHorizontal:10,
+    marginVertical:2,
+    color:'#0969da'
   }
 });
 

@@ -1,26 +1,29 @@
 /* eslint-disable prettier/prettier */
 import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
+import {UserContext} from '../../../../../../../contexts/user/userContext';
 
 const WowFeeling = ({route}) => {
   const reactions = route.params.reactions;
   const wowReactions = reactions.filter(item => item.type === 'Wow');
+  const {user} = useContext(UserContext);
 
   const getIcon = type => {
     switch (type) {
-      case 'Like':
+      case 'Thích':
         return '👍';
-      case 'Love':
+      case 'Yêu thích':
         return '❤';
       case 'Haha':
         return '😂';
       case 'Wow':
         return '😮';
+      case 'Tức giận':
+        return '😡';
       default:
         return '';
     }
   };
-
   return (
     <View style={styles.T}>
       <FlatList
@@ -29,7 +32,12 @@ const WowFeeling = ({route}) => {
           <View style={styles.container_reaction}>
             <Text style={styles.typeIcon}>{getIcon(item.type)}</Text>
             <Image style={styles.avatar} source={{uri: item.idUsers.avatar}} />
-            <Text style={styles.name}>{item.idUsers.name}</Text>
+
+            {item.idUsers._id === user.user._id ? (
+              <Text style={styles.name_reaction_id}>Bạn</Text>
+            ) : (
+              <Text style={styles.name}>{item.idUsers.name}</Text>
+            )}
           </View>
         )}
         keyExtractor={item => item._id}
@@ -77,5 +85,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#000',
     zIndex: 1,
+  },
+  name_reaction_id: {
+    fontSize: 16,
+    color: '#000',
+    marginLeft: 10,
   },
 });
