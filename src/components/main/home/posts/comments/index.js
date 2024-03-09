@@ -83,10 +83,6 @@ const CommentsScreen = ({navigation, route}) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
   };
 
-  const isUserReacted = (reactions, userId) => {
-    return reactions.some(reaction => reaction.idUsers._id === userId);
-  };
-
   const reactions = [
     {
       id: 0,

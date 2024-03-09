@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useContext, useEffect, useState, useRef} from 'react';
 import {
   FlatList,
