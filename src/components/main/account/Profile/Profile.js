@@ -35,6 +35,7 @@ const Profile = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
 
     const { user } = useContext(UserContext);
+    // console.log('user test', user);
 
     const handleModelOpen = () => {
         setModalVisible(true);
@@ -132,7 +133,7 @@ const Profile = (props) => {
                 <TouchableOpacity onPress={handleCoverImage}>
                     <Image
                         style={styles.imgCover}
-                        source={user && user.user.avatar ? { uri: user.user.anhbia } : require('../../../../assets/diana.jpg')}
+                        source={user && user.user.avatar ? { uri: user.user.coverImage } : require('../../../../assets/diana.jpg')}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleAvatar}>

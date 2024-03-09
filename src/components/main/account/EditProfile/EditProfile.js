@@ -76,7 +76,7 @@ const EditProfile = (props) => {
         <TouchableOpacity >
           <Image
             style={styles.imgCover}
-            source={user && user.user.avatar ? { uri: user.user.anhbia } : require('../../../../assets/diana.jpg')}
+            source={user && user.user.avatar ? { uri: user.user.coverImage } : require('../../../../assets/diana.jpg')}
           />
         </TouchableOpacity>
         <TouchableOpacity >
@@ -150,7 +150,7 @@ const EditProfile = (props) => {
                 modal
                 mode="date"
                 open={modalVisibleDate}
-                date={set(new Date(), editedNgaysinh)}
+                date={set(new Date(), { year: 2000 }, editedNgaysinh)} 
                 onConfirm={onConfirmDate}
                 onCancel={() => {
                   setModalVisibleDate(false);

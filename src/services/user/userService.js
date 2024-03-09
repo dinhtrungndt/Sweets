@@ -62,11 +62,12 @@ export const updateProfile = async (_id, name, gender, date) => {
   }
 };
 
-export const updateAvatar = async (avatar, coverImage) => {
+export const updateAvatar = async (email, avatar, imageCover) => {
   try {
     const response = await AxiosInstance().post('/users/update-profile', {
-      coverImage: coverImage,
+      email: email,
       avatar: avatar,
+      imageCover: imageCover,
     });
     return response;
   } catch (error) {
@@ -78,7 +79,7 @@ export const updateAvatar = async (avatar, coverImage) => {
 export const updateCoverImage = async (coverImage) => {
   try {
     const response = await AxiosInstance().post('/users/update-profile', {
-      coverImage: v,
+      coverImage: coverImage,
     });
     return response;
   } catch (error) {
