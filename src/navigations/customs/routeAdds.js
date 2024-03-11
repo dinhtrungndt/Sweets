@@ -5,7 +5,11 @@ import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 
 export const GetRouteNameAdds = route => {
   const routeName = getFocusedRouteNameFromRoute(route);
-  if (routeName?.includes('SelectScreenUp')) {
+  if (routeName?.includes('AddsScreen')) {
+    return 'none';
+  } else if (routeName?.includes('AddsScreenStack')) {
+    return 'none';
+  } else if (routeName?.includes('SelectScreenUp')) {
     return 'none';
   } else if (routeName?.includes('SelectBB')) {
     return 'none';

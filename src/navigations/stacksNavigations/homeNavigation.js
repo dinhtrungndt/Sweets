@@ -38,7 +38,7 @@ const HomeNavigation = () => {
         name="AddsScreen"
         component={AddsScreenStack}
         options={({route}) => ({
-          tabBarStyle: {display: GetRouteNameAdds(route)},
+          tabBarStyle: {display: 'none'},
           headerShown: false,
         })}
       />

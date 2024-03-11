@@ -146,7 +146,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 15,
-    bottom: 10,
   },
   boder_image: {
     width: 110,
