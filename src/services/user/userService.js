@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
+import { useContext } from 'react';
 import AxiosInstance from '../../helper/Axiosinstance';
+import { UserContext } from '../../contexts/user/userContext';
 
 export const register = async (
   name,
@@ -61,13 +63,9 @@ export const updateProfile = async (_id, name, gender, date) => {
   }
 };
 
-export const updateAvatar = async (email, avatar, imageCover) => {
+export const updateAvatar = async (id) => {
   try {
-    const response = await AxiosInstance().post('/users/update-profile', {
-      email: email,
-      avatar: avatar,
-      imageCover: imageCover,
-    });
+    const response = await AxiosInstance().put(`/users/update-avatar/${id}`);
     return response;
   } catch (error) {
     console.log('updateAvatar error: ', error);
@@ -75,14 +73,12 @@ export const updateAvatar = async (email, avatar, imageCover) => {
   }
 };
 
-export const updateCoverImage = async (coverImage) => {
+export const updateCoverImage = async (_id, coverImage) => {
   try {
-    const response = await AxiosInstance().post('/users/update-profile', {
-      coverImage: coverImage,
-    });
+    const response = await AxiosInstance().put(`/users/update-coverImage/${_id}`, { coverImage });
     return response;
   } catch (error) {
-    console.log('updateCoverImage err: ', error);
+    console.log('updateCoverImage error: ', error);
     return error;
   }
 };

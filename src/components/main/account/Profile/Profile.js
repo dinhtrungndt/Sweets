@@ -20,6 +20,7 @@ import Animated from 'react-native-reanimated'
 
 // library
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import { set } from 'date-fns'
 
 
 const Profile = (props) => {
@@ -27,14 +28,14 @@ const Profile = (props) => {
 
     const [loading, setLoading] = useState(false);
 
-    const [imageAvatar, setImageAvatar] = useState(null);
+    const [imageAvatar, setImageAvatar] = useState(user && user.user.avatar ? user.user.avatar : null);
     const [coverImage, setCoverImage] = useState(null);
 
     const [modalVisibleAnhbia, setModalVisibleAnhbia] = useState(false);
     const [modalVisibleAvatar, setModalVisibleAvatar] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const { user } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
     // console.log('user test', user);
 
     const handleModelOpen = () => {
@@ -50,24 +51,29 @@ const Profile = (props) => {
     }
 
     const takePhotoAvatar = useCallback(async (response) => {
-        if (response.didCancel) return;
-        if (response.errorCode) return;
-        if (response.errorMessage) return;
-        if (response.assets && response.assets.length > 0) {
-            const asset = response.assets[0];
-            setImageAvatar(asset.uri);
-            setModalVisibleAvatar(false);
-            // upload image
+        if (response.didCancel || response.errorCode || response.errorMessage) return;
+            
+        try {
             const formData = new FormData();
             formData.append('avatar', {
-                uri: asset.uri,
-                type: asset.type,
-                name: asset.fileName,
+                uri: response.assets[0].uri,
+                type: response.assets[0].type,
+                name: response.assets[0].fileName,
             });
-            const data = await updateAvatar(formData);
+            const data = await updateAvatar(user.user._id, formData);
             console.log('data avatar', data);
+
+            // Cập nhật lại user sau khi cập nhật ảnh
+            if (data.status === 1) {
+                const updatedUser = { user: { ...user.user, avatar: data.data.avatar }};
+                setUser({ user: updatedUser });
+            }
+        } catch (error) {
+            console.log('Error uploading avatar:', error);
         }
-    }, [takePhotoAvatar]);
+    }, [setUser, user.user._id]);
+
+    console.log(">>>>>> imageAvatar ", imageAvatar)
 
     const openCamera = useCallback(async () => {
         const options = {
@@ -133,7 +139,7 @@ const Profile = (props) => {
                 <TouchableOpacity onPress={handleCoverImage}>
                     <Image
                         style={styles.imgCover}
-                        source={user && user.user.avatar ? { uri: user.user.coverImage } : require('../../../../assets/diana.jpg')}
+                        source={user && user.user.coverImage ? { uri: user.user.coverImage } : require('../../../../assets/diana.jpg')}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleAvatar}>

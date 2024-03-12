@@ -9,6 +9,10 @@ export const GetRouteNameAccount = route => {
     return 'none';
   } else if (routeName?.includes('Profile')) {
     return 'none';
+  } else if (routeName?.includes('AccountAndSecurity')) {
+    return 'none';
+  } else if (routeName?.includes('Account_Transfer')) {
+    return 'none';
   }
   return 'flex';
 };

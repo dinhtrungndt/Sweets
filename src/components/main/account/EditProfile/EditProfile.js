@@ -76,7 +76,7 @@ const EditProfile = (props) => {
         <TouchableOpacity >
           <Image
             style={styles.imgCover}
-            source={user && user.user.avatar ? { uri: user.user.coverImage } : require('../../../../assets/diana.jpg')}
+            source={user && user.user.coverImage ? { uri: user.user.coverImage } : require('../../../../assets/diana.jpg')}
           />
         </TouchableOpacity>
         <TouchableOpacity >
