@@ -6,13 +6,19 @@ import {styles} from '../../styles/select';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-const SelectScreenUp = props => {
-  const {navigation} = props;
+const SelectScreenUp = ({navigation, route}) => {
+  const idObject = route.params.idObject;
+
+  // console.log('>>>>>>>>>>.SelectScreenUp ---- idObject', idObject);
 
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleOptionSelect = option => {
     setSelectedOption(option);
+    const selectedId = idObject.find(item => item.name === option);
+    setTimeout(() => {
+      navigation.navigate('AddsScreenStack', {selectedId: selectedId});
+    }, 1000);
   };
 
   return (
@@ -29,12 +35,12 @@ const SelectScreenUp = props => {
       </View>
       {/* body */}
       <View style={styles.body}>
-        {/* Thế giới */}
+        {/* Công khai */}
         <TouchableOpacity
           style={styles.body_content}
-          onPress={() => handleOptionSelect('option0')}>
+          onPress={() => handleOptionSelect('Công khai')}>
           <View style={styles.radioContainer}>
-            {selectedOption === 'option0' && (
+            {selectedOption === 'Công khai' && (
               <View style={styles.radioSelected} />
             )}
           </View>
@@ -43,7 +49,7 @@ const SelectScreenUp = props => {
             source={require('../../../../../../assets/world_all_select.png')}
           />
           <View>
-            <Text style={styles.body_content_text}>Tất cả</Text>
+            <Text style={styles.body_content_text}>Công khai</Text>
             <Text style={styles.body_content_text2}>
               Tất cả người dùng đều thấy, trừ danh sách chặn
             </Text>
@@ -52,9 +58,9 @@ const SelectScreenUp = props => {
         {/* tất cả bạn bè */}
         <TouchableOpacity
           style={styles.body_content}
-          onPress={() => handleOptionSelect('option1')}>
+          onPress={() => handleOptionSelect('Bạn bè')}>
           <View style={styles.radioContainer}>
-            {selectedOption === 'option1' && (
+            {selectedOption === 'Bạn bè' && (
               <View style={styles.radioSelected} />
             )}
           </View>
@@ -69,9 +75,9 @@ const SelectScreenUp = props => {
         {/* Chỉ mình tôi */}
         <TouchableOpacity
           style={styles.body_content}
-          onPress={() => handleOptionSelect('option2')}>
+          onPress={() => handleOptionSelect('Chỉ mình tôi')}>
           <View style={styles.radioContainer}>
-            {selectedOption === 'option2' && (
+            {selectedOption === 'Chỉ mình tôi' && (
               <View style={styles.radioSelected} />
             )}
           </View>

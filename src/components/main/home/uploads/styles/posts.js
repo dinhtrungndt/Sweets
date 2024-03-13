@@ -69,13 +69,18 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   body_chedo: {
-    width: 150,
+    width: 120,
     height: 25,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 5,
     backgroundColor: '#E5F3FF',
     borderRadius: 5,
+  },
+  body_content_icon: {
+    width: 13,
+    height: 13,
+    marginLeft: 7,
   },
   body_chedo_icon: {
     width: 17,

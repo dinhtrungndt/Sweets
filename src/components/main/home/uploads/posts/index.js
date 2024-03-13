@@ -11,15 +11,20 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 
 import {styles} from '../styles/posts';
 import {UserContext} from '../../../../../contexts/user/userContext';
-import {uploadImageStatus} from '../../../../../services/home/homeService';
+import {
+  uploadImageStatus,
+  uploadPost,
+} from '../../../../../services/home/homeService';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import Toast from 'react-native-toast-message';
+import {CommonActions} from '@react-navigation/native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
-export function AddsScreen(props) {
-  const {navigation} = props;
+export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
   const [inputText, setInputText] = useState('');
   const [image, setImage] = useState([]);
@@ -27,6 +32,23 @@ export function AddsScreen(props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true);
   const [imagePath, setImagePath] = useState(null);
+  const [upload, setUpload] = useState(false);
+  const selectedId = route.params?.selectedId;
+
+  const idObject = () => [
+    {
+      _id: '65b1fe1be09b1e99f9e8a235',
+      name: 'Công khai',
+    },
+    {
+      _id: '65b1fe6dab07bc8ddd7de469',
+      name: 'Bạn bè',
+    },
+    {
+      _id: '65b1fe77ab07bc8ddd7de46c',
+      name: 'Chỉ mình tôi',
+    },
+  ];
 
   const takePhoto = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
@@ -85,6 +107,79 @@ export function AddsScreen(props) {
     setBottomSheetVisible(false);
   };
 
+  const handlePostUpload = () => {
+    handleUploadPost();
+    if (!inputText) {
+      return Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Bạn chưa nhập nội dung',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    } else if (!upload) {
+      navigation.navigate('HomeScreen');
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Up tin thành công',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    } else {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Up tin thất bại',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    }
+  };
+
+  const handleUploadPost = useCallback(async () => {
+    if (!user || !inputText) {
+      return;
+    }
+
+    try {
+      // console.log('Selected ID in AddsScreen:', selectedId);
+      let idObjectValue = '65b1fe1be09b1e99f9e8a235';
+      if (selectedId && selectedId._id) {
+        idObjectValue = selectedId._id;
+      }
+      const postDetails = {
+        content: inputText,
+        createAt: new Date().toISOString(),
+        idObject: idObjectValue,
+        idTypePosts: '65b20030261511b0721a9913',
+        image: imagePath,
+      };
+
+      const response = await uploadPost(user.user._id, postDetails);
+      setUpload(response);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{name: 'HomeStackScreen'}],
+        }),
+      );
+      // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+    } catch (error) {
+      console.error('Lỗi catch --->>>>> error :', error);
+    }
+  }, [user, inputText]);
+
+  useEffect(() => {
+    handleUploadPost();
+  }, [user]);
+
   return (
     <View style={styles.T}>
       {/* header */}
@@ -97,6 +192,7 @@ export function AddsScreen(props) {
         </TouchableOpacity>
         <Text style={styles.textHeader}>Tạo bài viết</Text>
         <TouchableOpacity
+          onPress={handlePostUpload}
           style={[
             styles.upHeaderButton,
             {backgroundColor: inputText ? '#7ec1a5' : '#CBCBCB'},
@@ -118,29 +214,23 @@ export function AddsScreen(props) {
               {/* congkhai */}
               <TouchableOpacity
                 style={styles.body_chedo}
-                onPress={() => navigation.navigate('SelectScreenUp')}>
-                <Image
-                  style={styles.body_chedo_icon}
-                  source={require('../../../../../assets/icon_all_friend.png')}
-                />
-                <Text style={styles.body_chedo_text}>Tất cả bạn bè</Text>
-                <Image
-                  style={styles.body_chedo_icon_down}
-                  source={require('../../../../../assets/upstory_down_icon.png')}
-                />
-              </TouchableOpacity>
-              {/* album */}
-              <TouchableOpacity
-                style={[styles.body_chedo, {marginLeft: 15, width: 95}]}>
-                <Text style={[styles.body_chedo_text, {paddingLeft: 5}]}>
-                  +
-                </Text>
-                <Text style={[styles.body_chedo_text, {paddingLeft: 3}]}>
-                  Album
-                </Text>
-                <Image
-                  style={styles.body_chedo_icon_down}
-                  source={require('../../../../../assets/upstory_down_icon.png')}
+                onPress={() =>
+                  navigation.navigate('SelectScreenUp', {idObject: idObject()})
+                }>
+                {selectedId?.name === undefined ? (
+                  <Text style={styles.body_chedo_text}> Công khai </Text>
+                ) : (
+                  <Text style={styles.body_chedo_text}>
+                    {' '}
+                    {selectedId?.name}{' '}
+                  </Text>
+                )}
+                <AntDesign
+                  name={'caretdown'}
+                  size={13}
+                  color={'#0062c9'}
+                  left={93}
+                  position={'absolute'}
                 />
               </TouchableOpacity>
             </View>
