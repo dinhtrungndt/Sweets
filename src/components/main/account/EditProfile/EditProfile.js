@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   StyleSheet,
   Text,
@@ -8,24 +9,24 @@ import {
   Modal,
   Pressable,
   ActivityIndicator,
-} from 'react-native'
-import React, { useCallback, useContext, useState, useEffect } from 'react'
-import { UserContext } from '../../../../contexts/user/userContext'
-import { updateProfile } from '../../../../services/user/userService'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+} from 'react-native';
+import React, {useCallback, useContext, useState, useEffect} from 'react';
+import {UserContext} from '../../../../contexts/user/userContext';
+import {updateProfile} from '../../../../services/user/userService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // styles
-import { styles } from '../style/editprofile'
+import {styles} from '../style/editprofile';
 
 // library
-import CheckBox from '@react-native-community/checkbox'
-import DatePicker from 'react-native-date-picker'
-import { set } from 'date-fns'
+import CheckBox from '@react-native-community/checkbox';
+import DatePicker from 'react-native-date-picker';
+import {set} from 'date-fns';
 
-const EditProfile = (props) => {
-  const { navigation } = props;
+const EditProfile = props => {
+  const {navigation} = props;
 
-  const { user } = useContext(UserContext);
+  const {user} = useContext(UserContext);
 
   const [loading, setLoading] = useState(false);
   const [modalVisibleEdit, setModalVisibleEdit] = useState(false);
@@ -34,13 +35,15 @@ const EditProfile = (props) => {
   const [isGender, setIsGender] = useState(user ? user.user.gender : '');
 
   const [editedName, setEditedName] = useState(user ? user.user.name : '');
-  const [editedNgaysinh, setEditedNgaysinh] = useState(user ? user.user.date : '');
+  const [editedNgaysinh, setEditedNgaysinh] = useState(
+    user ? user.user.date : '',
+  );
 
   const handleEdit = () => {
     setModalVisibleEdit(true);
   };
 
-  const onConfirmDate = (date) => {
+  const onConfirmDate = date => {
     setModalVisibleDate(false);
 
     const formattedDate = date.toLocaleDateString('en-US', {
@@ -52,14 +55,19 @@ const EditProfile = (props) => {
     setEditedNgaysinh(formattedDate);
   };
 
-  const handleCheckboxChange = (selectedGender) => {
+  const handleCheckboxChange = selectedGender => {
     setIsGender(selectedGender);
   };
 
   const handleSave = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await updateProfile(user.user._id, editedName, isGender, editedNgaysinh);
+      const response = await updateProfile(
+        user.user._id,
+        editedName,
+        isGender,
+        editedNgaysinh,
+      );
       if (response.status === 1) {
         console.log('updateProfile susccess: ', response.data);
         setModalVisibleEdit(false);
@@ -68,27 +76,36 @@ const EditProfile = (props) => {
       console.log('updateProfile err: ', error);
     }
     setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedName, isGender, editedNgaysinh]);
 
   return (
     <View>
       <View style={styles.profileFrame}>
-        <TouchableOpacity >
+        <TouchableOpacity>
           <Image
             style={styles.imgCover}
-            source={user && user.user.coverImage ? { uri: user.user.coverImage } : require('../../../../assets/diana.jpg')}
+            source={
+              user && user.user.coverImage
+                ? {uri: user.user.coverImage}
+                : require('../../../../assets/diana.jpg')
+            }
           />
         </TouchableOpacity>
-        <TouchableOpacity >
+        <TouchableOpacity>
           <Image
             style={styles.imgAvatar}
-            source={user && user.user.avatar ? { uri: user.user.avatar } : require('../../../../assets/diana.jpg')}
+            source={
+              user && user.user.avatar
+                ? {uri: user.user.avatar}
+                : require('../../../../assets/diana.jpg')
+            }
           />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.btnBack}>
-          <Image source={require('../../../../assets/icon_back.png')}></Image>
+          <Image source={require('../../../../assets/icon_back.png')} />
         </TouchableOpacity>
         <View style={styles.editFrame}>
           <Text style={styles.txt1}>Thông tin cá nhân</Text>
@@ -112,7 +129,7 @@ const EditProfile = (props) => {
 
       {/* Modal chỉnh sửa */}
       <Modal
-        animationType='slide'
+        animationType="slide"
         transparent={true}
         visible={modalVisibleEdit}
         onRequestClose={() => {
@@ -123,7 +140,10 @@ const EditProfile = (props) => {
             <TouchableOpacity
               onPress={() => setModalVisibleEdit(!modalVisibleEdit)}
               style={styles.btnCancelEdit}>
-              <Image source={require('../../../../assets/icon_back.png')} style={styles.imgAvt}></Image>
+              <Image
+                source={require('../../../../assets/icon_back.png')}
+                style={styles.imgAvt}
+              />
               <Text style={styles.txtCancelEdit}>Chỉnh sửa thông tin</Text>
             </TouchableOpacity>
             <View>
@@ -132,13 +152,19 @@ const EditProfile = (props) => {
                 value={editedName}
                 onChangeText={text => setEditedName(text)}
               />
-              <Image style={styles.imgEdit} source={require('../../../../assets/icon_edit.png')} ></Image>
+              <Image
+                style={styles.imgEdit}
+                source={require('../../../../assets/icon_edit.png')}
+              />
             </View>
             <View style={styles.container}>
               <TouchableOpacity
                 style={styles.txtInputDate}
                 onPress={() => setModalVisibleDate(true)}>
-                <Image style={styles.imgEdit} source={require('../../../../assets/Date.png')} />
+                <Image
+                  style={styles.imgEdit}
+                  source={require('../../../../assets/Date.png')}
+                />
                 <TextInput
                   value={editedNgaysinh}
                   editable={false}
@@ -150,7 +176,7 @@ const EditProfile = (props) => {
                 modal
                 mode="date"
                 open={modalVisibleDate}
-                date={set(new Date(), { year: 2000 }, editedNgaysinh)} 
+                date={set(new Date(), {year: 2000}, editedNgaysinh)}
                 onConfirm={onConfirmDate}
                 onCancel={() => {
                   setModalVisibleDate(false);
@@ -162,21 +188,21 @@ const EditProfile = (props) => {
                 style={styles.CheckBox}
                 value={isGender === 'Nữ'}
                 onValueChange={() => handleCheckboxChange('Nữ')}
-                tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
+                tintColors={{true: '#22b6c0', false: '#b0b4ba'}}
               />
               <Text style={styles.txtCheckbox}>Nữ</Text>
               <CheckBox
                 style={styles.CheckBox}
                 value={isGender === 'Nam'}
                 onValueChange={() => handleCheckboxChange('Nam')}
-                tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
+                tintColors={{true: '#22b6c0', false: '#b0b4ba'}}
               />
               <Text style={styles.txtCheckbox}>Nam</Text>
               <CheckBox
                 style={styles.CheckBox}
                 value={isGender === 'Khác'}
                 onValueChange={() => handleCheckboxChange('Khác')}
-                tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
+                tintColors={{true: '#22b6c0', false: '#b0b4ba'}}
               />
               <Text style={styles.txtCheckbox}>Khác</Text>
             </View>
@@ -190,10 +216,8 @@ const EditProfile = (props) => {
           </View>
         </View>
       </Modal>
-
     </View>
-  )
-}
+  );
+};
 
-export default EditProfile
-
+export default EditProfile;
