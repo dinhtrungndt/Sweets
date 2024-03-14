@@ -31,4 +31,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 100,
   },
+  video_story_me: {
+    width: '100%',
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 100,
+  },
 });

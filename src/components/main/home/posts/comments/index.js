@@ -200,7 +200,7 @@ const CommentsScreen = ({navigation, route}) => {
       case 'Haha':
         return '#ff9900';
       case 'Wow':
-        return '#ff00ff';
+        return '#ff9900';
       case 'Tức giận':
         return '#ff0000';
       default:

@@ -136,9 +136,52 @@ const PickStory = ({route}) => {
       ) : (
         <View style={styles.container_content}>
           {story.content ? (
-            <Text style={styles.content}>{story.content}</Text>
+            <Text style={styles.content}>
+              {story.content ? story.content : story[current].content}
+            </Text>
           ) : (
-            <Text style={styles.content}>{story[current].content}</Text>
+            <>
+              {story
+                .flatMap(item => item.media.map(item => item.type))
+                .join() === 'image' ? (
+                <Image
+                  source={{
+                    uri: story
+                      .flatMap(item => item.media.map(item => item.url))
+                      .join(),
+                  }}
+                  onLoadEnd={() => {
+                    progress.setValue(0);
+                    start();
+                  }}
+                  style={{width: width, height: height}}
+                />
+              ) : (
+                <TouchableOpacity
+                  onPress={handleVideoPress}
+                  style={{opacity: 1}}>
+                  <VideoPlayer
+                    video={{
+                      uri: story
+                        .flatMap(item => item.media.map(item => item.url))
+                        .join(),
+                    }}
+                    videoWidth={1600}
+                    videoHeight={900}
+                    thumbnail={{
+                      uri: story
+                        .flatMap(item => item.media.map(item => item.url))
+                        .join(),
+                    }}
+                    autoplay={true}
+                    hideControls={true}
+                    showOnStart={true}
+                    paused={isPaused}
+                    style={styles.video_story_me}
+                  />
+                </TouchableOpacity>
+              )}
+            </>
           )}
         </View>
       )}

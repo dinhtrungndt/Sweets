@@ -77,15 +77,26 @@ const StoryScreen = ({navigation, story}) => {
 
   const filteredStories = filterStories(story);
 
+  const isMyStoryExpired = userStories.every(story => {
+    const currentTimestamp = moment();
+    const storyTimestamp = moment(story.createAt);
+    const hoursDiff = currentTimestamp.diff(storyTimestamp, 'hours');
+    return hoursDiff >= 24;
+  });
+
   return (
     <View style={styles.T}>
       <View style={styles.container_story_me}>
         {/* story me */}
         <View style={styles.container_me}>
           <TouchableOpacity
-            onPress={showStoryMe ? () => handleSeenStory(userStories) : null}
+            onPress={
+              showStoryMe && !isMyStoryExpired
+                ? () => handleSeenStory(userStories)
+                : null
+            }
             style={
-              showStoryMe
+              showStoryMe && !isMyStoryExpired
                 ? seenStory
                   ? styles.border_story_seen
                   : styles.border_story
@@ -108,7 +119,7 @@ const StoryScreen = ({navigation, story}) => {
                 />
               )}
             </View>
-            {showStoryMe ||
+            {(showStoryMe && !isMyStoryExpired) ||
               (!seenStory && (
                 <View style={styles.iconAdd}>
                   <Image
