@@ -290,9 +290,15 @@ const CommentsScreen = ({navigation, route}) => {
           postId._id,
           parentId,
           commentContent,
+          imagePath,
         );
       } else {
-        await submitComments(user.user._id, postId._id, commentContent);
+        await submitComments(
+          user.user._id,
+          postId._id,
+          commentContent,
+          imagePath,
+        );
       }
       setCommentContent('');
       await reloadComments();
@@ -303,6 +309,8 @@ const CommentsScreen = ({navigation, route}) => {
       setIsLoading(false);
     }
   };
+
+  console.log('???? >>>>>>> imagePathimagePath', imagePath);
 
   useEffect(() => {
     handleReaction.current = {
@@ -619,9 +627,24 @@ const CommentsScreen = ({navigation, route}) => {
                             <Text style={styles.name_comment}>
                               {item.idUsers?.name}
                             </Text>
-                            <Text style={styles.content_comment}>
-                              {item.content}
-                            </Text>
+                            <View>
+                              {item?.content && (
+                                <View>
+                                  <Text>{item.content}</Text>
+                                </View>
+                              )}
+                              {item?.image && item?.image.length > 0 && (
+                                <View>
+                                  {item.image.map((image, imageIndex) => (
+                                    <Image
+                                      key={imageIndex}
+                                      source={{uri: image}}
+                                      style={styles.content_image}
+                                    />
+                                  ))}
+                                </View>
+                              )}
+                            </View>
                           </View>
                           <View style={styles.comment_time_like}>
                             <Text style={styles.time_comment}>

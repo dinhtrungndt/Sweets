@@ -270,6 +270,12 @@ export const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '300',
   },
+  content_image: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    marginTop: 15,
+  },
   comment_time_like: {
     flexDirection: 'row',
     paddingTop: 10,

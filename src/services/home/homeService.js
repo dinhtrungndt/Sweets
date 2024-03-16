@@ -119,11 +119,11 @@ export const likePost = async (userId, postId) => {
 };
 
 // Comment theo idUsers và idPosts
-export const submitComments = async (userId, postId, content) => {
+export const submitComments = async (userId, postId, content, image) => {
   try {
     const response = await AxiosInstance().post(
       `/comments/add/${userId}/${postId}`,
-      {content},
+      {content, image},
     );
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
