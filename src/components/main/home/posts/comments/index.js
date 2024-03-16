@@ -310,7 +310,7 @@ const CommentsScreen = ({navigation, route}) => {
     }
   };
 
-  console.log('???? >>>>>>> imagePathimagePath', imagePath);
+  // console.log('???? >>>>>>> imagePathimagePath', imagePath);
 
   useEffect(() => {
     handleReaction.current = {
