@@ -3,8 +3,16 @@ import {Text, View, FlatList, TouchableOpacity, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import styles from '../styles/OtherFriendStyles';
-const OtherFriend = () => {
+import { useScrollableSetter } from '@gorhom/bottom-sheet';
+
+
+const OtherFriend = (props) => {
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [Iduser, setIduser] = useState();
+  //const { navigation } = props;
+
+ 
+
 
   useEffect(() => {
     const loadFilteredUsers = async () => {
@@ -67,7 +75,9 @@ const OtherFriend = () => {
             <View>
               <View style={{flexDirection:'row',justifyContent:'space-between',marginVertical:5}}>
                 <View style={{flexDirection:'row',marginVertical:5}}>
-                <TouchableOpacity style={styles.friendItem}>
+                <TouchableOpacity style={styles.friendItem}
+                 
+                >
                   <Image
                     source={{
                       uri:

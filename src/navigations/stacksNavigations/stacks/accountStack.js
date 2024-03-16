@@ -11,6 +11,7 @@ import Account_Transfer from '../../../components/main/account/account_transfer/
 import Profile from '../../../components/main/account/Profile/Profile';
 import EditProfile from '../../../components/main/account/EditProfile/EditProfile';
 
+
 const Stack = createNativeStackNavigator();
 
 export function AccountStackScreen() {
@@ -24,6 +25,7 @@ export function AccountStackScreen() {
       <Stack.Screen name="Account_Transfer" component={Account_Transfer} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
+      
     </Stack.Navigator>
   );
 }
