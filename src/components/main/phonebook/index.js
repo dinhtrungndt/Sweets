@@ -70,6 +70,7 @@ const renderItem = useCallback(({ item }) => (
       <MyModal isVisible={isModalVisible} onClose={() => setModalVisible(false)} />
 
       <Tab.Navigator
+      
         screenOptions={{
           tabBarLabelStyle: {
             fontSize: 15,

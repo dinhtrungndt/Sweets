@@ -12,6 +12,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import QRCODE from '../../../components/main/phonebook/Feature/QRCODE';
 import LoiMoiKetBan from '../../../components/main/phonebook/Feature/LoiMoiKetBan';
 import ThoiTiet from '../../../components/main/phonebook/Feature/ThoiTiet';
+import Profile from '../../../components/main/account/Profile/Profile';
 const Stack = createNativeStackNavigator();
 
 export function PhoneBookStack() {
@@ -21,6 +22,7 @@ export function PhoneBookStack() {
         headerShown: false,
       }}>
       <Stack.Screen name="PhoneBookScreen" component={PhoneBookScreen} />
+      <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen
         name="LoiMoiKetBan"
         component={LoiMoiKetBan}
