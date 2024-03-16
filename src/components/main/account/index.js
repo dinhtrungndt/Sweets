@@ -9,7 +9,7 @@ const AccountScreen = props => {
 
   const { user } = useContext(UserContext);
   const { onLogout } = useContext(UserContext);
-  console.log(">>>>>>>>> test user", user.user.name);
+  console.log(">>>>>>>>> test user", user);
 
   const [loading, setLoading] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
@@ -66,14 +66,15 @@ const AccountScreen = props => {
         </TouchableOpacity>
       </View>
       <View style={styles.setting}>
-      <TouchableOpacity style={styles.btnHelp} >
-        <Text style={styles.textbtn1}>Trợ giúp & hỗ trợ</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.btnPrivacy}>
+      
+      <TouchableOpacity onPress={() => navigation.navigate('SettingsAndPrivacy')} style={styles.btnPrivacy}>
         <Text style={styles.textbtn1}>Cài đặt & quyền riêng tư</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.btnSecurity}>
+      <TouchableOpacity onPress={() => navigation.navigate('AccountAndSecurity')} style={styles.btnSecurity}>
         <Text style={styles.textbtn1}>Tài khoản & bảo mật</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('HelpAndSupport')} style={styles.btnHelp} >
+        <Text style={styles.textbtn1}>Trợ giúp & hỗ trợ</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.btnLogout} onPress={handleLogout}>
         <Text style={styles.textbtn}>Đăng xuất</Text>
@@ -190,7 +191,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f3f6f4',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 16,
     borderTopWidth: 1,
     borderTopColor: '#E5E5E5',
   },

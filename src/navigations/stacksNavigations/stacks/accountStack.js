@@ -10,7 +10,9 @@ import LoginScreen from '../../../components/user/login/Login';
 import Account_Transfer from '../../../components/main/account/account_transfer/Account_Transfer';
 import Profile from '../../../components/main/account/Profile/Profile';
 import EditProfile from '../../../components/main/account/EditProfile/EditProfile';
-
+import AccountAndSecurity from '../../../components/main/account/PIM/AccountAndSecurity';
+import SettingsAndPrivacy from '../../../components/main/account/PIM/SettingsAndPrivacy';
+import HelpAndSupport from '../../../components/main/account/PIM/HelpAndSupport';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,7 +27,9 @@ export function AccountStackScreen() {
       <Stack.Screen name="Account_Transfer" component={Account_Transfer} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
-      
+      <Stack.Screen name="AccountAndSecurity" component={AccountAndSecurity} />
+      <Stack.Screen name="SettingsAndPrivacy" component={SettingsAndPrivacy} />
+      <Stack.Screen name="HelpAndSupport" component={HelpAndSupport} />
     </Stack.Navigator>
   );
 }
