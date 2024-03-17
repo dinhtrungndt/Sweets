@@ -13,7 +13,8 @@ import {GetRouteNameHome} from '../customs/routeHome';
 import {GetRouteNamePhone} from '../customs/routePhone';
 import {PhoneBookStack} from './stacks/PhoneBookStack';
 import {ChatScreenStack} from './stacks/chatStack';
-import {AddsScreen} from '../../components/main/home/uploads/posts';
+import {AddsScreenStack} from './stacks/addsStack';
+import {GetRouteNameAdds} from '../customs/routeAdds';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,8 +36,11 @@ const HomeNavigation = () => {
       />
       <Tab.Screen
         name="AddsScreen"
-        component={AddsScreen}
-        options={{headerShown: false}}
+        component={AddsScreenStack}
+        options={({route}) => ({
+          tabBarStyle: {display: 'none'},
+          headerShown: false,
+        })}
       />
       <Tab.Screen
         name="PhoneBookScreen"

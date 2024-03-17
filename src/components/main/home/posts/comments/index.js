@@ -3,6 +3,7 @@
 import {
   ActivityIndicator,
   Button,
+  Dimensions,
   FlatList,
   Image,
   Modal,
@@ -71,6 +72,7 @@ const CommentsScreen = ({navigation, route}) => {
   const commentInputRef = useRef(null);
   const [parentId, setParentId] = useState(null);
   const [parentUserName, setParentUserName] = useState('');
+  const numColumns = 4;
 
   // console.log('>>>>>>>>> CommentsScreen postId', postId);
   // console.log('>>>>>>>>> comments comments', comments);
@@ -198,7 +200,7 @@ const CommentsScreen = ({navigation, route}) => {
       case 'Haha':
         return '#ff9900';
       case 'Wow':
-        return '#ff00ff';
+        return '#ff9900';
       case 'Tức giận':
         return '#ff0000';
       default:
@@ -288,9 +290,15 @@ const CommentsScreen = ({navigation, route}) => {
           postId._id,
           parentId,
           commentContent,
+          imagePath,
         );
       } else {
-        await submitComments(user.user._id, postId._id, commentContent);
+        await submitComments(
+          user.user._id,
+          postId._id,
+          commentContent,
+          imagePath,
+        );
       }
       setCommentContent('');
       await reloadComments();
@@ -301,6 +309,8 @@ const CommentsScreen = ({navigation, route}) => {
       setIsLoading(false);
     }
   };
+
+  console.log('???? >>>>>>> imagePathimagePath', imagePath);
 
   useEffect(() => {
     handleReaction.current = {
@@ -617,9 +627,24 @@ const CommentsScreen = ({navigation, route}) => {
                             <Text style={styles.name_comment}>
                               {item.idUsers?.name}
                             </Text>
-                            <Text style={styles.content_comment}>
-                              {item.content}
-                            </Text>
+                            <View>
+                              {item?.content && (
+                                <View>
+                                  <Text>{item.content}</Text>
+                                </View>
+                              )}
+                              {item?.image && item?.image.length > 0 && (
+                                <View>
+                                  {item.image.map((image, imageIndex) => (
+                                    <Image
+                                      key={imageIndex}
+                                      source={{uri: image}}
+                                      style={styles.content_image}
+                                    />
+                                  ))}
+                                </View>
+                              )}
+                            </View>
                           </View>
                           <View style={styles.comment_time_like}>
                             <Text style={styles.time_comment}>
@@ -724,27 +749,51 @@ const CommentsScreen = ({navigation, route}) => {
           )}
         </ScrollView>
         {/* Reply Comment */}
-        <View style={styles.container_reply_comment}>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Image
-              style={styles.icon_comment}
-              source={require('../../../../../assets/icon_camera_comment.png')}
+        <>
+          {image.length > 0 && (
+            <FlatList
+              style={{marginTop: 10}}
+              data={image}
+              numColumns={numColumns}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => (
+                <TouchableOpacity key={index}>
+                  <Image
+                    source={{uri: item.uri}}
+                    style={{
+                      width: Dimensions.get('window').width / numColumns - 10,
+                      height: Dimensions.get('window').width / numColumns - 10,
+                      margin: 5,
+                      borderRadius: 5,
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
             />
-          </TouchableOpacity>
-          <TextInput
-            ref={commentInputRef}
-            style={styles.input_comment}
-            placeholder={`Bình luận dưới tên ${user.user.name}`}
-            onChangeText={text => setCommentContent(text)}>
-            <Text style={styles.parentUserName}>{parentUserName}</Text>{' '}
-          </TextInput>
-          <TouchableOpacity onPress={submitComment}>
-            <Image
-              style={styles.icon_comment_send}
-              source={require('../../../../../assets/send_comment_icon.png')}
-            />
-          </TouchableOpacity>
-        </View>
+          )}
+          <View style={styles.container_reply_comment}>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Image
+                style={styles.icon_comment}
+                source={require('../../../../../assets/icon_camera_comment.png')}
+              />
+            </TouchableOpacity>
+
+            <TextInput
+              ref={commentInputRef}
+              style={styles.input_comment}
+              placeholder={`Bình luận dưới tên ${user.user.name}`}
+              onChangeText={text => setCommentContent(text)}>
+              <Text style={styles.parentUserName}>{parentUserName}</Text>{' '}
+            </TextInput>
+            <TouchableOpacity onPress={submitComment}>
+              <Image
+                style={styles.icon_comment_send}
+                source={require('../../../../../assets/send_comment_icon.png')}
+              />
+            </TouchableOpacity>
+          </View>
+        </>
         {/* bottom sheet */}
         <BottomSheet
           ref={bottomSheetRef}

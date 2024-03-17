@@ -80,16 +80,16 @@ export const likeByPost = async (idUsers, idPosts, type) => {
 };
 
 // upload bài viết
-export const uploadPost = async (userId, postDetails) => {
+export const uploadPost = async (idUsers, postDetails) => {
   try {
     const response = await AxiosInstance().post(
-      `/post/${userId}/create-post`,
+      `/posts/add-posts/${idUsers}`,
       postDetails,
     );
     // console.log('upload post >>>>>>>>>>>>>>> 20 ', response);
     return response;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi loading ảnh: 11 s', error.response);
+    console.error(' >>>>>>>>> Lỗi upload bài viết : 11 s', error);
     throw error;
   }
 };
@@ -119,11 +119,11 @@ export const likePost = async (userId, postId) => {
 };
 
 // Comment theo idUsers và idPosts
-export const submitComments = async (userId, postId, content) => {
+export const submitComments = async (userId, postId, content, image) => {
   try {
     const response = await AxiosInstance().post(
       `/comments/add/${userId}/${postId}`,
-      {content},
+      {content, image},
     );
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
