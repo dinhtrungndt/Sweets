@@ -17,6 +17,7 @@ import {styles} from '../styles/posts';
 import {UserContext} from '../../../../../contexts/user/userContext';
 import {
   uploadImageStatus,
+  uploadMedia,
   uploadPost,
 } from '../../../../../services/home/homeService';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -33,6 +34,7 @@ export function AddsScreen({route, navigation}) {
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true);
   const [imagePath, setImagePath] = useState(null);
   const [upload, setUpload] = useState(false);
+  const [_idPosts, setIdPosts] = useState(null);
   const selectedId = route.params?.selectedId;
 
   const idObject = () => [
@@ -107,34 +109,74 @@ export function AddsScreen({route, navigation}) {
     setBottomSheetVisible(false);
   };
 
-  const handlePostUpload = () => {
-    handleUploadPost();
-    if (!inputText) {
-      return Toast.show({
+  const handleUploadMedia = useCallback(async () => {
+    try {
+      if (!_idPosts) {
+        return;
+      }
+      const media = imagePath.join();
+      const cbMediaType = {
+        url: imagePath?.length > 1 ? imagePath : media,
+        type: 'image',
+      };
+
+      const response = await uploadMedia(_idPosts, cbMediaType);
+      // console.log('>>>>>>> response -> handleUploadMedia', response);
+    } catch (error) {
+      console.log('>>>>>>> Lỗi ở HandleUploadMedia nè', error);
+    }
+  });
+
+  const handlePostUpload = async () => {
+    try {
+      if (!inputText && !imagePath) {
+        return Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Bạn chưa nhập nội dung hoặc chọn ảnh',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 40,
+        });
+      }
+
+      if (inputText && imagePath) {
+        await Promise.all([handleUploadMedia(), handleUploadPost()]);
+      } else if (inputText) {
+        await handleUploadPost();
+      } else if (imagePath) {
+        await handleUploadMedia();
+      }
+
+      if (!upload) {
+        navigation.navigate('HomeScreen');
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Up tin thành công',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 40,
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Up tin thất bại',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 40,
+        });
+      }
+    } catch (error) {
+      console.error('Lỗi khi đăng bài:', error);
+      Toast.show({
         type: 'error',
         position: 'top',
-        text1: 'Bạn chưa nhập nội dung',
-        visibilityTime: 2000,
-        autoHide: true,
-        topOffset: 30,
-        bottomOffset: 40,
-      });
-    } else if (!upload) {
-      navigation.navigate('HomeScreen');
-      Toast.show({
-        type: 'success',
-        position: 'top',
-        text1: 'Up tin thành công',
-        visibilityTime: 2000,
-        autoHide: true,
-        topOffset: 30,
-        bottomOffset: 40,
-      });
-    } else {
-      Toast.show({
-        type: 'error',
-        position: 'top',
-        text1: 'Up tin thất bại',
+        text1: 'Có lỗi xảy ra khi đăng bài',
         visibilityTime: 2000,
         autoHide: true,
         topOffset: 30,
@@ -155,11 +197,11 @@ export function AddsScreen({route, navigation}) {
         idObjectValue = selectedId._id;
       }
       const postDetails = {
+        _id: _idPosts,
         content: inputText,
         createAt: new Date().toISOString(),
         idObject: idObjectValue,
         idTypePosts: '65b20030261511b0721a9913',
-        image: imagePath,
       };
 
       const response = await uploadPost(user.user._id, postDetails);
@@ -175,6 +217,14 @@ export function AddsScreen({route, navigation}) {
       console.error('Lỗi catch --->>>>> error :', error);
     }
   }, [user, inputText]);
+
+  useEffect(() => {
+    const dateString = Date.now();
+    const randomSuffix = Math.floor(Math.random() * 10000000);
+    const dateNumber = new Date(dateString);
+    const _idPosts = dateNumber.getTime().toString() + randomSuffix.toString();
+    setIdPosts(_idPosts);
+  }, []);
 
   useEffect(() => {
     handleUploadPost();

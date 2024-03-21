@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   upHeaderButton: {
-    backgroundColor: '#CBCBCB',
+    backgroundColor: '#7ec1a5',
     borderRadius: 10,
     padding: 10,
     width: 70,

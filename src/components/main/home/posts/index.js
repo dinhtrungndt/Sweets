@@ -255,7 +255,12 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   {item.media?.map((media, index) => (
                     <View key={media._id}>
                       {media.type === 'image' ? (
-                        <Image source={{uri: media.url}} style={styles.posts} />
+                        <>
+                          <Image
+                            source={{uri: media.url[0]}}
+                            style={styles.posts}
+                          />
+                        </>
                       ) : (
                         <VideoPlayer
                           video={{uri: media.url}}

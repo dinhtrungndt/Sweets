@@ -94,6 +94,21 @@ export const uploadPost = async (idUsers, postDetails) => {
   }
 };
 
+// upload media
+export const uploadMedia = async (idPosts, cbMediaType) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/media/add-media/${idPosts}`,
+      cbMediaType,
+    );
+    // console.log('upload post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi upload mediaaa : 11 s', error);
+    throw error;
+  }
+};
+
 // Upload ảnh status
 export const uploadImageStatus = async form => {
   const response = await AxiosInstance('multipart/form-data').post(
