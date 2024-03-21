@@ -1,8 +1,8 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, Modal, TouchableWithoutFeedback,FlatList } from 'react-native';
 import styles from '../styles/LoiMoiKetBanStyles';
-//import AxiosInstance from '../../../../helper/Axiosinstance';
-import AxiosInstance from '../../../../helper/AxiosinstanceText';
+import AxiosInstance from '../../../../helper/Axiosinstance';
+//import AxiosInstance from '../../../../helper/AxiosinstanceText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoiMoiKetBan = () => {

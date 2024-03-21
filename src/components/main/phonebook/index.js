@@ -5,7 +5,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import styles from './styles/IndexStyles';
 import AllFriend from './TopTab/AllFriend';
 import NearFriend from './TopTab/NearFriend';
-import MyModal from './modal/MDBirthday'; // Import Modal component
+import MyModal from './modal/MDBirthday'; 
 import OtherFriend from './TopTab/OtherFriend';
 
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +15,7 @@ import QRCODE from './Feature/QRCODE';
 const Tab = createMaterialTopTabNavigator();
 
 const data = [
-  { id: '1', title: require('../../../assets/hppn2.png'),name:'Sự kiện' },
+  { id: '1', title: require('../../../assets/hppn2.png'),name:'Sinh nhật' },
   { id: '2', title: require('../../../assets/friends2.png'),name:'Lời mời' },
   { id: '3', title: require('../../../assets/qr-scan2.png'),name :'Quét mã' },
   { id: '4', title: require('../../../assets/cluold2.png'),name:'Thời tiết' },
@@ -28,7 +28,7 @@ const renderItem = useCallback(({ item }) => (
     style={styles.button}
     onPress={() => {
       if (item.id === '1') {
-        setModalVisible(true);
+        navigation.navigate('SinhNhat');
       } if (item.id === '3') {
         navigation.navigate('QRCODE');
       }  if (item.id === '2') {
