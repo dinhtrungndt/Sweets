@@ -1,35 +1,30 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
-  ScrollView,
   Modal,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
-import React, {useContext, useState, useCallback, useEffect} from 'react';
-import {UserContext} from '../../../../contexts/user/userContext';
+import React, { useContext, useState, useCallback, useEffect } from 'react';
+import { UserContext } from '../../../../contexts/user/userContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {updateAvatar, updateCover} from '../../../../services/user/userService';
-import {updateCoverImage} from '../../../../services/user/userService';
-
+import { updateAvatar, updateCover } from '../../../../services/user/userService';
 // style
-import {styles} from '../style/profile';
-import BottomSheet from '@gorhom/bottom-sheet';
-import Animated from 'react-native-reanimated';
-
+import { styles } from '../style/profile';
 // library
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {set} from 'date-fns';
-import {uploadImageStatus} from '../../../../services/home/homeService';
-import {CommonActions} from '@react-navigation/native';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { uploadImageStatus } from '../../../../services/home/homeService';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import PostScreen from './TopTab/PostScreen';
+import ImgScreen from './TopTab/ImgScreen';
+
+const Tab = createMaterialTopTabNavigator();
 
 const Profile = props => {
-  const {navigation} = props;
+  const { navigation } = props;
 
   const [loading, setLoading] = useState(false);
 
@@ -39,9 +34,9 @@ const Profile = props => {
   const [imageCover, setImageCover] = useState([]);
   const [imageCoverPath, setImageCoverPath] = useState(null);
   const [modalVisibleCover, setModalVisibleCover] = useState(false);
-  //   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const {user} = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const takePhotoAvatar = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
@@ -91,9 +86,6 @@ const Profile = props => {
     }
   }, []);
 
-  // console.log('>>>>>> imageAvatarPath ', imageCoverPath);
-  // console.log('>>>>>> imageAvatar ', imageCover);
-
   const openCamera = useCallback(async () => {
     const options = {
       mediaType: 'photo',
@@ -137,52 +129,38 @@ const Profile = props => {
   }, []);
 
   const handleAvatarUpdate = useCallback(async () => {
-    const data = {
-      avatar: JSON.stringify(imageAvatarPath),
-    };
     try {
       if (imageAvatarPath) {
         setLoading(true);
-        const res = await updateAvatar(user.user._id, data);
-        // console.log('>>>> upload avatar thành công !', res);
-        navigation.navigate('HomeStackScreen');
-      } else {
+        const res = await updateAvatar(user.user._id, { avatar: JSON.stringify(imageAvatarPath) });
         setLoading(false);
-        // console.log('Không có hình ảnh để cập nhật');
       }
     } catch (error) {
       setLoading(false);
-      // console.error('Lỗi catch --->>>>> error :', error);
+      console.error('Error updating avatar:', error);
     }
   }, [user.user._id, imageAvatarPath]);
 
   const handleCoverUpdate = useCallback(async () => {
-    const data = {
-      coverImage: JSON.stringify(imageCoverPath),
-    };
     try {
       if (imageCoverPath) {
         setLoading(true);
-        const res = await updateCover(user.user._id, data);
-        // console.log('>>>> upload avatar thành công !', res);
-        navigation.navigate('HomeStackScreen');
-      } else {
+        const res = await updateCover(user.user._id, { coverImage: JSON.stringify(imageCoverPath) });
         setLoading(false);
-        // console.log('Không có hình ảnh để cập nhật');
       }
     } catch (error) {
       setLoading(false);
-      // console.error('Lỗi catch --->>>>> error :', error);
+      console.error('Error updating cover:', error);
     }
   }, [user.user._id, imageCoverPath]);
 
   useEffect(() => {
     handleAvatarUpdate();
-  }, [user.user._id, imageAvatarPath]);
+  }, [handleAvatarUpdate]);
 
   useEffect(() => {
     handleCoverUpdate();
-  }, [user.user._id, imageCoverPath]);
+  }, [handleCoverUpdate]);
 
   return (
     <View style={styles.body}>
@@ -192,7 +170,7 @@ const Profile = props => {
             style={styles.imgCover}
             source={
               user && user.user.coverImage
-                ? {uri: user.user.coverImage}
+                ? { uri: user.user.coverImage }
                 : require('../../../../assets/account.png')
             }
           />
@@ -200,7 +178,7 @@ const Profile = props => {
             <TouchableOpacity
               key={index}
               onPress={() => handleCoverUpdate(coverImage)}>
-              <Image style={styles.imgCover} source={{uri: coverImage.uri}} />
+              <Image style={styles.imgCover} source={{ uri: coverImage.uri }} />
             </TouchableOpacity>
           ))}
         </TouchableOpacity>
@@ -209,7 +187,7 @@ const Profile = props => {
             style={styles.imgAvatar}
             source={
               user && user.user.avatar
-                ? {uri: user.user.avatar}
+                ? { uri: user.user.avatar }
                 : require('../../../../assets/account.png')
             }
           />
@@ -217,14 +195,14 @@ const Profile = props => {
             <TouchableOpacity
               key={index}
               onPress={() => handleAvatarUpdate(avatar)}>
-              <Image style={styles.imgAvatar} source={{uri: avatar.uri}} />
+              <Image style={styles.imgAvatar} source={{ uri: avatar.uri }} />
             </TouchableOpacity>
           ))}
         </TouchableOpacity>
         <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
-        {/* <TouchableOpacity onPress={handleModelOpen} style={styles.btnIntroduce}>
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.btnIntroduce}>
           <Text style={styles.textIntroduce}>Cập nhật giới thiệu bản thân</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate('EditProfile')}
           style={styles.btnEditProfile}>
@@ -237,9 +215,9 @@ const Profile = props => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.editFrame}>
-          <Image source={require('../../../../assets/icon_back.png')} />
-          <TouchableOpacity style={styles.btnMore}>
-            <Image source={require('../../../../assets/icon_more.png')} />
+          <Image style={styles.imgBack} source={require('../../../../assets/back_50px.png')} />
+          <TouchableOpacity onPress={() => navigation.navigate('OtherUserA')} style={styles.btnMore}>
+            <Image style={styles.imgMore} source={require('../../../../assets/icon_more_story.png')} />
           </TouchableOpacity>
         </TouchableOpacity>
       </View>
@@ -248,7 +226,7 @@ const Profile = props => {
         animationType="slide"
         transparent={true}
         visible={modalVisibleCover}
-        onRequestClose={() => {}}>
+        onRequestClose={() => { }}>
         <View style={styles.modalContainerCoverImg}>
           <TouchableOpacity style={styles.btnShowImg}>
             <Image
@@ -289,7 +267,7 @@ const Profile = props => {
         animationType="slide"
         transparent={true}
         visible={modalVisibleAvatar}
-        onRequestClose={() => {}}>
+        onRequestClose={() => { }}>
         <View style={styles.modalContainerAvatar}>
           <TouchableOpacity style={styles.btnShowImg}>
             <Image
@@ -324,7 +302,7 @@ const Profile = props => {
         </View>
       </Modal>
 
-      {/* <Modal
+      <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
@@ -344,7 +322,32 @@ const Profile = props => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal> */}
+      </Modal>
+
+      <Tab.Navigator
+        screenOptions={{
+          tabBarLabelStyle: {
+            fontSize: 14,
+            fontWeight: 'bold',
+          },
+          tabBarStyle: {
+            backgroundColor: '#fff',
+            borderTopWidth: 0,
+            borderTopColor: '#ddd',
+            elevation: 0,
+            marginTop: 12,
+          },
+          tabBarActiveTintColor: '#000',
+          tabBarInactiveTintColor: '#999',
+          tabBarIndicatorStyle: {
+            backgroundColor: '#000000',
+          },
+          tabBarPressColor: 'rgba(0,0,0,0.1)',
+        }}>
+        <Tab.Screen name="Bài viết" component={PostScreen} />
+        <Tab.Screen name="Ảnh" component={ImgScreen} />
+      </Tab.Navigator>
+
     </View>
   );
 };

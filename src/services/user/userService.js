@@ -90,3 +90,13 @@ export const GetListUser = async () => {
     return error;
   }
 };
+
+export const GetListUserById = async (_id) => {
+  try {
+    const res = await AxiosInstance().get(`/users/get-users/${_id}`);
+    return res;
+  } catch (error) {
+    console.log('getListUser error', error);
+    return error;
+  }
+};

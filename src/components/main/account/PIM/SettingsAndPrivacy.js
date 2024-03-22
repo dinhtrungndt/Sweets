@@ -3,7 +3,7 @@ import React, {useContext, useState, useEffect} from 'react'
 import { UserContext } from '../../../../contexts/user/userContext'
 
 // styles
-import { styles } from '../style/SettingsAndPrivacy'
+import { styles } from '../style/settingsAndPrivacy'
 
 const SettingsAndPrivacy = (props) => {
   const {navigation} = props;

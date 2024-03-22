@@ -75,22 +75,33 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         padding: 10,
     },
-    btnBack: {
+    imgBack: {
+        width: 24,
+        height: 24,
         position: 'absolute',
+        left: 16,
+        top: 10,
     },
     btnMore: {
         position: 'absolute',
         padding: 10,
         left: 330,
     },
+    imgMore: {
+        width: 24,
+        height: 24,
+        position: 'absolute',
+        left: 16,
+        top: 10,
+    },
     profileFrame: {
         width: '100%',
-        height: 450,
+        height: 420,
         backgroundColor: '#FFFFFF',
     },
     imgCover: {
         width: '100%',
-        height: 240,
+        height: 210,
         position: 'absolute',
     },
     imgAvatar: {
@@ -98,14 +109,14 @@ export const styles = StyleSheet.create({
         height: 120,
         borderRadius: 100,
         position: 'absolute',
-        top: 180,
+        top: 150,
         alignSelf: 'center',
     },
     textName: {
         fontFamily: 'Poppins',
         fontStyle: 'normal',
         fontSize: 20,
-        marginTop: 300,
+        marginTop: 270,
         color: '#000000',
         textAlign: 'center',
     },
@@ -145,4 +156,5 @@ export const styles = StyleSheet.create({
         color: '#000000',
         textAlign: 'center',
     },
+   
 });

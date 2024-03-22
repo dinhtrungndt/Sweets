@@ -1,18 +1,23 @@
 /* eslint-disable prettier/prettier */
-import { StyleSheet, Text, View, Pressable, Image, TouchableOpacity } from 'react-native';
-import React, { useContext, useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Pressable, Image, TouchableOpacity, Modal } from 'react-native';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../../../contexts/user/userContext';
+import BottomSheet from '@gorhom/bottom-sheet';
+
+import { styles } from './style/accountScreen';
 
 const AccountScreen = props => {
   const { navigation } = props;
 
   const { user } = useContext(UserContext);
   const { onLogout } = useContext(UserContext);
-  console.log(">>>>>>>>> test user", user);
+  // console.log(">>>>>>>>> test user", user);
 
   const [loading, setLoading] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
+
+  const bottomSheetRef = useRef(null);
 
   const handleLogout = async () => {
     // Nếu đang hiển thị hộp thoại xác nhận, không thực hiện đăng xuất
@@ -43,16 +48,23 @@ const AccountScreen = props => {
 
   return (
     <View style={styles.body}>
+      <View style={styles.bodyStart}>
+        <Text style={styles.textMenu}>Menu</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SettingsAndPrivacy')}
+          style={styles.container}>
+          <Image style={styles.imgMenu} source={require('../../../assets/icon_settings_50.png')} />
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity
         onPress={() => navigation.navigate('Profile')}
-        style={styles.container}>
+        style={styles.container1}>
         <Image style={styles.imgAvatar} source={user && user.user.avatar ? { uri: user.user.avatar } : require('../../../assets/diana.jpg')} />
         <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
-        <Text style={styles.textU}>Xem trang cá nhân</Text>
         <TouchableOpacity
           onPress={() => navigation.navigate('Account_Transfer')}
-          style={{ alignSelf: 'center' }}>
-          <Image style={styles.userIcon} source={require('../../../assets/icon_user.png')} />
+          style={styles.container2}>
+          <Image style={styles.userIcon} source={require('../../../assets/icon_back.png')} />
         </TouchableOpacity>
       </TouchableOpacity>
       <View style={styles.bodyBtnIcon}>
@@ -61,24 +73,44 @@ const AccountScreen = props => {
           <Text style={styles.text0}>Kỷ niệm</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_image2.png')} />
+          <Image style={styles.imgIcon} source={require('../../../assets/icon_image.png')} />
           <Text style={styles.text0}>Đã lưu</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.btnIcon}>
+          <Image style={styles.imgIcon} source={require('../../../assets/icon_group.jpg')} />
+          <Text style={styles.text0}>Nhóm</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnIcon}>
+          <Image style={styles.imgIcon} source={require('../../../assets/icon_video.png')} />
+          <Text style={styles.text0}>Video</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnIcon}>
+          <Image style={styles.imgIcon} source={require('../../../assets/icon_heart_48.png')} />
+          <Text style={styles.text0}>Hẹn hò</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnIcon}>
+          <Image style={styles.imgIcon} source={require('../../../assets/icon_friend_add.png')} />
+          <Text style={styles.text0}>Bạn bè</Text>
+        </TouchableOpacity>
       </View>
+
       <View style={styles.setting}>
-      
-      <TouchableOpacity onPress={() => navigation.navigate('SettingsAndPrivacy')} style={styles.btnPrivacy}>
-        <Text style={styles.textbtn1}>Cài đặt & quyền riêng tư</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('AccountAndSecurity')} style={styles.btnSecurity}>
-        <Text style={styles.textbtn1}>Tài khoản & bảo mật</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('HelpAndSupport')} style={styles.btnHelp} >
-        <Text style={styles.textbtn1}>Trợ giúp & hỗ trợ</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.btnLogout} onPress={handleLogout}>
-        <Text style={styles.textbtn}>Đăng xuất</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('HelpAndSupport')} style={styles.btnHelp} >
+          <Image style={styles.imgSettings} source={require('../../../assets/icon_help.png')} />
+          <Text style={styles.textbtn1}>Trợ giúp & hỗ trợ</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('SettingsAndPrivacy')} style={styles.btnPrivacy}>
+          <Image style={styles.imgSettings} source={require('../../../assets/icon_setting.png')} />
+          <Text style={styles.textbtn1}>Cài đặt & quyền riêng tư</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('AccountAndSecurity')} style={styles.btnSecurity}>
+          <Image style={styles.imgSettings} source={require('../../../assets/icon_security.png')} />
+          <Text style={styles.textbtn1}>Tài khoản & bảo mật</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.btnLogout} onPress={handleLogout}>
+          <Text style={styles.textLogout}>Đăng xuất</Text>
+        </TouchableOpacity>
       </View>
       {/* Hiển thị hộp thoại xác nhận */}
       {showConfirmLogout && (
@@ -100,180 +132,3 @@ const AccountScreen = props => {
 
 export default AccountScreen;
 
-const styles = StyleSheet.create({
-  body: {
-    flex: 1,
-    backgroundColor: '#E5E5E5',
-  },
-  container: {
-    marginTop: 20,
-    width: '100%',
-    height: 90,
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    elevation: 10,
-  },
-  imgAvatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 100,
-    alignSelf: 'center',
-  },
-  textName: {
-    width: 142,
-    fontFamily: 'Poppins',
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: '#000000',
-    marginTop: 12,
-    marginLeft: 16,
-    justifyContent: 'center',
-  },
-  textU: {
-    fontFamily: 'Poppins',
-    fontStyle: 'normal',
-    fontSize: 14,
-    color: '#1877F2',
-    marginTop: 33,
-    marginLeft: -141,
-  },
-  userIcon: {
-    width: 30,
-    height: 30,
-    marginLeft: 126,
-  },
-  bodyBtnIcon: {
-    width: '100%',
-    height: 60,
-    marginTop: 30,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    // alignItems: 'center',
-  },
-  btnIcon: {
-    width: 150,
-    height: 60,
-    backgroundColor: '#f3f6f4',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginHorizontal: 10,
-  },
-  text0: {
-    color: '#000000',
-    fontFamily: 'Poppins',
-    fontStyle: 'normal',
-    fontSize: 14,
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  imgIcon: {
-    width: 24,
-    height: 24,
-  },
-  imgIconMmr: {
-    width: 24,
-    height: 24,
-    // quay cả hình sang trái
-    transform: [{ rotate: '180deg' }],
-  },
-  btnHelp: {
-    width: '100%',
-    height: 60,
-    backgroundColor: '#f3f6f4',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
-  },
-  btnPrivacy: {
-    width: '100%',
-    height: 60,
-    backgroundColor: '#f3f6f4',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
-  },
-  btnSecurity: {
-    width: '100%',
-    height: 60,
-    backgroundColor: '#f3f6f4',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
-  },
-  btnLogout: {
-    width: '100%',
-    height: 60,
-    backgroundColor: '#f3f6f4',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
-  },
-  textbtn1: {
-    color: '#000000',
-    fontFamily: 'Poppins',
-    fontStyle: 'normal',
-    fontSize: 18,
-    lineHeight: 24,
-  },
-  textbtn: {
-    color: '#ff0000',
-    fontFamily: 'Poppins',
-    fontStyle: 'normal',
-    fontSize: 18,
-    lineHeight: 24,
-  },
-  confirmLogoutContainer: {
-    position: 'absolute',
-    bottom: 240,
-    width: '90%',
-    backgroundColor: '#FFFFFF',
-    padding: 18,
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5E5',
-    alignSelf: 'center',
-    borderRadius: 10,
-  },
-  confirmLogoutText: {
-    fontFamily: 'Poppins',
-    fontSize: 16,
-    marginBottom: 10,
-    textAlign: 'center',
-    color: '#000000',
-  },
-  confirmLogoutButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  confirmLogoutButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 10,
-    marginHorizontal: 5,
-    borderRadius: 5,
-    backgroundColor: '#E5E5E5',
-  },
-  confirmLogoutButtonText: {
-    fontFamily: 'Poppins',
-    fontSize: 16,
-    color: '#000000',
-  },
-  setting:{
-    width: '100%',
-    position: 'absolute',
-    bottom: 0,
-  }
-});
