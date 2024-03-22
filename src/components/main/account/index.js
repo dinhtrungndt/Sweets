@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../../../contexts/user/userContext';
 import BottomSheet from '@gorhom/bottom-sheet';
 
-import { styles } from './style/AccountScreen';
+import { styles } from './style/accountScreen';
 
 const AccountScreen = props => {
   const { navigation } = props;

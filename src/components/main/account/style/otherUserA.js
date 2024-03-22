@@ -1,14 +1,14 @@
-const {StyleSheet} = require('react-native')
+const { StyleSheet } = require('react-native')
 
 export const styles = StyleSheet.create({
     body: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#bcbcbc',
     },
     profileFrame: {
         width: '100%',
-        height: 420,
+        height: 'auto',
         backgroundColor: '#FFFFFF',
     },
     imgCover: {
@@ -32,45 +32,65 @@ export const styles = StyleSheet.create({
         color: '#000000',
         textAlign: 'center',
     },
-    btnIntroduce: {
-        width: '90%',
+    containerAdd: {
+        width: '100%',
+        height: 'auto',
+        flexDirection: 'row',
+        // backgroundColor: '#000000',
+        flexWrap: 'wrap',
+    },
+    btnAddFriend: {
+        width: '50%',
         height: 40,
         backgroundColor: '#22b6c0',
         borderRadius: 5,
         justifyContent: 'center',
         alignSelf: 'center',
-        marginTop: 15,
+        marginLeft: 15,
+        marginTop: 30,
+        flexDirection: 'row',
+    },
+    imgAddFriend: {
+        width: 21,
+        height: 21,
+        alignSelf: 'center',
     },
     textIntroduce: {
         fontSize: 16,
         color: '#FFFFFF',
-        textAlign: 'center',
+        alignSelf: 'center',
+        marginLeft: 6,
     },
-    btnEditProfile: {
-        width: '90%',
+    btnMess: {
+        width: '40%',
         height: 40,
         backgroundColor: '#ccd3d7',
         borderRadius: 5,
         justifyContent: 'center',
         alignSelf: 'center',
-        marginTop: 15,
+        marginLeft: 12,
+        marginTop: 30,
+        flexDirection: 'row',
     },
     imgEdit: {
-        width: 24,
-        height: 24,
-        position: 'absolute',
-        right: 48,
+        width: 21,
+        height: 21,
         justifyContent: 'center',
         alignSelf: 'center',
     },
     txtEdit: {
         fontSize: 16,
         color: '#000000',
-        textAlign: 'center',
+        alignSelf: 'center',
+        marginLeft: 6,
     },
     editFrame: {
         flexDirection: 'row',
         alignItems: 'center',
+        position: 'absolute',
+        padding: 10,
+    },
+    btnBack: {
         position: 'absolute',
         padding: 10,
     },
@@ -92,5 +112,14 @@ export const styles = StyleSheet.create({
         position: 'absolute',
         left: 16,
         top: 10,
+    },
+    bodyLoading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    imgLoading: {
+        width: 100,
+        height: 100,
     },
 })

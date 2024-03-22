@@ -216,7 +216,7 @@ const Profile = props => {
           onPress={() => navigation.goBack()}
           style={styles.editFrame}>
           <Image style={styles.imgBack} source={require('../../../../assets/back_50px.png')} />
-          <TouchableOpacity style={styles.btnMore}>
+          <TouchableOpacity onPress={() => navigation.navigate('OtherUserA')} style={styles.btnMore}>
             <Image style={styles.imgMore} source={require('../../../../assets/icon_more_story.png')} />
           </TouchableOpacity>
         </TouchableOpacity>
