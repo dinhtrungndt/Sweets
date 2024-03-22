@@ -123,8 +123,6 @@ const HomeScreen = props => {
     post => post.idTypePosts.name === 'Bài viết',
   );
   const filteredStore = posts.filter(post => post.idTypePosts.name === 'Story');
-  console.log('>>>>>>>>>>>>>>> posts', posts);
-  console.log('>>>>>>>>>>>>>>> filteredPosts', filteredPosts);
 
   return isLoading ? (
     <LoadingScreen />
