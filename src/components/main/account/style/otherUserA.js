@@ -1,0 +1,96 @@
+const {StyleSheet} = require('react-native')
+
+export const styles = StyleSheet.create({
+    body: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#FFFFFF',
+    },
+    profileFrame: {
+        width: '100%',
+        height: 420,
+        backgroundColor: '#FFFFFF',
+    },
+    imgCover: {
+        width: '100%',
+        height: 210,
+        position: 'absolute',
+    },
+    imgAvatar: {
+        width: 120,
+        height: 120,
+        borderRadius: 100,
+        position: 'absolute',
+        top: 150,
+        alignSelf: 'center',
+    },
+    textName: {
+        fontFamily: 'Poppins',
+        fontStyle: 'normal',
+        fontSize: 20,
+        marginTop: 270,
+        color: '#000000',
+        textAlign: 'center',
+    },
+    btnIntroduce: {
+        width: '90%',
+        height: 40,
+        backgroundColor: '#22b6c0',
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        marginTop: 15,
+    },
+    textIntroduce: {
+        fontSize: 16,
+        color: '#FFFFFF',
+        textAlign: 'center',
+    },
+    btnEditProfile: {
+        width: '90%',
+        height: 40,
+        backgroundColor: '#ccd3d7',
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        marginTop: 15,
+    },
+    imgEdit: {
+        width: 24,
+        height: 24,
+        position: 'absolute',
+        right: 48,
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    txtEdit: {
+        fontSize: 16,
+        color: '#000000',
+        textAlign: 'center',
+    },
+    editFrame: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'absolute',
+        padding: 10,
+    },
+    imgBack: {
+        width: 24,
+        height: 24,
+        position: 'absolute',
+        left: 16,
+        top: 10,
+    },
+    btnMore: {
+        position: 'absolute',
+        padding: 10,
+        left: 330,
+    },
+    imgMore: {
+        width: 24,
+        height: 24,
+        position: 'absolute',
+        left: 16,
+        top: 10,
+    },
+})

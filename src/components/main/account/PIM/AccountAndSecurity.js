@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { UserContext } from '../../../../contexts/user/userContext'
 
 // styles
-import { styles } from '../style/AccountAndSecurity'
+import { styles } from '../style/accountAndSecurity'
 
 const AccountAndSecurity = (props) => {
   const { navigation } = props;
