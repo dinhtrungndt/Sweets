@@ -14,7 +14,7 @@ import StoryScreen from '../../../components/main/home/uploads/story';
 import PickStory from '../../../components/main/home/uploads/story/pickStory';
 import PostsScreen from '../../../components/main/home/posts';
 import SelectFeeingStory from '../../../components/main/home/uploads/story/selectFeelingStory';
-import LabelPickStory from '../../../components/main/home/uploads/story/selectFeelingStory/label';
+import SettingStoryObjects from '../../../utils/settingStoryObjects';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +34,10 @@ export function HomeStackScreen() {
       <Stack.Screen name="PickStory" component={PickStory} />
       <Stack.Screen name="StoryScreen" component={StoryScreen} />
       <Stack.Screen name="SelectFeeingStory" component={SelectFeeingStory} />
+      <Stack.Screen
+        name="SettingStoryObjects"
+        component={SettingStoryObjects}
+      />
     </Stack.Navigator>
   );
 }

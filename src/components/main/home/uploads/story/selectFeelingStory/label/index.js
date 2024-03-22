@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Image,
   StyleSheet,
@@ -7,14 +8,103 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 
 // library
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {UserContext} from '../../../../../../../contexts/user/userContext';
+import Toast from 'react-native-toast-message';
+import {CommonActions} from '@react-navigation/native';
+import {uploadPost} from '../../../../../../../services/home/homeService';
 
-const LabelPickStory = ({cancel}) => {
+const LabelPickStory = ({cancel, openModelSettingObjects, navigation}) => {
+  const {user} = useContext(UserContext);
+  const [inputText, setInputText] = useState('');
+  const [upload, setUpload] = useState(false);
+  const [_idPosts, setIdPosts] = useState(null);
+
+  const handleInputChange = text => {
+    setInputText(text);
+  };
+
+  const handlePostUpload = () => {
+    handleUploadPost();
+    if (!inputText) {
+      return Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Bạn chưa nhập nội dung',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    } else if (!upload) {
+      navigation.navigate('HomeScreen');
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Up tin thành công',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    } else {
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Up tin thất bại',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    }
+  };
+
+  const handleUploadPost = useCallback(async () => {
+    if (!user || !inputText) {
+      return;
+    }
+
+    try {
+      const postDetails = {
+        _id: _idPosts,
+        content: inputText,
+        createAt: new Date().toISOString(),
+        idObject: '65b1fe6dab07bc8ddd7de469',
+        idTypePosts: '65b20035261511b0721a9916',
+      };
+
+      const response = await uploadPost(user.user._id, postDetails);
+      setUpload(response);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{name: 'HomeStackScreen'}],
+        }),
+      );
+      // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+    } catch (error) {
+      console.error('Lỗi catch --->>>>> error :', error);
+    }
+  }, [user, inputText]);
+
+  useEffect(() => {
+    const dateString = Date.now();
+    const randomSuffix = Math.floor(Math.random() * 10000000);
+    const dateNumber = new Date(dateString);
+    const _idPosts = dateNumber.getTime().toString() + randomSuffix.toString();
+    setIdPosts(_idPosts);
+  }, []);
+
+  useEffect(() => {
+    handleUploadPost();
+  }, [user]);
+
   return (
     <View style={styles.T}>
       <TouchableOpacity style={styles.modalCloseButton} onPress={cancel}>
@@ -25,11 +115,15 @@ const LabelPickStory = ({cancel}) => {
           style={styles.content}
           placeholder="Bạn đang nghĩ gì ?"
           placeholderTextColor={'#fff'}
+          onChangeText={handleInputChange}
+          multiline={true}
         />
       </View>
       <View style={styles.seetingInUp}>
         <View style={styles.seetingInUp_two}>
-          <TouchableOpacity style={styles.seetingInUpQRT}>
+          <TouchableOpacity
+            style={styles.seetingInUpQRT}
+            onPress={openModelSettingObjects}>
             <MaterialCommunityIcons
               name={'account-cog-outline'}
               color={'#fff'}
@@ -42,7 +136,12 @@ const LabelPickStory = ({cancel}) => {
             <Text style={styles.seetingtext}>Lưu</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.btnShare}>
+        <TouchableOpacity
+          onPress={handlePostUpload}
+          style={[
+            styles.btnShare,
+            {backgroundColor: inputText ? '#7ec1a5' : '#CBCBCB'},
+          ]}>
           <Text style={styles.btnShareText}>Chia sẻ</Text>
         </TouchableOpacity>
       </View>
@@ -121,6 +220,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#22b6c0',
     borderRadius: 5,
     padding: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnShareText: {
     fontSize: 16,

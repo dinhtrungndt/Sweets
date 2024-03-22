@@ -17,6 +17,7 @@ import {
   getComments,
   getMedia,
   getPosts,
+  getPostsByUser,
   getReaction,
   getShare,
   likeByPost,
@@ -39,7 +40,7 @@ const HomeScreen = props => {
 
   const onGetPosts = async () => {
     try {
-      const res = await getPosts();
+      const res = await getPosts(user.user._id);
       const postsWithMedia = await Promise.all(
         res.map(async post => {
           const mediaResponse = await getMedia(post._id);
@@ -122,6 +123,8 @@ const HomeScreen = props => {
     post => post.idTypePosts.name === 'Bài viết',
   );
   const filteredStore = posts.filter(post => post.idTypePosts.name === 'Story');
+  console.log('>>>>>>>>>>>>>>> posts', posts);
+  console.log('>>>>>>>>>>>>>>> filteredPosts', filteredPosts);
 
   return isLoading ? (
     <LoadingScreen />

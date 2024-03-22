@@ -28,11 +28,13 @@ import LabelPickStory from './label';
 import {uploadImageStatus} from '../../../../../../services/home/homeService';
 import MusicScreen from './music';
 import {Overlay} from 'react-native-elements';
+import SettingStoryObjects from '../../../../../../utils/settingStoryObjects';
 
 const SelectFeeingStory = ({cancel, navigation}) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [openModelSettingObjects, setOpenModelSettingObjects] = useState(false);
   const [openModelLabel, setOpenModelLabel] = useState(false);
   const [openModelMusic, setOpenModelMusic] = useState(false);
   const [openModelBoom, setOpenModelBoom] = useState(false);
@@ -136,7 +138,9 @@ const SelectFeeingStory = ({cancel, navigation}) => {
           <AntDesign name={'close'} color={'#000'} size={23} />
         </TouchableOpacity>
         <Text style={styles.text_taotin}>Tạo tin</Text>
-        <TouchableOpacity style={styles.cancel}>
+        <TouchableOpacity
+          style={styles.cancel}
+          onPress={() => setOpenModelSettingObjects(true)}>
           <MaterialCommunityIcons
             name={'account-cog-outline'}
             color={'#000'}
@@ -227,6 +231,17 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         </TouchableOpacity>
       </View>
 
+      {/* Setting Objects */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openModelSettingObjects}
+        onRequestClose={() => {
+          setOpenModelSettingObjects(false);
+        }}>
+        <SettingStoryObjects cancel={() => setOpenModelSettingObjects(false)} />
+      </Modal>
+
       {/* up story */}
       <Modal
         animationType="fade"
@@ -248,7 +263,9 @@ const SelectFeeingStory = ({cancel, navigation}) => {
 
           <View style={styles.seetingInUp}>
             <View style={styles.seetingInUp_two}>
-              <TouchableOpacity style={styles.seetingInUpQRT}>
+              <TouchableOpacity
+                style={styles.seetingInUpQRT}
+                onPress={() => setOpenModelSettingObjects(true)}>
                 <MaterialCommunityIcons
                   name={'account-cog-outline'}
                   color={'#fff'}
@@ -258,7 +275,9 @@ const SelectFeeingStory = ({cancel, navigation}) => {
               </TouchableOpacity>
               <TouchableOpacity style={styles.seetingSave}>
                 <MaterialIcons name={'save-alt'} color={'#6D6C6C'} size={25} />
-                <Text style={styles.seetingtext}>Lưu</Text>
+                <Text style={[styles.seetingtext, {color: '#6D6C6C'}]}>
+                  Lưu
+                </Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.btnShare}>
@@ -276,7 +295,11 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         onRequestClose={() => {
           setOpenModelLabel(false);
         }}>
-        <LabelPickStory cancel={cancel} />
+        <LabelPickStory
+          cancel={() => setOpenModelLabel(false)}
+          openModelSettingObjects={() => setOpenModelSettingObjects(true)}
+          navigation={navigation}
+        />
       </Modal>
 
       {/* Music */}

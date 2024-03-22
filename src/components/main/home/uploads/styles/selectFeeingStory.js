@@ -137,6 +137,8 @@ export const styles = StyleSheet.create({
     backgroundColor: '#22b6c0',
     borderRadius: 5,
     padding: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnShareText: {
     fontSize: 16,

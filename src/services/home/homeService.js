@@ -2,9 +2,23 @@
 import AxiosInstance from '../../helper/Axiosinstance';
 
 // lấy danh sách bài viết theo typePosts
-export const getPosts = async () => {
+export const getPosts = async idUsers => {
   try {
-    const response = await AxiosInstance().get('/posts/get-all-posts');
+    const response = await AxiosInstance().get(
+      `/posts/get-posts-idObject/${idUsers}`,
+    );
+    // console.log('get post >>>>>>>>>>>>>>> Service GetPosts 8 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Error fetching posts: 11 s', error);
+    throw error;
+  }
+};
+export const getPostsByUser = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/posts/get-posts-by-user/${idUsers}`,
+    );
     // console.log('get post >>>>>>>>>>>>>>> Service GetPosts 8 ', response);
     return response;
   } catch (error) {
