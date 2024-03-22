@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 7,
-        backgroundColor: '#BDD8FD',
+        backgroundColor: '#22b6c0',
 
 
 
@@ -27,6 +27,13 @@ const styles = StyleSheet.create({
     avatar2: {
         width: 140,
         height: 140,
+    },
+    avatar3: {
+        width: 55,
+        height:55,
+        margin:10,
+        alignSelf:'center'
+
     },
     txtContent1: {
         fontSize: 18,
@@ -52,12 +59,17 @@ const styles = StyleSheet.create({
     txtTitle: {
         fontSize: 17,
         fontWeight: 'bold',
-        margin: 5
+        margin: 5,
+        borderBottomWidth:0.5,
+        padding:5,
+        borderColor:'#22b6c0',
+        color:'#22b6c0'
     },
-    txtContentInfoUser: {
-        fontSize: 15,
-
-        margin: 5
+    txtContentInfoUser2: {
+        fontWeight:'bold',
+        fontSize:16,
+        marginHorizontal:15,
+        marginVertical:17
     }
 
 });

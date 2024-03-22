@@ -1,67 +1,75 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
   TextInput,
   FlatList,
-  TouchableOpacity,
   Image,
+  TouchableOpacity
 } from 'react-native';
+import AxiosInstance from '../../../../helper/Axiosinstance'; // Thay đường dẫn tới file AxiosInstance.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {UserContext} from '../../../../contexts/user/userContext';
 import styles from '../styles/AllFriendStyles'; // Đảm bảo import styles từ file của bạn
 
 const AllFriend = () => {
-  const {user} = useContext(UserContext);
-  const [friends, setFriends] = useState([]);
-  const [filteredFriends, setFilteredFriends] = useState([]);
-  const [noFriendsMessage, setNoFriendsMessage] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [friendsDetails, setFriendsDetails] = useState([]);
 
   useEffect(() => {
-    const fetchFriends = async () => {
-      // Lấy danh sách bạn bè từ AsyncStorage
-      const friendsFromStorage = await AsyncStorage.getItem('friends');
-      if (friendsFromStorage) {
-        const parsedFriends = JSON.parse(friendsFromStorage);
+    const fetchFriendsDetails = async () => {
+      try {
+        const axiosInstance = AxiosInstance(); // Tạo một instance của Axios
 
-        if (parsedFriends.length > 0) {
-          // Nếu có bạn bè, setFriends và thực hiện các xử lý khác
-          setFriends(parsedFriends);
-          setFilteredFriends(parsedFriends);
+        // Lấy userId từ AsyncStorage
+        const userId = await AsyncStorage.getItem('userId');
+
+        // Kiểm tra xem userId có tồn tại không
+        if (userId) {
+          const response = await axiosInstance.get(`/friend/friends/${userId}`);
+          const { friendsList } = response;
+
+          // Tạo một mảng chứa thông tin chi tiết của các bạn bè
+          const friendsDetailsPromises = friendsList.map(async (friendId) => {
+            try {
+              const friendDetailsResponse = await axiosInstance.get(`/users/get-user/${friendId}`);
+              return friendDetailsResponse.user; // Lấy thông tin user từ response
+            } catch (error) {
+              console.error(`Lỗi khi lấy thông tin của bạn bè có id: ${friendId}`, error);
+              return null; // Trả về null nếu có lỗi để xử lý sau
+            }
+          });
+
+          // Lấy thông tin chi tiết của tất cả bạn bè
+          const friendsDetails = await Promise.all(friendsDetailsPromises);
+
+          // Lọc bỏ các giá trị null (nếu có) và lưu thông tin chi tiết vào state
+          setFriendsDetails(friendsDetails.filter(friend => friend !== null));
+
+          // Lọc ra ngày sinh của bạn bè hiện tại và lưu vào AsyncStorage
+          const currentFriendsBirthdays = friendsDetails
+            .filter(friend => friend !== null) // Lọc bỏ các giá trị null
+            .map(friend => ({ name: friend.name, birthday: friend.ngaysinh,avatar:friend.avatar })); // Lấy ngày sinh của mỗi bạn bè
+          await AsyncStorage.setItem('currentFriendsBirthdays', JSON.stringify(currentFriendsBirthdays));
+          console.log('nsbb',currentFriendsBirthdays)
         } else {
-          // Nếu không có bạn bè, hiển thị thông báo
-          setNoFriendsMessage('Bạn chưa có người bạn nào.');
+          console.log('Không tìm thấy userId trong AsyncStorage');
         }
-      } else {
-        // Nếu không có bạn bè, hiển thị thông báo
-        setNoFriendsMessage('Bạn chưa có người bạn nào.');
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách bạn bè:', error);
       }
     };
 
-    fetchFriends();
-  }, []);
+    fetchFriendsDetails();
+  }, []); // Chỉ chạy một lần khi component được render
 
-  const handleSearch = text => {
-    setSearchTerm(text);
-    const filtered = friends.filter(friend =>
-      friend.toLowerCase().includes(text.toLowerCase()),
-    );
-    setFilteredFriends(filtered);
-  };
-
-  const renderFriendItem = ({item}) => (
-    <TouchableOpacity style={styles.friendItem}>
-      <Text style={styles.friendItemText}>{item}</Text>
-    </TouchableOpacity>
-  );
 
   return (
     <View style={styles.container}>
-    
-
-      {/* Thanh tìm kiếm */}
-      <View style={{flexDirection: 'row', width: '100%', position: 'relative'}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          width: '100%',
+          position: 'relative',
+        }}>
         <Image
           source={require('../../../../assets/searchh.png')}
           style={styles.imgSearch}
@@ -69,26 +77,32 @@ const AllFriend = () => {
         <TextInput
           style={styles.searchInput}
           placeholder="Tìm kiếm bạn bè"
-          placeholderTextColor="#666"
-          onChangeText={text => handleSearch(text)}
-          value={searchTerm}></TextInput>
-
+          placeholderTextColor="#22b6c0"></TextInput>
       </View>
 
-     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-     <Text style={styles.title}>N người bạn</Text>
-     <Text style={styles.title}>Quản lí</Text>
-     </View>
-      {noFriendsMessage ? (
-        <Text style={styles.noFriendsMessage}>{noFriendsMessage}</Text>
-      ) : (
-        // Hiển thị danh sách bạn bè từ filteredFriends
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={styles.title}> Có {friendsDetails.length} người bạn</Text>
+        <Text style={styles.title}>Quản lí</Text>
+      </View>
+      <View style={{ height: 400 }}> 
         <FlatList
-          data={filteredFriends}
-          keyExtractor={item => item}
-          renderItem={renderFriendItem}
+          data={friendsDetails}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10,justifyContent:'space-between' }}>
+             <View style={{ flexDirection: 'row',alignItems:'center'}}>
+
+             <Image source={{ uri: item.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />
+              <Text style={styles.txtName}>{item.name}</Text>
+             </View>
+              <TouchableOpacity style={styles.imgOption}>
+                  <Image style={styles.imgOption} source={require('../../../../assets/option.png')} />
+                </TouchableOpacity>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item._id} // Không cần chuyển đổi thành chuỗi
         />
-      )}
+       
+      </View>
     </View>
   );
 };
