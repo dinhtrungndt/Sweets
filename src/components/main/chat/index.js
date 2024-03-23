@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 // Data
 import { listOF } from './data/listOF';
@@ -59,10 +60,13 @@ const ChatScreen = props => {
     }
   };
 
+  // dùng usefocusEffect để load lại dữ liệu khi quay lại màn hình
+  useFocusEffect(
+    React.useCallback(() => {
+      getListUser();
+    }, [])
+  );
 
-  useEffect(() => {
-    getListUser();
-  }, []);
 
 
   const renderItem = ({ item }) => {
@@ -75,11 +79,11 @@ const ChatScreen = props => {
         }
         if (item.senderv2 != user1) {
           navigation.navigate('ChatScreenIn', { receiver: item });
-          getListUser();
+
           return
         } else {
           await updateStatus(body);
-          getListUser();
+
           navigation.navigate('ChatScreenIn', { receiver: item });
 
         }

@@ -16,7 +16,12 @@ const User = ({ navigation }) => {
     try {
       setLoading(true);
       const response = await searchuser(name);
-      setUsers(response.users);
+      // Duyệt qua từng phần tử trong mảng và thay đổi tên thuộc tính
+      const modifiedUsers = response.users.map(user => ({
+        ...user,
+        receiverv2: user._id // Đổi tên thuộc tính từ '_id' thành 'receiverv2'
+      }));
+      setUsers(modifiedUsers);
     } catch (error) {
       console.error(error);
     } finally {
@@ -24,7 +29,9 @@ const User = ({ navigation }) => {
     }
   };
   const handleBackPress = () => {
+
     navigation.goBack();
+
   };
   const handleprofile = () => {
     ToastAndroid.show('Chức năng đang phát triển', ToastAndroid.SHORT);
