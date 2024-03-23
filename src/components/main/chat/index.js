@@ -23,7 +23,7 @@ import { GetListUser } from '../../../services/user/userService';
 const ChatScreen = props => {
   const { navigation } = props;
   const [user, setUser] = useState('');
-
+  
   const getListUser = async () => {
     try {
       const res = await GetListUser();
