@@ -46,10 +46,24 @@ export const login = async (email, password) => {
   }
 };
 
-export const GetListUser = async () => {
+export const GetListUser = async (_id) => {
   try {
-    const res = await AxiosInstance().get('/users/get-users');
-    return res.users;
+    const res = await AxiosInstance().get(`/message/listchat/${_id}`);
+
+    return res;
+  } catch (error) {
+    console.log('getListUser error', error);
+    return error;
+  }
+};
+export const updateStatus = async (_id, status) => {
+  try {
+    const body = {
+      status: 'Đã xem',
+      _id: _id,
+    };
+    const res = await AxiosInstance().post('/message/update-status', body);
+    return res;
   } catch (error) {
     console.log('getListUser error', error);
     return error;

@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
   container_chat: {
     flexDirection: 'row',
     alignItems: 'center',
-
+   backgroundColor: '#fff',
     marginBottom: 20,
   },
   nameChat: {
