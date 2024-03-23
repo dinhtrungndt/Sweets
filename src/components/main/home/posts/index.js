@@ -219,7 +219,6 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                     />
                   </TouchableOpacity>
                 )}
-
                 <View>
                   {item.idUsers._id !== user.user._id ? (
                     <TouchableOpacity

@@ -325,7 +325,9 @@ export function AddsScreen({route, navigation}) {
               style={styles.avatar_icon_image}
               source={require('../../../../../assets/icon_image.png')}
             />
-            <Text style={{fontSize: 12, paddingLeft: 10}}>Ảnh/video</Text>
+            <Text style={{fontSize: 12, paddingLeft: 10, color: '#000'}}>
+              Ảnh/video
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.boder_image}>
             <Image

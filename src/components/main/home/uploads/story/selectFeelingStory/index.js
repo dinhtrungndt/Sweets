@@ -9,6 +9,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -29,6 +30,7 @@ import {uploadImageStatus} from '../../../../../../services/home/homeService';
 import MusicScreen from './music';
 import {Overlay} from 'react-native-elements';
 import SettingStoryObjects from '../../../../../../utils/settingStoryObjects';
+import UpImageStory from './upImage';
 
 const SelectFeeingStory = ({cancel, navigation}) => {
   const [selectedImages, setSelectedImages] = useState([]);
@@ -40,7 +42,9 @@ const SelectFeeingStory = ({cancel, navigation}) => {
   const [openModelBoom, setOpenModelBoom] = useState(false);
   const [openCameraP, setOpenCameraP] = useState([]);
   const [cameraImage, setCameraImage] = useState(null);
+  const [getImage, setGetImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedImageURI, setSelectedImageURI] = useState(null);
 
   const handleCloseBoom = () => {
     setOpenModelBoom(false);
@@ -68,6 +72,25 @@ const SelectFeeingStory = ({cancel, navigation}) => {
     setModalVisible(true);
   };
 
+  const uploadImageToCloudinary = useCallback(async response => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('imageStatus', {
+        uri: selectedImageURI,
+        type: 'image/jpeg',
+        name: 'image.jpg',
+      });
+      const data = await uploadImageStatus(formData);
+      console.log('>>>>>>> Data:', data.urls);
+      setGetImage(data.urls);
+      setLoading(false);
+    } catch (error) {
+      console.log('Lỗi uploading image:', error);
+      setLoading(false);
+    }
+  });
+
   const takePhoto = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
       return;
@@ -88,7 +111,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
       const data = await uploadImageStatus(formData);
       // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
       setCameraImage(data.urls);
-      // console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
+      console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 
@@ -250,6 +273,14 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         onRequestClose={() => {
           setModalVisible(false);
         }}>
+        {/* <UpImageStory
+          cancel={() => setModalVisible(false)}
+          getImage={getImage}
+          openModelSettingObjects={() => setOpenModelSettingObjects(true)}
+          selectedImageURI={selectedImageURI}
+          navigation={navigation}
+          selectedImages={selectedImages}
+        /> */}
         <View style={styles.modalContainer}>
           <TouchableOpacity
             style={styles.modalCloseButton}
@@ -310,7 +341,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         onRequestClose={() => {
           setOpenModelMusic(false);
         }}>
-        <MusicScreen cancel={cancel} />
+        <MusicScreen cancel={() => setOpenModelMusic(false)} />
       </Modal>
     </View>
   );
