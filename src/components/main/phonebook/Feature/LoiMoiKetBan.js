@@ -56,38 +56,38 @@ const LoiMoiKetBan = () => {
       {userInfo && userInfo.length > 0 && (
         userInfo.map(user => (
           <View
-            style={{ flexDirection: 'row' ,margin: 11 }}
+            style={{ flexDirection: 'row', margin: 11 }}
             key={user._id}>
 
-           <View style={{ flexDirection: 'row'}}>
-           <Image source={{ uri: user.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />
-            
-           </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Image source={{ uri: user.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />
+
+            </View>
 
 
-            
-           <View style={{ flexDirection: 'column'}}>
-           <Text style={{
-              fontWeight: 'bold',
-              fontSize: 18,
-              marginHorizontal: 10
-            }}> {user.name}</Text>
 
-<View style={{ flexDirection: 'row',marginTop:5}}>
-           <TouchableOpacity style={styles.imgOption2}>
-              <Text style={styles.txtXoas}>Chấp nhận</Text>
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'column' }}>
+              <Text style={{
+                fontWeight: 'bold',
+                fontSize: 18,
+                marginHorizontal: 10
+              }}> {user.name}</Text>
 
-            <TouchableOpacity style={styles.imgOption}>
-              <Text style={styles.txtXoas}>Xoá</Text>
-            </TouchableOpacity>
-           </View>
-           </View>
+              <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                <TouchableOpacity style={styles.imgOption2}>
+                  <Text style={styles.txtXoas}>Chấp nhận</Text>
+                </TouchableOpacity>
 
-           
+                <TouchableOpacity style={styles.imgOption}>
+                  <Text style={styles.txtXoas}>Xoá</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
 
-            
+
+
+
           </View>
         ))
       )}
