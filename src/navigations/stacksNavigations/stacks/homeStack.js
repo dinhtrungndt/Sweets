@@ -15,6 +15,8 @@ import PickStory from '../../../components/main/home/uploads/story/pickStory';
 import PostsScreen from '../../../components/main/home/posts';
 import SelectFeeingStory from '../../../components/main/home/uploads/story/selectFeelingStory';
 import SettingStoryObjects from '../../../utils/settingStoryObjects';
+import OtherUserA from '../../../components/main/account/OtherUserAccounts/OtherUserA';
+import Profile from '../../../components/main/account/Profile/Profile';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +40,8 @@ export function HomeStackScreen() {
         name="SettingStoryObjects"
         component={SettingStoryObjects}
       />
+      <Stack.Screen name="OtherUserA" component={OtherUserA} />
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );
 }

@@ -194,18 +194,61 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
             {/* header */}
             <View style={styles.container_avatar_name}>
               <View style={styles.avatar_name}>
-                <TouchableOpacity>
-                  <Image
-                    source={{uri: item.idUsers?.avatar}}
-                    style={styles.avatar}
-                  />
-                </TouchableOpacity>
-                <View>
-                  <TouchableOpacity>
-                    <Text style={styles.name}>{item.idUsers?.name}</Text>
+                {item.idUsers._id !== user.user._id ? (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('OtherUserA', {
+                        account: item,
+                      })
+                    }>
+                    <Image
+                      source={{uri: item.idUsers?.avatar}}
+                      style={styles.avatar}
+                    />
                   </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('Profile', {
+                        account: item,
+                      })
+                    }>
+                    <Image
+                      source={{uri: item.idUsers?.avatar}}
+                      style={styles.avatar}
+                    />
+                  </TouchableOpacity>
+                )}
+
+                <View>
+                  {item.idUsers._id !== user.user._id ? (
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('OtherUserA', {
+                          account: item,
+                        })
+                      }>
+                      <Text style={styles.name}>{item.idUsers?.name}</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('Profile', {
+                          account: item,
+                        })
+                      }>
+                      <Text style={styles.name}>{item.idUsers?.name}</Text>
+                    </TouchableOpacity>
+                  )}
                   <View style={styles.container_object}>
-                    <Text style={styles.time}>{formatTime(item.createAt)}</Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('CommentsScreen', {postId: item})
+                      }>
+                      <Text style={styles.time}>
+                        {formatTime(item.createAt)}
+                      </Text>
+                    </TouchableOpacity>
                     <Text style={{paddingLeft: 5, fontSize: 6}}>●</Text>
                     <TouchableOpacity>
                       {item.idObject ? changeIdObject(item.idObject) : null}
