@@ -13,6 +13,7 @@ import QRCODE from '../../../components/main/phonebook/Feature/QRCODE';
 import LoiMoiKetBan from '../../../components/main/phonebook/Feature/LoiMoiKetBan';
 import ThoiTiet from '../../../components/main/phonebook/Feature/ThoiTiet';
 import Profile from '../../../components/main/account/Profile/Profile';
+import SinhNhat from '../../../components/main/phonebook/Feature/SinhNhat';
 const Stack = createNativeStackNavigator();
 
 export function PhoneBookStack() {
@@ -23,6 +24,10 @@ export function PhoneBookStack() {
       }}>
       <Stack.Screen name="PhoneBookScreen" component={PhoneBookScreen} />
       <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen
+        name="SinhNhat"
+        component={SinhNhat}
+      />
       <Stack.Screen
         name="LoiMoiKetBan"
         component={LoiMoiKetBan}
