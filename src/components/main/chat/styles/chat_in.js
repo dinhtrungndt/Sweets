@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   name_user: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 10,
     color: '#000',
