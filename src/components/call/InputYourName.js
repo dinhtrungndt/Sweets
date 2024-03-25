@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
-import { MyContext } from './UseContextTemp';
+// import { MyContext } from './UseContextTemp';
+import { UserContext } from '../../contexts/user/userContext';
 
 const InputYourName = ({navigation}) => {
-  const { name, setName } = useContext(MyContext); // Sử dụng context đã được tạo từ useUserContext
+  const { name, setName } = useContext(UserContext); // Sử dụng context đã được tạo từ useUserContext
 
   const [inputValue, setInputValue] = useState('');
 

@@ -20,7 +20,7 @@ export function ChatScreenStack() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="InputYourName" component={InputYourName} />
+      {/* <Stack.Screen name="InputYourName" component={InputYourName} /> */}
       <Stack.Screen name="ChatScreenHome" component={ChatScreen} />
       <Stack.Screen name="SearchScreens" component={User} />
       <Stack.Screen name="ChatScreenIn" component={ChatScreenIn} />
