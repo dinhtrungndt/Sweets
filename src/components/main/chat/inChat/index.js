@@ -30,30 +30,44 @@ const ChatScreenIn = ({ route, navigation }) => {
     // Khởi tạo socket khi component được mount
     socket.current = io('https://sweets-nodejs.onrender.com/');
     // 11.189.180.53
-    fetchData(); // Fetch tin nhắn ban đầu
+
     // Lắng nghe sự kiện new_message từ socket
     socket.current.on('new_message', newMessage => {
-      setMessages(prevMessages => [...prevMessages, newMessage]);
+      // Kiểm tra xem tin nhắn mới có thuộc về hai người liên quan hay không
+      if (
+        (newMessage.idSender === user.user._id && newMessage.idReceiver === receiver.receiverv2) ||
+        (newMessage.idSender === receiver.receiverv2 && newMessage.idReceiver === user.user._id)
+      ) {
+        setMessages(prevMessages => [...prevMessages, newMessage]);
+      }
     });
 
+    fetchData(); // Fetch tin nhắn ban đầu
 
-    // Clear up khi component unmount
     return () => {
+      // Clear up khi component unmount
       socket.current.disconnect();
     };
   }, []);
 
- const fetchData = async () => {
+
+
+  0
+
+  const fetchData = async () => {
     try {
       const idSender = user.user._id;
       const idReceiver = receiver.receiverv2;
+
+
       const response = await GetMessageSR(idSender, idReceiver);
       setMessages(response.slice(-100));
+
     } catch (error) {
       console.error('Lỗi:', error);
     }
-  }; 
-  
+  };
+
 
   const sendMessage = () => {
     if (messageInput === '' || !messageInput.trim()) {
@@ -122,9 +136,8 @@ const ChatScreenIn = ({ route, navigation }) => {
       </View>
       <Text style={styles.line} />
       <FlatList
-
         data={messages.slice().reverse()}
-        keyExtractor={item => item._id}
+        keyExtractor={(item, index) => index.toString()} // Sử dụng index như một key
         renderItem={({ item }) => renderItem({ item })}
       />
       {loadingMore && <ActivityIndicator size="small" color="#0000ff" />}
