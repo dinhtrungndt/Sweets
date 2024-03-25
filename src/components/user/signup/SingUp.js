@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   TextInput,
@@ -11,13 +11,13 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {register} from '../../../services/user/userService';
-import {UserContext} from '../../../contexts/user/userContext';
+import { register } from '../../../services/user/userService';
+import { UserContext } from '../../../contexts/user/userContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from './Style';
-const SingUpScreen = ({navigation}) => {
-  const {onLogin} = useContext(UserContext);
+const SingUpScreen = ({ navigation }) => {
+  const { onLogin } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -33,10 +33,13 @@ const SingUpScreen = ({navigation}) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const handleRegister = async () => {
     setLoading(true);
+    // chuyển email thành chữ thường
+   const email1 = email.toLowerCase();
+   console.log(email);
     try {
       const data = {
         name,
-        email,
+        email: email1,
         token,
         password,
         gender,
@@ -84,7 +87,7 @@ const SingUpScreen = ({navigation}) => {
           setLoading(false);
           navigation.reset({
             index: 0,
-            routes: [{name: 'Home'}],
+            routes: [{ name: 'Home' }],
           });
           ToastAndroid.show(
             'Đăng nhập thành công vui lòng chờ 1 chút để đăng nhập',
