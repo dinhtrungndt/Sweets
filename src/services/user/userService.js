@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import AxiosInstance from '../../helper/Axiosinstance';
-
+import HomeTest from '../../components/call/HomeTest';
 export const register = async (
   name,
   email,
@@ -23,7 +23,6 @@ export const register = async (
       avatar,
       coverImage,
     );
-
     return response;
   } catch (error) {
     console.log('register: ', error);

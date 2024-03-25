@@ -68,6 +68,8 @@ const ChatScreenIn = ({ route, navigation }) => {
     socket.current.emit('new_message', newMessage);
     setMessageInput('');
   };
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  console.log(">>>>>>>>>>>>>>>>>>>>>>>",receiver);
 
   const renderItem = ({ item }) => {
 

@@ -20,6 +20,7 @@ export const UserProvider = props => {
           const result = await login(userEmail, userPassword);
           if (result && result.status === 1) {
             setUser(result);
+            
           }
         }
       } catch (error) {
