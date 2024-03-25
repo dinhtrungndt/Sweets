@@ -18,16 +18,16 @@ const HomeTest = ({ navigation }) => {
       _name,
       _name,
       [ZIM, ZPNs],
-      // {
-      //   ringtoneConfig: {
-      //     incomingCallFileName: 'zego_incoming.mp3',
-      //     outgoingCallFileName: 'zego_outgoing.mp3',
-      //   },
-      //   androidNotificationConfig: {
-      //     channelID: "ZegoUIKit",
-      //     channelName: "ZegoUIKit",
-      //   },
-      // }
+      {
+        ringtoneConfig: {
+          incomingCallFileName: 'sweets_coming.mp3',
+          outgoingCallFileName: 'sweets_ending.mp3',
+        },
+        // androidNotificationConfig: {
+        //   channelID: "ZegoUIKit",
+        //   channelName: "ZegoUIKit",
+        // },
+      }
       );
   }
   const onUserLogout = async () => {
