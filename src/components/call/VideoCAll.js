@@ -5,8 +5,8 @@ import { View, StyleSheet} from 'react-native';
 import { MyContext } from './UseContextTemp';
 export default function VideoCallPage({navigation,route}) {
     // const name = route.params.name;
-    const idUser = route.params.idUser;
-    const idFriend = route.params.idFriend;
+    // const idUser = route.params.idUser;
+    // const idFriend = route.params.idFriend;
     const {name} = useContext(MyContext);
     console.log('name:', name);
     return (
@@ -21,8 +21,8 @@ export default function VideoCallPage({navigation,route}) {
                 config={{
                     // You can also use ONE_ON_ONE_VOICE_CALL_CONFIG/GROUP_VIDEO_CALL_CONFIG/GROUP_VOICE_CALL_CONFIG to make more types of calls.
                     ...ONE_ON_ONE_VIDEO_CALL_CONFIG,
-                    onOnlySelfInRoom: () => { navigation.navigate('ChatScreenHome') },
-                    onHangUp: () => { navigation.navigate('ChatScreenHome') },
+                    onOnlySelfInRoom: () => { navigation.navigate('HomeTest') },
+                    onHangUp: () => { navigation.navigate('HomeTest') },
                 }}
             />
         </View>

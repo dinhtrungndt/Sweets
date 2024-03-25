@@ -21,18 +21,17 @@ const App = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <UserProvider>
+      {/* <UserProvider>
         <HomeProvider>
           <AppNavigations />
         </HomeProvider>
-      </UserProvider>
-
-      {/* <MyProvider> */}
-        {/* <NavigationContainer> */}
+      </UserProvider> */}
+      <MyProvider>
+        <NavigationContainer>
           {/* <ChatScreenStack /> */}
-          {/* <StackTest /> */}
-        {/* </NavigationContainer> */}
-      {/* </MyProvider> */}
+          <StackTest />
+        </NavigationContainer>
+      </MyProvider>
     </SafeAreaView>
   );
 };
