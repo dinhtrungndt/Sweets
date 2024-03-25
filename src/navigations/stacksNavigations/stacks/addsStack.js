@@ -2,7 +2,7 @@
 import React from 'react';
 
 // Stack
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+c
 
 // Screen
 import {AddsScreen} from '../../../components/main/home/uploads/posts';

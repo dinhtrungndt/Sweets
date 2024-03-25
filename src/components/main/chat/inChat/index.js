@@ -15,11 +15,12 @@ import io from 'socket.io-client';
 import {GetMessageSR} from '../../../../services/home/chatService';
 import {UserContext} from '../../../../contexts/user/userContext';
 import {styles} from '../styles/chat_in';
+import {SendCall} from '../../../call/HandleCall';
 const socket = io('https://sweets-nodejs.onrender.com/');
 
 const ChatScreenIn = ({route, navigation}) => {
   const {receiver} = route.params;
-  const {user} = useContext(UserContext);
+  // const {user} = "65a8c3e192cef0b4744bf2b9";
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -49,7 +50,10 @@ const ChatScreenIn = ({route, navigation}) => {
 
   const fetchData = async () => {
     try {
-      const response = await GetMessageSR(user.user._id, receiver._id);
+      const response = await GetMessageSR(
+        '65a8c3e192cef0b4744bf2b9',
+        receiver._id,
+      );
       setMessages(response.slice(-100));
     } catch (error) {
       console.error('Lỗi:', error);
@@ -61,7 +65,7 @@ const ChatScreenIn = ({route, navigation}) => {
       return;
     }
     const newMessage = {
-      idSender: user.user._id,
+      idSender: '65a8c3e192cef0b4744bf2b9',
       idReceiver: receiver._id,
       content: messageInput,
       time: new Date().toISOString(),
@@ -78,7 +82,7 @@ const ChatScreenIn = ({route, navigation}) => {
     setLoadingMore(true);
     try {
       const response = await GetMessageSR(
-        user.user._id,
+        '65a8c3e192cef0b4744bf2b9',
         receiver._id,
         messages.length,
       );
@@ -94,7 +98,10 @@ const ChatScreenIn = ({route, navigation}) => {
   const refreshMessages = async () => {
     try {
       setRefreshing(true); // Đặt refreshing thành true trước khi làm mới
-      const response = await GetMessageSR(user.user._id, receiver._id);
+      const response = await GetMessageSR(
+        '65a8c3e192cef0b4744bf2b9',
+        receiver._id,
+      );
       console.log('check response:', response);
       setMessages(response.slice(-20));
     } catch (error) {
@@ -107,7 +114,7 @@ const ChatScreenIn = ({route, navigation}) => {
   const renderItem = ({item}) => {
     return (
       <View style={styles.chat}>
-        {item.idSender === user.user._id ? (
+        {item.idSender === '65a8c3e192cef0b4744bf2b9' ? (
           <View style={styles.sentMessage}>
             <Text style={styles.sentContent}>{item.content}</Text>
           </View>
@@ -145,7 +152,11 @@ const ChatScreenIn = ({route, navigation}) => {
               source={require('../../../../assets/call_50px.png')}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={{marginLeft: 15}}>
+          <TouchableOpacity
+            style={{marginLeft: 15}}
+            onPress={() => {
+              SendCall({navigation});
+            }}>
             <Image
               style={styles.back}
               source={require('../../../../assets/call_video.png')}
