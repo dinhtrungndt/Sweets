@@ -151,7 +151,7 @@ export function AddsScreen({route, navigation}) {
       console.log('>>>>>>> Lỗi ở HandleUploadMedia nè', error);
     }
   });
-  console.log('>>>>>>> hình ở imagePath nè', imagePath);
+  // console.log('>>>>>>> hình ở imagePath nè', imagePath);
 
   const handlePostUpload = async () => {
     try {
