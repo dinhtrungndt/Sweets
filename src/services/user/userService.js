@@ -68,3 +68,13 @@ export const updateStatus = async (_id, status) => {
     return error;
   }
 };
+
+export const getUser = async (_id) => {
+  try {
+    const res = await AxiosInstance().get(`/users/get-user/${_id}`);
+    return res;
+  } catch (error) {
+    console.log('getUser error', error);
+    return error;
+  }
+};

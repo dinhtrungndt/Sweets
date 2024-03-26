@@ -12,6 +12,11 @@ import User from '../../../components/main/layout/search/Src/User/User';
 import VideoCallPage from '../../../components/call/VideoCAll';
 import HomeTest from '../../../components/call/HomeTest';
 import InputYourName from '../../../components/call/InputYourName';
+import {
+  ZegoUIKitPrebuiltCallWaitingScreen,
+  ZegoUIKitPrebuiltCallInCallScreen,
+} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+
 const Stack = createNativeStackNavigator();
 
 export function ChatScreenStack() {
@@ -20,12 +25,23 @@ export function ChatScreenStack() {
       screenOptions={{
         headerShown: false,
       }}>
-      {/* <Stack.Screen name="InputYourName" component={InputYourName} /> */}
       <Stack.Screen name="ChatScreenHome" component={ChatScreen} />
       <Stack.Screen name="SearchScreens" component={User} />
       <Stack.Screen name="ChatScreenIn" component={ChatScreenIn} />
       <Stack.Screen name="VideoCallPage" component={VideoCallPage} />
       <Stack.Screen name="HomeTest" component={HomeTest} />
+      <Stack.Screen
+        options={{headerShown: false}}
+        // DO NOT change the name
+        name="ZegoUIKitPrebuiltCallWaitingScreen"
+        component={ZegoUIKitPrebuiltCallWaitingScreen}
+      />
+      <Stack.Screen
+        options={{headerShown: false}}
+        // DO NOT change the name
+        name="ZegoUIKitPrebuiltCallInCallScreen"
+        component={ZegoUIKitPrebuiltCallInCallScreen}
+      />
     </Stack.Navigator>
   );
 }

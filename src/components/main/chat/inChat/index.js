@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, {useContext, useEffect, useState, useRef} from 'react';
 import {
   FlatList,
   Image,
@@ -9,16 +9,22 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import io from 'socket.io-client';
-import { GetMessageSR } from '../../../../services/home/chatService';
-import { UserContext } from '../../../../contexts/user/userContext';
-import { styles } from '../styles/chat_in';
+import {GetMessageSR} from '../../../../services/home/chatService';
+import {UserContext} from '../../../../contexts/user/userContext';
+import {styles} from '../styles/chat_in';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ZegoUIKitPrebuiltCallService, {
+  ZegoCallInvitationDialog,
+  ZegoUIKitPrebuiltCallWaitingScreen,
+  ZegoUIKitPrebuiltCallInCallScreen,
+  ZegoSendCallInvitationButton,
+} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
-const ChatScreenIn = ({ route, navigation }) => {
-  const { receiver } = route.params;
-  const { user } = useContext(UserContext);
+const ChatScreenIn = ({route, navigation}) => {
+  const {receiver} = route.params;
+  const {user} = useContext(UserContext);
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -35,8 +41,10 @@ const ChatScreenIn = ({ route, navigation }) => {
     socket.current.on('new_message', newMessage => {
       // Kiểm tra xem tin nhắn mới có thuộc về hai người liên quan hay không
       if (
-        (newMessage.idSender === user.user._id && newMessage.idReceiver === receiver.receiverv2) ||
-        (newMessage.idSender === receiver.receiverv2 && newMessage.idReceiver === user.user._id)
+        (newMessage.idSender === user.user._id &&
+          newMessage.idReceiver === receiver.receiverv2) ||
+        (newMessage.idSender === receiver.receiverv2 &&
+          newMessage.idReceiver === user.user._id)
       ) {
         setMessages(prevMessages => [...prevMessages, newMessage]);
       }
@@ -50,24 +58,19 @@ const ChatScreenIn = ({ route, navigation }) => {
     };
   }, []);
 
-
-
-  0
+  0;
 
   const fetchData = async () => {
     try {
       const idSender = user.user._id;
       const idReceiver = receiver.receiverv2;
 
-
       const response = await GetMessageSR(idSender, idReceiver);
       setMessages(response.slice(-100));
-
     } catch (error) {
       console.error('Lỗi:', error);
     }
   };
-
 
   const sendMessage = () => {
     if (messageInput === '' || !messageInput.trim()) {
@@ -83,10 +86,9 @@ const ChatScreenIn = ({ route, navigation }) => {
     setMessageInput('');
   };
   // >>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  console.log(">>>>>>>>>>>>>>>>>>>>>>>",receiver);
+  console.log('>>>>>>>>>>>>>>>>>>>>>>> 90', receiver);
 
-  const renderItem = ({ item }) => {
-
+  const renderItem = ({item}) => {
     return (
       <View style={styles.chat}>
         {item.idSender === user.user._id ? (
@@ -115,30 +117,28 @@ const ChatScreenIn = ({ route, navigation }) => {
             source={require('../../../../assets/back_50px.png')}
           />
           <TouchableOpacity style={styles.account}>
-            <Image source={{ uri: receiver.avatar }} style={styles.avatar} />
+            <Image source={{uri: receiver.avatar}} style={styles.avatar} />
             <Text style={styles.name_user}>{receiver.name}</Text>
           </TouchableOpacity>
         </TouchableOpacity>
         <View style={styles.call_video}>
-          <TouchableOpacity>
-            <Image
-              style={styles.back}
-              source={require('../../../../assets/call_50px.png')}
+          <ZegoSendCallInvitationButton
+              invitees={[{userID: receiver.receiverv2, userName: receiver.name}]}
+              isVideoCall={false}
+              resourceID={'sweets_call'}
             />
-          </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: 15 }}>
-            <Image
-              style={styles.back}
-              source={require('../../../../assets/call_video.png')}
+            <ZegoSendCallInvitationButton
+              invitees={[{userID: receiver.receiverv2, userName: receiver.name}]}
+              isVideoCall={true}
+              resourceID={'sweets_call'}
             />
-          </TouchableOpacity>
         </View>
       </View>
       <Text style={styles.line} />
       <FlatList
         data={messages.slice().reverse()}
         keyExtractor={(item, index) => index.toString()} // Sử dụng index như một key
-        renderItem={({ item }) => renderItem({ item })}
+        renderItem={({item}) => renderItem({item})}
       />
       {loadingMore && <ActivityIndicator size="small" color="#0000ff" />}
       <View style={styles.input}>
