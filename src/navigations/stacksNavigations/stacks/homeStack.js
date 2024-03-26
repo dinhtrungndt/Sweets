@@ -17,6 +17,9 @@ import SelectFeeingStory from '../../../components/main/home/uploads/story/selec
 import SettingStoryObjects from '../../../utils/settingStoryObjects';
 import OtherUserA from '../../../components/main/account/OtherUserAccounts/OtherUserA';
 import Profile from '../../../components/main/account/Profile/Profile';
+import ModalEditPostsAccount from '../../../components/main/home/posts/editPosts/account';
+import SelectScreenUp from '../../../components/main/home/uploads/posts/select';
+import ChangeObjects from '../../../components/main/home/posts/editPosts/account/objects';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +45,12 @@ export function HomeStackScreen() {
       />
       <Stack.Screen name="OtherUserA" component={OtherUserA} />
       <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />
+      <Stack.Screen name="ChangeObjects" component={ChangeObjects} />
+      <Stack.Screen
+        name="ModalEditPostsAccount"
+        component={ModalEditPostsAccount}
+      />
     </Stack.Navigator>
   );
 }
