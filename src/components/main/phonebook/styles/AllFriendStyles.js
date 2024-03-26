@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginBottom: 10,
         paddingLeft: 10,
-        color: '#333',
+        color: '#ffffff',
         backgroundColor: '#fff',
         width:'90%'
       },
@@ -48,6 +48,16 @@ const styles = StyleSheet.create({
       friendItemText: {
         fontSize: 16,
         color: '#333',
+      },
+      txtName:{
+        fontWeight:'bold',
+        fontSize:17,
+        marginHorizontal:10
+      },
+      imgOption:{
+        width:20,
+        height:20,
+        marginTop:5
       },
 })
 
