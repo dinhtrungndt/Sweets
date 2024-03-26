@@ -1,38 +1,22 @@
-import React, {useEffect, useContext, useState} from 'react';
-import {Text, View, FlatList, TouchableOpacity, Image} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, View, FlatList, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import styles from '../styles/OtherFriendStyles';
-import { useScrollableSetter } from '@gorhom/bottom-sheet';
-
 
 const OtherFriend = (props) => {
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [Iduser, setIduser] = useState();
-  //const { navigation } = props;
-
+  const [friendStatus, setFriendStatus] = useState('Kết bạnn');
  
-
 
   useEffect(() => {
     const loadFilteredUsers = async () => {
       try {
-        // Lấy userId từ AsyncStorage
         const userId = await AsyncStorage.getItem('userId');
-        console.log('id tk', userId);
-        const friendsFromStorage = await AsyncStorage.getItem('friends');
-        console.log('ddddddd', friendsFromStorage);
-        // Gọi API để lấy danh sách bạn bè
+        const friendsFromStorage = await AxiosInstance().get(`/friend/friends/${userId}`);
         const friendsResponse = await AxiosInstance().get('users/get-users');
         const friends = friendsResponse.users;
-  
-        // Chuyển đổi friendsFromStorage từ chuỗi JSON thành mảng
-        const friendsArray = JSON.parse(friendsFromStorage) || [];
-  
-        // Lấy thông tin người dùng đăng nhập
-        const loggedInUser = friends.find(user => user._id === userId);
-  
-        // Lặp qua tất cả người dùng khác và kiểm tra số lượng bạn chung
+
         const usersWithCommonFriends = friends.map(user => {
           if (user._id !== userId && user.friends) {
             const commonFriends = user.friends.filter(friendId => loggedInUser.friends.includes(friendId));
@@ -43,24 +27,43 @@ const OtherFriend = (props) => {
           }
           return user;
         });
-  
-        console.log(usersWithCommonFriends);
-  
-        // Lọc ra những người dùng không phải là bạn bè của tôi và không phải là tôi
+
         const filteredUsers = usersWithCommonFriends.filter(
-          user => user._id !== userId && !friendsArray.includes(user._id),
+          user => user._id !== userId && !friendsFromStorage.friendsList.includes(user._id),
         );
-  
+
         setFilteredUsers(filteredUsers);
       } catch (error) {
         console.log('Lỗi khi tải danh sách bạn bè', error);
       }
     };
-  
+
     loadFilteredUsers();
   }, []);
+
+  const handleFriendAction = async (selectedUserId) => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
   
+      const response = await AxiosInstance().post('/friend/send-friend-request', {
+        idFriendSender: userId,
+        idFriendReceiver: selectedUserId,
+        time:10
+      });
+
+      console.log('res',response)
   
+      if (response && response.success) {
+        if (response.message == "Gửi lời mời kết bạn thành công") {
+          setFriendStatus('Hủy kết bạn');
+        } 
+      } else if (response  && !response.success) {
+        console.error('Lỗi khi gửi yêu cầu kết bạn:', response.message);
+      } 
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
+    }
+  };
 
 
   return (
@@ -71,36 +74,25 @@ const OtherFriend = (props) => {
         <FlatList
           data={filteredUsers}
           keyExtractor={item => item._id}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <View>
-              <View style={{flexDirection:'row',justifyContent:'space-between',marginVertical:5}}>
-                <View style={{flexDirection:'row',marginVertical:5}}>
-                <TouchableOpacity style={styles.friendItem}
-                 
-                >
-                  <Image
-                    source={{
-                      uri:
-                        item.avatar ||
-                        'https://res.cloudinary.com/dztqqxnqr/image/upload/v1704255997/p1vdyjxbnmt8btfuqoab.jpg',
-                    }}
-                    style={styles.avatar}
-                  />
-                  
-                </TouchableOpacity>
-                <View style={{marginVertical:10}}>
-                <Text style={styles.friendItemText}>{item.name}</Text>
-                 {/* Hiển thị thông tin bạn chung */}
-      {item.commonFriendsCount !== undefined && (
-        <Text >Bạn chung:{` ${item.commonFriendsCount}`}</Text>
-      )}
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 }}>
+                <View style={{ flexDirection: 'row', marginVertical: 5 }}>
+                  <TouchableOpacity style={styles.friendItem} >
+                    <Image
+                      source={{
+                        uri: item.avatar || 'https://res.cloudinary.com/dztqqxnqr/image/upload/v1704255997/p1vdyjxbnmt8btfuqoab.jpg',
+                      }}
+                      style={styles.avatar}
+                    />
+                  </TouchableOpacity>
+                  <View style={{ marginVertical: 10 }}>
+                    <Text style={styles.friendItemText}>{item.name}</Text>
+                  </View>
                 </View>
-
-                </View>
-                <TouchableOpacity style={styles.imgOption}>
-                  <Image style={styles.imgOption} source={require('../../../../assets/option.png')} />
+                <TouchableOpacity style={styles.imgOption} onPress={() => handleFriendAction(item._id)}>
+                  <Text style={styles.friendItemText2}>{friendStatus}</Text>
                 </TouchableOpacity>
-                
               </View>
             </View>
           )}

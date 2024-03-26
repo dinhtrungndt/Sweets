@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginBottom: 10,
         paddingLeft: 10,
-        color: '#ffffff',
+        color: '#000000',
         backgroundColor: '#fff',
         width:'90%'
       },
@@ -52,7 +52,8 @@ const styles = StyleSheet.create({
       txtName:{
         fontWeight:'bold',
         fontSize:17,
-        marginHorizontal:10
+        marginHorizontal:10,
+        color:'#22b6c0'
       },
       imgOption:{
         width:20,

@@ -5,7 +5,8 @@ import {
   TextInput,
   FlatList,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from 'react-native';
 import AxiosInstance from '../../../../helper/Axiosinstance'; // Thay đường dẫn tới file AxiosInstance.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,6 +14,8 @@ import styles from '../styles/AllFriendStyles'; // Đảm bảo import styles t�
 
 const AllFriend = () => {
   const [friendsDetails, setFriendsDetails] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [filteredFriends, setFilteredFriends] = useState([]); 
 
   useEffect(() => {
     const fetchFriendsDetails = async () => {
@@ -42,14 +45,14 @@ const AllFriend = () => {
           const friendsDetails = await Promise.all(friendsDetailsPromises);
 
           // Lọc bỏ các giá trị null (nếu có) và lưu thông tin chi tiết vào state
-          setFriendsDetails(friendsDetails.filter(friend => friend !== null));
+        await  setFriendsDetails(friendsDetails.filter(friend => friend !== null));
 
           // Lọc ra ngày sinh của bạn bè hiện tại và lưu vào AsyncStorage
           const currentFriendsBirthdays = friendsDetails
             .filter(friend => friend !== null) // Lọc bỏ các giá trị null
             .map(friend => ({ name: friend.name, birthday: friend.ngaysinh,avatar:friend.avatar })); // Lấy ngày sinh của mỗi bạn bè
           await AsyncStorage.setItem('currentFriendsBirthdays', JSON.stringify(currentFriendsBirthdays));
-          console.log('nsbb',currentFriendsBirthdays)
+          console.log('nsbb',currentFriendsBirthdays.birthday)
         } else {
           console.log('Không tìm thấy userId trong AsyncStorage');
         }
@@ -61,7 +64,16 @@ const AllFriend = () => {
     fetchFriendsDetails();
   }, []); // Chỉ chạy một lần khi component được render
 
+  useEffect(() => {
+    // Lọc danh sách bạn bè dựa trên giá trị tìm kiếm và cập nhật state mới
+   
+    const filtered = friendsDetails.filter(friend => friend.name.toLowerCase().includes(searchValue.toLowerCase()));
+     setFilteredFriends(filtered);
+  }, [searchValue, friendsDetails]); // Chạy lại mỗi khi giá trị tìm kiếm hoặc danh sách bạn bè thay đổi
 
+  const handleSearch = (text) => {
+    setSearchValue(text); // Cập nhật giá trị tìm kiếm
+  };
   return (
     <View style={styles.container}>
       <View
@@ -77,18 +89,22 @@ const AllFriend = () => {
         <TextInput
           style={styles.searchInput}
           placeholder="Tìm kiếm bạn bè"
-          placeholderTextColor="#22b6c0"></TextInput>
+          placeholderTextColor="#22b6c0"
+          onChangeText={handleSearch} 
+          value={searchValue}>
+
+          </TextInput>
       </View>
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={styles.title}> Có {friendsDetails.length} người bạn</Text>
-        <Text style={styles.title}>Quản lí</Text>
+        <Text style={styles.title}>Sắp xếp</Text>
       </View>
-      <View style={{ height: 400 }}> 
+      <View style={{ height: 400,paddingBottom:70 }}> 
         <FlatList
-          data={friendsDetails}
+          data={filteredFriends}
           renderItem={({ item }) => (
-            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10,justifyContent:'space-between' }}>
+            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5, paddingVertical: 10,justifyContent:'space-between' }}>
              <View style={{ flexDirection: 'row',alignItems:'center'}}>
 
              <Image source={{ uri: item.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />

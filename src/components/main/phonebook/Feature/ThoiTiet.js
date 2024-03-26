@@ -84,7 +84,7 @@ const ThoiTiet = () => {
         `weather?lat=${lat}&lon=${lon}&appid=b0e86008293e7c25b2deb2caa5a36b0c`,
       );
 
-      console.log('Weather Data:', response);
+      //console.log('Weather Data:', response);
 
       // Xử lý dữ liệu thời tiết ở đây (setWeatherData(response.data))
       setWeatherData(response);

@@ -32,18 +32,27 @@ const styles = StyleSheet.create({
     borderColor:'blue'
   },
   friendItemText: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight:'bold',
-    color:'#0969da'
+    color:'#22b6c0'
+  },
+  friendItemText2: {
+    fontSize: 15,
+    fontWeight:'bold',
+    color:'#ffffff',
+    alignSelf:'center',
+    marginTop:3
   },
   noFriendsMessage: {
     fontSize: 16,
     textAlign: 'center',
   },
   imgOption:{
-    width:20,
-    height:20,
-    marginTop:5
+    width:85,
+    height:30,
+    marginTop:10,
+    backgroundColor:'#22b6c0',
+    borderRadius:5
   },
 })
 
