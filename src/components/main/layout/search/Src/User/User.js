@@ -4,30 +4,38 @@ import { useRoute } from '@react-navigation/native';
 import { searchuser } from '../../../../../../services/search/Search';
 import styles from '../../Styles/User/User';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const User = ({ navigation }) => {
   const route = useRoute();
-
+ 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [name, setname] = useState('');
 
   const searchUser = async () => {
+    const userid = await AsyncStorage.getItem('userId');
+   
     try {
       setLoading(true);
       const response = await searchuser(name);
       // Duyệt qua từng phần tử trong mảng và thay đổi tên thuộc tính
       const modifiedUsers = response.users.map(user => ({
         ...user,
-        receiverv2: user._id // Đổi tên thuộc tính từ '_id' thành 'receiverv2'
-      }));
-      setUsers(modifiedUsers);
+          receiverv2: user._id // Đổi tên thuộc tính từ '_id' thành 'receiverv2'
+      }
+      ));
+      const modifiedUsers2 = modifiedUsers.filter(user => user._id !== userid);
+      setUsers(modifiedUsers2);
+    
+    console.log(modifiedUsers2);
+     
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
+  
   const handleBackPress = () => {
 
     navigation.goBack();

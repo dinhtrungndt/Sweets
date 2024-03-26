@@ -21,14 +21,14 @@ const Tab = createBottomTabNavigator();
 const HomeNavigation = () => {
   return (
     <Tab.Navigator screenOptions={options}>
-      <Tab.Screen
+      {/* <Tab.Screen
         name="HomeStackScreen"
         component={HomeStackScreen}
         options={({route}) => ({
           tabBarStyle: {display: GetRouteNameHome(route)},
           headerShown: false,
         })}
-      />
+      /> */}
       <Tab.Screen
         name="ChatScreen"
         component={ChatScreenStack}

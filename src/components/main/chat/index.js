@@ -52,6 +52,7 @@ const ChatScreen = props => {
   const getListUser = async () => {
     try {
       const _id = await AsyncStorage.getItem('userId');
+      
       setUser1(_id);
       const res = await GetListUser(_id);
       setUser(res);
