@@ -3,6 +3,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  Modal,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -17,8 +18,7 @@ import {styles} from '../../styles/story';
 import {storyData} from '../../data/story';
 import {UserContext} from '../../../../../contexts/user/userContext';
 import moment from 'moment';
-
-// Library
+import SelectFeeingStory from './selectFeelingStory';
 
 const RenderItemStory = ({story, navigation, currentUserID}) => {
   const [seenStory, setSeenStory] = useState(false);
@@ -55,6 +55,7 @@ const RenderItemStory = ({story, navigation, currentUserID}) => {
 const StoryScreen = ({navigation, story}) => {
   const {user} = useContext(UserContext);
   const [seenStory, setSeenStory] = useState(false);
+  const [modelSelectFeeingStory, setModelSelectFeeingStory] = useState(false);
 
   const userStories = story.filter(
     story => story.idUsers._id === user.user._id,
@@ -93,7 +94,7 @@ const StoryScreen = ({navigation, story}) => {
             onPress={
               showStoryMe && !isMyStoryExpired
                 ? () => handleSeenStory(userStories)
-                : null
+                : () => setModelSelectFeeingStory(true)
             }
             style={
               showStoryMe && !isMyStoryExpired
@@ -153,6 +154,17 @@ const StoryScreen = ({navigation, story}) => {
       </View>
       {/* line */}
       <Text style={styles.line} />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modelSelectFeeingStory}
+        onRequestClose={() => {}}>
+        <SelectFeeingStory
+          navigation={navigation}
+          cancel={() => setModelSelectFeeingStory(false)}
+        />
+      </Modal>
     </View>
   );
 };

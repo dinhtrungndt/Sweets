@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   upHeaderButton: {
-    backgroundColor: '#CBCBCB',
+    backgroundColor: '#7ec1a5',
     borderRadius: 10,
     padding: 10,
     width: 70,
@@ -83,18 +83,18 @@ export const styles = StyleSheet.create({
     marginLeft: 7,
   },
   body_chedo_icon: {
-    width: 17,
-    height: 17,
+    width: 16,
+    height: 16,
     resizeMode: 'cover',
     marginTop: 2,
-    marginLeft: 10,
+    marginLeft: 0,
   },
   body_chedo_text: {
     fontSize: 14,
     color: '#0962c9',
     fontFamily: 'Roboto',
     fontWeight: '700',
-    marginLeft: 5,
+    marginLeft: 2,
   },
   body_chedo_icon_down: {
     width: 10,
@@ -146,6 +146,7 @@ export const styles = StyleSheet.create({
   },
   bottomSheetText: {
     fontSize: 16,
+    color: '#000',
   },
   pick_feelings: {
     flexDirection: 'row',

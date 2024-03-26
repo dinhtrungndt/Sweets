@@ -11,6 +11,12 @@ export const GetRouteNameHome = route => {
     return 'none';
   } else if (routeName?.includes('PickStory')) {
     return 'none';
+  } else if (routeName?.includes('SelectFeeingStory')) {
+    return 'none';
+  } else if (routeName?.includes('SettingStoryObjects')) {
+    return 'none';
+  } else if (routeName?.includes('ChangeObjects')) {
+    return 'none';
   }
   return 'flex';
 };

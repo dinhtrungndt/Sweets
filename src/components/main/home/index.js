@@ -17,6 +17,7 @@ import {
   getComments,
   getMedia,
   getPosts,
+  getPostsByUser,
   getReaction,
   getShare,
   likeByPost,
@@ -39,7 +40,7 @@ const HomeScreen = props => {
 
   const onGetPosts = async () => {
     try {
-      const res = await getPosts();
+      const res = await getPosts(user.user._id);
       const postsWithMedia = await Promise.all(
         res.map(async post => {
           const mediaResponse = await getMedia(post._id);
