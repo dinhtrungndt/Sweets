@@ -135,7 +135,9 @@ const PickStory = ({route}) => {
         </>
       ) : (
         <View style={styles.container_content}>
-          <Text style={styles.content}>{story[current].content}</Text>
+          <Text style={styles.content}>
+            {story.content ? story.content : story[current].content}
+          </Text>
           {/* {story.content ? (
             <Text style={styles.content}>
               {story.content ? story.content : story[current].content}
