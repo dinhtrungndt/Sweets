@@ -32,8 +32,13 @@ const styles = StyleSheet.create({
     borderColor:'blue'
   },
   friendItemText: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight:'bold',
+    color:'#22b6c0'
+  },
+  friendItemText3: {
+    fontSize: 14,
+   
     color:'#22b6c0'
   },
   friendItemText2: {

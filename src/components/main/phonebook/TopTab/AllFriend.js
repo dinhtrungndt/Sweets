@@ -29,6 +29,8 @@ const AllFriend = () => {
         if (userId) {
           const response = await axiosInstance.get(`/friend/friends/${userId}`);
           const { friendsList } = response;
+        
+          await AsyncStorage.setItem('friendData', JSON.stringify(response.friendsList));
 
           // Tạo một mảng chứa thông tin chi tiết của các bạn bè
           const friendsDetailsPromises = friendsList.map(async (friendId) => {
@@ -100,7 +102,7 @@ const AllFriend = () => {
         <Text style={styles.title}> Có {friendsDetails.length} người bạn</Text>
         <Text style={styles.title}>Sắp xếp</Text>
       </View>
-      <View style={{ height: 400,paddingBottom:120 }}> 
+     
         <FlatList
           data={filteredFriends}
           renderItem={({ item }) => (
@@ -118,7 +120,7 @@ const AllFriend = () => {
           keyExtractor={(item) => item._id} // Không cần chuyển đổi thành chuỗi
         />
        
-      </View>
+     
     </View>
   );
 };

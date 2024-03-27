@@ -11,6 +11,7 @@ const OtherFriend = (props) => {
     const loadFilteredUsers = async () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
+        const storedData = await AsyncStorage.getItem('friendData');
         const friendsFromStorage = await AxiosInstance().get(`/friend/friends/${userId}`);
         const friendsResponse = await AxiosInstance().get('users/get-users');
         const friends = friendsResponse.users;
@@ -29,6 +30,36 @@ const OtherFriend = (props) => {
         const filteredUsers = usersWithCommonFriends.filter(
           user => user._id !== userId && !friendsFromStorage.friendsList.includes(user._id),
         );
+
+        // Tính toán số lượng bạn chung và lưu vào mảng filteredUsers
+        await Promise.all(filteredUsers.map(async (item) => {
+          try {
+            const response = await AxiosInstance().get(`/friend/friends/${item._id}`);
+            const listFriendOther = response.friendsList;
+            const matchingFriends = listFriendOther.filter(friend => storedData.includes(friend));
+            item.matchingFriends = matchingFriends;
+
+            // Gửi yêu cầu API để lấy thông tin về bạn chung
+            const matchingFriendsInfo = await Promise.all(matchingFriends.map(async (friendId) => {
+              try {
+                const friendInfoResponse = await AxiosInstance().get(`/users/get-user/${friendId}`);
+                console.log('friendInfoResponse', friendInfoResponse.user)
+                const { avatar, name } = friendInfoResponse.user;
+                return { avatar, name }; // Trả về thông tin của bạn bè chung
+              } catch (error) {
+                console.error('Lỗi khi lấy thông tin bạn bè:', error);
+                return null;
+              }
+            }));
+            // Gán matchingFriendsInfo vào item
+            item.matchingFriendsInfo = matchingFriendsInfo;
+            console.log('Thông tin bạn chunggggg:', matchingFriendsInfo);
+          } catch (error) {
+            console.error('Lỗi khi xem danh sách bạn bè:', error);
+          }
+        }));
+        // console.log('filteredUsers',filteredUsers)
+
         setFilteredUsers(filteredUsers);
       } catch (error) {
         console.log('Lỗi khi tải danh sách bạn bè', error);
@@ -38,10 +69,11 @@ const OtherFriend = (props) => {
     loadFilteredUsers();
   }, []);
 
+
   const handleFriendAction = async (selectedUserId) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-  
+
       const response = await AxiosInstance().post('/friend/send-friend-request', {
         idFriendSender: userId,
         idFriendReceiver: selectedUserId,
@@ -58,7 +90,7 @@ const OtherFriend = (props) => {
         setFilteredUsers(updatedUsers);
       } else if (response && !response.success) {
         console.error('Lỗi khi gửi yêu cầu kết bạn:', response.message);
-      } 
+      }
     } catch (error) {
       console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
     }
@@ -76,7 +108,7 @@ const OtherFriend = (props) => {
             <View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 }}>
                 <View style={{ flexDirection: 'row', marginVertical: 5 }}>
-                  <TouchableOpacity style={styles.friendItem} >
+                  <TouchableOpacity style={styles.friendItem}>
                     <Image
                       source={{
                         uri: item.avatar || 'https://res.cloudinary.com/dztqqxnqr/image/upload/v1704255997/p1vdyjxbnmt8btfuqoab.jpg',
@@ -86,6 +118,19 @@ const OtherFriend = (props) => {
                   </TouchableOpacity>
                   <View style={{ marginVertical: 10 }}>
                     <Text style={styles.friendItemText}>{item.name}</Text>
+                    <Text style={styles.friendItemText3}>Bạn chung: {item.matchingFriends ? item.matchingFriends.length : 0}</Text>
+                   
+                    <View style={{flexDirection:'row',marginVertical:3}}>
+                    {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 0 && (
+  item.matchingFriendsInfo.map((friendInfo, index) => (
+    <View key={index} style={{flexDirection:'row'}}>
+      <Image source={{ uri: friendInfo.avatar }} style={{ width: 25, height: 25, borderRadius: 12 }} />
+      <Text style={{color:'black'}}>{friendInfo.name}</Text>
+    </View>
+  ))
+)}
+
+                    </View>
                   </View>
                 </View>
                 <TouchableOpacity style={styles.imgOption} onPress={() => handleFriendAction(item._id)}>
