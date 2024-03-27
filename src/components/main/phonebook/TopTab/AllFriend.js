@@ -16,6 +16,9 @@ const AllFriend = () => {
   const [friendsDetails, setFriendsDetails] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [filteredFriends, setFilteredFriends] = useState([]); 
+  const [friendInvitations, setFriendInvitations] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
+  const [refresh, setRefresh] = useState(false); // Thêm biến state refresh
 
   useEffect(() => {
     const fetchFriendsDetails = async () => {
@@ -47,14 +50,7 @@ const AllFriend = () => {
           const friendsDetails = await Promise.all(friendsDetailsPromises);
 
           // Lọc bỏ các giá trị null (nếu có) và lưu thông tin chi tiết vào state
-        await  setFriendsDetails(friendsDetails.filter(friend => friend !== null));
-
-          // Lọc ra ngày sinh của bạn bè hiện tại và lưu vào AsyncStorage
-          const currentFriendsBirthdays = friendsDetails
-            .filter(friend => friend !== null) // Lọc bỏ các giá trị null
-            .map(friend => ({ name: friend.name, birthday: friend.ngaysinh,avatar:friend.avatar })); // Lấy ngày sinh của mỗi bạn bè
-          await AsyncStorage.setItem('currentFriendsBirthdays', JSON.stringify(currentFriendsBirthdays));
-          console.log('nsbb',currentFriendsBirthdays.birthday)
+          await setFriendsDetails(friendsDetails.filter(friend => friend !== null));
         } else {
           console.log('Không tìm thấy userId trong AsyncStorage');
         }
@@ -68,14 +64,34 @@ const AllFriend = () => {
 
   useEffect(() => {
     // Lọc danh sách bạn bè dựa trên giá trị tìm kiếm và cập nhật state mới
-   
     const filtered = friendsDetails.filter(friend => friend.name.toLowerCase().includes(searchValue.toLowerCase()));
-     setFilteredFriends(filtered);
+    setFilteredFriends(filtered);
   }, [searchValue, friendsDetails]); // Chạy lại mỗi khi giá trị tìm kiếm hoặc danh sách bạn bè thay đổi
 
   const handleSearch = (text) => {
     setSearchValue(text); // Cập nhật giá trị tìm kiếm
   };
+
+  const handleDeleteFriendRequest = async (item) => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await AxiosInstance().post('friend/cancel-friend-request', {
+        idFriendSender: userId,
+        idFriendReceiver: item._id
+      });
+      if (response && response.success) {
+        // Xoá item khỏi danh sách filteredFriends và cập nhật lại FlatList
+        setFilteredFriends(prevFriends => prevFriends.filter(friend => friend._id !== item._id));
+        // Cập nhật lại biến state refresh để FlatList render lại
+        setRefresh(prevRefresh => !prevRefresh);
+      } else if (response && response.message) {
+        console.error('Error accepting friend request:', response.message);
+      }
+    } catch (error) {
+      console.error('Error accepting friend request:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View
@@ -108,16 +124,16 @@ const AllFriend = () => {
           renderItem={({ item }) => (
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5, paddingVertical: 10,justifyContent:'space-between' }}>
              <View style={{ flexDirection: 'row',alignItems:'center'}}>
-
              <Image source={{ uri: item.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />
               <Text style={styles.txtName}>{item.name}</Text>
              </View>
-              <TouchableOpacity style={styles.imgOption}>
-                  <Image style={styles.imgOption} source={require('../../../../assets/option.png')} />
-                </TouchableOpacity>
+             <TouchableOpacity style={styles.imgOption}  onPress={() => handleDeleteFriendRequest(item)}>
+              <Text style={styles.txtXoas}>Xoá</Text>
+            </TouchableOpacity>
             </TouchableOpacity>
           )}
-          keyExtractor={(item) => item._id} // Không cần chuyển đổi thành chuỗi
+          keyExtractor={(item, index) => index.toString()} 
+          extraData={refresh}
         />
        
      

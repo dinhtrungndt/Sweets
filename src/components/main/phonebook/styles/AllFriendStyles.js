@@ -56,10 +56,19 @@ const styles = StyleSheet.create({
         color:'#22b6c0'
       },
       imgOption:{
-        width:20,
-        height:20,
-        marginTop:5
+        borderWidth:0.7,
+        width:70,height:35,
+        borderRadius:10,
+        borderColor:'#22b6c0',
+        marginHorizontal:10,
+        marginVertical:3
       },
+      txtXoas:{
+        fontWeight:'bold',
+        color:'#22b6c0',
+        alignSelf:'center',
+       marginVertical:5
+      }
 })
 
 export default styles
