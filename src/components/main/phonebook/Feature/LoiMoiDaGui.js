@@ -44,11 +44,11 @@ const LoiMoiDaGui = (props) => {
         idFriendSender: userId,
         idFriendReceiver: item._id
       });
-      if (response.data && response.data.success) {
+      if (response && response.success) {
       await  setFriendInvitations(prevInvitations => prevInvitations.filter(invitation => invitation._id !== item._id));
       await  setUserInfo(prevUsers => prevUsers.filter(user => user._id !== item._id));
-      }  else if (response.data && response.data.message) {
-        console.error('Error accepting friend request:', response.data.message);
+      }  else if (response && response.message) {
+        console.error('Error accepting friend request:', response.message);
       }
     } catch (error) {
       console.error('Error accepting friend request:', error);

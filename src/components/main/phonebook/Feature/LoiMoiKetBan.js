@@ -123,16 +123,16 @@ const LoiMoiKetBan = (props) => {
         animationType="slide"
         transparent={true}
         visible={isModalVisible}
-        onRequestClose={toggleModal}
+       
         onBackdropPress={toggleModal} 
       >
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
             <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, elevation: 5 }}>
               <TouchableOpacity  
-              style={{height:10}}
+              style={{height:20}}
               onPress={() => navigation.navigate('LoiMoiDaGui')} >
-                <Text style={{fontWeight:'bold',fontSize:18}}>Xem danh sách đã gửi kết bạn</Text>
+                <Text style={{fontWeight:'bold',fontSize:18,color:'black'}}>Xem danh sách đã gửi kết bạn</Text>
               </TouchableOpacity>
               
             </View>

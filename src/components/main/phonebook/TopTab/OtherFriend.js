@@ -6,8 +6,6 @@ import styles from '../styles/OtherFriendStyles';
 
 const OtherFriend = (props) => {
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [friendStatus, setFriendStatus] = useState('Kết bạnn');
- 
 
   useEffect(() => {
     const loadFilteredUsers = async () => {
@@ -23,15 +21,14 @@ const OtherFriend = (props) => {
             return {
               ...user,
               commonFriendsCount: commonFriends.length,
+              isFriend: !friendsFromStorage.friendsList.includes(user._id),
             };
           }
           return user;
         });
-
         const filteredUsers = usersWithCommonFriends.filter(
           user => user._id !== userId && !friendsFromStorage.friendsList.includes(user._id),
         );
-
         setFilteredUsers(filteredUsers);
       } catch (error) {
         console.log('Lỗi khi tải danh sách bạn bè', error);
@@ -48,23 +45,24 @@ const OtherFriend = (props) => {
       const response = await AxiosInstance().post('/friend/send-friend-request', {
         idFriendSender: userId,
         idFriendReceiver: selectedUserId,
-        time:10
+        time: 10
       });
 
-      console.log('res',response)
-  
       if (response && response.success) {
-        if (response.message == "Gửi lời mời kết bạn thành công") {
-          setFriendStatus('Hủy kết bạn');
-        } 
-      } else if (response  && !response.success) {
+        const updatedUsers = filteredUsers.map(user => {
+          if (user._id === selectedUserId) {
+            return { ...user, isFriend: !user.isFriend };
+          }
+          return user;
+        });
+        setFilteredUsers(updatedUsers);
+      } else if (response && !response.success) {
         console.error('Lỗi khi gửi yêu cầu kết bạn:', response.message);
       } 
     } catch (error) {
       console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -91,7 +89,7 @@ const OtherFriend = (props) => {
                   </View>
                 </View>
                 <TouchableOpacity style={styles.imgOption} onPress={() => handleFriendAction(item._id)}>
-                  <Text style={styles.friendItemText2}>{friendStatus}</Text>
+                  <Text style={styles.friendItemText2}>{item.isFriend ? 'Huỷ kết bạn' : 'Kết bạn'}</Text>
                 </TouchableOpacity>
               </View>
             </View>
