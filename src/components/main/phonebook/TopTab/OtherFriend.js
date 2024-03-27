@@ -119,18 +119,21 @@ const OtherFriend = (props) => {
                   <View style={{ marginVertical: 10 }}>
                     <Text style={styles.friendItemText}>{item.name}</Text>
                     <Text style={styles.friendItemText3}>Bạn chung: {item.matchingFriends ? item.matchingFriends.length : 0}</Text>
-                   
-                    <View style={{flexDirection:'row',marginVertical:3}}>
-                    {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 0 && (
-  item.matchingFriendsInfo.map((friendInfo, index) => (
-    <View key={index} style={{flexDirection:'row'}}>
-      <Image source={{ uri: friendInfo.avatar }} style={{ width: 25, height: 25, borderRadius: 12 }} />
-      <Text style={{color:'black'}}>{friendInfo.name}</Text>
-    </View>
-  ))
-)}
 
-                    </View>
+                    <View style={{ flexDirection: 'row', marginVertical: 3 }}>
+  {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 0 && (
+    item.matchingFriendsInfo.slice(0, 1).map((friendInfo, index) => (
+      <View key={index} style={{ flexDirection: 'row' }}>
+        <Image source={{ uri: friendInfo.avatar }} style={{ width: 25, height: 25, borderRadius: 12 }} />
+        <Text style={{ color: 'black',fontSize:13 }}>{friendInfo.name}</Text>
+      </View>
+    ))
+  )}
+  {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 1 && (
+    <Text style={{ color: 'black',fontSize:13 }}> và {item.matchingFriendsInfo.length - 1} bạn khác...</Text>
+  )}
+</View>
+
                   </View>
                 </View>
                 <TouchableOpacity style={styles.imgOption} onPress={() => handleFriendAction(item._id)}>
