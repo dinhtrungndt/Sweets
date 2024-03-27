@@ -100,7 +100,7 @@ const AllFriend = () => {
         <Text style={styles.title}> Có {friendsDetails.length} người bạn</Text>
         <Text style={styles.title}>Sắp xếp</Text>
       </View>
-      <View style={{ height: 400,paddingBottom:70 }}> 
+      <View style={{ height: 400,paddingBottom:120 }}> 
         <FlatList
           data={filteredFriends}
           renderItem={({ item }) => (

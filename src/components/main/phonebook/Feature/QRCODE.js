@@ -80,7 +80,7 @@ const QRCODE = (props) => {
   return (
     <View>
       <View style={styles.wrapContent1}>
-        <TouchableOpacity style={styles.friendItem}  onPress={() => navigation.navigate('LoiMoiKetBan')}>
+        <TouchableOpacity style={styles.friendItem}  onPress={() => navigation.navigate('PhoneBookScreen')}>
           <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
         </TouchableOpacity>
         <Text style={styles.txtContent1}>Lời mời đã gửi</Text>
