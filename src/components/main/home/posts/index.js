@@ -2,6 +2,7 @@
 import {
   FlatList,
   Image,
+  Linking,
   Modal,
   Text,
   TouchableOpacity,
@@ -29,6 +30,8 @@ import {
 } from '../../../../services/home/homeService';
 import ModalEditPostsAccount from './editPosts/account';
 import ModalEditPostsGuest from './editPosts/guest';
+import Share from 'react-native-share';
+import {useLinkTo} from '@react-navigation/native';
 
 const PostsScreen = ({posts, navigation, handleLike}) => {
   const [showMore, setShowMore] = useState(false);
@@ -40,6 +43,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [editPostsItemAccount, setEditPostsItemAccount] = useState(null);
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
+  const [shareItems, setShareItems] = useState(null);
   const [post, setPost] = useState(posts);
 
   const isUserReacted = (reactions, userId) => {
@@ -205,6 +209,40 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
       console.log('>>>. Lỗi delete Posts', error);
     }
   };
+
+  console.log(
+    '>>>>>>>> post post',
+    post.map(item => item.content),
+  );
+
+  Linking.addEventListener('url', event => {
+    const {path} = event;
+    if (path.startsWith('/post/')) {
+      const postId = path.split('/').pop();
+    }
+  });
+
+  const createDeepLinkForPost = postId => {
+    return `https://sweets-eight.vercel.app/posts/${postId}`;
+  };
+
+  const sharePostWithDeepLink = item => {
+    const postId = item._id;
+    const deepLink = createDeepLinkForPost(postId);
+    const message = `${deepLink}`;
+    Share.open({
+      message: message,
+    })
+      .then(() => console.log('Chia sẻ thành công'))
+      .catch(error => console.log('Lỗi khi chia sẻ:', error));
+  };
+
+  Linking.addEventListener('url', event => {
+    const {path} = event;
+    if (path.startsWith('/post/')) {
+      const postId = path.split('/').pop();
+    }
+  });
 
   useEffect(() => {
     handleReaction.current = {
@@ -545,7 +583,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                 <Text style={styles.text_like_post}>Bình luận</Text>
               </TouchableOpacity>
               {/* share */}
-              <TouchableOpacity style={styles.like_post}>
+              <TouchableOpacity
+                style={styles.like_post}
+                onPress={() => sharePostWithDeepLink(item)}>
                 <MaterialCommunityIcons
                   name="share-outline"
                   size={23}
