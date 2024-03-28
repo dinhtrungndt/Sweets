@@ -19,6 +19,7 @@ const data = [
   { id: '2', title: require('../../../assets/add-friend-receive3.png'), name: 'Lời mời \n đã nhận' },
   { id: '3', title: require('../../../assets/add-friend-sent2.png'), name: 'Lời mời \n đã gửi' },
   { id: '4', title: require('../../../assets/cluold2.png'), name: 'Thời tiết \n hôm nay' },
+  { id: '5', title: require('../../../assets/qr-scan.png'), name: 'Quét mã \n qrcode' },
 ];
 const PhoneBookScreen = props => {
   const { navigation } = props;
@@ -35,6 +36,8 @@ const PhoneBookScreen = props => {
             navigation.navigate('LoiMoiKetBan');
           } if (item.id === '4') {
             navigation.navigate('ThoiTiet');
+          }if (item.id === '5') {
+            navigation.navigate('QuetQR');
           }
           else {
 

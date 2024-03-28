@@ -43,7 +43,7 @@ const OtherFriend = (props) => {
             const matchingFriendsInfo = await Promise.all(matchingFriends.map(async (friendId) => {
               try {
                 const friendInfoResponse = await AxiosInstance().get(`/users/get-user/${friendId}`);
-                console.log('friendInfoResponse', friendInfoResponse.user)
+               // console.log('friendInfoResponse', friendInfoResponse.user)
                 const { avatar, name } = friendInfoResponse.user;
                 return { avatar, name }; // Trả về thông tin của bạn bè chung
               } catch (error) {
@@ -53,7 +53,7 @@ const OtherFriend = (props) => {
             }));
             // Gán matchingFriendsInfo vào item
             item.matchingFriendsInfo = matchingFriendsInfo;
-            console.log('Thông tin bạn chunggggg:', matchingFriendsInfo);
+           // console.log('Thông tin bạn chunggggg:', matchingFriendsInfo);
           } catch (error) {
             console.error('Lỗi khi xem danh sách bạn bè:', error);
           }
