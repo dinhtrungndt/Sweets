@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {styles} from '../../styles/selectFeeingStory';
 
 // library
@@ -26,11 +26,19 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ImagePicker, {launchCamera} from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import LabelPickStory from './label';
-import {uploadImageStatus} from '../../../../../../services/home/homeService';
+import {
+  uploadImageStatus,
+  uploadMedia,
+  uploadPost,
+} from '../../../../../../services/home/homeService';
 import MusicScreen from './music';
 import {Overlay} from 'react-native-elements';
 import SettingStoryObjects from '../../../../../../utils/settingStoryObjects';
 import UpImageStory from './upImage';
+import Toast from 'react-native-toast-message';
+import {UserContext} from '../../../../../../contexts/user/userContext';
+import {CommonActions} from '@react-navigation/native';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const SelectFeeingStory = ({cancel, navigation}) => {
   const [selectedImages, setSelectedImages] = useState([]);
@@ -40,11 +48,13 @@ const SelectFeeingStory = ({cancel, navigation}) => {
   const [openModelLabel, setOpenModelLabel] = useState(false);
   const [openModelMusic, setOpenModelMusic] = useState(false);
   const [openModelBoom, setOpenModelBoom] = useState(false);
-  const [openCameraP, setOpenCameraP] = useState([]);
-  const [cameraImage, setCameraImage] = useState(null);
-  const [getImage, setGetImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedImageURI, setSelectedImageURI] = useState(null);
+  const [_idPosts, setIdPosts] = useState(null);
+  const [upload, setUpload] = useState(false);
+  const {user} = useContext(UserContext);
+  const [imagePath, setImagePath] = useState(null);
+  const [image, setImage] = useState([]);
 
   const handleCloseBoom = () => {
     setOpenModelBoom(false);
@@ -65,31 +75,14 @@ const SelectFeeingStory = ({cancel, navigation}) => {
       console.log('Error loading images:', error);
     }
   };
-  console.log('>>>>>>>> selectedImages', selectedImages);
+  console.log('>>>>>>>> imagePath', imagePath);
 
   const handleImagePress = index => {
     setSelectedImageIndex(index);
+    setSelectedImageURI(selectedImages[index].uri);
+    // sau khi lấy vị trí và link file:// thì upload lên cloudinary
     setModalVisible(true);
   };
-
-  const uploadImageToCloudinary = useCallback(async response => {
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append('imageStatus', {
-        uri: selectedImageURI,
-        type: 'image/jpeg',
-        name: 'image.jpg',
-      });
-      const data = await uploadImageStatus(formData);
-      console.log('>>>>>>> Data:', data.urls);
-      setGetImage(data.urls);
-      setLoading(false);
-    } catch (error) {
-      console.log('Lỗi uploading image:', error);
-      setLoading(false);
-    }
-  });
 
   const takePhoto = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
@@ -101,17 +94,28 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         type: asset.type,
         name: asset.fileName,
       }));
-      setOpenCameraP(selectedImages);
+      setImage(selectedImages);
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
-        formData.append('imageStatus', image);
+        formData.append('media', image);
       });
 
       const data = await uploadImageStatus(formData);
-      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
-      setCameraImage(data.urls);
-      console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
+      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+
+      const mediaArray = data.urls.map(url => {
+        const type =
+          url.endsWith('.jpg') || url.endsWith('.jpeg') || url.endsWith('.png')
+            ? 'image'
+            : url.endsWith('.mp4')
+            ? 'video'
+            : 'unknown';
+        return {url: url, type: type};
+      });
+
+      setImagePath(mediaArray.map(item => item.url));
+      handleUploadMedia(selectedImages);
     }
   }, []);
 
@@ -122,6 +126,128 @@ const SelectFeeingStory = ({cancel, navigation}) => {
       saveToPhotos: true,
     };
     await launchCamera(options, takePhoto);
+  }, []);
+
+  const handleUploadMedia = useCallback(async selectedImageURI => {
+    try {
+      if (!_idPosts || !selectedImageURI) {
+        return;
+      }
+
+      const media = {
+        url: selectedImageURI,
+        type:
+          selectedImageURI.endsWith('.jpg') ||
+          selectedImageURI.endsWith('.jpeg') ||
+          selectedImageURI.endsWith('.png')
+            ? 'image'
+            : selectedImageURI.endsWith('.mp4')
+            ? 'video'
+            : 'unknown',
+      };
+
+      const response = await uploadMedia(_idPosts, media);
+      console.log('>>>>>>> response -> handleUploadMedia', response);
+    } catch (error) {
+      console.log('>>>>>>> Lỗi ở HandleUploadMedia nè', error);
+    }
+  });
+
+  const handlePostUpload = async selectedImageURI => {
+    try {
+      if (!selectedImageURI) {
+        return Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Bạn chưa chọn ảnh',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 40,
+        });
+      }
+      console.log('_idPosts  handlePostUpload _idPosts:', _idPosts);
+
+      // Cập nhật handleUploadMedia để nhận selectedImageURI
+      await Promise.all([
+        handleUploadPost(_idPosts),
+        handleUploadMedia(selectedImageURI),
+      ]);
+
+      if (!upload) {
+        navigation.navigate('HomeScreen');
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Up tin thành công',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 40,
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Up tin thất bại',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 40,
+        });
+      }
+    } catch (error) {
+      console.error('Lỗi khi đăng bài:', error);
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Có lỗi xảy ra khi đăng bài',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+    }
+  };
+  console.log('_idPosts  out _idPosts:', _idPosts);
+
+  const handleUploadPost = useCallback(
+    async _idPosts => {
+      if (!user) {
+        return;
+      }
+
+      try {
+        const postDetails = {
+          _id: _idPosts,
+          content: 'upload',
+          createAt: new Date().toISOString(),
+          idObject: '65b1fe6dab07bc8ddd7de469',
+          idTypePosts: '65b20035261511b0721a9916',
+        };
+
+        const response = await uploadPost(user.user._id, postDetails);
+        setUpload(response);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{name: 'HomeStackScreen'}],
+          }),
+        );
+        console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+      } catch (error) {
+        console.error('Lỗi catch --->>>>> error storry :', error);
+      }
+    },
+    [user],
+  );
+
+  useEffect(() => {
+    const dateString = Date.now();
+    const randomSuffix = Math.floor(Math.random() * 10000000);
+    const dateNumber = new Date(dateString);
+    const _idPosts = dateNumber.getTime().toString() + randomSuffix.toString();
+    setIdPosts(_idPosts);
   }, []);
 
   const requestCameraPermission = async () => {
@@ -145,6 +271,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
     }
   };
 
+  console.log('>>>>>selectedImageURI', selectedImageURI);
   useEffect(() => {
     requestCameraPermission();
   }, []);
@@ -287,11 +414,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
             onPress={() => setModalVisible(false)}>
             <Ionicons name={'chevron-back'} color={'#fff'} size={30} />
           </TouchableOpacity>
-          <Image
-            source={selectedImages[selectedImageIndex]}
-            style={styles.modalImage}
-          />
-
+          <Image source={{uri: selectedImageURI}} style={styles.modalImage} />
           <View style={styles.seetingInUp}>
             <View style={styles.seetingInUp_two}>
               <TouchableOpacity
@@ -311,7 +434,9 @@ const SelectFeeingStory = ({cancel, navigation}) => {
                 </Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.btnShare}>
+            <TouchableOpacity
+              style={styles.btnShare}
+              onPress={() => handlePostUpload(selectedImageURI)}>
               <Text style={styles.btnShareText}>Chia sẻ</Text>
             </TouchableOpacity>
           </View>

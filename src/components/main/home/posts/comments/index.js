@@ -417,7 +417,7 @@ const CommentsScreen = ({navigation, route}) => {
                       <View key={media._id}>
                         {media.type === 'image' ? (
                           <Image
-                            source={{uri: media.url}}
+                            source={{uri: media.url.join()}}
                             style={styles.posts}
                           />
                         ) : (
@@ -425,7 +425,7 @@ const CommentsScreen = ({navigation, route}) => {
                             video={{uri: media.url}}
                             videoWidth={1600}
                             videoHeight={900}
-                            thumbnail={{uri: media.url}}
+                            thumbnail={{uri: media.url.join()}}
                             // autoplay={true}
                             style={styles.posts}
                           />

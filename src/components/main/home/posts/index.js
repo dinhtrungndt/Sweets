@@ -210,11 +210,6 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
     }
   };
 
-  console.log(
-    '>>>>>>>> post post',
-    post.map(item => item.content),
-  );
-
   Linking.addEventListener('url', event => {
     const {path} = event;
     if (path.startsWith('/post/')) {

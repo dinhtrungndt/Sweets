@@ -131,8 +131,8 @@ const ModalEditPostsAccount = ({
         <DialogDeletePosts.Description>
           Sau khi xóa bài viết này bạn không thể khôi phục.
         </DialogDeletePosts.Description>
-        <DialogDeletePosts.Button label="Cancel" onPress={handleCancel} />
-        <DialogDeletePosts.Button label="Delete" onPress={handleDelete} />
+        <DialogDeletePosts.Button label="Hủy" onPress={handleCancel} />
+        <DialogDeletePosts.Button label="Chấp nhận" onPress={handleDelete} />
       </DialogDeletePosts.Container>
 
       <Modal
