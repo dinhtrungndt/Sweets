@@ -25,6 +25,8 @@ const OtherUserA = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null); // State để lưu thông tin người dùng
 
+  console.log(">>>>>>>>> accountttt", account)
+
   return (
     <View style={styles.body}>
       <View style={styles.profileFrame}>

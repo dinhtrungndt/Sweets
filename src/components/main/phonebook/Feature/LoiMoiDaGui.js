@@ -5,7 +5,7 @@ import AxiosInstance from '../../../../helper/Axiosinstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const QRCODE = (props) => {
+const LoiMoiDaGui = (props) => {
   const { navigation } = props;
   const [friendInvitations, setFriendInvitations] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
@@ -80,7 +80,7 @@ const QRCODE = (props) => {
   return (
     <View>
       <View style={styles.wrapContent1}>
-        <TouchableOpacity style={styles.friendItem}  onPress={() => navigation.navigate('PhoneBookScreen')}>
+        <TouchableOpacity style={styles.friendItem}  onPress={() => navigation.navigate('LoiMoiKetBan')}>
           <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
         </TouchableOpacity>
         <Text style={styles.txtContent1}>Lời mời đã gửi</Text>
@@ -99,4 +99,4 @@ const QRCODE = (props) => {
   );
 };
 
-export default QRCODE;
+export default LoiMoiDaGui;

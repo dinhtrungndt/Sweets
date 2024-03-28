@@ -36,6 +36,8 @@ const styles = StyleSheet.create({
       txtContent1: {
         fontSize: 19,
         fontWeight: 'bold',
+        
+        marginRight:116
        
       },
       txtContent2: {
@@ -64,31 +66,17 @@ const styles = StyleSheet.create({
 
       imgOption:{
         borderWidth:0.7,
-        width:120,height:33,
+        width:200,height:38,
         borderRadius:10,
         borderColor:'#22b6c0',
+        marginHorizontal:10,
+        marginVertical:3
       },
       txtXoas:{
         fontWeight:'bold',
         color:'#22b6c0',
         alignSelf:'center',
        marginVertical:5
-      },
-      txtXoas2:{
-        fontWeight:'bold',
-        color:'white',
-        alignSelf:'center',
-       marginVertical:5,
-      
-      },
-      imgOption2:{
-        borderWidth:0.7,
-        width:120,height:33,
-        borderRadius:10,
-        backgroundColor:'#22b6c0',
-        marginHorizontal:15,
-        borderColor:'#22b6c0'
-        
-      },
+      }
 })
 export default styles
