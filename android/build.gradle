@@ -41,6 +41,5 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:$androidGradlePluginVersion")
         classpath("com.facebook.react:react-native-gradle-plugin:$reactNativeGradlePluginVersion")
-        classpath("com.google.gms:google-services:4.4.1")
     }
 }
