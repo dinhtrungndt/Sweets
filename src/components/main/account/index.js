@@ -1,17 +1,24 @@
 /* eslint-disable prettier/prettier */
-import { StyleSheet, Text, View, Pressable, Image, TouchableOpacity, Modal } from 'react-native';
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Image,
+  TouchableOpacity,
+  Modal,
+} from 'react-native';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserContext } from '../../../contexts/user/userContext';
+import {UserContext} from '../../../contexts/user/userContext';
 import BottomSheet from '@gorhom/bottom-sheet';
 
-import { styles } from './style/accountScreen';
-
+import {styles} from './style/accountScreen';
 const AccountScreen = props => {
-  const { navigation } = props;
+  const {navigation} = props;
 
-  const { user } = useContext(UserContext);
-  const { onLogout } = useContext(UserContext);
+  const {user} = useContext(UserContext);
+  const {onLogout} = useContext(UserContext);
   // console.log(">>>>>>>>> test user", user);
 
   const [loading, setLoading] = useState(false);
@@ -27,7 +34,7 @@ const AccountScreen = props => {
     }
     // Hiển thị hộp thoại xác nhận
     setShowConfirmLogout(true);
-  }
+  };
 
   const confirmLogout = async () => {
     setLoading(true);
@@ -44,7 +51,7 @@ const AccountScreen = props => {
         console.log('Lỗi khi đăng xuất:', error);
       }
     }
-  }
+  };
 
   return (
     <View style={styles.body}>
@@ -53,58 +60,104 @@ const AccountScreen = props => {
         <TouchableOpacity
           onPress={() => navigation.navigate('SettingsAndPrivacy')}
           style={styles.container}>
-          <Image style={styles.imgMenu} source={require('../../../assets/icon_settings_50.png')} />
+          <Image
+            style={styles.imgMenu}
+            source={require('../../../assets/icon_settings_50.png')}
+          />
         </TouchableOpacity>
       </View>
       <TouchableOpacity
         onPress={() => navigation.navigate('Profile')}
         style={styles.container1}>
-        <Image style={styles.imgAvatar} source={user && user.user.avatar ? { uri: user.user.avatar } : require('../../../assets/diana.jpg')} />
+        <Image
+          style={styles.imgAvatar}
+          source={
+            user && user.user.avatar
+              ? {uri: user.user.avatar}
+              : require('../../../assets/diana.jpg')
+          }
+        />
         <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
         <TouchableOpacity
           onPress={() => navigation.navigate('Account_Transfer')}
           style={styles.container2}>
-          <Image style={styles.userIcon} source={require('../../../assets/icon_back.png')} />
+          <Image
+            style={styles.userIcon}
+            source={require('../../../assets/icon_back.png')}
+          />
         </TouchableOpacity>
       </TouchableOpacity>
       <View style={styles.bodyBtnIcon}>
         <TouchableOpacity style={styles.btnIcon}>
-          <Image style={styles.imgIconMmr} source={require('../../../assets/icon_memories.png')} />
+          <Image
+            style={styles.imgIconMmr}
+            source={require('../../../assets/icon_memories.png')}
+          />
           <Text style={styles.text0}>Kỷ niệm</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_image.png')} />
+          <Image
+            style={styles.imgIcon}
+            source={require('../../../assets/icon_image.png')}
+          />
           <Text style={styles.text0}>Đã lưu</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_group.jpg')} />
+          <Image
+            style={styles.imgIcon}
+            source={require('../../../assets/icon_group.jpg')}
+          />
           <Text style={styles.text0}>Nhóm</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_video.png')} />
+          <Image
+            style={styles.imgIcon}
+            source={require('../../../assets/icon_video.png')}
+          />
           <Text style={styles.text0}>Video</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_heart_48.png')} />
+          <Image
+            style={styles.imgIcon}
+            source={require('../../../assets/icon_heart_48.png')}
+          />
           <Text style={styles.text0}>Hẹn hò</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnIcon}>
-          <Image style={styles.imgIcon} source={require('../../../assets/icon_friend_add.png')} />
+          <Image
+            style={styles.imgIcon}
+            source={require('../../../assets/icon_friend_add.png')}
+          />
           <Text style={styles.text0}>Bạn bè</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.setting}>
-        <TouchableOpacity onPress={() => navigation.navigate('HelpAndSupport')} style={styles.btnHelp} >
-          <Image style={styles.imgSettings} source={require('../../../assets/icon_help.png')} />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('HelpAndSupport')}
+          style={styles.btnHelp}>
+          <Image
+            style={styles.imgSettings}
+            source={require('../../../assets/icon_help.png')}
+          />
           <Text style={styles.textbtn1}>Trợ giúp & hỗ trợ</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('SettingsAndPrivacy')} style={styles.btnPrivacy}>
-          <Image style={styles.imgSettings} source={require('../../../assets/icon_setting.png')} />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SettingsAndPrivacy')}
+          style={styles.btnPrivacy}>
+          <Image
+            style={styles.imgSettings}
+            source={require('../../../assets/icon_setting.png')}
+          />
           <Text style={styles.textbtn1}>Cài đặt & quyền riêng tư</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AccountAndSecurity')} style={styles.btnSecurity}>
-          <Image style={styles.imgSettings} source={require('../../../assets/icon_security.png')} />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AccountAndSecurity')}
+          style={styles.btnSecurity}>
+          <Image
+            style={styles.imgSettings}
+            source={require('../../../assets/icon_security.png')}
+          />
           <Text style={styles.textbtn1}>Tài khoản & bảo mật</Text>
         </TouchableOpacity>
 
@@ -115,12 +168,18 @@ const AccountScreen = props => {
       {/* Hiển thị hộp thoại xác nhận */}
       {showConfirmLogout && (
         <View style={styles.confirmLogoutContainer}>
-          <Text style={styles.confirmLogoutText}>Đăng xuất khỏi tài khoản của bạn?</Text>
+          <Text style={styles.confirmLogoutText}>
+            Đăng xuất khỏi tài khoản của bạn?
+          </Text>
           <View style={styles.confirmLogoutButtons}>
-            <TouchableOpacity style={styles.confirmLogoutButton} onPress={() => setShowConfirmLogout(false)}>
+            <TouchableOpacity
+              style={styles.confirmLogoutButton}
+              onPress={() => setShowConfirmLogout(false)}>
               <Text style={styles.confirmLogoutButtonText}>Hủy</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.confirmLogoutButton} onPress={confirmLogout}>
+            <TouchableOpacity
+              style={styles.confirmLogoutButton}
+              onPress={confirmLogout}>
               <Text style={styles.confirmLogoutButtonText}>Đồng ý</Text>
             </TouchableOpacity>
           </View>
@@ -131,4 +190,3 @@ const AccountScreen = props => {
 };
 
 export default AccountScreen;
-
