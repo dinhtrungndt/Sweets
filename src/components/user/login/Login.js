@@ -15,22 +15,25 @@ import { login } from '../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Style';
 import { UserContext } from '../../../contexts/user/userContext';
-
+import { onUserLogin } from '../../call/HomeTest';
+import { getUser } from '../../../services/user/userService';
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { onLogin } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-
+  const {user} = useContext(UserContext);
   const handleLogin = async () => {
     setLoading(true);
     const response = await onLogin(email, password);
     if (response) {
       setLoading(false);
+      console.log("kiểm tra user",user);
       navigation.reset({
         index: 0,
         routes: [{ name: 'Home' }],
       });
+      // await onUserLogin();
       ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT);
       await AsyncStorage.setItem('userEmail', email);
       await AsyncStorage.setItem('userPassword', password);
