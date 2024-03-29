@@ -80,8 +80,9 @@ const HomeScreen = props => {
   };
 
   const onRefresh = useCallback(async () => {
+    setIsLoading(true);
     await onGetPosts();
-    setRefreshing(false);
+    setIsLoading(false);
   }, []);
 
   const handleLike = async idPosts => {
@@ -106,6 +107,8 @@ const HomeScreen = props => {
           }
           return post;
         });
+        console.log('postsposts:', updatedPosts);
+
         setPosts(updatedPosts);
       } else {
         console.error('Lỗi khi thay đổi trạng thái like:', response.message);
@@ -134,7 +137,7 @@ const HomeScreen = props => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <HeaderScreen />
+        <HeaderScreen onRefresh={onRefresh} />
         <StoryScreen story={filteredStore} navigation={navigation} />
         <PostsScreen
           posts={filteredPosts}
