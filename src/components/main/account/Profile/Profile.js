@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import { UserContext } from '../../../../contexts/user/userContext';
+import AxiosInstance from '../../../../helper/Axiosinstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { updateAvatar, updateCover } from '../../../../services/user/userService';
 // style
@@ -35,8 +36,10 @@ const Profile = props => {
   const [imageCoverPath, setImageCoverPath] = useState(null);
   const [modalVisibleCover, setModalVisibleCover] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [friendsCount, setFriendsCount] = useState(0);
 
   const { user, setUser } = useContext(UserContext);
+  // console.log('user', user);
 
   const takePhotoAvatar = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
@@ -56,9 +59,7 @@ const Profile = props => {
       });
 
       const data = await uploadImageStatus(formData);
-      // console.log('5955 995959 >>>>>>>>>> Data 59 data', data);
       setImageAvatarPath(data.urls);
-      // console.log('6226262626 >>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 
@@ -125,7 +126,7 @@ const Profile = props => {
       multiple: true,
     };
     await launchImageLibrary(options, takePhotoCover);
-    setModalVisibleAvatar(false);
+    setModalVisibleCover(false);
   }, []);
 
   const handleAvatarUpdate = useCallback(async () => {
@@ -161,6 +162,40 @@ const Profile = props => {
   useEffect(() => {
     handleCoverUpdate();
   }, [handleCoverUpdate]);
+
+  useEffect(() => {
+    const fetchFriendsCount = async () => {
+      try {
+        const axiosInstance = AxiosInstance(); // Tạo một instance của Axios
+        // Lấy userId từ AsyncStorage
+        const userId = await AsyncStorage.getItem('userId');
+        // Kiểm tra xem userId có tồn tại không
+        if (userId) {
+          const response = await axiosInstance.get(`/friend/friends/${userId}`);
+          const { friendsList } = response;
+          // Tạo một mảng chứa số lượng bạn bè
+          const friendsCountPromises = friendsList.map(async (friendId) => {
+            try {
+              const friendCountResponse = await axiosInstance.get(`/users/get-user/${friendId}`);
+              return friendCountResponse.user; // Lấy thông tin user từ response
+            } catch (error) {
+              console.error(`Lỗi khi lấy số lượng của bạn bè có id: ${friendId}`, error);
+              return null; // Trả về null nếu có lỗi để xử lý sau
+            }
+          });
+          // Lấy số lượng tất cả bạn bè của người dùng
+          const friendsCount = await Promise.all(friendsCountPromises);
+          // Lọc bỏ các giá trị null (nếu có) và lưu số lượng bạn bè vào state
+          setFriendsCount(friendsCount.filter(friend => friend !== null));
+        } else {
+          console.log('Không tìm thấy userId trong AsyncStorage');
+        }
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách bạn bè:', error);
+      }
+    };
+    fetchFriendsCount();
+  }, []);
 
   return (
     <View style={styles.body}>
@@ -200,6 +235,10 @@ const Profile = props => {
           ))}
         </TouchableOpacity>
         <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
+        <View style={styles.containerFriends}>
+          <Text style={styles.txtFriendsNumber}>{friendsCount.length}</Text>
+          <Text style={styles.txtFriends}>bạn bè</Text>
+        </View>
         <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.btnIntroduce}>
           <Text style={styles.textIntroduce}>Cập nhật giới thiệu bản thân</Text>
         </TouchableOpacity>
@@ -337,10 +376,10 @@ const Profile = props => {
             elevation: 0,
             marginTop: 12,
           },
-          tabBarActiveTintColor: '#000',
-          tabBarInactiveTintColor: '#999',
+          tabBarActiveTintColor: '#22b6c0',
+          tabBarInactiveTintColor: '#bdc3c7',
           tabBarIndicatorStyle: {
-            backgroundColor: '#000000',
+            backgroundColor: '#22b6c0',
           },
           tabBarPressColor: 'rgba(0,0,0,0.1)',
         }}>

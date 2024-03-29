@@ -37,7 +37,7 @@ export const login = async (email, password) => {
       password: password,
     };
     const response = await AxiosInstance().post('/users/post-login', body);
-   
+
     return response;
   } catch (error) {
     console.log('register: ', error);
@@ -45,7 +45,7 @@ export const login = async (email, password) => {
   }
 };
 
-export const GetListUser = async (_id) => {
+export const GetListUser = async _id => {
   try {
     const res = await AxiosInstance().get(`/message/listchat/${_id}`);
 
@@ -69,12 +69,74 @@ export const updateStatus = async (_id, status) => {
   }
 };
 
-export const getUser = async (_id) => {
+export const getUser = async _id => {
   try {
     const res = await AxiosInstance().get(`/users/get-user/${_id}`);
     return res;
   } catch (error) {
     console.log('getUser error', error);
     return error;
+  }
+};
+
+export const updateAvatar = async (id, data) => {
+  const response = await AxiosInstance().put(
+    `/users/update-avatar/${id}`,
+    data,
+  );
+  console.log('response:', response);
+  return response.data;
+};
+
+export const updateCover = async (id, data) => {
+  const response = await AxiosInstance().put(
+    `/users/update-avatar/${id}`,
+    data,
+  );
+  console.log('response:', response);
+  return response.data;
+};
+
+export const updateProfile = async (_id, name, gender, date) => {
+  try {
+    const response = await AxiosInstance().post('/users/update-thongtin', {
+      _id: _id,
+      name: name,
+      gender: gender,
+      date: date,
+    });
+    return response;
+  } catch (error) {
+    console.log('updateProfile err: ', error);
+    return error;
+  }
+};
+
+export const changePassword = async (_id, password, newPassword) => {
+  try {
+    const body = {
+      _id: _id,
+      password: password,
+      newPassword: newPassword,
+    };
+    const res = await AxiosInstance().post('/users/post-update-password', body);
+    return res;
+  } catch (error) {
+    console.log('changePassword error', error);
+    return error;
+  }
+};
+
+// lấy danh sách bài viết theo id người dùng
+export const getPostByUserId = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/posts/get-detail-users/${idUsers}`,
+    );
+    // console.log('getPostByUserId response:', response.userPosts);
+    return response.userPosts;
+  } catch (error) {
+    console.error('getPostByUserId error:', error);
+    throw error;
   }
 };
