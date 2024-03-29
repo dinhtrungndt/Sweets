@@ -512,6 +512,10 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                 onLongPress={() =>
                   handleReaction.current.handleLongPress(item._id)
                 }>
+                {console.log(
+                  '>>>>>>>>>>>. item.isUserReacted',
+                  isUserReacted(item.reaction, user.user._id),
+                )}
                 {isUserReacted(item.reaction, user.user._id) ? (
                   <>
                     {item.reaction
