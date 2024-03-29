@@ -17,6 +17,8 @@ import SelectFeeingStory from '../../../components/main/home/uploads/story/selec
 import SettingStoryObjects from '../../../utils/settingStoryObjects';
 import OtherUserA from '../../../components/main/account/OtherUserAccounts/OtherUserA';
 import Profile from '../../../components/main/account/Profile/Profile';
+import ScanQRLogin from '../../../components/main/phonebook/Feature/ScanQRLogin';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +44,7 @@ export function HomeStackScreen() {
       />
       <Stack.Screen name="OtherUserA" component={OtherUserA} />
       <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} />
     </Stack.Navigator>
   );
 }

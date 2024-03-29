@@ -4,7 +4,7 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../../../contexts/user/userContext';
 import BottomSheet from '@gorhom/bottom-sheet';
-
+import ScanQRLogin from '../phonebook/Feature/ScanQRLogin';
 import { styles } from './style/accountScreen';
 
 const AccountScreen = props => {
@@ -80,11 +80,16 @@ const AccountScreen = props => {
           <Image style={styles.imgIcon} source={require('../../../assets/icon_group.jpg')} />
           <Text style={styles.text0}>Nhóm</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnIcon}>
+        <TouchableOpacity 
+        style={styles.btnIcon}
+        onPress={() => {console.log(">>>>>>>>> video call")}}
+        >
           <Image style={styles.imgIcon} source={require('../../../assets/icon_video.png')} />
           <Text style={styles.text0}>Video</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnIcon}>
+        <TouchableOpacity style={styles.btnIcon}
+        onPress={()=>{navigation.navigate('ScanQRLogin')}}
+        >
           <Image style={styles.imgIcon} source={require('../../../assets/icon_heart_48.png')} />
           <Text style={styles.text0}>Hẹn hò</Text>
         </TouchableOpacity>
