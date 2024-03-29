@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import {View, Alert, StyleSheet, Button, Text} from 'react-native';
 import {Camera} from 'react-native-camera-kit';
 import {UserContext} from '../../../../contexts/user/userContext';
+import { CreateDevice } from '../../../../services/QRCode/QRCodeService';
 const ScanQRLogin = () => {
   const {user} = useContext(UserContext);
   const [scanning, setScanning] = useState(true); // Trạng thái của việc quét
@@ -14,7 +15,6 @@ const ScanQRLogin = () => {
   const handleBarcodeScan = event => {
     // Alert.alert('QR code found', event.nativeEvent.codeStringValue);
     // Lưu thông tin mã QR vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn
-
     socket.current.emit('LoginByQRCode', {userId: user.user._id});
 
     // Dừng quét
