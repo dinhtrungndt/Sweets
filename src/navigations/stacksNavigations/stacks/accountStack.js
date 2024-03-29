@@ -13,7 +13,7 @@ import EditProfile from '../../../components/main/account/EditProfile/EditProfil
 import AccountAndSecurity from '../../../components/main/account/PIM/AccountAndSecurity';
 import SettingsAndPrivacy from '../../../components/main/account/PIM/SettingsAndPrivacy';
 import HelpAndSupport from '../../../components/main/account/PIM/HelpAndSupport';
-import OtherUserA from '../../../components/main/account/OtherUserAccounts/OtherUserA';
+import ChangePassword from '../../../components/main/account/PIM/ChangePassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,7 +31,7 @@ export function AccountStackScreen() {
       <Stack.Screen name="AccountAndSecurity" component={AccountAndSecurity} />
       <Stack.Screen name="SettingsAndPrivacy" component={SettingsAndPrivacy} />
       <Stack.Screen name="HelpAndSupport" component={HelpAndSupport} />
-      <Stack.Screen name="OtherUserA" component={OtherUserA} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
     </Stack.Navigator>
   );
 }
