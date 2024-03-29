@@ -570,7 +570,6 @@ const CommentsScreen = ({navigation, route}) => {
                     )}
                     {item.reaction.length > 0 && (
                       <>
-                                }
                         {item.reaction.map(item => item.idUsers._id).join() ===
                         user.user._id ? (
                           <Text style={styles.text_peopleLike}>Bạn</Text>
