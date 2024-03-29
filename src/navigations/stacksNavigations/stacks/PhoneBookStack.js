@@ -16,6 +16,7 @@ import Profile from '../../../components/main/account/Profile/Profile';
 import SinhNhat from '../../../components/main/phonebook/Feature/SinhNhat';
 import LoiMoiDaGui from '../../../components/main/phonebook/Feature/LoiMoiDaGui';
 import QuetQR from '../../../components/main/phonebook/Feature/QuetQR';
+import ScanQR from '../../../components/main/phonebook/Feature/ScanQR';
 const Stack = createNativeStackNavigator();
 
 export function PhoneBookStack() {
@@ -37,6 +38,10 @@ export function PhoneBookStack() {
        <Stack.Screen
         name="LoiMoiDaGui"
         component={LoiMoiDaGui}
+      />
+        <Stack.Screen
+        name="ScanQR"
+        component={ScanQR}
       />
        <Stack.Screen
         name="QuetQR"

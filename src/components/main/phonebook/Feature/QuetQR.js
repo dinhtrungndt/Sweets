@@ -91,7 +91,7 @@ const QuetQR = (props) => {
           <Text style={styles.txtToQR}>Lưu mã QR của tôi</Text>
         </TouchableOpacity>
 
-    <TouchableOpacity style={styles.ToQR}>
+    <TouchableOpacity style={styles.ToQR} onPress={() => navigation.navigate('ScanQR')}>
     <Image source={require('../../../../assets/qr-scanb.png')}  /> 
         <Text style={styles.txtToQR}>Quét mã qr</Text>
     </TouchableOpacity>
