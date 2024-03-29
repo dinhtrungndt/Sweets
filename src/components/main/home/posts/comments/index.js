@@ -422,7 +422,7 @@ const CommentsScreen = ({navigation, route}) => {
                           />
                         ) : (
                           <VideoPlayer
-                            video={{uri: media.url}}
+                            video={{uri: media.url.join()}}
                             videoWidth={1600}
                             videoHeight={900}
                             thumbnail={{uri: media.url.join()}}
@@ -561,18 +561,55 @@ const CommentsScreen = ({navigation, route}) => {
                         </View>
                       ),
                     )}
+                    {console.log(
+                      '>>>. reaction: ' + JSON.stringify(item.reaction),
+                    )}
+                    {console.log(
+                      '>>>. reaction id usserr: ' +
+                        item.reaction.map(item => item.idUsers).join(),
+                    )}
                     {item.reaction.length > 0 && (
                       <>
-                        <Text style={styles.text_peopleLike}>
-                          {item.reaction.length > 1 && ' Bạn,'}
-                          {item.reaction.length > 2
-                            ? item.reaction.length - 2 + 'và những người khác'
-                            : item.reaction.map((item, index) => {
-                                if (item !== item._id) {
-                                  return ' ' + item.idUsers.name;
-                                }
-                              })}
-                        </Text>
+                        {item.reaction.map(item => item.idUsers._id).join() ===
+                        user.user._id ? (
+                          <Text style={styles.text_peopleLike}>Bạn</Text>
+                        ) : item.reaction
+                            .map(item => item.idUsers._id)
+                            .join() === user.user._id ||
+                          item.reaction.length > 2 ? (
+                          <Text style={styles.text_peopleLike}>
+                            Bạn,{' '}
+                            {item.reaction
+                              .filter(
+                                reaction =>
+                                  reaction.idUsers._id !== user.user._id &&
+                                  item.reaction.slice(0, 1),
+                              )
+                              .map(reaction => reaction.idUsers.name)
+                              .join(', ')}{' '}
+                            và những người khác
+                          </Text>
+                        ) : item.reaction
+                            .map(item => item.idUsers._id)
+                            .join() !== user.user._id ? (
+                          <Text style={styles.text_peopleLike}>
+                            {item.reaction
+                              .map(item => item.idUsers.name)
+                              .join(', ')}
+                          </Text>
+                        ) : item.reaction
+                            .map(item => item.idUsers._id)
+                            .join() !== user.user._id ||
+                          item.reaction.length > 2 ? (
+                          <Text style={styles.text_peopleLike}>
+                            {item.reaction
+                              .map(item => item.idUsers.name)
+                              .join()}{' '}
+                            và những người khác
+                          </Text>
+                        ) : (
+                          <Text>No</Text>
+                        )}
                       </>
                     )}
                   </TouchableOpacity>
