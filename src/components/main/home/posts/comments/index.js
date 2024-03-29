@@ -422,7 +422,7 @@ const CommentsScreen = ({navigation, route}) => {
                           />
                         ) : (
                           <VideoPlayer
-                            video={{uri: media.url}}
+                            video={{uri: media.url.join()}}
                             videoWidth={1600}
                             videoHeight={900}
                             thumbnail={{uri: media.url.join()}}
