@@ -26,7 +26,8 @@ const HomeNavigation = () => {
     <Tab.Navigator screenOptions={options}>
       <Tab.Screen
         name="HomeStackScreen"
-        component={HomeStackScreen}
+        // component={HomeStackScreen}
+        component={ChatScreenStack}
         options={({route}) => ({
           tabBarStyle: {display: GetRouteNameHome(route)},
           headerShown: false,
