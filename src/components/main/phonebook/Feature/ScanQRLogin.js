@@ -12,7 +12,7 @@ const ScanQRLogin = () => {
     socket.current = io('http://192.168.1.33:3001/');
   }, []);
   const handleBarcodeScan = event => {
-    // Alert.alert('QR code found', event.nativeEvent.codeStringValue);
+    Alert.alert('QR code found', event.nativeEvent.codeStringValue);
     // Lưu thông tin mã QR vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn
 
     socket.current.emit('LoginByQRCode', {userId: user.user._id});

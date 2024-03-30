@@ -28,7 +28,7 @@ export function HomeStackScreen() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      {/* <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen
         name="BottomSheetComponents"
         component={BottomSheetComponents}
@@ -43,7 +43,7 @@ export function HomeStackScreen() {
         component={SettingStoryObjects}
       />
       <Stack.Screen name="OtherUserA" component={OtherUserA} />
-      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Profile" component={Profile} /> */}
       <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} />
     </Stack.Navigator>
   );
