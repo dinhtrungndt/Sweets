@@ -25,6 +25,7 @@ import Toast from 'react-native-toast-message';
 import {CommonActions} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Geolocation from '@react-native-community/geolocation';
 
 export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
@@ -37,6 +38,8 @@ export function AddsScreen({route, navigation}) {
   const [upload, setUpload] = useState(false);
   const [_idPosts, setIdPosts] = useState(null);
   const selectedId = route.params?.selectedId;
+  const idObjectValue =
+    selectedId && selectedId._id ? selectedId._id : '65b1fe1be09b1e99f9e8a235';
 
   const idObject = () => [
     {
@@ -180,7 +183,7 @@ export function AddsScreen({route, navigation}) {
         Toast.show({
           type: 'success',
           position: 'top',
-          text1: 'Up tin thành công',
+          text1: 'Đăng bài viết thành công !',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -190,7 +193,7 @@ export function AddsScreen({route, navigation}) {
         Toast.show({
           type: 'error',
           position: 'top',
-          text1: 'Up tin thất bại',
+          text1: 'Đăng bài viết thất bại',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -243,6 +246,28 @@ export function AddsScreen({route, navigation}) {
       console.error('Lỗi catch --->>>>> error :', error);
     }
   }, [user, inputText]);
+
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(
+        position => {
+          const {latitude, longitude} = position.coords;
+          resolve({latitude, longitude});
+        },
+        error => reject(error),
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+      );
+    });
+  };
+
+  const handleCheckIn = async () => {
+    try {
+      const location = await getCurrentLocation();
+      console.log('Current location:', location);
+    } catch (error) {
+      console.error('Error getting current location:', error);
+    }
+  };
 
   useEffect(() => {
     const dateString = Date.now();
@@ -415,7 +440,9 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>Cảm xúc/hoạt động</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              style={styles.bottomSheetItem}
+              onPress={handleCheckIn}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_checkin.png')}

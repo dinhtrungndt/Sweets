@@ -25,6 +25,7 @@ import {
 import {UserContext} from '../../../contexts/user/userContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LoadingScreen} from '../../../utils/loading';
+import ToastManager from 'toastify-react-native';
 
 const HomeScreen = props => {
   const {navigation} = props;
@@ -137,6 +138,7 @@ const HomeScreen = props => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
+        <ToastManager />
         <HeaderScreen onRefresh={onRefresh} />
         <StoryScreen story={filteredStore} navigation={navigation} />
         <PostsScreen
