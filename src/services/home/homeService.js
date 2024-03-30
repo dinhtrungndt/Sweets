@@ -163,13 +163,19 @@ export const submitComments = async (userId, postId, content, image) => {
 };
 
 // Comment theo idUsers, idPosts và idParent
-export const submitCommentsC = async (userId, postId, parentId, content) => {
+export const submitCommentsC = async (
+  userId,
+  postId,
+  parentId,
+  content,
+  image,
+) => {
   try {
     const response = await AxiosInstance().post(
       `/comments/add/${userId}/${postId}/${parentId}`,
-      {content},
+      {content, image},
     );
-    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi commentsC bài viết: 11 s', error.response);

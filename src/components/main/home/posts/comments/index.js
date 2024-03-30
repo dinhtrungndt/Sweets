@@ -236,7 +236,7 @@ const CommentsScreen = ({navigation, route}) => {
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
-        formData.append('imageStatus', image);
+        formData.append('media', image);
       });
 
       const data = await uploadImageStatus(formData);
@@ -257,7 +257,7 @@ const CommentsScreen = ({navigation, route}) => {
 
   const openLibrary = useCallback(async () => {
     const options = {
-      mediaType: 'photo',
+      mediaType: 'mixed',
       quality: 5,
       saveToPhotos: true,
       selectionLimit: 5,
@@ -270,12 +270,7 @@ const CommentsScreen = ({navigation, route}) => {
   const reloadComments = async () => {
     try {
       const response = await getComments(postId._id);
-      const data = await response;
-      if (parentId) {
-        setComments(data.reverse());
-      } else {
-        setComments(data);
-      }
+      setComments(response.reverse());
     } catch (error) {
       console.error('Lỗi khi tải danh sách bình luận:', error);
     }
@@ -301,6 +296,7 @@ const CommentsScreen = ({navigation, route}) => {
         );
       }
       setCommentContent('');
+      setImage('');
       await reloadComments();
       setIsLoading(false);
       commentInputRef.current.clear();
@@ -561,13 +557,13 @@ const CommentsScreen = ({navigation, route}) => {
                         </View>
                       ),
                     )}
-                    {console.log(
+                    {/* {console.log(
                       '>>>. reaction: ' + JSON.stringify(item.reaction),
                     )}
                     {console.log(
                       '>>>. reaction id usserr: ' +
                         item.reaction.map(item => item.idUsers).join(),
-                    )}
+                    )} */}
                     {item.reaction.length > 0 && (
                       <>
                         {item.reaction.map(item => item.idUsers._id).join() ===
@@ -748,9 +744,27 @@ const CommentsScreen = ({navigation, route}) => {
                                   <Text style={styles.name_comment}>
                                     {subItem.idUsers?.name}
                                   </Text>
-                                  <Text style={styles.content_comment}>
-                                    {subItem.content}
-                                  </Text>
+                                  <View>
+                                    {subItem?.content && (
+                                      <View>
+                                        <Text>{subItem.content}</Text>
+                                      </View>
+                                    )}
+                                    {subItem?.image &&
+                                      subItem?.image.length > 0 && (
+                                        <View>
+                                          {subItem.image.map(
+                                            (image, imageIndex) => (
+                                              <Image
+                                                key={imageIndex}
+                                                source={{uri: image}}
+                                                style={styles.content_image}
+                                              />
+                                            ),
+                                          )}
+                                        </View>
+                                      )}
+                                  </View>
                                 </View>
                                 <View style={styles.comment_time_like}>
                                   <Text style={styles.time_comment}>
