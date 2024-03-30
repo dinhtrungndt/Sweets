@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import React, {useContext, useState, useCallback, useEffect} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {GetListUser} from '../../../../services/user/userService';
 import {GetListUserById} from '../../../../services/user/userService';
 // screens
 import PostOtherScreen from './TopTabOther/PostOtherScreen';
@@ -102,23 +101,22 @@ const OtherUserA = ({navigation, route}) => {
           tabBarLabelStyle: {
             fontSize: 14,
             fontWeight: 'bold',
+            textAlign:'left'
           },
           tabBarStyle: {
             backgroundColor: '#fff',
-            borderTopWidth: 0,
             borderTopColor: '#ddd',
-            elevation: 0,
-            marginTop: 12,
+            marginTop: 6,
           },
-          tabBarActiveTintColor: '#000',
-          tabBarInactiveTintColor: '#999',
+          tabBarActiveTintColor: '#22b6c0',
+          tabBarInactiveTintColor: '#bdc3c7',
           tabBarIndicatorStyle: {
-            backgroundColor: '#000000',
+            backgroundColor: '#22b6c0',
           },
           tabBarPressColor: 'rgba(0,0,0,0.1)',
         }}>
-        <Tab.Screen name="Bài viết" component={PostOtherScreen} />
-        <Tab.Screen name="Ảnh" component={ImgOtherScreen} />
+        <Tab.Screen name="Bài viết" posts={userData} component={PostOtherScreen}/>
+        <Tab.Screen name="Ảnh" component={ImgOtherScreen}/>
       </Tab.Navigator>
     </View>
   );
