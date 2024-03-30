@@ -17,7 +17,7 @@ import SelectFeeingStory from '../../../components/main/home/uploads/story/selec
 import SettingStoryObjects from '../../../utils/settingStoryObjects';
 import OtherUserA from '../../../components/main/account/OtherUserAccounts/OtherUserA';
 import Profile from '../../../components/main/account/Profile/Profile';
-
+import ChatScreen from '../../../components/main/chat';
 const Stack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
@@ -26,7 +26,7 @@ export function HomeStackScreen() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      {/* <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen
         name="BottomSheetComponents"
         component={BottomSheetComponents}
@@ -41,7 +41,8 @@ export function HomeStackScreen() {
         component={SettingStoryObjects}
       />
       <Stack.Screen name="OtherUserA" component={OtherUserA} />
-      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Profile" component={Profile} /> */}
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
     </Stack.Navigator>
   );
 }
