@@ -179,7 +179,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         Toast.show({
           type: 'success',
           position: 'top',
-          text1: 'Up tin thành công',
+          text1: 'Đăng story thành công !',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -189,7 +189,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         Toast.show({
           type: 'error',
           position: 'top',
-          text1: 'Up tin thất bại',
+          text1: 'Đăng story thất bại !',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,

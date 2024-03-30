@@ -14,7 +14,7 @@
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-community/checkbox": "^0.5.17",
     "@react-native-community/datetimepicker": "^7.6.2",
-    "@react-native-community/geolocation": "^3.2.0",
+    "@react-native-community/geolocation": "^3.2.1",
     "@react-native-firebase/app": "^19.1.0",
     "@react-native-firebase/dynamic-links": "^19.1.0",
     "@react-navigation/bottom-tabs": "^6.5.11",
@@ -35,6 +35,7 @@
     "react-native-dialog": "^9.3.0",
     "react-native-element-dropdown": "^2.10.1",
     "react-native-elements": "^3.4.3",
+    "react-native-emoji-selector": "^0.2.0",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.14.1",
     "react-native-image-crop-picker": "^0.40.2",
@@ -61,7 +62,8 @@
     "react-native-video-player": "^0.14.0",
     "rn-fetch-blob": "^0.12.0",
     "socket.io": "^4.7.4",
-    "socket.io-client": "^4.7.4"
+    "socket.io-client": "^4.7.4",
+    "toastify-react-native": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
