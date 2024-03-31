@@ -56,11 +56,19 @@ export const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   imageList: {
+    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     columnGap: 5,
   },
   imageItem: {
+    width: 125.5,
+    height: 155,
+    margin: 6,
+    marginRight: 0,
+    borderRadius: 4,
+  },
+  videoItem: {
     width: 125.5,
     height: 155,
     margin: 6,

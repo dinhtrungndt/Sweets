@@ -451,9 +451,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   ))}
 
                   {item.reaction.length <= 2 ? (
-                    <Text style={styles.text_feeling}>
-                      {item.reaction.length}
-                    </Text>
+                    <Text style={styles.text_feeling} />
                   ) : (
                     <Text style={styles.text_feeling2}>
                       {item.reaction.length}

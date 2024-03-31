@@ -70,6 +70,8 @@ export function AddsScreen({route, navigation}) {
         name: asset.fileName,
       }));
       setImage(selectedImages);
+
+      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', selectedImages);
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
