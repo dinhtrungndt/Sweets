@@ -25,6 +25,8 @@ const HahaFeeling = ({route}) => {
         return '😂';
       case 'Wow':
         return '😮';
+      case 'Buồn':
+        return '😔';
       case 'Tức giận':
         return '😡';
       default:

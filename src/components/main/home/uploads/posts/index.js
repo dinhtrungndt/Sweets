@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -37,9 +38,12 @@ export function AddsScreen({route, navigation}) {
   const [imagePath, setImagePath] = useState(null);
   const [upload, setUpload] = useState(false);
   const [_idPosts, setIdPosts] = useState(null);
+  const [loading, setLoading] = useState(false);
   const selectedId = route.params?.selectedId;
   const idObjectValue =
     selectedId && selectedId._id ? selectedId._id : '65b1fe1be09b1e99f9e8a235';
+
+  // console.log('>>>>> idObjectValue: ' + idObjectValue);
 
   const idObject = () => [
     {
@@ -71,15 +75,15 @@ export function AddsScreen({route, navigation}) {
       }));
       setImage(selectedImages);
 
-      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', selectedImages);
+      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', selectedImages);
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
         formData.append('media', image);
       });
-
+      setLoading(true);
       const data = await uploadImageStatus(formData);
-      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
 
       const mediaArray = data.urls.map(url => {
         const type =
@@ -92,6 +96,7 @@ export function AddsScreen({route, navigation}) {
       });
 
       setImagePath(mediaArray.map(item => item.url));
+      setLoading(false);
     }
   }, []);
 
@@ -109,7 +114,7 @@ export function AddsScreen({route, navigation}) {
       mediaType: 'mixed',
       quality: 5,
       saveToPhotos: true,
-      selectionLimit: 5,
+      selectionLimit: 0,
       multiple: true,
     };
     await launchImageLibrary(options, takePhoto);
@@ -223,10 +228,6 @@ export function AddsScreen({route, navigation}) {
 
     try {
       // console.log('Selected ID in AddsScreen:', selectedId);
-      let idObjectValue = '65b1fe1be09b1e99f9e8a235';
-      if (selectedId && selectedId._id) {
-        idObjectValue = selectedId._id;
-      }
       const postDetails = {
         _id: _idPosts,
         content: inputText,
@@ -360,25 +361,33 @@ export function AddsScreen({route, navigation}) {
             onChangeText={handleInputChange}
           />
           {image.length > 0 && (
-            <FlatList
-              style={{marginTop: 10}}
-              data={image}
-              numColumns={numColumns}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => (
-                <TouchableOpacity key={index}>
-                  <Image
-                    source={{uri: item.uri}}
-                    style={{
-                      width: Dimensions.get('window').width / numColumns - 10,
-                      height: Dimensions.get('window').width / numColumns - 10,
-                      margin: 5,
-                      borderRadius: 5,
-                    }}
-                  />
-                </TouchableOpacity>
+            <>
+              {loading ? (
+                <ActivityIndicator size="small" color="#22b6c0" />
+              ) : (
+                <FlatList
+                  style={{marginTop: 10}}
+                  data={image}
+                  numColumns={numColumns}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item, index}) => (
+                    <TouchableOpacity key={index}>
+                      <Image
+                        source={{uri: item.uri}}
+                        style={{
+                          width:
+                            Dimensions.get('window').width / numColumns - 10,
+                          height:
+                            Dimensions.get('window').width / numColumns - 10,
+                          margin: 5,
+                          borderRadius: 5,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                />
               )}
-            />
+            </>
           )}
         </View>
         {/* bottom sheet */}
