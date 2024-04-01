@@ -3,14 +3,31 @@ import io from 'socket.io-client';
 import {View, Alert, StyleSheet, Button, Text} from 'react-native';
 import {Camera} from 'react-native-camera-kit';
 import {UserContext} from '../../../../contexts/user/userContext';
+import {CreateDevice} from '../../../../services/QRCode/QRCodeService';
 const ScanQRLogin = () => {
   const {user} = useContext(UserContext);
   const [scanning, setScanning] = useState(true); // Trạng thái của việc quét
   const socket = useRef(null);
+  const [device, setDevice] = useState('');
+  // dùng để thêm dữ liệu vào bảng qr code khi load lại trang
+  const onAddDevice = async () => {
+    const response = await CreateDevice(device);
+    console.log('>>>>>>>>>> response: ', response);
+  };
+  useEffect(() => {
+    socket.current = io('http://192.168.1.73:3001/');
+    socket.current.on('AddDevice2', data => {
+      console.log('>>>>>>>>>> nhan device id ' + data.device);
+      setDevice(data.device);
+    });
+  }, []);
 
   useEffect(() => {
-    socket.current = io('http://192.168.1.33:3001/');
-  }, []);
+    if (device !== '') {
+      onAddDevice();
+    }
+  }, [device]);
+
   const handleBarcodeScan = event => {
     Alert.alert('QR code found', event.nativeEvent.codeStringValue);
     // Lưu thông tin mã QR vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn
