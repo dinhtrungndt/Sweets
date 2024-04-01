@@ -16,6 +16,8 @@ import Toast from 'react-native-toast-message';
 import {styles} from '../styles/story';
 import moment from 'moment';
 import VideoPlayer from 'react-native-video-player';
+import {deletePostsAccount} from '../../../../../services/home/homeService';
+import DialogDeletePosts from 'react-native-dialog';
 
 const {height, width} = Dimensions.get('window');
 
@@ -26,6 +28,8 @@ const PickStory = ({route}) => {
   const [current, setCurrent] = useState(0);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [visibleDiaLogDeletePosts, setVisibleDiaLogDeletePosts] =
+    useState(false);
 
   const handleVideoPress = () => {
     setIsPaused(!isPaused);
@@ -99,6 +103,32 @@ const PickStory = ({route}) => {
     }
   };
 
+  const showDialog = () => {
+    setVisibleDiaLogDeletePosts(true);
+  };
+
+  const handleCancel = () => {
+    setVisibleDiaLogDeletePosts(false);
+  };
+
+  const handleDelete = async () => {
+    await handleDeleteStory();
+    setVisibleDiaLogDeletePosts(false);
+  };
+  // console.log('>>>. Xóa thành công', story.map(item => item._id).join());
+
+  const handleDeleteStory = async () => {
+    try {
+      const _idDelete = story.map(item => item._id).join();
+      const res = await deletePostsAccount(_idDelete);
+      setVisibleDiaLogDeletePosts(false);
+      navigation.replace('HomeScreen');
+      // console.log('>>>. Xóa thành công', res);
+    } catch (error) {
+      console.log('>>>. Lỗi delete Posts', error);
+    }
+  };
+
   useEffect(() => {
     start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,7 +165,9 @@ const PickStory = ({route}) => {
         </>
       ) : (
         <View style={styles.container_content}>
-          <Text style={styles.content}>{story[current].content}</Text>
+          <Text style={styles.content}>
+            {story.content ? story.content : story[current].content}
+          </Text>
           {/* {story.content ? (
             <Text style={styles.content}>
               {story.content ? story.content : story[current].content}
@@ -299,51 +331,96 @@ const PickStory = ({route}) => {
             }}
           />
         </TouchableOpacity>
-        <View
-          style={{
-            width: width,
-            height: height,
-            position: 'absolute',
-            top: 0,
-          }}>
-          {bottomSheetVisible && (
-            <TouchableWithoutFeedback
-              onPress={() => {
-                setBottomSheetVisible(false);
-                reportSuccess();
-              }}>
-              <View
-                style={{
-                  width: width,
-                  height: height,
-                  position: 'absolute',
-                  top: 0,
+
+        {story.idUsers ? (
+          <View
+            style={{
+              width: width,
+              height: height,
+              position: 'absolute',
+              top: 0,
+            }}>
+            {bottomSheetVisible && (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  setBottomSheetVisible(false);
+                  reportSuccess();
                 }}>
                 <View
                   style={{
                     width: width,
-                    height: 100,
-                    backgroundColor: '#fff',
+                    height: height,
                     position: 'absolute',
-                    bottom: 15,
-                    flexDirection: 'row',
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
+                    top: 0,
                   }}>
-                  <Text
+                  <View
                     style={{
-                      color: '#000',
-                      fontSize: 20,
-                      marginLeft: 20,
-                      marginTop: 20,
+                      width: width,
+                      height: 100,
+                      backgroundColor: '#fff',
+                      position: 'absolute',
+                      bottom: 15,
+                      flexDirection: 'row',
+                      borderTopLeftRadius: 20,
+                      borderTopRightRadius: 20,
                     }}>
-                    Báo cáo
-                  </Text>
+                    <Text
+                      style={{
+                        color: '#000',
+                        fontSize: 20,
+                        marginLeft: 20,
+                        marginTop: 20,
+                      }}>
+                      Báo cáo
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableWithoutFeedback>
-          )}
-        </View>
+              </TouchableWithoutFeedback>
+            )}
+          </View>
+        ) : (
+          <View
+            style={{
+              width: width,
+              height: height,
+              position: 'absolute',
+              top: 0,
+            }}>
+            {bottomSheetVisible && (
+              <TouchableOpacity onPress={showDialog}>
+                <View
+                  style={{
+                    width: width,
+                    height: height,
+                    position: 'absolute',
+                    top: 0,
+                  }}>
+                  <View
+                    style={{
+                      width: width,
+                      height: 100,
+                      backgroundColor: '#fff',
+                      position: 'absolute',
+                      bottom: 15,
+                      flexDirection: 'row',
+                      borderTopLeftRadius: 20,
+                      borderTopRightRadius: 20,
+                    }}>
+                    <Text
+                      style={{
+                        color: '#000',
+                        fontSize: 20,
+                        marginLeft: 20,
+                        marginTop: 20,
+                      }}>
+                      Xóa story
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
         <TouchableOpacity
           style={{marginRight: 20, marginTop: 10}}
           onPress={close}>
@@ -409,6 +486,14 @@ const PickStory = ({route}) => {
           }}
         />
       </View>
+      <DialogDeletePosts.Container visible={visibleDiaLogDeletePosts}>
+        <DialogDeletePosts.Title>Xóa story này ?</DialogDeletePosts.Title>
+        <DialogDeletePosts.Description>
+          Sau khi xóa bài story này bạn không thể khôi phục.
+        </DialogDeletePosts.Description>
+        <DialogDeletePosts.Button label="Hủy" onPress={handleCancel} />
+        <DialogDeletePosts.Button label="Chấp nhận" onPress={handleDelete} />
+      </DialogDeletePosts.Container>
     </View>
   );
 };

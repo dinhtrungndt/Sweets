@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useEffect} from 'react';
+import React, {forwardRef, useEffect} from 'react';
 import SplashScreen from 'react-native-splash-screen';
 import {SafeAreaView} from 'react-native';
 import {UserProvider} from './src/contexts/user/userContext';
@@ -13,6 +13,7 @@ import StackTest from './src/components/call/StackTest';
 // import {MyProvider} from './src/components/call/UseContextTemp';
 
 
+import Toast from 'react-native-toast-message';
 
 const App = () => {
   useEffect(() => {
@@ -29,8 +30,13 @@ const App = () => {
         </HomeProvider>
       </UserProvider>
       {/* <StackTest /> */}
+      <ToastComponent />
     </SafeAreaView>
   );
 };
+
+const ToastComponent = forwardRef((props, ref) => (
+  <Toast ref={ref} {...props} />
+));
 
 export default App;

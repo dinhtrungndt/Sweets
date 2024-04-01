@@ -31,7 +31,7 @@ buildscript {
         ndkVersion = "23.1.7779620"
 
         // Add versions for the Android Gradle Plugin and React Native Gradle Plugin
-        androidGradlePluginVersion = "4.2.0" // Example version, replace with the desired version
+        androidGradlePluginVersion = "7.3.1" // Example version, replace with the desired version
         reactNativeGradlePluginVersion = "0.66.4" // Example version, replace with the desired version
     }
     repositories {

@@ -25,6 +25,7 @@ import {
 import {UserContext} from '../../../contexts/user/userContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LoadingScreen} from '../../../utils/loading';
+import ToastManager from 'toastify-react-native';
 
 const HomeScreen = props => {
   const {navigation} = props;
@@ -80,8 +81,9 @@ const HomeScreen = props => {
   };
 
   const onRefresh = useCallback(async () => {
+    setIsLoading(true);
     await onGetPosts();
-    setRefreshing(false);
+    setIsLoading(false);
   }, []);
 
   const handleLike = async idPosts => {
@@ -106,6 +108,8 @@ const HomeScreen = props => {
           }
           return post;
         });
+        console.log('postsposts:', updatedPosts);
+
         setPosts(updatedPosts);
       } else {
         console.error('Lỗi khi thay đổi trạng thái like:', response.message);
@@ -134,7 +138,8 @@ const HomeScreen = props => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <HeaderScreen />
+        <ToastManager />
+        <HeaderScreen onRefresh={onRefresh} />
         <StoryScreen story={filteredStore} navigation={navigation} />
         <PostsScreen
           posts={filteredPosts}

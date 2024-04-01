@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -24,6 +25,8 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import {CommonActions} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Geolocation from '@react-native-community/geolocation';
 
 export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
@@ -35,20 +38,28 @@ export function AddsScreen({route, navigation}) {
   const [imagePath, setImagePath] = useState(null);
   const [upload, setUpload] = useState(false);
   const [_idPosts, setIdPosts] = useState(null);
+  const [loading, setLoading] = useState(false);
   const selectedId = route.params?.selectedId;
+  const idObjectValue =
+    selectedId && selectedId._id ? selectedId._id : '65b1fe1be09b1e99f9e8a235';
+
+  // console.log('>>>>> idObjectValue: ' + idObjectValue);
 
   const idObject = () => [
     {
       _id: '65b1fe1be09b1e99f9e8a235',
       name: 'Công khai',
+      icon: 'https://res.cloudinary.com/dqo8whkdr/image/upload/v1711327221/f4yxj5cnlrnlpginqfpp.png',
     },
     {
       _id: '65b1fe6dab07bc8ddd7de469',
       name: 'Bạn bè',
+      icon: 'https://res.cloudinary.com/dqo8whkdr/image/upload/v1711327699/ouv89aqjnoshfp5nncpg.png',
     },
     {
       _id: '65b1fe77ab07bc8ddd7de46c',
       name: 'Chỉ mình tôi',
+      icon: 'https://res.cloudinary.com/dqo8whkdr/image/upload/v1711327910/afewyfgqi6g3l6lbpvpm.png',
     },
   ];
 
@@ -63,16 +74,29 @@ export function AddsScreen({route, navigation}) {
         name: asset.fileName,
       }));
       setImage(selectedImages);
+
+      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', selectedImages);
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
-        formData.append('imageStatus', image);
+        formData.append('media', image);
       });
-
+      setLoading(true);
       const data = await uploadImageStatus(formData);
       // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
-      setImagePath(data.urls);
-      // console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
+
+      const mediaArray = data.urls.map(url => {
+        const type =
+          url.endsWith('.jpg') || url.endsWith('.jpeg') || url.endsWith('.png')
+            ? 'image'
+            : url.endsWith('.mp4')
+            ? 'video'
+            : 'unknown';
+        return {url: url, type: type};
+      });
+
+      setImagePath(mediaArray.map(item => item.url));
+      setLoading(false);
     }
   }, []);
 
@@ -87,10 +111,10 @@ export function AddsScreen({route, navigation}) {
 
   const openLibrary = useCallback(async () => {
     const options = {
-      mediaType: 'photo',
+      mediaType: 'mixed',
       quality: 5,
       saveToPhotos: true,
-      selectionLimit: 5,
+      selectionLimit: 0,
       multiple: true,
     };
     await launchImageLibrary(options, takePhoto);
@@ -114,18 +138,30 @@ export function AddsScreen({route, navigation}) {
       if (!_idPosts) {
         return;
       }
-      const media = imagePath.join();
-      const cbMediaType = {
-        url: imagePath?.length > 1 ? imagePath : media,
-        type: 'image',
-      };
 
-      const response = await uploadMedia(_idPosts, cbMediaType);
-      // console.log('>>>>>>> response -> handleUploadMedia', response);
+      const mediaArray = imagePath.map(image => {
+        const type =
+          image.endsWith('.jpg') ||
+          image.endsWith('.jpeg') ||
+          image.endsWith('.png')
+            ? 'image'
+            : image.endsWith('.mp4')
+            ? 'video'
+            : 'unknown';
+        return {url: image, type: type};
+      });
+
+      await Promise.all(
+        mediaArray.map(async media => {
+          const response = await uploadMedia(_idPosts, media);
+          // console.log('>>>>>>> response -> handleUploadMedia', response);
+        }),
+      );
     } catch (error) {
       console.log('>>>>>>> Lỗi ở HandleUploadMedia nè', error);
     }
   });
+  // console.log('>>>>>>> hình ở imagePath nè', imagePath);
 
   const handlePostUpload = async () => {
     try {
@@ -154,7 +190,7 @@ export function AddsScreen({route, navigation}) {
         Toast.show({
           type: 'success',
           position: 'top',
-          text1: 'Up tin thành công',
+          text1: 'Đăng bài viết thành công !',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -164,7 +200,7 @@ export function AddsScreen({route, navigation}) {
         Toast.show({
           type: 'error',
           position: 'top',
-          text1: 'Up tin thất bại',
+          text1: 'Đăng bài viết thất bại',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -192,10 +228,6 @@ export function AddsScreen({route, navigation}) {
 
     try {
       // console.log('Selected ID in AddsScreen:', selectedId);
-      let idObjectValue = '65b1fe1be09b1e99f9e8a235';
-      if (selectedId && selectedId._id) {
-        idObjectValue = selectedId._id;
-      }
       const postDetails = {
         _id: _idPosts,
         content: inputText,
@@ -217,6 +249,28 @@ export function AddsScreen({route, navigation}) {
       console.error('Lỗi catch --->>>>> error :', error);
     }
   }, [user, inputText]);
+
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(
+        position => {
+          const {latitude, longitude} = position.coords;
+          resolve({latitude, longitude});
+        },
+        error => reject(error),
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+      );
+    });
+  };
+
+  const handleCheckIn = async () => {
+    try {
+      const location = await getCurrentLocation();
+      console.log('Current location:', location);
+    } catch (error) {
+      console.error('Error getting current location:', error);
+    }
+  };
 
   useEffect(() => {
     const dateString = Date.now();
@@ -268,18 +322,30 @@ export function AddsScreen({route, navigation}) {
                   navigation.navigate('SelectScreenUp', {idObject: idObject()})
                 }>
                 {selectedId?.name === undefined ? (
-                  <Text style={styles.body_chedo_text}> Công khai </Text>
+                  <>
+                    <Image
+                      style={styles.body_chedo_icon}
+                      source={require('../../../../../assets/upstory_world_icon.png')}
+                    />
+                    <Text style={styles.body_chedo_text}> Công khai </Text>
+                  </>
                 ) : (
-                  <Text style={styles.body_chedo_text}>
-                    {' '}
-                    {selectedId?.name}{' '}
-                  </Text>
+                  <>
+                    <Image
+                      style={styles.body_chedo_icon}
+                      source={{uri: selectedId?.icon}}
+                    />
+                    <Text style={styles.body_chedo_text}>
+                      {' '}
+                      {selectedId?.name}{' '}
+                    </Text>
+                  </>
                 )}
-                <AntDesign
-                  name={'caretdown'}
-                  size={13}
+                <MaterialIcons
+                  name={'navigate-next'}
+                  size={18}
                   color={'#0062c9'}
-                  left={93}
+                  left={95}
                   position={'absolute'}
                 />
               </TouchableOpacity>
@@ -295,25 +361,33 @@ export function AddsScreen({route, navigation}) {
             onChangeText={handleInputChange}
           />
           {image.length > 0 && (
-            <FlatList
-              style={{marginTop: 10}}
-              data={image}
-              numColumns={numColumns}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => (
-                <TouchableOpacity key={index}>
-                  <Image
-                    source={{uri: item.uri}}
-                    style={{
-                      width: Dimensions.get('window').width / numColumns - 10,
-                      height: Dimensions.get('window').width / numColumns - 10,
-                      margin: 5,
-                      borderRadius: 5,
-                    }}
-                  />
-                </TouchableOpacity>
+            <>
+              {loading ? (
+                <ActivityIndicator size="small" color="#22b6c0" />
+              ) : (
+                <FlatList
+                  style={{marginTop: 10}}
+                  data={image}
+                  numColumns={numColumns}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item, index}) => (
+                    <TouchableOpacity key={index}>
+                      <Image
+                        source={{uri: item.uri}}
+                        style={{
+                          width:
+                            Dimensions.get('window').width / numColumns - 10,
+                          height:
+                            Dimensions.get('window').width / numColumns - 10,
+                          margin: 5,
+                          borderRadius: 5,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                />
               )}
-            />
+            </>
           )}
         </View>
         {/* bottom sheet */}
@@ -355,7 +429,7 @@ export function AddsScreen({route, navigation}) {
         {bottomSheetVisible && (
           <View style={styles.bottomSheet}>
             <TouchableOpacity
-              onPress={() => setModalVisible(true)}
+              onPress={openLibrary}
               style={styles.bottomSheetItem}>
               <Image
                 style={styles.bottomSheetIcon}
@@ -377,7 +451,9 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>Cảm xúc/hoạt động</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              style={styles.bottomSheetItem}
+              onPress={handleCheckIn}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_checkin.png')}

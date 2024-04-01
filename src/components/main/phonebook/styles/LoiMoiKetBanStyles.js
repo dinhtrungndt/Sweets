@@ -4,13 +4,22 @@ import React from 'react'
 
 
 const styles = StyleSheet.create({
-    wrapContent: {
+    wrapContent1: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
-        backgroundColor: '#eaeaea',
-        marginHorizontal:5
+        backgroundColor: '#22b6c0',
+       
+      },
+      wrapContent2: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        margin:5
+       
+       
       },
       friendItem: {
         padding: 10,
@@ -19,9 +28,15 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
       },
-      txtContent1: {
-        fontSize: 16,
+      txtContent11: {
+        fontSize: 18,
         fontWeight: 'bold',
+        color:'#22b6c0'
+      },
+      txtContent1: {
+        fontSize: 19,
+        fontWeight: 'bold',
+       
       },
       txtContent2: {
         fontSize: 14,
@@ -45,6 +60,27 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
        
+      },
+
+      imgOption:{
+        borderWidth:0.7,
+        width:120,height:33,
+        borderRadius:10,
+        borderColor:'#22b6c0',
+      },
+      txtXoas:{
+        fontWeight:'bold',
+        color:'#22b6c0',
+        alignSelf:'center',
+       marginVertical:5
+      },
+      imgOption2:{
+        borderWidth:0.7,
+        width:120,height:33,
+        borderRadius:10,
+        borderColor:'#22b6c0',
+        marginHorizontal:15
+        
       },
 })
 export default styles

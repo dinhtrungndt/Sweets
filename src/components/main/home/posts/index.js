@@ -1,5 +1,13 @@
 /* eslint-disable prettier/prettier */
-import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  Linking,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 
 // styles
@@ -16,14 +24,27 @@ import Swiper from 'react-native-swiper';
 import CustomReaction from '../../../customs/reaction/customreaction';
 import VideoPlayer from 'react-native-video-player';
 import {UserContext} from '../../../../contexts/user/userContext';
-import {likeByPost} from '../../../../services/home/homeService';
+import {
+  deletePostsAccount,
+  likeByPost,
+} from '../../../../services/home/homeService';
+import ModalEditPostsAccount from './editPosts/account';
+import ModalEditPostsGuest from './editPosts/guest';
+import Share from 'react-native-share';
+import {useLinkTo} from '@react-navigation/native';
 
 const PostsScreen = ({posts, navigation, handleLike}) => {
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
+  const [modalEditPostsAccount, setModalEditPostsAccount] = useState(false);
+  const [modalEditPostsGuest, setModalEditPostsGuest] = useState(false);
   const {user} = useContext(UserContext);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [editPostsItemAccount, setEditPostsItemAccount] = useState(null);
+  const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
+  const [shareItems, setShareItems] = useState(null);
+  const [post, setPost] = useState(posts);
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -52,6 +73,11 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
     },
     {
       id: 4,
+      emoji: '😔',
+      name: 'Buồn',
+    },
+    {
+      id: 5,
       emoji: '😡',
       name: 'Tức giận',
     },
@@ -128,6 +154,8 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
         return require('../../../../assets/haha_25px.png');
       case 'Wow':
         return require('../../../../assets/wow_25px.png');
+      case 'Buồn':
+        return require('../../../../assets/sad_25px.png');
       case 'Tức giận':
         return require('../../../../assets/angry_25px.png');
       default:
@@ -144,6 +172,8 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
       case 'Haha':
         return '#ff9900';
       case 'Wow':
+        return '#ff9900';
+      case 'Buồn':
         return '#ff9900';
       case 'Tức giận':
         return '#ff0000';
@@ -166,6 +196,58 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
     return uniqueReactions;
   };
 
+  const handleModalEditPostsAccount = item => {
+    setEditPostsItemAccount(item);
+    setModalEditPostsAccount(true);
+  };
+
+  const handleModalEditPostsGuest = item => {
+    setEditPostsItemGuest(item);
+    setModalEditPostsGuest(true);
+  };
+
+  const handleDeletePosts = async () => {
+    try {
+      const _idDelete = editPostsItemAccount._id;
+      const res = await deletePostsAccount(_idDelete);
+      const updatedPosts = posts.filter(post => post._id !== _idDelete);
+      setPost(updatedPosts);
+      setModalEditPostsAccount(false);
+      // console.log('>>>. Xóa thành công', res);
+    } catch (error) {
+      console.log('>>>. Lỗi delete Posts', error);
+    }
+  };
+
+  Linking.addEventListener('url', event => {
+    const {path} = event;
+    if (path.startsWith('/post/')) {
+      const postId = path.split('/').pop();
+    }
+  });
+
+  const createDeepLinkForPost = postId => {
+    return `https://sweets-eight.vercel.app/posts/${postId}`;
+  };
+
+  const sharePostWithDeepLink = item => {
+    const postId = item._id;
+    const deepLink = createDeepLinkForPost(postId);
+    const message = `${deepLink}`;
+    Share.open({
+      message: message,
+    })
+      .then(() => console.log('Chia sẻ thành công'))
+      .catch(error => console.log('Lỗi khi chia sẻ:', error));
+  };
+
+  Linking.addEventListener('url', event => {
+    const {path} = event;
+    if (path.startsWith('/post/')) {
+      const postId = path.split('/').pop();
+    }
+  });
+
   useEffect(() => {
     handleReaction.current = {
       handlePressOut: () => {
@@ -185,7 +267,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
   return (
     <View style={styles.T}>
       <FlatList
-        data={posts}
+        data={post}
         scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item._id}
@@ -255,13 +337,25 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   </View>
                 </View>
               </View>
-              <TouchableOpacity>
-                <Entypo
-                  name="dots-three-horizontal"
-                  size={18}
-                  color="#666666"
-                />
-              </TouchableOpacity>
+              {item.idUsers._id !== user.user._id ? (
+                <TouchableOpacity
+                  onPress={() => handleModalEditPostsGuest(item)}>
+                  <Entypo
+                    name="dots-three-horizontal"
+                    size={18}
+                    color="#666666"
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => handleModalEditPostsAccount(item)}>
+                  <Entypo
+                    name="dots-three-horizontal"
+                    size={18}
+                    color="#666666"
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             {/* content */}
             <View style={styles.baiVietContent}>
@@ -299,16 +393,16 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                       {media.type === 'image' ? (
                         <>
                           <Image
-                            source={{uri: media.url[0]}}
+                            source={{uri: media.url.join()}}
                             style={styles.posts}
                           />
                         </>
                       ) : (
                         <VideoPlayer
-                          video={{uri: media.url}}
+                          video={{uri: media.url[0]}}
                           videoWidth={1600}
                           videoHeight={900}
-                          thumbnail={{uri: media.url}}
+                          thumbnail={{uri: media.url[0]}}
                           // autoplay={true}
                           style={styles.posts}
                         />
@@ -354,6 +448,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                           style={[
                             reaction.type === 'Haha' ||
                             reaction.type === 'Wow' ||
+                            reaction.type === 'Buồn' ||
                             reaction.type === 'Tức giận'
                               ? {width: 22, height: 22}
                               : styles.icon_Like_Feeling,
@@ -365,14 +460,20 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                     </View>
                   ))}
 
-                  {item.reaction.length <= 2 ? (
-                    <Text style={styles.text_feeling}>
-                      {item.reaction.length}
-                    </Text>
+                  {item.reaction.length === 0 ? (
+                    <Text />
                   ) : (
-                    <Text style={styles.text_feeling2}>
-                      {item.reaction.length}
-                    </Text>
+                    <>
+                      {item.reaction.length <= 2 ? (
+                        <Text style={styles.text_feeling}>
+                          {item.reaction.length}
+                        </Text>
+                      ) : (
+                        <Text style={styles.text_feeling2}>
+                          {item.reaction.length}
+                        </Text>
+                      )}
+                    </>
                   )}
                 </TouchableOpacity>
 
@@ -427,6 +528,10 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                 onLongPress={() =>
                   handleReaction.current.handleLongPress(item._id)
                 }>
+                {console.log(
+                  '>>>>>>>>>>>. item.isUserReacted',
+                  isUserReacted(item.reaction, user.user._id),
+                )}
                 {isUserReacted(item.reaction, user.user._id) ? (
                   <>
                     {item.reaction
@@ -493,7 +598,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                 <Text style={styles.text_like_post}>Bình luận</Text>
               </TouchableOpacity>
               {/* share */}
-              <TouchableOpacity style={styles.like_post}>
+              <TouchableOpacity
+                style={styles.like_post}
+                onPress={() => sharePostWithDeepLink(item)}>
                 <MaterialCommunityIcons
                   name="share-outline"
                   size={23}
@@ -512,6 +619,35 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
         removeClippedSubviews={true}
         onEndReachedThreshold={0.5}
       />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalEditPostsAccount}
+        onRequestClose={() => {}}>
+        <TouchableOpacity
+          style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+          activeOpacity={1}
+          onPressOut={() => setModalEditPostsAccount(false)}>
+          <ModalEditPostsAccount
+            editPostsItemAccount={editPostsItemAccount}
+            handleDeletePosts={handleDeletePosts}
+            navigation={navigation}
+          />
+        </TouchableOpacity>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalEditPostsGuest}
+        onRequestClose={() => {}}>
+        <TouchableOpacity
+          style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+          activeOpacity={1}
+          onPressOut={() => setModalEditPostsGuest(false)}>
+          <ModalEditPostsGuest editPostsItemGuest={editPostsItemGuest} />
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };

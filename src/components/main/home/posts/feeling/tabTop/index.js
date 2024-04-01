@@ -12,6 +12,8 @@ import WowFeeling from './wow';
 
 // custom
 import {optionsTabsTop} from '../../../styles/optionsTabsTop';
+import BuonFeeling from './buon';
+import TucGianFeeling from './tucGian';
 
 const TabTop = createMaterialTopTabNavigator();
 
@@ -45,6 +47,16 @@ const FeelingTop = ({reactions}) => {
         <TabTop.Screen
           name="WowFeeling"
           component={WowFeeling}
+          initialParams={{reactions}}
+        />
+        <TabTop.Screen
+          name="BuonFeeling"
+          component={BuonFeeling}
+          initialParams={{reactions}}
+        />
+        <TabTop.Screen
+          name="TucGianFeeling"
+          component={TucGianFeeling}
           initialParams={{reactions}}
         />
       </TabTop.Navigator>
