@@ -20,3 +20,18 @@ export const getDevice = async () => {
     return error;
   }
 }
+export const UpdateDevice = async (iduser,deviceid) => {
+  const body = {
+    iduser: iduser,
+    deviceid: deviceid
+  }
+  try {
+    const response = await AxiosInstance().put('loginQRCode/update-loginQRCode', body);
+    console.log('>>>>>>>>>> axios iduser : ', iduser);
+    console.log('>>>>>>>>>> axios deviceid : ', deviceid);
+    return response;
+  } catch (error) {
+    console.log('UpdateDevice: ', error);
+    return error;
+  }
+}

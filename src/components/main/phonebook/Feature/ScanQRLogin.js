@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import {View, Alert, StyleSheet, Button, Text} from 'react-native';
 import {Camera} from 'react-native-camera-kit';
 import {UserContext} from '../../../../contexts/user/userContext';
-import {CreateDevice} from '../../../../services/QRCode/QRCodeService';
+import {CreateDevice, UpdateDevice} from '../../../../services/QRCode/QRCodeService';
 const ScanQRLogin = () => {
   const {user} = useContext(UserContext);
   const [scanning, setScanning] = useState(true); // Trạng thái của việc quét
@@ -14,6 +14,12 @@ const ScanQRLogin = () => {
     const response = await CreateDevice(device);
     console.log('>>>>>>>>>> response: ', response);
   };
+  // Them idUser vao bang qr code
+  const onUpdateDevice = async () => {
+    const response = await UpdateDevice(user.user._id,device);
+    console.log('>>>>>>>>>> response: ', response.status);
+    socket.current.emit('UpdateDevice',{response: response.status})
+  };  
   useEffect(() => {
     socket.current = io('http://192.168.1.73:3001/');
     socket.current.on('AddDevice2', data => {
@@ -29,11 +35,12 @@ const ScanQRLogin = () => {
   }, [device]);
 
   const handleBarcodeScan = event => {
-    Alert.alert('QR code found', event.nativeEvent.codeStringValue);
+    Alert.alert('Đăng nhập thành công');
     // Lưu thông tin mã QR vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn
 
-    socket.current.emit('LoginByQRCode', {userId: user.user._id});
-
+    // socket.current.emit('LoginByQRCode', {userId: user.user._id,deviceId: device});
+    // console.log('>>>>>>>>>> deviceId: ', device);
+    onUpdateDevice();
     // Dừng quét
     setScanning(false);
   };
