@@ -38,7 +38,6 @@ import UpImageStory from './upImage';
 import Toast from 'react-native-toast-message';
 import {UserContext} from '../../../../../../contexts/user/userContext';
 import {CommonActions} from '@react-navigation/native';
-import RNFetchBlob from 'rn-fetch-blob';
 import VideoPlayer from 'react-native-video-player';
 import {LoadingScreen} from '../../../../../../utils/loading';
 import ImagePicker from 'react-native-image-crop-picker';
