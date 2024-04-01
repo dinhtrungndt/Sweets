@@ -50,7 +50,7 @@ const ImagePicker = ({onImageSelected}) => {
       mediaType: 'photo',
       quality: 5,
       saveToPhotos: true,
-      selectionLimit: 5,
+      selectionLimit: 0,
       multiple: true,
     };
     await launchImageLibrary(options, takePhoto);

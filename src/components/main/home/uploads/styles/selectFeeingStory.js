@@ -46,14 +46,36 @@ export const styles = StyleSheet.create({
     position: 'absolute',
   },
   footer: {},
+  rowPickImage: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 5,
+  },
   library_container: {
     flexDirection: 'row',
+  },
+  pickImage_container: {
+    flexDirection: 'row',
+    marginRight: 20,
+    backgroundColor: '#e8e8e8',
+    padding: 6,
+    borderRadius: 5,
   },
   library_text: {
     fontSize: 14,
     fontWeight: '500',
     color: '#616160',
     paddingLeft: 20,
+  },
+  loadingImage: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    zIndex: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   imageList: {
     width: '100%',
@@ -114,6 +136,10 @@ export const styles = StyleSheet.create({
     borderBottomRightRadius: 30,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+  },
+  modalImageVideo: {
+    width: '100%',
+    height: '97%',
   },
   seetingInUp: {
     position: 'absolute',

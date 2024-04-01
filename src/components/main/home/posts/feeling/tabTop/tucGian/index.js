@@ -3,17 +3,10 @@ import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
 import React, {useContext} from 'react';
 import {UserContext} from '../../../../../../../contexts/user/userContext';
 
-const LikeFeeling = ({route}) => {
+const TucGianFeeling = ({route}) => {
   const reactions = route.params.reactions;
-  const likeReactions = reactions.filter(item => item.type === 'Like');
+  const wowReactions = reactions.filter(item => item.type === 'Wow');
   const {user} = useContext(UserContext);
-
-  const getAvatar = avatar => {
-    if (avatar === 'default') {
-      return require('../../../../../../../assets/account.png');
-    }
-    return {uri: avatar};
-  };
 
   const getIcon = type => {
     switch (type) {
@@ -33,18 +26,15 @@ const LikeFeeling = ({route}) => {
         return '';
     }
   };
-
   return (
     <View style={styles.T}>
       <FlatList
-        data={likeReactions}
+        data={wowReactions}
         renderItem={({item}) => (
           <View style={styles.container_reaction}>
             <Text style={styles.typeIcon}>{getIcon(item.type)}</Text>
-            <Image
-              style={styles.avatar}
-              source={getAvatar(item.idUsers.avatar)}
-            />
+            <Image style={styles.avatar} source={{uri: item.idUsers.avatar}} />
+
             {item.idUsers._id === user.user._id ? (
               <Text style={styles.name_reaction_id}>Bạn</Text>
             ) : (
@@ -63,7 +53,7 @@ const LikeFeeling = ({route}) => {
   );
 };
 
-export default LikeFeeling;
+export default TucGianFeeling;
 
 const styles = StyleSheet.create({
   T: {
