@@ -19,6 +19,7 @@ import {
   ZegoUIKitPrebuiltCallWaitingScreen,
   ZegoUIKitPrebuiltCallInCallScreen,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import {GetRouteNameChat} from '../customs/routeChat';
 const Tab = createBottomTabNavigator();
 
 const HomeNavigation = () => {
@@ -36,7 +37,10 @@ const HomeNavigation = () => {
       <Tab.Screen
         name="ChatScreen"
         component={ChatScreenStack}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          tabBarStyle: {display: GetRouteNameChat(route)},
+          headerShown: false,
+        })}
       />
       <Tab.Screen
         name="AddsScreen"
