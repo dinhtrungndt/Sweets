@@ -5,7 +5,7 @@ import {UserContext} from '../../../../../../../contexts/user/userContext';
 
 const LikeFeeling = ({route}) => {
   const reactions = route.params.reactions;
-  const likeReactions = reactions.filter(item => item.type === 'Like');
+  const likeReactions = reactions.filter(item => item.type === 'Thích');
   const {user} = useContext(UserContext);
 
   const getAvatar = avatar => {

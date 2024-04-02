@@ -25,6 +25,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import {CommonActions} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import VideoPlayer from 'react-native-video-player';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Geolocation from '@react-native-community/geolocation';
 
@@ -43,7 +44,7 @@ export function AddsScreen({route, navigation}) {
   const idObjectValue =
     selectedId && selectedId._id ? selectedId._id : '65b1fe1be09b1e99f9e8a235';
 
-  // console.log('>>>>> idObjectValue: ' + idObjectValue);
+  console.log('>>>>> idObjectValue: ' + idObjectValue);
 
   const idObject = () => [
     {
@@ -122,7 +123,7 @@ export function AddsScreen({route, navigation}) {
   }, []);
 
   const handleInputChange = text => {
-    setInputText(text);
+    setInputText(text || '');
   };
 
   const showBottomSheet = () => {
@@ -181,6 +182,8 @@ export function AddsScreen({route, navigation}) {
         await Promise.all([handleUploadMedia(), handleUploadPost()]);
       } else if (inputText) {
         await handleUploadPost();
+      } else if (inputText === '') {
+        await Promise.all([handleUploadMedia(), handleUploadPost()]);
       } else if (imagePath) {
         await handleUploadMedia();
       }
@@ -222,19 +225,21 @@ export function AddsScreen({route, navigation}) {
   };
 
   const handleUploadPost = useCallback(async () => {
-    if (!user || !inputText) {
-      return;
-    }
+    // if (!user || !inputText) {
+    //   return;
+    // }
 
     try {
       // console.log('Selected ID in AddsScreen:', selectedId);
       const postDetails = {
         _id: _idPosts,
-        content: inputText,
+        content: inputText || '',
         createAt: new Date().toISOString(),
         idObject: idObjectValue,
         idTypePosts: '65b20030261511b0721a9913',
       };
+
+      console.log(' >>>>>>>>>>>>>>>> postDetails:', postDetails);
 
       const response = await uploadPost(user.user._id, postDetails);
       setUpload(response);
@@ -244,7 +249,7 @@ export function AddsScreen({route, navigation}) {
           routes: [{name: 'HomeStackScreen'}],
         }),
       );
-      // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+      console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
     } catch (error) {
       console.error('Lỗi catch --->>>>> error :', error);
     }
@@ -272,6 +277,14 @@ export function AddsScreen({route, navigation}) {
     }
   };
 
+  const isImage = url => {
+    return /\.(jpeg|jpg|png)$/i.test(url);
+  };
+
+  const isVideo = url => {
+    return /\.(mp4|avi|mov)$/i.test(url);
+  };
+
   useEffect(() => {
     const dateString = Date.now();
     const randomSuffix = Math.floor(Math.random() * 10000000);
@@ -280,9 +293,9 @@ export function AddsScreen({route, navigation}) {
     setIdPosts(_idPosts);
   }, []);
 
-  useEffect(() => {
-    handleUploadPost();
-  }, [user]);
+  // useEffect(() => {
+  //   handleUploadPost();
+  // }, [user]);
 
   return (
     <View style={styles.T}>
@@ -299,7 +312,7 @@ export function AddsScreen({route, navigation}) {
           onPress={handlePostUpload}
           style={[
             styles.upHeaderButton,
-            {backgroundColor: inputText ? '#7ec1a5' : '#CBCBCB'},
+            {backgroundColor: inputText || imagePath ? '#7ec1a5' : '#CBCBCB'},
           ]}>
           <Text style={styles.textHeaderUp}>Đăng</Text>
         </TouchableOpacity>
@@ -372,17 +385,35 @@ export function AddsScreen({route, navigation}) {
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({item, index}) => (
                     <TouchableOpacity key={index}>
-                      <Image
-                        source={{uri: item.uri}}
-                        style={{
-                          width:
-                            Dimensions.get('window').width / numColumns - 10,
-                          height:
-                            Dimensions.get('window').width / numColumns - 10,
-                          margin: 5,
-                          borderRadius: 5,
-                        }}
-                      />
+                      {isImage(item.uri) ? (
+                        <Image
+                          source={{uri: item.uri}}
+                          style={{
+                            width:
+                              Dimensions.get('window').width / numColumns - 10,
+                            height:
+                              Dimensions.get('window').width / numColumns - 10,
+                            margin: 5,
+                            borderRadius: 5,
+                          }}
+                        />
+                      ) : isVideo(item.uri) ? (
+                        <VideoPlayer
+                          key={index}
+                          video={{uri: item.uri}}
+                          videoWidth={1600}
+                          videoHeight={900}
+                          thumbnail={{uri: item.uri}}
+                          style={{
+                            width:
+                              Dimensions.get('window').width / numColumns - 10,
+                            height:
+                              Dimensions.get('window').width / numColumns - 10,
+                            margin: 5,
+                            borderRadius: 5,
+                          }}
+                        />
+                      ) : null}
                     </TouchableOpacity>
                   )}
                 />
