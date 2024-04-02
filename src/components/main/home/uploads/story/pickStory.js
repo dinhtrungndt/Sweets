@@ -140,7 +140,7 @@ const PickStory = ({route}) => {
         <>
           {story.media[current].type === 'image' ? (
             <Image
-              source={{uri: story.media[current].url}}
+              source={{uri: story.media[current].url.join()}}
               onLoadEnd={() => {
                 progress.setValue(0);
                 start();
@@ -150,10 +150,10 @@ const PickStory = ({route}) => {
           ) : (
             <TouchableOpacity onPress={handleVideoPress} style={{opacity: 1}}>
               <VideoPlayer
-                video={{uri: story.media[current].url}}
+                video={{uri: story.media[current].url.join()}}
                 videoWidth={1600}
                 videoHeight={900}
-                thumbnail={{uri: story.media[current].url}}
+                thumbnail={{uri: story.media[current].url.join()}}
                 autoplay={true}
                 hideControls={true}
                 showOnStart={true}
