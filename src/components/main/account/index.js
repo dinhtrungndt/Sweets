@@ -48,7 +48,7 @@ const AccountScreen = props => {
         await AsyncStorage.removeItem('userPassword');
         navigation.navigate('Login');
       } catch (error) {
-        console.log('Lỗi khi đăng xuất:', error);
+        console.log('Lỗi khi đăng xuấtzzzz:', error);
       }
     }
   };
