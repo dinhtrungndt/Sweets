@@ -20,6 +20,7 @@ import Profile from '../../../components/main/account/Profile/Profile';
 import ModalEditPostsAccount from '../../../components/main/home/posts/editPosts/account';
 import SelectScreenUp from '../../../components/main/home/uploads/posts/select';
 import ChangeObjects from '../../../components/main/home/posts/editPosts/account/objects';
+import ScanQRLogin from '../../../components/main/phonebook/Feature/ScanQRLogin';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,7 @@ export function HomeStackScreen() {
         component={SettingStoryObjects}
       />
       <Stack.Screen name="OtherUserA" component={OtherUserA} />
+
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />
       <Stack.Screen name="ChangeObjects" component={ChangeObjects} />
@@ -51,6 +53,9 @@ export function HomeStackScreen() {
         name="ModalEditPostsAccount"
         component={ModalEditPostsAccount}
       />
+
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} />
     </Stack.Navigator>
   );
 }
