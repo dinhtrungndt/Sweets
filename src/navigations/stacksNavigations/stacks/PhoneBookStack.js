@@ -17,6 +17,7 @@ import SinhNhat from '../../../components/main/phonebook/Feature/SinhNhat';
 import LoiMoiDaGui from '../../../components/main/phonebook/Feature/LoiMoiDaGui';
 import QuetQR from '../../../components/main/phonebook/Feature/QuetQR';
 import ScanQR from '../../../components/main/phonebook/Feature/ScanQR';
+import {useNavigation} from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 
 export function PhoneBookStack() {
@@ -28,35 +29,13 @@ export function PhoneBookStack() {
       }}>
       <Stack.Screen name="PhoneBookScreen" component={PhoneBookScreen} />
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen
-        name="SinhNhat"
-        component={SinhNhat}
-      />
-      <Stack.Screen
-        name="LoiMoiKetBan"
-        component={LoiMoiKetBan}
-      />
-       <Stack.Screen
-        name="LoiMoiDaGui"
-        component={LoiMoiDaGui}
-      />
-        <Stack.Screen
-        name="ScanQR"
-        component={ScanQR}
-      />
-       <Stack.Screen
-        name="QuetQR"
-        component={QuetQR}
-      />
-       <Stack.Screen
-        name="QRCODE"
-        component={QRCODE}
-      />
-       <Stack.Screen
-        name="ThoiTiet"
-        component={ThoiTiet}
-      />
-   
+      <Stack.Screen name="SinhNhat" component={SinhNhat} />
+      <Stack.Screen name="LoiMoiKetBan" component={LoiMoiKetBan} />
+      <Stack.Screen name="LoiMoiDaGui" component={LoiMoiDaGui} />
+      <Stack.Screen name="ScanQR" component={ScanQR} />
+      <Stack.Screen name="QuetQR" component={QuetQR} />
+      <Stack.Screen name="QRCODE" component={QRCODE} />
+      <Stack.Screen name="ThoiTiet" component={ThoiTiet} />
     </Stack.Navigator>
   );
 }
