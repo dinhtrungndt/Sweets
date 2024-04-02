@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const AxiosInstance = (contentType = 'application/json') => {
   const axiosInstance = axios.create({
     // baseURL: 'https://sweets-nodejs.onrender.com/',
-    baseURL: 'http://192.168.1.73:3001/',
+    baseURL: 'http://172.20.10.2:3001/',
     // baseURL: 'http://172.20.10.2:3001/',
   });
 
