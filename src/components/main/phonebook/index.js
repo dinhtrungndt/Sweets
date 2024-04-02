@@ -15,10 +15,11 @@ import QRCODE from './Feature/QRCODE';
 const Tab = createMaterialTopTabNavigator();
 
 const data = [
-  { id: '1', title: require('../../../assets/hppn2.png'), name: 'Sinh nhật' },
-  { id: '2', title: require('../../../assets/friends2.png'), name: 'Lời mời' },
-  { id: '3', title: require('../../../assets/qr-scan2.png'), name: 'Quét mã' },
-  { id: '4', title: require('../../../assets/cluold2.png'), name: 'Thời tiết' },
+  { id: '1', title: require('../../../assets/hppn2.png'), name: 'Sinh nhật \n sắp tới' },
+  { id: '2', title: require('../../../assets/add-friend-receive3.png'), name: 'Lời mời \n đã nhận' },
+  { id: '3', title: require('../../../assets/add-friend-sent2.png'), name: 'Lời mời \n đã gửi' },
+  { id: '4', title: require('../../../assets/cluold2.png'), name: 'Thời tiết \n hôm nay' },
+  { id: '5', title: require('../../../assets/qr-scan.png'), name: 'Quét mã \n qrcode' },
 ];
 const PhoneBookScreen = props => {
   const { navigation } = props;
@@ -35,6 +36,8 @@ const PhoneBookScreen = props => {
             navigation.navigate('LoiMoiKetBan');
           } if (item.id === '4') {
             navigation.navigate('ThoiTiet');
+          }if (item.id === '5') {
+            navigation.navigate('QuetQR');
           }
           else {
 
@@ -65,7 +68,7 @@ const PhoneBookScreen = props => {
         <Image 
         style={{width:35,height:35,marginLeft:5,marginVertical:4}}
         source={require('../../../assets/fireworks.png')}/>
-       <Text style={styles.txtFlat}>Tính năng nổi bật</Text>
+       <Text style={styles.txtFlat}>Thông tin khác</Text>
        </View>
           <FlatList
             data={data}

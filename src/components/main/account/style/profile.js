@@ -96,7 +96,7 @@ export const styles = StyleSheet.create({
     },
     profileFrame: {
         width: '100%',
-        height: 420,
+        height: 462,
         backgroundColor: '#FFFFFF',
     },
     imgCover: {
@@ -119,6 +119,26 @@ export const styles = StyleSheet.create({
         marginTop: 270,
         color: '#000000',
         textAlign: 'center',
+    },
+    containerFriends: {
+        width: '100%',
+        height: 'auto',
+        flexDirection: 'row',
+        marginTop: 10,
+    },
+    txtFriendsNumber: {
+        fontFamily: 'Poppins',
+        fontStyle: 'normal',
+        fontSize: 18,
+        color: '#000000',
+        marginLeft: '5%',
+    },
+    txtFriends: {
+        fontFamily: 'Poppins',
+        fontStyle: 'normal',
+        fontSize: 14,
+        alignSelf: 'center',
+        marginLeft: 5,
     },
     btnIntroduce: {
         width: '90%',

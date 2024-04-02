@@ -9,11 +9,11 @@ const styles = StyleSheet.create({
     color:'#0969da'
   },
   button: {
-    width: 45,
-    height: 45,
-    borderRadius: 25,
+    width: 55,
+    height: 55,
+    borderRadius: 27,
     borderWidth: 1.2,
-    marginHorizontal: 18,
+    marginHorizontal: 15,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: '#22b6c0',
@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
   buttonImg: {
     alignSelf: 'center',
     marginVertical: 10,
-    width: 25,
-    height: 25,
+    width: 23,
+    height: 23,
   },
   ViewFlatlist: {
     marginVertical: 20,
@@ -70,10 +70,10 @@ const styles = StyleSheet.create({
     marginTop:-55
   },
   txtFlatlist:{
-    fontSize:15,
+    fontSize:14,
     fontWeight:'bold',
-    marginHorizontal:10,
-    marginVertical:2,
+    marginHorizontal:7,
+    marginVertical:4,
     color:'#22b6c0'
   },
   wrapBackground:{

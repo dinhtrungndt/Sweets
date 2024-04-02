@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     },
     textName: {
         fontFamily: 'Poppins',
-        fontStyle: 'normal',
+        fontWeight: 'bold',
         fontSize: 20,
         marginTop: 270,
         color: '#000000',

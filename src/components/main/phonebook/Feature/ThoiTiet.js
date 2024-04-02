@@ -6,14 +6,15 @@ import {
   ImageBackground,
   ActivityIndicator,
   Image,
-  Alert
+  Alert,TouchableOpacity
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import AxiosInstance from '../../../../helper/AxiosWeather';
 import { format, getDay, parseISO } from 'date-fns';
 import viLocale from 'date-fns/locale/vi';
-const ThoiTiet = () => {
+const ThoiTiet = (props) => {
+  const { navigation } = props;
   const [weatherData, setWeatherData] = useState(null);
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -84,7 +85,7 @@ const ThoiTiet = () => {
         `weather?lat=${lat}&lon=${lon}&appid=b0e86008293e7c25b2deb2caa5a36b0c`,
       );
 
-      console.log('Weather Data:', response);
+      //console.log('Weather Data:', response);
 
       // Xử lý dữ liệu thời tiết ở đây (setWeatherData(response.data))
       setWeatherData(response);
@@ -126,6 +127,14 @@ const ThoiTiet = () => {
             {/* Hiển thị dữ liệu thời tiết ở đây */}
             {weatherData && (
               <View style={styles.weatherContainer}>
+
+
+        <TouchableOpacity style={styles.friendItem}  onPress={() => navigation.navigate('PhoneBookScreen')}>
+          <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
+        </TouchableOpacity>
+      
+        
+   
                 <View style={styles.header}>
                   <Text style={styles.cityText}>
                     {weatherData.name}, {weatherData.sys.country}
@@ -214,7 +223,32 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 
-
+  wrapContent1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#22b6c0',
+   
+  },
+  
+      friendItem: {
+        padding: 5,
+        backgroundColor:'yellow',
+        alignSelf:'flex-start'
+      },
+      avatar: {
+        width: 20,
+        height: 20,
+      },
+      
+      txtContent1: {
+        fontSize: 19,
+        fontWeight: 'bold',
+        
+        marginRight:116
+       
+      },
 });
 
 export default ThoiTiet;

@@ -14,9 +14,13 @@ import LoiMoiKetBan from '../../../components/main/phonebook/Feature/LoiMoiKetBa
 import ThoiTiet from '../../../components/main/phonebook/Feature/ThoiTiet';
 import Profile from '../../../components/main/account/Profile/Profile';
 import SinhNhat from '../../../components/main/phonebook/Feature/SinhNhat';
+import LoiMoiDaGui from '../../../components/main/phonebook/Feature/LoiMoiDaGui';
+import QuetQR from '../../../components/main/phonebook/Feature/QuetQR';
+import ScanQR from '../../../components/main/phonebook/Feature/ScanQR';
 const Stack = createNativeStackNavigator();
 
 export function PhoneBookStack() {
+  const navigation = useNavigation();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -31,6 +35,18 @@ export function PhoneBookStack() {
       <Stack.Screen
         name="LoiMoiKetBan"
         component={LoiMoiKetBan}
+      />
+       <Stack.Screen
+        name="LoiMoiDaGui"
+        component={LoiMoiDaGui}
+      />
+        <Stack.Screen
+        name="ScanQR"
+        component={ScanQR}
+      />
+       <Stack.Screen
+        name="QuetQR"
+        component={QuetQR}
       />
        <Stack.Screen
         name="QRCODE"
