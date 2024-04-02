@@ -46,7 +46,7 @@ export function HomeStackScreen() {
       />
       <Stack.Screen name="OtherUserA" component={OtherUserA} />
 
-      <Stack.Screen name="Profile" component={Profile} />
+      {/* <Stack.Screen name="Profile" component={Profile} /> */}
       <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />
       <Stack.Screen name="ChangeObjects" component={ChangeObjects} />
       <Stack.Screen
