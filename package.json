@@ -22,7 +22,7 @@
     "@react-navigation/native-stack": "^6.9.26",
     "@react-navigation/stack": "^6.3.20",
     "@zegocloud/react-native-callkeep": "^4.3.9",
-    "@zegocloud/zego-uikit-prebuilt-call-rn": "^4.5.0",
+    "@zegocloud/zego-uikit-prebuilt-call-rn": "^4.6.0",
     "@zegocloud/zego-uikit-rn": "^2.7.4",
     "add": "^2.0.6",
     "axios": "^1.6.3",
@@ -71,8 +71,8 @@
     "socket.io-client": "^4.7.4",
     "toastify-react-native": "^5.0.0",
     "zego-express-engine-reactnative": "3.2.0",
-    "zego-zim-react-native": "2.12.1",
-    "zego-zpns-react-native": "2.5.0-alpha"
+    "zego-zim-react-native": "^2.12.1",
+    "zego-zpns-react-native": "^2.5.0-alpha"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

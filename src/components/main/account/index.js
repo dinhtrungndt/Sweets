@@ -83,7 +83,7 @@ const AccountScreen = props => {
           style={styles.container2}>
           <Image
             style={styles.userIcon}
-            source={require('../../../assets/icon_back.png')}
+            source={require('../../../assets/icon_next_50.png')}
           />
         </TouchableOpacity>
       </TouchableOpacity>
