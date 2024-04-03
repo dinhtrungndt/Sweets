@@ -9,11 +9,6 @@ const ScanQRLogin = () => {
   const [scanning, setScanning] = useState(true); // Trạng thái của việc quét
   const socket = useRef(null);
   const [device, setDevice] = useState('');
-  // dùng để thêm dữ liệu vào bảng qr code khi load lại trang
-  const onAddDevice = async () => {
-    const response = await CreateDevice(device);
-    console.log('>>>>>>>>>> response: ', response);
-  };
   // Them idUser vao bang qr code
   const onUpdateDevice = async () => {
     const response = await UpdateDevice(user.user._id,device);
@@ -22,27 +17,13 @@ const ScanQRLogin = () => {
   };  
   useEffect(() => {
     // baseURL: 'https://sweets-nodejs.onrender.com/',
-    socket.current = io('https://sweets-nodejs.onrender.com/');
-    socket.current.on('AddDevice2', data => {
-      console.log('>>>>>>>>>> nhan device id ' + data.device);
-      setDevice(data.device);
-    });
+    socket.current = io('http://192.168.1.68:3001/');
   }, []);
 
-  useEffect(() => {
-    if (device !== '') {
-      onAddDevice();
-    }
-  }, [device]);
 
   const handleBarcodeScan = event => {
-    Alert.alert('Đăng nhập thành công');
-    // Lưu thông tin mã QR vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn
-
-    // socket.current.emit('LoginByQRCode', {userId: user.user._id,deviceId: device});
-    // console.log('>>>>>>>>>> deviceId: ', device);
-    onUpdateDevice();
-    // Dừng quét
+    Alert.alert('QR code found', event.nativeEvent.codeStringValue);
+    socket.current.emit('send_device_iduser', {deviceid: event.nativeEvent.codeStringValue, iduser: user.user._id});
     setScanning(false);
   };
 
