@@ -20,9 +20,10 @@ export const UserProvider = props => {
           const result = await login(userEmail, userPassword);
           if (result && result.status === 1) {
             setUser(result);
-            await onUserLogout();
-            console.log('onUserLogout được gọi trước khi gọi onUserLogin');
-            await onUserLogin(result.id, result.user.name);
+            // await onUserLogout();
+            // console.log('onUserLogout được gọi trước khi gọi onUserLogin');
+            
+            // await onUserLogin(result.id, result.user.name);
             console.log(
               'onUserLogin được gọi khi người dùng đăng nhập thành công',
             );
@@ -44,7 +45,7 @@ export const UserProvider = props => {
       await AsyncStorage.removeItem('userEmail');
       await AsyncStorage.removeItem('userPassword');
       // await onUserLogout();
-      console.log('onUserLogout được gọi thành công');
+      // console.log('onUserLogout được gọi thành công');
       setUser(null);
     } catch (error) {
       console.log('---- >>>>>>Lỗi khi đăng xuất:', error);

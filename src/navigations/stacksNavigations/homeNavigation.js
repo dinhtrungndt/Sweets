@@ -15,10 +15,7 @@ import {PhoneBookStack} from './stacks/PhoneBookStack';
 import {ChatScreenStack} from './stacks/chatStack';
 import {AddsScreenStack} from './stacks/addsStack';
 import {GetRouteNameAdds} from '../customs/routeAdds';
-import {
-  ZegoUIKitPrebuiltCallWaitingScreen,
-  ZegoUIKitPrebuiltCallInCallScreen,
-} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+
 import {GetRouteNameChat} from '../customs/routeChat';
 const Tab = createBottomTabNavigator();
 
@@ -28,6 +25,7 @@ const HomeNavigation = () => {
       <Tab.Screen
         name="HomeStackScreen"
         component={HomeStackScreen}
+        // component={ChatScreenStack}
         options={({route}) => ({
           tabBarStyle: {display: GetRouteNameHome(route)},
           headerShown: false,
