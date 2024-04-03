@@ -10,7 +10,7 @@ import {
   Animated,
   TextInput,
 } from 'react-native';
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useContext} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import {styles} from '../styles/story';
@@ -18,18 +18,24 @@ import moment from 'moment';
 import VideoPlayer from 'react-native-video-player';
 import {deletePostsAccount} from '../../../../../services/home/homeService';
 import DialogDeletePosts from 'react-native-dialog';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {UserContext} from '../../../../../contexts/user/userContext';
 
 const {height, width} = Dimensions.get('window');
 
 const PickStory = ({route}) => {
   const navigation = useNavigation();
   const {story} = route.params;
-
+  const {user} = useContext(UserContext);
   const [current, setCurrent] = useState(0);
+  const [storys, setStorys] = useState(story);
+  const hashIdStory = storys?.map(item => item?.idUsers);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [visibleDiaLogDeletePosts, setVisibleDiaLogDeletePosts] =
     useState(false);
+
+  // console.log('>>>>> storysstorys', storys);
 
   const handleVideoPress = () => {
     setIsPaused(!isPaused);
@@ -53,7 +59,11 @@ const PickStory = ({route}) => {
   };
 
   const next = () => {
-    if (current < (story.media ? story.media.length - 1 : 0)) {
+    if (current != storys.length - 1) {
+      let tempData = storys;
+      tempData[current].finish = 1;
+      setStorys(tempData);
+      progress.setValue(0);
       setCurrent(current + 1);
     } else {
       close();
@@ -62,6 +72,10 @@ const PickStory = ({route}) => {
 
   const previous = () => {
     if (current - 1 >= 0) {
+      let tempData = storys;
+      tempData[current].finish = 0;
+      setStorys(tempData);
+      progress.setValue(0);
       setCurrent(current - 1);
     } else {
       close();
@@ -69,6 +83,7 @@ const PickStory = ({route}) => {
   };
 
   const close = () => {
+    progress.setValue(0);
     navigation.goBack();
   };
 
@@ -115,11 +130,11 @@ const PickStory = ({route}) => {
     await handleDeleteStory();
     setVisibleDiaLogDeletePosts(false);
   };
-  // console.log('>>>. Xóa thành công', story.map(item => item._id).join());
+  // console.log('>>>. Xóa thành công', storys[current]._id);
 
   const handleDeleteStory = async () => {
     try {
-      const _idDelete = story.map(item => item._id).join();
+      const _idDelete = storys[current]._id;
       const res = await deletePostsAccount(_idDelete);
       setVisibleDiaLogDeletePosts(false);
       navigation.replace('HomeScreen');
@@ -135,90 +150,58 @@ const PickStory = ({route}) => {
   }, [current]);
 
   return (
-    <View style={{flex: 1, backgroundColor: '#000'}}>
-      {story.media && story.media.map(item => item.url).join() !== '' ? (
-        <>
-          {story.media[current].type === 'image' ? (
-            <Image
-              source={{uri: story.media[current].url.join()}}
-              onLoadEnd={() => {
-                progress.setValue(0);
-                start();
-              }}
-              style={{width: width, height: height}}
-            />
-          ) : (
-            <TouchableOpacity onPress={handleVideoPress} style={{opacity: 1}}>
-              <VideoPlayer
-                video={{uri: story.media[current].url.join()}}
-                videoWidth={1600}
-                videoHeight={900}
-                thumbnail={{uri: story.media[current].url.join()}}
-                autoplay={true}
-                hideControls={true}
-                showOnStart={true}
-                paused={isPaused}
-                style={styles.video_story}
-              />
-            </TouchableOpacity>
-          )}
-        </>
-      ) : (
-        <View style={styles.container_content}>
-          <Text style={styles.content}>
-            {story.content ? story.content : story[current].content}
-          </Text>
-          {/* {story.content ? (
-            <Text style={styles.content}>
-              {story.content ? story.content : story[current].content}
-            </Text>
-          ) : (
-            <>
-              {story
-                .flatMap(item => item.media.map(item => item.type))
-                .join() === 'image' ? (
-                <Image
-                  source={{
-                    uri: story
-                      .flatMap(item => item.media.map(item => item.url))
-                      .join(),
-                  }}
-                  onLoadEnd={() => {
-                    progress.setValue(0);
-                    start();
-                  }}
-                  style={{width: width, height: height}}
-                />
-              ) : (
-                <TouchableOpacity
-                  onPress={handleVideoPress}
-                  style={{opacity: 1}}>
-                  <VideoPlayer
-                    video={{
-                      uri: story
-                        .flatMap(item => item.media.map(item => item.url))
-                        .join(),
-                    }}
-                    videoWidth={1600}
-                    videoHeight={900}
-                    thumbnail={{
-                      uri: story
-                        .flatMap(item => item.media.map(item => item.url))
-                        .join(),
-                    }}
-                    autoplay={true}
-                    hideControls={true}
-                    showOnStart={true}
-                    paused={isPaused}
-                    style={styles.video_story_me}
-                  />
-                </TouchableOpacity>
-              )}
-            </>
-          )} */}
-        </View>
-      )}
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#000',
+      }}>
+      {/* {console.log('storys[current]storys[current]', storys)} */}
 
+      <View style={styles.container_content}>
+        {storys[current] && storys[current].media.length === 0 ? (
+          <Text style={styles.content}>{storys[current].content}</Text>
+        ) : storys[current] &&
+          storys[current].media.some(item => item.type === 'image') ? (
+          <Image
+            source={{
+              uri: storys[current].media
+                .find(item => item.type === 'image')
+                .url.join(),
+            }}
+            onLoadEnd={() => {
+              progress.setValue(0);
+              start();
+            }}
+            style={[
+              {width: width, height: height},
+              {borderRadius: 10, height: height + 15},
+            ]}
+          />
+        ) : storys[current] &&
+          storys[current].media.some(item => item.type === 'video') ? (
+          <TouchableOpacity onPress={handleVideoPress} style={{opacity: 1}}>
+            <VideoPlayer
+              video={{
+                uri: storys[current].media
+                  .find(item => item.type === 'video')
+                  .url.join(),
+              }}
+              videoWidth={1600}
+              videoHeight={1000}
+              thumbnail={{
+                uri: storys[current].media
+                  .find(item => item.type === 'video')
+                  .url.join(),
+              }}
+              autoplay={true}
+              hideControls={true}
+              showOnStart={true}
+              paused={isPaused}
+              style={styles.video_story}
+            />
+          </TouchableOpacity>
+        ) : null}
+      </View>
       <View
         style={{
           width: width,
@@ -228,28 +211,29 @@ const PickStory = ({route}) => {
           alignItems: 'center',
           flexDirection: 'row',
         }}>
-        {story.media &&
-          Array.isArray(story.media) &&
-          story.media.map((item, index) => {
-            return (
-              <View
-                key={index}
+        {storys &&
+          storys.map &&
+          storys.map(currentStory => (
+            <View
+              key={currentStory._id}
+              style={{
+                flex: 1,
+                height: 3,
+                backgroundColor: 'rgba(255,255,255,0.5)',
+                marginLeft: 5,
+              }}>
+              <Animated.View
                 style={{
-                  flex: 1,
+                  flex:
+                    current == currentStory._id
+                      ? storys[currentStory._id].finish
+                      : progress,
                   height: 3,
-                  backgroundColor: 'rgba(255,255,255,0.5)',
-                  marginLeft: 5,
-                }}>
-                <Animated.View
-                  style={{
-                    flex: current === index ? 1 : progress,
-                    height: 3,
-                    backgroundColor: 'rgba(255,255,255,1)',
-                  }}
-                />
-              </View>
-            );
-          })}
+                  backgroundColor: 'rgba(255,255,255,1)',
+                }}
+              />
+            </View>
+          ))}
       </View>
       <View
         style={{
@@ -261,10 +245,10 @@ const PickStory = ({route}) => {
           top: 30,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {story.idUsers ? (
+          {storys.idUsers ? (
             <>
               <Image
-                source={{uri: story.idUsers.avatar}}
+                source={{uri: storys.idUsers.avatar}}
                 style={{
                   width: 40,
                   height: 40,
@@ -282,17 +266,17 @@ const PickStory = ({route}) => {
                     left: 60,
                     fontWeight: 'bold',
                   }}>
-                  {story.idUsers.name}
+                  {storys.idUsers.name}
                 </Text>
                 <Text style={{color: '#fff', left: 60}}>
-                  {formatTime(story.createAt)}
+                  {formatTime(storys.createAt)}
                 </Text>
               </View>
             </>
           ) : (
             <>
               <Image
-                source={{uri: story[current].idUsers.avatar}}
+                source={{uri: storys[current].idUsers.avatar}}
                 style={{
                   width: 40,
                   height: 40,
@@ -310,10 +294,10 @@ const PickStory = ({route}) => {
                     left: 60,
                     fontWeight: 'bold',
                   }}>
-                  {story[current].idUsers.name}
+                  {storys[current].idUsers.name}
                 </Text>
                 <Text style={{color: '#fff', left: 60}}>
-                  {formatTime(story[current].createAt)}
+                  {formatTime(storys[current].createAt)}
                 </Text>
               </View>
             </>
@@ -332,7 +316,11 @@ const PickStory = ({route}) => {
           />
         </TouchableOpacity>
 
-        {story.idUsers ? (
+        {/* {console.log(
+          '>>>>>> sososo ',
+          hashIdStory.map(user => user._id),
+        )} */}
+        {hashIdStory.map(user => user._id)[0] !== user.user._id ? (
           <View
             style={{
               width: width,
@@ -348,10 +336,8 @@ const PickStory = ({route}) => {
                 }}>
                 <View
                   style={{
-                    width: width,
-                    height: height,
                     position: 'absolute',
-                    top: 0,
+                    bottom: 0,
                   }}>
                   <View
                     style={{
@@ -446,46 +432,61 @@ const PickStory = ({route}) => {
         }}>
         <TouchableOpacity
           style={{width: '30%', height: '100%'}}
-          onPress={previous}>
+          onPress={() => {
+            previous();
+          }}>
           <View />
         </TouchableOpacity>
-        <TouchableOpacity style={{width: '30%', height: '100%'}} onPress={next}>
+        <TouchableOpacity
+          style={{width: '30%', height: '100%'}}
+          onPress={() => {
+            next();
+          }}>
           <View />
         </TouchableOpacity>
       </View>
       {/* rep story */}
-      <View
-        style={{
-          height: 50,
-          backgroundColor: '#fff',
-          position: 'absolute',
-          bottom: 60,
-          borderWidth: 1,
-          borderColor: '#666',
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginLeft: 33,
-          borderRadius: 20,
-        }}>
-        <Image
-          source={require('../../../../../assets/icon_comment.png')}
+      {hashIdStory.map(user => user._id)[0] !== user.user._id ? (
+        <View
           style={{
-            width: 25,
-            height: 25,
-            borderRadius: 20,
-            marginLeft: 10,
-          }}
-        />
-        <TextInput
-          placeholder="Gửi tin nhắn..."
-          style={{
-            width: '80%',
-            height: 48,
+            height: 50,
             backgroundColor: '#fff',
-            paddingLeft: 10,
-          }}
-        />
-      </View>
+            position: 'absolute',
+            bottom: 60,
+            borderWidth: 1,
+            borderColor: '#666',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginLeft: 33,
+            borderRadius: 20,
+          }}>
+          <Image
+            source={require('../../../../../assets/icon_comment.png')}
+            style={{
+              width: 25,
+              height: 25,
+              borderRadius: 20,
+              marginLeft: 10,
+            }}
+          />
+          <TextInput
+            placeholder="Gửi tin nhắn..."
+            style={{
+              width: '75%',
+              height: 48,
+              backgroundColor: '#fff',
+              paddingLeft: 10,
+            }}
+          />
+          <TouchableOpacity>
+            <Image
+              style={styles.icon_mess_send}
+              source={require('../../../../../assets/send_comment_icon.png')}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : null}
+
       <DialogDeletePosts.Container visible={visibleDiaLogDeletePosts}>
         <DialogDeletePosts.Title>Xóa story này ?</DialogDeletePosts.Title>
         <DialogDeletePosts.Description>
