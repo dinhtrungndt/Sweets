@@ -30,7 +30,7 @@ const ChatScreenIn = ({ route, navigation }) => {
       // Kiểm tra xem tin nhắn mới có thuộc về hai người liên quan hay không
       if ((newMessage.idSender === user.user._id && newMessage.idReceiver === receiver.receiverv2) || (newMessage.idSender === receiver.receiverv2 && newMessage.idReceiver === user.user._id)) {
         setMessages(prevMessages => [...prevMessages, newMessage]);
-        scrollToBottom();
+
       }
     });
 
@@ -48,8 +48,8 @@ const ChatScreenIn = ({ route, navigation }) => {
       const idReceiver = receiver.receiverv2;
 
       const response = await GetMessageSR(idSender, idReceiver);
-      setMessages(response.slice(-100));
-      scrollToBottom();
+      setMessages(response.slice());
+
     } catch (error) {
       console.error('Lỗi:', error);
     }
@@ -69,9 +69,7 @@ const ChatScreenIn = ({ route, navigation }) => {
     setMessageInput('');
   };
 
-  const scrollToBottom = () => {
-    scrollViewRef.current.scrollToEnd({ animated: true });
-  };
+
 
   const renderItem = ({ item }) => {
     return (
@@ -115,14 +113,16 @@ const ChatScreenIn = ({ route, navigation }) => {
         </View>
       </View>
       <Text style={styles.line} />
+      {loadingMore && <ActivityIndicator size="small" color="#0000ff" />}
       <FlatList
-        ref={scrollViewRef}
-        data={messages.slice()}
+        inverted={true}
+        data={messages.slice().reverse()}
+       
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => renderItem({ item })}
-        onContentSizeChange={() => scrollToBottom()} // Gọi scrollToBottom khi nội dung thay đổi
       />
-      {loadingMore && <ActivityIndicator size="small" color="#0000ff" />}
+
+
       <View style={styles.input}>
         <TextInput
           style={styles.input_text}
