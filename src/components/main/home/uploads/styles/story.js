@@ -38,4 +38,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 100,
   },
+
+  icon_mess_send: {
+    width: 30,
+    height: 30,
+  },
 });

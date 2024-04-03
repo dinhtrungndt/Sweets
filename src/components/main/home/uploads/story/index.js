@@ -23,17 +23,22 @@ import SelectFeeingStory from './selectFeelingStory';
 const RenderItemStory = ({story, navigation, currentUserID}) => {
   const [seenStory, setSeenStory] = useState(false);
 
+  // console.log('>>>>>>>>>>>> story userzzzzzzzzz', story);
+  const hashStoryFM = story.flatMap(item => item.idUsers);
+
+  // console.log('>> --------- hash: ' + hashStoryFM.map(item => item.name)[0]);
+
   const handleSeenStory = () => {
     navigation.navigate('PickStory', {story: story});
     setSeenStory(true);
   };
 
-  let name = story.idUsers.name;
+  let name = hashStoryFM.map(item => item.name)[0];
   if (name.length > 10) {
     name = name.substring(0, 10 - 3) + '...';
   }
 
-  if (story.idUsers._id === currentUserID) {
+  if (hashStoryFM.map(item => item._id)[0] === currentUserID) {
     return null;
   }
 
@@ -44,7 +49,7 @@ const RenderItemStory = ({story, navigation, currentUserID}) => {
         onPress={handleSeenStory}>
         <Image
           style={styles.avatar_story}
-          source={{uri: story.idUsers.avatar}}
+          source={{uri: hashStoryFM.map(item => item.avatar)[0]}}
         />
       </TouchableOpacity>
       <Text style={styles.name_story}>{name}</Text>
@@ -77,6 +82,22 @@ const StoryScreen = ({navigation, story}) => {
   };
 
   const filteredStories = filterStories(story);
+
+  // console.log('>>>>>>>>>>>> filteredStories', filteredStories);
+
+  const userStoriesMap = {};
+  filteredStories.forEach(story => {
+    const userId = story.idUsers._id;
+    if (!userStoriesMap[userId]) {
+      userStoriesMap[userId] = [story];
+    } else {
+      userStoriesMap[userId].push(story);
+    }
+  });
+
+  const groupedStories = Object.values(userStoriesMap);
+
+  // console.log('>>>>>>>>-------------', groupedStories);
 
   const isMyStoryExpired = userStories.every(story => {
     const currentTimestamp = moment();
@@ -120,28 +141,26 @@ const StoryScreen = ({navigation, story}) => {
                 />
               )}
             </View>
-            {(showStoryMe && !isMyStoryExpired) ||
-              (!seenStory && (
-                <View style={styles.iconAdd}>
-                  <Image
-                    source={require('../../../../../assets/add_25px.png')}
-                  />
-                </View>
-              ))}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconAdd}
+            onPress={() => setModelSelectFeeingStory(true)}>
+            <Image source={require('../../../../../assets/add_25px.png')} />
           </TouchableOpacity>
           <Text style={styles.name_me}>Tin của bạn</Text>
         </View>
 
+        {/* list story of friends */}
         <FlatList
-          data={filteredStories}
-          renderItem={({item}) => (
+          data={groupedStories}
+          renderItem={({item, index}) => (
             <RenderItemStory
               story={item}
               navigation={navigation}
               currentUserID={user.user._id}
+              key={index.toString()}
             />
           )}
-          keyExtractor={item => item._id}
           showsVerticalScrollIndicator={false}
           initialNumToRender={15}
           maxToRenderPerBatch={15}
