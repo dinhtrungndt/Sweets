@@ -47,7 +47,7 @@ const ChatScreenIn = ({ route, navigation }) => {
       const idSender = user.user._id;
       const idReceiver = receiver.receiverv2;
       const response = await GetMessageSR(idSender, idReceiver);
-      setMessages(response.slice());
+      setMessages(response);
 
     } catch (error) {
       console.error('Lỗi:', error);
