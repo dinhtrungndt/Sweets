@@ -1,36 +1,24 @@
-import React, {useContext, useEffect, useState, useRef} from 'react';
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  ActivityIndicator,
-} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import React, { useEffect, useContext, useState, useRef } from 'react';
+import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
-import {GetMessageSR} from '../../../../services/home/chatService';
-import {UserContext} from '../../../../contexts/user/userContext';
-import {styles} from '../styles/chat_in';
+import { GetMessageSR } from '../../../../services/home/chatService';
+import { UserContext } from '../../../../contexts/user/userContext';
+import { styles } from '../styles/chat_in';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ZegoUIKitPrebuiltCallService, {
-  ZegoCallInvitationDialog,
-  ZegoUIKitPrebuiltCallWaitingScreen,
-  ZegoUIKitPrebuiltCallInCallScreen,
-  ZegoSendCallInvitationButton,
-} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import ZegoUIKitPrebuiltCallService, { ZegoCallInvitationDialog, ZegoUIKitPrebuiltCallWaitingScreen, ZegoUIKitPrebuiltCallInCallScreen, ZegoSendCallInvitationButton } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
-const ChatScreenIn = ({route, navigation}) => {
-  const {receiver} = route.params;
-  const {user} = useContext(UserContext);
+const ChatScreenIn = ({ route, navigation }) => {
+  const { receiver } = route.params;
+  const { user } = useContext(UserContext);
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const scrollViewRef = useRef();
   const socket = useRef(null);
+
+
 
   useEffect(() => {
     // Khởi tạo socket khi component được mount
@@ -40,13 +28,9 @@ const ChatScreenIn = ({route, navigation}) => {
     // Lắng nghe sự kiện new_message từ socket
     socket.current.on('new_message', newMessage => {
       // Kiểm tra xem tin nhắn mới có thuộc về hai người liên quan hay không
-      if (
-        (newMessage.idSender === user.user._id &&
-          newMessage.idReceiver === receiver.receiverv2) ||
-        (newMessage.idSender === receiver.receiverv2 &&
-          newMessage.idReceiver === user.user._id)
-      ) {
+      if ((newMessage.idSender === user.user._id && newMessage.idReceiver === receiver.receiverv2) || (newMessage.idSender === receiver.receiverv2 && newMessage.idReceiver === user.user._id)) {
         setMessages(prevMessages => [...prevMessages, newMessage]);
+        scrollToBottom();
       }
     });
 
@@ -58,8 +42,6 @@ const ChatScreenIn = ({route, navigation}) => {
     };
   }, []);
 
-  0;
-
   const fetchData = async () => {
     try {
       const idSender = user.user._id;
@@ -67,6 +49,7 @@ const ChatScreenIn = ({route, navigation}) => {
 
       const response = await GetMessageSR(idSender, idReceiver);
       setMessages(response.slice(-100));
+      scrollToBottom();
     } catch (error) {
       console.error('Lỗi:', error);
     }
@@ -85,10 +68,12 @@ const ChatScreenIn = ({route, navigation}) => {
     socket.current.emit('new_message', newMessage);
     setMessageInput('');
   };
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  console.log('>>>>>>>>>>>>>>>>>>>>>>> 90', receiver);
 
-  const renderItem = ({item}) => {
+  const scrollToBottom = () => {
+    scrollViewRef.current.scrollToEnd({ animated: true });
+  };
+
+  const renderItem = ({ item }) => {
     return (
       <View style={styles.chat}>
         {item.idSender === user.user._id ? (
@@ -109,36 +94,33 @@ const ChatScreenIn = ({route, navigation}) => {
   return (
     <View style={styles.T}>
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.back_user}
-          onPress={() => navigation.goBack()}>
-          <Image
-            style={styles.back}
-            source={require('../../../../assets/back_50px.png')}
-          />
+        <TouchableOpacity style={styles.back_user} onPress={() => navigation.goBack()}>
+          <Image style={styles.back} source={require('../../../../assets/back_50px.png')} />
           <TouchableOpacity style={styles.account}>
-            <Image source={{uri: receiver.avatar}} style={styles.avatar} />
+            <Image source={{ uri: receiver.avatar }} style={styles.avatar} />
             <Text style={styles.name_user}>{receiver.name}</Text>
           </TouchableOpacity>
         </TouchableOpacity>
         <View style={styles.call_video}>
           <ZegoSendCallInvitationButton
-              invitees={[{userID: receiver.receiverv2, userName: receiver.name}]}
-              isVideoCall={false}
-              resourceID={'sweets_call'}
-            />
-            <ZegoSendCallInvitationButton
-              invitees={[{userID: receiver.receiverv2, userName: receiver.name}]}
-              isVideoCall={true}
-              resourceID={'sweets_call'}
-            />
+            invitees={[{ userID: receiver.receiverv2, userName: receiver.name }]}
+            isVideoCall={false}
+            resourceID={'sweets_call'}
+          />
+          <ZegoSendCallInvitationButton
+            invitees={[{ userID: receiver.receiverv2, userName: receiver.name }]}
+            isVideoCall={true}
+            resourceID={'sweets_call'}
+          />
         </View>
       </View>
       <Text style={styles.line} />
       <FlatList
-        data={messages.slice().reverse()}
-        keyExtractor={(item, index) => index.toString()} // Sử dụng index như một key
-        renderItem={({item}) => renderItem({item})}
+        ref={scrollViewRef}
+        data={messages.slice()}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => renderItem({ item })}
+        onContentSizeChange={() => scrollToBottom()} // Gọi scrollToBottom khi nội dung thay đổi
       />
       {loadingMore && <ActivityIndicator size="small" color="#0000ff" />}
       <View style={styles.input}>
@@ -150,10 +132,7 @@ const ChatScreenIn = ({route, navigation}) => {
           onChangeText={text => setMessageInput(text)}
         />
         <TouchableOpacity style={styles.send} onPress={sendMessage}>
-          <Image
-            style={styles.back}
-            source={require('../../../../assets/email_send_50px.png')}
-          />
+          <Image style={styles.back} source={require('../../../../assets/email_send_50px.png')} />
         </TouchableOpacity>
       </View>
     </View>

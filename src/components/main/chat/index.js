@@ -132,6 +132,7 @@ const ChatScreen = props => {
       </View>
 
       <Text style={styles.line} />
+      <View style={styles.divider} />
       <FlatList
         data={user}
         showsVerticalScrollIndicator={false}
