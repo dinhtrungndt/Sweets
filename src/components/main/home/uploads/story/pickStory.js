@@ -20,7 +20,6 @@ import {deletePostsAccount} from '../../../../../services/home/homeService';
 import DialogDeletePosts from 'react-native-dialog';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {UserContext} from '../../../../../contexts/user/userContext';
-
 const {height, width} = Dimensions.get('window');
 
 const PickStory = ({route}) => {
@@ -51,8 +50,8 @@ const PickStory = ({route}) => {
       toValue: 1,
       duration: 5000,
       useNativeDriver: false,
-    }).start(({finish}) => {
-      if (finish) {
+    }).start(({finished}) => {
+      if (finished) {
         next();
       }
     });
@@ -61,7 +60,7 @@ const PickStory = ({route}) => {
   const next = () => {
     if (current != storys.length - 1) {
       let tempData = storys;
-      tempData[current].finish = 1;
+      tempData[current].finished = 1;
       setStorys(tempData);
       progress.setValue(0);
       setCurrent(current + 1);
@@ -73,7 +72,7 @@ const PickStory = ({route}) => {
   const previous = () => {
     if (current - 1 >= 0) {
       let tempData = storys;
-      tempData[current].finish = 0;
+      tempData[current].finished = 0;
       setStorys(tempData);
       progress.setValue(0);
       setCurrent(current - 1);
@@ -226,7 +225,7 @@ const PickStory = ({route}) => {
                 style={{
                   flex:
                     current == currentStory._id
-                      ? storys[currentStory._id].finish
+                      ? storys[currentStory._id].finished
                       : progress,
                   height: 3,
                   backgroundColor: 'rgba(255,255,255,1)',
