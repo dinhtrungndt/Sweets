@@ -21,7 +21,8 @@ const ScanQRLogin = () => {
     socket.current.emit('UpdateDevice',{response: response.status})
   };  
   useEffect(() => {
-    socket.current = io('https://sweets-nodejs.onrender.com/');
+    // baseURL: 'https://sweets-nodejs.onrender.com/',
+    socket.current = io('http://192.168.105.49:3001/');
     socket.current.on('AddDevice2', data => {
       console.log('>>>>>>>>>> nhan device id ' + data.device);
       setDevice(data.device);

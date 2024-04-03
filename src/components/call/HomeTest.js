@@ -10,8 +10,10 @@ import ZegoUIKitPrebuiltCallService, {
 
  export const onUserLogin = async (userID,userName) => {
   return ZegoUIKitPrebuiltCallService.init(
-    1118161000, 
-    "27731bc32f59a8bc056052a22bcc281a8fee4379f2960c212225af6cde6f0fd9", 
+    // 1118161000, 
+    50895724,
+    // "27731bc32f59a8bc056052a22bcc281a8fee4379f2960c212225af6cde6f0fd9", 
+    "0542a8137123457d8afdda9cbb16efb3819186858cc5b50c8c4c8e958d0fa8ea",
     userID, // userID
     userName, // userName
     [ZIM, ZPNs],
