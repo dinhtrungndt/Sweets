@@ -270,6 +270,24 @@ export const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '300',
   },
+  container_image_camera: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  content_image: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    marginTop: 15,
+    marginLeft: 10,
+  },
+  content_video: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    marginTop: 15,
+    marginLeft: 10,
+  },
   comment_time_like: {
     flexDirection: 'row',
     paddingTop: 10,

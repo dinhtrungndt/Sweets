@@ -3,6 +3,7 @@
 import {
   ActivityIndicator,
   Button,
+  Dimensions,
   FlatList,
   Image,
   Modal,
@@ -68,9 +69,11 @@ const CommentsScreen = ({navigation, route}) => {
   const [commentContent, setCommentContent] = useState('');
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCamera, setIsLoadingCamera] = useState(false);
   const commentInputRef = useRef(null);
   const [parentId, setParentId] = useState(null);
   const [parentUserName, setParentUserName] = useState('');
+  const numColumns = 4;
 
   // console.log('>>>>>>>>> CommentsScreen postId', postId);
   // console.log('>>>>>>>>> comments comments', comments);
@@ -182,6 +185,8 @@ const CommentsScreen = ({navigation, route}) => {
         return require('../../../../../assets/haha_25px.png');
       case 'Wow':
         return require('../../../../../assets/wow_25px.png');
+      case 'Buồn':
+        return require('../../../../../assets/sad_25px.png');
       case 'Tức giận':
         return require('../../../../../assets/angry_25px.png');
       default:
@@ -198,7 +203,9 @@ const CommentsScreen = ({navigation, route}) => {
       case 'Haha':
         return '#ff9900';
       case 'Wow':
-        return '#ff00ff';
+        return '#ff9900';
+      case 'Buồn':
+        return '#ff9900';
       case 'Tức giận':
         return '#ff0000';
       default:
@@ -234,13 +241,15 @@ const CommentsScreen = ({navigation, route}) => {
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
-        formData.append('imageStatus', image);
+        formData.append('media', image);
       });
 
+      setIsLoadingCamera(true);
       const data = await uploadImageStatus(formData);
-      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
       setImagePath(data.urls);
-      console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
+      // console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
+      setIsLoadingCamera(false);
     }
   }, []);
 
@@ -255,10 +264,10 @@ const CommentsScreen = ({navigation, route}) => {
 
   const openLibrary = useCallback(async () => {
     const options = {
-      mediaType: 'photo',
+      mediaType: 'mixed',
       quality: 5,
       saveToPhotos: true,
-      selectionLimit: 5,
+      selectionLimit: 0,
       multiple: true,
     };
     await launchImageLibrary(options, takePhoto);
@@ -268,12 +277,7 @@ const CommentsScreen = ({navigation, route}) => {
   const reloadComments = async () => {
     try {
       const response = await getComments(postId._id);
-      const data = await response;
-      if (parentId) {
-        setComments(data.reverse());
-      } else {
-        setComments(data);
-      }
+      setComments(response.reverse());
     } catch (error) {
       console.error('Lỗi khi tải danh sách bình luận:', error);
     }
@@ -288,11 +292,18 @@ const CommentsScreen = ({navigation, route}) => {
           postId._id,
           parentId,
           commentContent,
+          imagePath,
         );
       } else {
-        await submitComments(user.user._id, postId._id, commentContent);
+        await submitComments(
+          user.user._id,
+          postId._id,
+          commentContent,
+          imagePath,
+        );
       }
       setCommentContent('');
+      setImage('');
       await reloadComments();
       setIsLoading(false);
       commentInputRef.current.clear();
@@ -300,6 +311,14 @@ const CommentsScreen = ({navigation, route}) => {
       console.error('Lỗi khi gửi comment:', error);
       setIsLoading(false);
     }
+  };
+
+  const isImage = url => {
+    return /\.(jpeg|jpg|png)$/i.test(url);
+  };
+
+  const isVideo = url => {
+    return /\.(mp4|avi|mov)$/i.test(url);
   };
 
   useEffect(() => {
@@ -407,15 +426,15 @@ const CommentsScreen = ({navigation, route}) => {
                       <View key={media._id}>
                         {media.type === 'image' ? (
                           <Image
-                            source={{uri: media.url}}
+                            source={{uri: media.url.join()}}
                             style={styles.posts}
                           />
                         ) : (
                           <VideoPlayer
-                            video={{uri: media.url}}
+                            video={{uri: media.url.join()}}
                             videoWidth={1600}
                             videoHeight={900}
-                            thumbnail={{uri: media.url}}
+                            thumbnail={{uri: media.url.join()}}
                             // autoplay={true}
                             style={styles.posts}
                           />
@@ -540,6 +559,7 @@ const CommentsScreen = ({navigation, route}) => {
                               style={[
                                 reaction.type === 'Haha' ||
                                 reaction.type === 'Wow' ||
+                                reaction.type === 'Buồn' ||
                                 reaction.type === 'Tức giận'
                                   ? {width: 22, height: 22}
                                   : styles.icon_Like_Feeling,
@@ -551,18 +571,55 @@ const CommentsScreen = ({navigation, route}) => {
                         </View>
                       ),
                     )}
+                    {/* {console.log(
+                      '>>>. reaction: ' + JSON.stringify(item.reaction),
+                    )}
+                    {console.log(
+                      '>>>. reaction id usserr: ' +
+                        item.reaction.map(item => item.idUsers).join(),
+                    )} */}
                     {item.reaction.length > 0 && (
                       <>
-                        <Text style={styles.text_peopleLike}>
-                          {item.reaction.length > 1 && ' Bạn,'}
-                          {item.reaction.length > 2
-                            ? item.reaction.length - 2 + 'và những người khác'
-                            : item.reaction.map((item, index) => {
-                                if (item !== item._id) {
-                                  return ' ' + item.idUsers.name;
-                                }
-                              })}
-                        </Text>
+                        {item.reaction.map(item => item.idUsers._id).join() ===
+                        user.user._id ? (
+                          <Text style={styles.text_peopleLike}>Bạn</Text>
+                        ) : item.reaction
+                            .map(item => item.idUsers._id)
+                            .join() === user.user._id ||
+                          item.reaction.length > 2 ? (
+                          <Text style={styles.text_peopleLike}>
+                            Bạn,{' '}
+                            {item.reaction
+                              .filter(
+                                reaction =>
+                                  reaction.idUsers._id !== user.user._id &&
+                                  item.reaction.slice(0, 1),
+                              )
+                              .map(reaction => reaction.idUsers.name)
+                              .join(', ')}{' '}
+                            và những người khác
+                          </Text>
+                        ) : item.reaction
+                            .map(item => item.idUsers._id)
+                            .join() !== user.user._id ? (
+                          <Text style={styles.text_peopleLike}>
+                            {item.reaction
+                              .map(item => item.idUsers.name)
+                              .join(', ')}
+                          </Text>
+                        ) : item.reaction
+                            .map(item => item.idUsers._id)
+                            .join() !== user.user._id ||
+                          item.reaction.length > 2 ? (
+                          <Text style={styles.text_peopleLike}>
+                            {item.reaction
+                              .map(item => item.idUsers.name)
+                              .join()}{' '}
+                            và những người khác
+                          </Text>
+                        ) : (
+                          <Text>No</Text>
+                        )}
                       </>
                     )}
                   </TouchableOpacity>
@@ -617,9 +674,41 @@ const CommentsScreen = ({navigation, route}) => {
                             <Text style={styles.name_comment}>
                               {item.idUsers?.name}
                             </Text>
-                            <Text style={styles.content_comment}>
-                              {item.content}
-                            </Text>
+                            <View>
+                              {item?.content && (
+                                <View>
+                                  <Text>{item.content}</Text>
+                                </View>
+                              )}
+                              {item?.image && item?.image.length > 0 && (
+                                <View style={styles.container_image_camera}>
+                                  {item.image.map((image, imageIndex) => {
+                                    if (isImage(image)) {
+                                      return (
+                                        <Image
+                                          key={imageIndex}
+                                          source={{uri: image}}
+                                          style={styles.content_image}
+                                        />
+                                      );
+                                    } else if (isVideo(image)) {
+                                      return (
+                                        <VideoPlayer
+                                          key={imageIndex}
+                                          video={{uri: image}}
+                                          videoWidth={1600}
+                                          videoHeight={900}
+                                          thumbnail={{uri: image}}
+                                          style={styles.content_video}
+                                        />
+                                      );
+                                    } else {
+                                      return null;
+                                    }
+                                  })}
+                                </View>
+                              )}
+                            </View>
                           </View>
                           <View style={styles.comment_time_like}>
                             <Text style={styles.time_comment}>
@@ -686,9 +775,27 @@ const CommentsScreen = ({navigation, route}) => {
                                   <Text style={styles.name_comment}>
                                     {subItem.idUsers?.name}
                                   </Text>
-                                  <Text style={styles.content_comment}>
-                                    {subItem.content}
-                                  </Text>
+                                  <View>
+                                    {subItem?.content && (
+                                      <View>
+                                        <Text>{subItem.content}</Text>
+                                      </View>
+                                    )}
+                                    {subItem?.image &&
+                                      subItem?.image.length > 0 && (
+                                        <View>
+                                          {subItem.image.map(
+                                            (image, imageIndex) => (
+                                              <Image
+                                                key={imageIndex}
+                                                source={{uri: image}}
+                                                style={styles.content_image}
+                                              />
+                                            ),
+                                          )}
+                                        </View>
+                                      )}
+                                  </View>
                                 </View>
                                 <View style={styles.comment_time_like}>
                                   <Text style={styles.time_comment}>
@@ -724,27 +831,59 @@ const CommentsScreen = ({navigation, route}) => {
           )}
         </ScrollView>
         {/* Reply Comment */}
-        <View style={styles.container_reply_comment}>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Image
-              style={styles.icon_comment}
-              source={require('../../../../../assets/icon_camera_comment.png')}
-            />
-          </TouchableOpacity>
-          <TextInput
-            ref={commentInputRef}
-            style={styles.input_comment}
-            placeholder={`Bình luận dưới tên ${user.user.name}`}
-            onChangeText={text => setCommentContent(text)}>
-            <Text style={styles.parentUserName}>{parentUserName}</Text>{' '}
-          </TextInput>
-          <TouchableOpacity onPress={submitComment}>
-            <Image
-              style={styles.icon_comment_send}
-              source={require('../../../../../assets/send_comment_icon.png')}
-            />
-          </TouchableOpacity>
-        </View>
+        <>
+          {image.length > 0 && (
+            <>
+              {isLoadingCamera ? (
+                <ActivityIndicator size="small" color="#22b6c0" />
+              ) : (
+                <FlatList
+                  style={{marginTop: 10}}
+                  data={image}
+                  numColumns={numColumns}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item, index}) => (
+                    <TouchableOpacity key={index}>
+                      <Image
+                        source={{uri: item.uri}}
+                        style={{
+                          width:
+                            Dimensions.get('window').width / numColumns - 10,
+                          height:
+                            Dimensions.get('window').width / numColumns - 10,
+                          margin: 5,
+                          borderRadius: 5,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                />
+              )}
+            </>
+          )}
+          <View style={styles.container_reply_comment}>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Image
+                style={styles.icon_comment}
+                source={require('../../../../../assets/icon_camera_comment.png')}
+              />
+            </TouchableOpacity>
+
+            <TextInput
+              ref={commentInputRef}
+              style={styles.input_comment}
+              placeholder={`Bình luận dưới tên ${user.user.name}`}
+              onChangeText={text => setCommentContent(text)}>
+              <Text style={styles.parentUserName}>{parentUserName}</Text>{' '}
+            </TextInput>
+            <TouchableOpacity onPress={submitComment}>
+              <Image
+                style={styles.icon_comment_send}
+                source={require('../../../../../assets/send_comment_icon.png')}
+              />
+            </TouchableOpacity>
+          </View>
+        </>
         {/* bottom sheet */}
         <BottomSheet
           ref={bottomSheetRef}

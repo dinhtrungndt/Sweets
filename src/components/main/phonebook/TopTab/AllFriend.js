@@ -1,67 +1,105 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
   TextInput,
   FlatList,
-  TouchableOpacity,
   Image,
+  TouchableOpacity,
+  Modal
 } from 'react-native';
+import AxiosInstance from '../../../../helper/Axiosinstance'; // Thay đường dẫn tới file AxiosInstance.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {UserContext} from '../../../../contexts/user/userContext';
 import styles from '../styles/AllFriendStyles'; // Đảm bảo import styles từ file của bạn
 
 const AllFriend = () => {
-  const {user} = useContext(UserContext);
-  const [friends, setFriends] = useState([]);
-  const [filteredFriends, setFilteredFriends] = useState([]);
-  const [noFriendsMessage, setNoFriendsMessage] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [friendsDetails, setFriendsDetails] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [filteredFriends, setFilteredFriends] = useState([]); 
+  const [friendInvitations, setFriendInvitations] = useState([]);
+  const [userInfo, setUserInfo] = useState([]);
+  const [refresh, setRefresh] = useState(false); // Thêm biến state refresh
 
   useEffect(() => {
-    const fetchFriends = async () => {
-      // Lấy danh sách bạn bè từ AsyncStorage
-      const friendsFromStorage = await AsyncStorage.getItem('friends');
-      if (friendsFromStorage) {
-        const parsedFriends = JSON.parse(friendsFromStorage);
+    const fetchFriendsDetails = async () => {
+      try {
+        const axiosInstance = AxiosInstance(); // Tạo một instance của Axios
 
-        if (parsedFriends.length > 0) {
-          // Nếu có bạn bè, setFriends và thực hiện các xử lý khác
-          setFriends(parsedFriends);
-          setFilteredFriends(parsedFriends);
+        // Lấy userId từ AsyncStorage
+        const userId = await AsyncStorage.getItem('userId');
+
+        // Kiểm tra xem userId có tồn tại không
+        if (userId) {
+          const response = await axiosInstance.get(`/friend/friends/${userId}`);
+          const { friendsList } = response;
+        
+          await AsyncStorage.setItem('friendData', JSON.stringify(response.friendsList));
+
+          // Tạo một mảng chứa thông tin chi tiết của các bạn bè
+          const friendsDetailsPromises = friendsList.map(async (friendId) => {
+            try {
+              const friendDetailsResponse = await axiosInstance.get(`/users/get-user/${friendId}`);
+              return friendDetailsResponse.user; // Lấy thông tin user từ response
+            } catch (error) {
+              console.error(`Lỗi khi lấy thông tin của bạn bè có id: ${friendId}`, error);
+              return null; // Trả về null nếu có lỗi để xử lý sau
+            }
+          });
+
+          // Lấy thông tin chi tiết của tất cả bạn bè
+          const friendsDetails = await Promise.all(friendsDetailsPromises);
+
+          // Lọc bỏ các giá trị null (nếu có) và lưu thông tin chi tiết vào state
+          await setFriendsDetails(friendsDetails.filter(friend => friend !== null));
         } else {
-          // Nếu không có bạn bè, hiển thị thông báo
-          setNoFriendsMessage('Bạn chưa có người bạn nào.');
+          console.log('Không tìm thấy userId trong AsyncStorage');
         }
-      } else {
-        // Nếu không có bạn bè, hiển thị thông báo
-        setNoFriendsMessage('Bạn chưa có người bạn nào.');
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách bạn bè:', error);
       }
     };
 
-    fetchFriends();
-  }, []);
+    fetchFriendsDetails();
+  }, []); // Chỉ chạy một lần khi component được render
 
-  const handleSearch = text => {
-    setSearchTerm(text);
-    const filtered = friends.filter(friend =>
-      friend.toLowerCase().includes(text.toLowerCase()),
-    );
+  useEffect(() => {
+    // Lọc danh sách bạn bè dựa trên giá trị tìm kiếm và cập nhật state mới
+    const filtered = friendsDetails.filter(friend => friend.name.toLowerCase().includes(searchValue.toLowerCase()));
     setFilteredFriends(filtered);
+  }, [searchValue, friendsDetails]); // Chạy lại mỗi khi giá trị tìm kiếm hoặc danh sách bạn bè thay đổi
+
+  const handleSearch = (text) => {
+    setSearchValue(text); // Cập nhật giá trị tìm kiếm
   };
 
-  const renderFriendItem = ({item}) => (
-    <TouchableOpacity style={styles.friendItem}>
-      <Text style={styles.friendItemText}>{item}</Text>
-    </TouchableOpacity>
-  );
+  const handleDeleteFriendRequest = async (item) => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await AxiosInstance().post('friend/cancel-friend-request', {
+        idFriendSender: userId,
+        idFriendReceiver: item._id
+      });
+      if (response && response.success) {
+        // Xoá item khỏi danh sách filteredFriends và cập nhật lại FlatList
+        setFilteredFriends(prevFriends => prevFriends.filter(friend => friend._id !== item._id));
+        // Cập nhật lại biến state refresh để FlatList render lại
+        setRefresh(prevRefresh => !prevRefresh);
+      } else if (response && response.message) {
+        console.error('Error accepting friend request:', response.message);
+      }
+    } catch (error) {
+      console.error('Error accepting friend request:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
-    
-
-      {/* Thanh tìm kiếm */}
-      <View style={{flexDirection: 'row', width: '100%', position: 'relative'}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          width: '100%',
+          position: 'relative',
+        }}>
         <Image
           source={require('../../../../assets/searchh.png')}
           style={styles.imgSearch}
@@ -69,26 +107,36 @@ const AllFriend = () => {
         <TextInput
           style={styles.searchInput}
           placeholder="Tìm kiếm bạn bè"
-          placeholderTextColor="#666"
-          onChangeText={text => handleSearch(text)}
-          value={searchTerm}></TextInput>
+          placeholderTextColor="#22b6c0"
+          onChangeText={handleSearch} 
+          value={searchValue}>
 
+          </TextInput>
       </View>
 
-     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-     <Text style={styles.title}>N người bạn</Text>
-     <Text style={styles.title}>Quản lí</Text>
-     </View>
-      {noFriendsMessage ? (
-        <Text style={styles.noFriendsMessage}>{noFriendsMessage}</Text>
-      ) : (
-        // Hiển thị danh sách bạn bè từ filteredFriends
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={styles.title}> Có {friendsDetails.length} người bạn</Text>
+        <Text style={styles.title}>Sắp xếp</Text>
+      </View>
+     
         <FlatList
           data={filteredFriends}
-          keyExtractor={item => item}
-          renderItem={renderFriendItem}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 5, paddingVertical: 10,justifyContent:'space-between' }}>
+             <View style={{ flexDirection: 'row',alignItems:'center'}}>
+             <Image source={{ uri: item.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />
+              <Text style={styles.txtName}>{item.name}</Text>
+             </View>
+             <TouchableOpacity style={styles.imgOption}  onPress={() => handleDeleteFriendRequest(item)}>
+              <Text style={styles.txtXoas}>Xoá</Text>
+            </TouchableOpacity>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item, index) => index.toString()} 
+          extraData={refresh}
         />
-      )}
+       
+     
     </View>
   );
 };

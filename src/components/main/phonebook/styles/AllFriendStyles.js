@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginBottom: 10,
         paddingLeft: 10,
-        color: '#333',
+        color: '#000000',
         backgroundColor: '#fff',
         width:'90%'
       },
@@ -49,6 +49,26 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
       },
+      txtName:{
+        fontWeight:'bold',
+        fontSize:17,
+        marginHorizontal:10,
+        color:'#22b6c0'
+      },
+      imgOption:{
+        borderWidth:0.7,
+        width:70,height:35,
+        borderRadius:10,
+        borderColor:'#22b6c0',
+        marginHorizontal:10,
+        marginVertical:3
+      },
+      txtXoas:{
+        fontWeight:'bold',
+        color:'#22b6c0',
+        alignSelf:'center',
+       marginVertical:5
+      }
 })
 
 export default styles

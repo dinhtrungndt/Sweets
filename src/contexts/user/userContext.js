@@ -2,7 +2,7 @@
 import React, {useState, useEffect, createContext} from 'react';
 import {login} from '../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {onUserLogout, onUserLogin} from '../../components/call/HomeTest';
 export const UserContext = createContext();
 
 export const UserProvider = props => {
@@ -20,6 +20,14 @@ export const UserProvider = props => {
           const result = await login(userEmail, userPassword);
           if (result && result.status === 1) {
             setUser(result);
+            await onUserLogout();
+            console.log('onUserLogout được gọi trước khi gọi onUserLogin');
+            await onUserLogin(result.id, result.user.name);
+            console.log(
+              'onUserLogin được gọi khi người dùng đăng nhập thành công',
+            );
+            console.log('23 User:', result.id);
+            console.log('24 User:', result.user.name);
           }
         }
       } catch (error) {
@@ -35,9 +43,11 @@ export const UserProvider = props => {
     try {
       await AsyncStorage.removeItem('userEmail');
       await AsyncStorage.removeItem('userPassword');
+      // await onUserLogout();
+      console.log('onUserLogout được gọi thành công');
       setUser(null);
     } catch (error) {
-      console.log('Lỗi khi đăng xuất:', error);
+      console.log('---- >>>>>>Lỗi khi đăng xuất:', error);
     }
   };
 
@@ -79,6 +89,9 @@ export const UserProvider = props => {
         await AsyncStorage.setItem('token', result.token);
         await AsyncStorage.setItem('user', JSON.stringify(result.user));
         setUser(result);
+        await onUserLogin(result.id, result.user.name);
+        console.log('User:', result.id);
+        console.log('User:', result.user.name);
         if (result.user.friends) {
           console.log('Friends:', result.user.friends);
           await AsyncStorage.setItem(

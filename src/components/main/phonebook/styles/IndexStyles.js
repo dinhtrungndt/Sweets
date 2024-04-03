@@ -9,14 +9,14 @@ const styles = StyleSheet.create({
     color:'#0969da'
   },
   button: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 55,
+    height: 55,
+    borderRadius: 27,
     borderWidth: 1.2,
     marginHorizontal: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#3498db',
+    borderColor: '#22b6c0',
     backgroundColor: '#ffffff', 
     shadowColor: '#000',
     shadowOffset: {
@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   buttonText: {
-    color: '#3498db', // Màu chữ button
-    fontSize: 16,
+    color: '#22b6c0', // Màu chữ button
+    fontSize: 15,
     fontWeight: 'bold'
     
   },
@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
   buttonImg: {
     alignSelf: 'center',
     marginVertical: 10,
-    width: 30,
-    height: 30,
+    width: 23,
+    height: 23,
   },
   ViewFlatlist: {
     marginVertical: 20,
@@ -47,16 +47,18 @@ const styles = StyleSheet.create({
   },
   txtFlat:{
     fontWeight:'bold',
-    color:'#3498db',
-    fontSize:22,
-    marginHorizontal:12,
-    marginBottom:5
+    color:'#22b6c0',
+    fontSize:18,
+   
+    marginBottom:5,
+   
+    padding:8
   },
   WrapFaltlist:{
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 5,
     borderColor: '#ddd', 
-    shadowColor: '#000', 
+    shadowColor: '#22b6c0', 
     shadowOffset: { width: 0, height: 2 }, // Độ đổ bóng
     shadowOpacity: 0.3, // Độ đậm nhạt của bóng đổ
     shadowRadius: 4, // Độ cong của bóng đổ
@@ -64,13 +66,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', // Màu nền
     padding: 5, // Khoảng cách nội dung từ mép
     margin: 10, 
+    zIndex:2,
+    marginTop:-55
   },
   txtFlatlist:{
-    fontSize:15,
+    fontSize:14,
     fontWeight:'bold',
-    marginHorizontal:10,
-    marginVertical:2,
-    color:'#0969da'
+    marginHorizontal:7,
+    marginVertical:4,
+    color:'#22b6c0'
+  },
+  wrapBackground:{
+    width:'100',
+    height:100,
+    backgroundColor:'#22b6c0',
+    zIndex:1,
+    
+  },
+  
+  txtFlat2:{
+    fontWeight:'bold',
+    color:'#ffffff',
+    fontSize:24,
+    marginVertical:8,
+    marginHorizontal:5,
+ padding:8
   }
 });
 

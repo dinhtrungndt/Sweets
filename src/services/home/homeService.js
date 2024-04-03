@@ -2,9 +2,23 @@
 import AxiosInstance from '../../helper/Axiosinstance';
 
 // lấy danh sách bài viết theo typePosts
-export const getPosts = async () => {
+export const getPosts = async idUsers => {
   try {
-    const response = await AxiosInstance().get('/posts/get-all-posts');
+    const response = await AxiosInstance().get(
+      `/posts/get-posts-idObject/${idUsers}`,
+    );
+    // console.log('get post >>>>>>>>>>>>>>> Service GetPosts 8 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Error fetching posts: 11 s', error);
+    throw error;
+  }
+};
+export const getPostsByUser = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/posts/get-posts-by-user/${idUsers}`,
+    );
     // console.log('get post >>>>>>>>>>>>>>> Service GetPosts 8 ', response);
     return response;
   } catch (error) {
@@ -80,16 +94,31 @@ export const likeByPost = async (idUsers, idPosts, type) => {
 };
 
 // upload bài viết
-export const uploadPost = async (userId, postDetails) => {
+export const uploadPost = async (idUsers, postDetails) => {
   try {
     const response = await AxiosInstance().post(
-      `/post/${userId}/create-post`,
+      `/posts/add-posts/${idUsers}`,
       postDetails,
     );
     // console.log('upload post >>>>>>>>>>>>>>> 20 ', response);
     return response;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi loading ảnh: 11 s', error.response);
+    console.error(' >>>>>>>>> Lỗi upload bài viết : 11 s', error);
+    throw error;
+  }
+};
+
+// upload media
+export const uploadMedia = async (idPosts, cbMediaType) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/media/add-media/${idPosts}`,
+      cbMediaType,
+    );
+    // console.log('upload post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi upload mediaaa : 11 s', error);
     throw error;
   }
 };
@@ -97,10 +126,10 @@ export const uploadPost = async (userId, postDetails) => {
 // Upload ảnh status
 export const uploadImageStatus = async form => {
   const response = await AxiosInstance('multipart/form-data').post(
-    'media/upload-imageStatus',
+    'media/upload-media',
     form,
   );
-  // console.log('>>>>>>>>>>>>>>>>>> 49 MEdiA imageStatus', response);
+  // console.log('>>>>>>>>>>>>>>>>>> 49 MEdiA media', response);
   return response;
 };
 
@@ -119,11 +148,11 @@ export const likePost = async (userId, postId) => {
 };
 
 // Comment theo idUsers và idPosts
-export const submitComments = async (userId, postId, content) => {
+export const submitComments = async (userId, postId, content, image) => {
   try {
     const response = await AxiosInstance().post(
       `/comments/add/${userId}/${postId}`,
-      {content},
+      {content, image},
     );
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
@@ -134,16 +163,63 @@ export const submitComments = async (userId, postId, content) => {
 };
 
 // Comment theo idUsers, idPosts và idParent
-export const submitCommentsC = async (userId, postId, parentId, content) => {
+export const submitCommentsC = async (
+  userId,
+  postId,
+  parentId,
+  content,
+  image,
+) => {
   try {
     const response = await AxiosInstance().post(
       `/comments/add/${userId}/${postId}/${parentId}`,
-      {content},
+      {content, image},
     );
-    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi commentsC bài viết: 11 s', error.response);
+    throw error;
+  }
+};
+
+// Xóa bài viết account
+export const deletePostsAccount = async id => {
+  try {
+    const response = await AxiosInstance().delete(`/posts/delete-posts/${id}`);
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi xóa bài viết: 11 s', error.response);
+    throw error;
+  }
+};
+
+// Cập nhập objects edit posts
+export const updateEditPostsObjects = async (idPosts, idObject) => {
+  try {
+    const response = await AxiosInstance().put(
+      `/posts/update-objects-posts/${idPosts}/${idObject}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi xóa bài viết: 11 s', error.response);
+    throw error;
+  }
+};
+
+// Cập nhập edit posts
+export const updateEditPosts = async (idPosts, idUsers, detailPosts) => {
+  try {
+    const response = await AxiosInstance().put(
+      `/posts/update-posts/${idPosts}/${idUsers}`,
+      detailPosts,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
     throw error;
   }
 };

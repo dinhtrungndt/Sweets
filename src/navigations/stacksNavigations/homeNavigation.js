@@ -13,30 +13,41 @@ import {GetRouteNameHome} from '../customs/routeHome';
 import {GetRouteNamePhone} from '../customs/routePhone';
 import {PhoneBookStack} from './stacks/PhoneBookStack';
 import {ChatScreenStack} from './stacks/chatStack';
-import {AddsScreen} from '../../components/main/home/uploads/posts';
-
+import {AddsScreenStack} from './stacks/addsStack';
+import {GetRouteNameAdds} from '../customs/routeAdds';
+import {
+  ZegoUIKitPrebuiltCallWaitingScreen,
+  ZegoUIKitPrebuiltCallInCallScreen,
+} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import {GetRouteNameChat} from '../customs/routeChat';
 const Tab = createBottomTabNavigator();
 
 const HomeNavigation = () => {
   return (
     <Tab.Navigator screenOptions={options}>
-      {/* <Tab.Screen
+      <Tab.Screen
         name="HomeStackScreen"
         component={HomeStackScreen}
         options={({route}) => ({
           tabBarStyle: {display: GetRouteNameHome(route)},
           headerShown: false,
         })}
-      /> */}
+      />
       <Tab.Screen
         name="ChatScreen"
         component={ChatScreenStack}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          tabBarStyle: {display: GetRouteNameChat(route)},
+          headerShown: false,
+        })}
       />
       <Tab.Screen
         name="AddsScreen"
-        component={AddsScreen}
-        options={{headerShown: false}}
+        component={AddsScreenStack}
+        options={({route}) => ({
+          tabBarStyle: {display: 'none'},
+          headerShown: false,
+        })}
       />
       <Tab.Screen
         name="PhoneBookScreen"

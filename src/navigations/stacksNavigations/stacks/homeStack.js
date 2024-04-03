@@ -13,6 +13,13 @@ import CommentsScreen from '../../../components/main/home/posts/comments';
 import StoryScreen from '../../../components/main/home/uploads/story';
 import PickStory from '../../../components/main/home/uploads/story/pickStory';
 import PostsScreen from '../../../components/main/home/posts';
+import SelectFeeingStory from '../../../components/main/home/uploads/story/selectFeelingStory';
+import SettingStoryObjects from '../../../utils/settingStoryObjects';
+import OtherUserA from '../../../components/main/account/OtherUserAccounts/OtherUserA';
+import Profile from '../../../components/main/account/Profile/Profile';
+import ModalEditPostsAccount from '../../../components/main/home/posts/editPosts/account';
+import SelectScreenUp from '../../../components/main/home/uploads/posts/select';
+import ChangeObjects from '../../../components/main/home/posts/editPosts/account/objects';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +38,19 @@ export function HomeStackScreen() {
       <Stack.Screen name="CommentsScreen" component={CommentsScreen} />
       <Stack.Screen name="PickStory" component={PickStory} />
       <Stack.Screen name="StoryScreen" component={StoryScreen} />
+      <Stack.Screen name="SelectFeeingStory" component={SelectFeeingStory} />
+      <Stack.Screen
+        name="SettingStoryObjects"
+        component={SettingStoryObjects}
+      />
+      <Stack.Screen name="OtherUserA" component={OtherUserA} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />
+      <Stack.Screen name="ChangeObjects" component={ChangeObjects} />
+      <Stack.Screen
+        name="ModalEditPostsAccount"
+        component={ModalEditPostsAccount}
+      />
     </Stack.Navigator>
   );
 }

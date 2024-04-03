@@ -7,6 +7,12 @@ export const GetRouteNameAccount = route => {
   const routeName = getFocusedRouteNameFromRoute(route);
   if (routeName?.includes('LoginScreen')) {
     return 'none';
+  } else if (routeName?.includes('Profile')) {
+    return 'none';
+  } else if (routeName?.includes('AccountAndSecurity')) {
+    return 'none';
+  } else if (routeName?.includes('Account_Transfer')) {
+    return 'none';
   }
   return 'flex';
 };
