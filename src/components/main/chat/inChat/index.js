@@ -46,7 +46,6 @@ const ChatScreenIn = ({ route, navigation }) => {
     try {
       const idSender = user.user._id;
       const idReceiver = receiver.receiverv2;
-
       const response = await GetMessageSR(idSender, idReceiver);
       setMessages(response.slice());
 
@@ -68,9 +67,6 @@ const ChatScreenIn = ({ route, navigation }) => {
     socket.current.emit('new_message', newMessage);
     setMessageInput('');
   };
-
-
-
   const renderItem = ({ item }) => {
     return (
       <View style={styles.chat}>
@@ -117,12 +113,9 @@ const ChatScreenIn = ({ route, navigation }) => {
       <FlatList
         inverted={true}
         data={messages.slice().reverse()}
-       
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => renderItem({ item })}
       />
-
-
       <View style={styles.input}>
         <TextInput
           style={styles.input_text}
