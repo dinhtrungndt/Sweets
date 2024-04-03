@@ -26,9 +26,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const Profile = props => {
   const { navigation } = props;
-
   const [loading, setLoading] = useState(false);
-
   const [imageAvatar, setImageAvatar] = useState([]);
   const [imageAvatarPath, setImageAvatarPath] = useState(null);
   const [modalVisibleAvatar, setModalVisibleAvatar] = useState(false);

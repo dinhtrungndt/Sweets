@@ -8,9 +8,10 @@ export default styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     fontSize: 16,
+    marginTop: 0
   },
   header: {
-    height: 100,
+    height: 80,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
@@ -67,7 +68,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 5,
+    padding: '2%',
     width: '65%',
 
   },
@@ -82,7 +83,7 @@ export default styles = StyleSheet.create({
   },
   moinguoi1: {
     color: 'black',
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: 'bold',
     width: '40%',
     marginLeft: '3%'
@@ -93,7 +94,7 @@ export default styles = StyleSheet.create({
   },
   container1: {
 
-    height: 100,
+    height: 80,
   },
 
   back: {
@@ -103,17 +104,18 @@ export default styles = StyleSheet.create({
   },
 
   itemname: {
-    fontSize: 18,
+    fontSize: 17,
     color: 'black',
     fontWeight: 'bold'
   },
   itemavata: {
-    width: 75,
-    height: 75,
+    width: 60,
+    height: 60,
     borderRadius: 50,
   },
   itemthongtin: {
-    marginLeft: 10,
+    marginLeft: 5,
+    width: '75%',
    
   },
   txttrangthai: {
@@ -126,7 +128,7 @@ export default styles = StyleSheet.create({
   },
   txtstatus: {
     color: 'black',
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: 'bold',
     width: '90%',
     marginLeft: '3%',
