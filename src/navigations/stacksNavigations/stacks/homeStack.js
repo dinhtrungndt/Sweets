@@ -60,7 +60,7 @@ export function HomeStackScreen() {
       />
 
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} />
+      {/* <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} /> */}
       <Stack.Screen
         options={{headerShown: false}}
         // DO NOT change the name
