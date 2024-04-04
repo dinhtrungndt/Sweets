@@ -35,7 +35,6 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Swiper from 'react-native-swiper';
 import VideoPlayer from 'react-native-video-player';
 import Video from 'react-native-video';
-import CustomReaction from '../../../../customs/reaction/customreaction';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -43,8 +42,11 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheet from '@gorhom/bottom-sheet';
 import FeelingComponent from '../feeling';
 import {UserContext} from '../../../../../contexts/user/userContext';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {
+  deletePostsAccount,
   getComments,
+  likeByPost,
   submitComments,
   submitCommentsC,
   uploadImageStatus,
@@ -52,9 +54,14 @@ import {
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import BottomSheetFit from '../../../../customs/bottomsheet/bottomSheetFit';
 import Toast from 'react-native-toast-message';
+import Customreaction_Comment from '../../../../customs/reaction/customreaction_comment';
+import linking from '../../../../../utils/linking';
+import Share from 'react-native-share';
+import ModalEditPostsAccount from '../editPosts/account';
+import ModalEditPostsGuest from '../editPosts/guest';
 
 const CommentsScreen = ({navigation, route}) => {
-  const {postId, handleLike} = route.params;
+  const {postId} = route.params;
   const [posts, setPosts] = useState([postId]);
   const [showMore, setShowMore] = useState(false);
   const [showMoreImage, setShowMoreImage] = useState(false);
@@ -77,6 +84,11 @@ const CommentsScreen = ({navigation, route}) => {
   const [parentId, setParentId] = useState(null);
   const [imageimageShowMore, setImageImageShowMore] = useState(null);
   const [parentUserName, setParentUserName] = useState(null);
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [editPostsItemAccount, setEditPostsItemAccount] = useState(null);
+  const [modalEditPostsAccount, setModalEditPostsAccount] = useState(false);
+  const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
+  const [modalEditPostsGuest, setModalEditPostsGuest] = useState(false);
   const numColumns = 4;
 
   // console.log('>>>>>>>>> CommentsScreen postId', postId);
@@ -88,6 +100,36 @@ const CommentsScreen = ({navigation, route}) => {
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
+  };
+
+  const handleModalEditPostsAccount = item => {
+    setEditPostsItemAccount(item);
+    setModalEditPostsAccount(true);
+  };
+
+  const handleModalEditPostsGuest = item => {
+    setEditPostsItemGuest(item);
+    setModalEditPostsGuest(true);
+  };
+
+  const handleDeletePosts = async () => {
+    try {
+      const _idDelete = editPostsItemAccount._id;
+      const res = await deletePostsAccount(_idDelete);
+      navigation.replace('HomeScreen');
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Xóa bài viết thành công !',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+      // console.log('>>>. Xóa thành công', res);
+    } catch (error) {
+      console.log('>>>. Lỗi delete Posts', error);
+    }
   };
 
   const reactions = [
@@ -113,6 +155,11 @@ const CommentsScreen = ({navigation, route}) => {
     },
     {
       id: 4,
+      emoji: '😔',
+      name: 'Buồn',
+    },
+    {
+      id: 5,
       emoji: '😡',
       name: 'Tức giận',
     },
@@ -287,6 +334,39 @@ const CommentsScreen = ({navigation, route}) => {
     }
   };
 
+  const handleLike = async idPosts => {
+    try {
+      const idUsers = user.id;
+      const type = 'Thích';
+      const response = await likeByPost(idUsers, idPosts, type);
+
+      if (response.status === 1) {
+        const updatedPosts = posts.map(post => {
+          if (post._id === idPosts) {
+            const updatedReaction = post.reaction.map(reactionItem => {
+              if (reactionItem.idUsers._id === user.id) {
+                return {...reactionItem, type: 'Thích'};
+              }
+              return reactionItem;
+            });
+            return {
+              ...post,
+              reaction: updatedReaction,
+            };
+          }
+          return post;
+        });
+        // console.log('postsposts:', updatedPosts);
+
+        setPosts(updatedPosts);
+      } else {
+        console.error('Lỗi khi thay đổi trạng thái like:', response.message);
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu API:', error);
+    }
+  };
+
   const submitComment = async () => {
     try {
       if (!commentContent && !imagePath) {
@@ -350,15 +430,28 @@ const CommentsScreen = ({navigation, route}) => {
     setShowMoreImage(true);
   };
 
+  const handleShare = async item => {
+    try {
+      const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
+      const shareOptions = {
+        title: 'Share',
+        message: 'Chia sẻ bài viết này!',
+        url: deepLink,
+      };
+      await Share.open(shareOptions);
+    } catch (error) {
+      console.log('Lỗi chia sẻ nè:', error);
+    }
+  };
+
   useEffect(() => {
     handleReaction.current = {
       handlePressOut: () => {
         setReaction(false);
-        console.log('press out');
       },
-      handleLongPress: () => {
+      handleLongPress: postId => {
         setReaction(true);
-        console.log('long press');
+        setSelectedPostId(postId);
       },
     };
 
@@ -408,12 +501,27 @@ const CommentsScreen = ({navigation, route}) => {
                   </View>
                 </View>
               ))}
+              {/* {console.log('>>>>>>>> posts', posts[0].idUsers)} */}
+              {posts[0].idUsers._id !== user.user._id ? (
+                <TouchableOpacity
+                  onPress={() => handleModalEditPostsGuest(posts[0])}>
+                  <Entypo
+                    name="dots-three-horizontal"
+                    size={18}
+                    color="#666666"
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => handleModalEditPostsAccount(posts[0])}>
+                  <Entypo
+                    name="dots-three-horizontal"
+                    size={18}
+                    color="#666666"
+                  />
+                </TouchableOpacity>
+              )}
             </>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('BottomSheetLayout', {postId})}
-              style={styles.baiVietHeaderRight}>
-              <Feather name="more-horizontal" size={23} color="#666" />
-            </TouchableOpacity>
           </View>
         </View>
         {/* body */}
@@ -534,9 +642,10 @@ const CommentsScreen = ({navigation, route}) => {
 
                 {reaction && (
                   <View style={styles.container_reaction}>
-                    <CustomReaction
+                    <Customreaction_Comment
                       reactions={reactions}
                       clone={handleReaction.current.handlePressOut}
+                      posts={item}
                     />
                   </View>
                 )}
@@ -555,7 +664,9 @@ const CommentsScreen = ({navigation, route}) => {
                   <Text style={styles.text_like_post}>Bình luận</Text>
                 </TouchableOpacity>
                 {/* share */}
-                <TouchableOpacity style={styles.like_post}>
+                <TouchableOpacity
+                  style={styles.like_post}
+                  onPress={() => handleShare(item)}>
                   <MaterialCommunityIcons
                     name="share-outline"
                     size={23}
@@ -1096,6 +1207,34 @@ const CommentsScreen = ({navigation, route}) => {
               </TouchableOpacity>
             </View>
           </View>
+        </Modal>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalEditPostsAccount}
+          onRequestClose={() => {}}>
+          <TouchableOpacity
+            style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+            activeOpacity={1}
+            onPressOut={() => setModalEditPostsAccount(false)}>
+            <ModalEditPostsAccount
+              editPostsItemAccount={editPostsItemAccount}
+              handleDeletePosts={handleDeletePosts}
+              navigation={navigation}
+            />
+          </TouchableOpacity>
+        </Modal>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalEditPostsGuest}
+          onRequestClose={() => {}}>
+          <TouchableOpacity
+            style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+            activeOpacity={1}
+            onPressOut={() => setModalEditPostsGuest(false)}>
+            <ModalEditPostsGuest editPostsItemGuest={editPostsItemGuest} />
+          </TouchableOpacity>
         </Modal>
       </View>
     </GestureHandlerRootView>

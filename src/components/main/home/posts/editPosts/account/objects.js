@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -9,7 +9,7 @@ import {updateEditPostsObjects} from '../../../../../../services/home/homeServic
 const ChangeObjects = ({cancel, itemPosts, navigation}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [objectsID, setObjectsID] = useState('');
-  // console.log('>>>>>>... itemPostsitemPosts', itemPosts);
+  // console.log('>>>>>>... idObject của itemPostsitemPosts', idObjects);
 
   const idObject = () => [
     {
@@ -53,6 +53,10 @@ const ChangeObjects = ({cancel, itemPosts, navigation}) => {
       console.log('>>>>>>>>>>. Lỗi handleChangeObjects', error);
     }
   };
+
+  useEffect(() => {
+    setSelectedOption(itemPosts.idObject.name);
+  }, [itemPosts]);
 
   return (
     <View style={styles.T}>
