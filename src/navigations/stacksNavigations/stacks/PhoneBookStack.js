@@ -20,7 +20,7 @@ import ScanQR from '../../../components/main/phonebook/Feature/ScanQR';
 const Stack = createNativeStackNavigator();
 
 export function PhoneBookStack() {
-  const navigation = useNavigation();
+ // const navigation = useNavigation();
   return (
     <Stack.Navigator
       screenOptions={{
