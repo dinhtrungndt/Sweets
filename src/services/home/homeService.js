@@ -169,11 +169,12 @@ export const submitCommentsC = async (
   parentId,
   content,
   image,
+  parentUserName,
 ) => {
   try {
     const response = await AxiosInstance().post(
       `/comments/add/${userId}/${postId}/${parentId}`,
-      {content, image},
+      {content, image, parentUserName},
     );
     // console.log('comment post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
