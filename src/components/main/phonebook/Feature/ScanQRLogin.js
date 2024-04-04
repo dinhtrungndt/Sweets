@@ -17,12 +17,12 @@ const ScanQRLogin = () => {
   };  
   useEffect(() => {
     // baseURL: 'https://sweets-nodejs.onrender.com/',
-    socket.current = io('http://192.168.1.68:3001/');
+    socket.current = io('http://192.168.1.45:3001/');
   }, []);
 
 
   const handleBarcodeScan = event => {
-    Alert.alert('QR code found', event.nativeEvent.codeStringValue);
+    // Alert.alert('QR code found', event.nativeEvent.codeStringValue);
     socket.current.emit('send_device_iduser', {deviceid: event.nativeEvent.codeStringValue, iduser: user.user._id});
     setScanning(false);
   };

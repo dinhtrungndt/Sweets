@@ -14,7 +14,7 @@ import AccountAndSecurity from '../../../components/main/account/PIM/AccountAndS
 import SettingsAndPrivacy from '../../../components/main/account/PIM/SettingsAndPrivacy';
 import HelpAndSupport from '../../../components/main/account/PIM/HelpAndSupport';
 import ChangePassword from '../../../components/main/account/PIM/ChangePassword';
-
+import ScanQRLogin from '../../../components/main/phonebook/Feature/ScanQRLogin';
 const Stack = createNativeStackNavigator();
 
 export function AccountStackScreen() {
@@ -32,6 +32,7 @@ export function AccountStackScreen() {
       <Stack.Screen name="SettingsAndPrivacy" component={SettingsAndPrivacy} />
       <Stack.Screen name="HelpAndSupport" component={HelpAndSupport} />
       <Stack.Screen name="ChangePassword" component={ChangePassword} />
+      <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} />
     </Stack.Navigator>
   );
 }

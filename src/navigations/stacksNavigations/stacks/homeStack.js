@@ -54,6 +54,21 @@ export function HomeStackScreen() {
         component={ModalEditPostsAccount}
       />
       <Stack.Screen name="LiveStreamScreen" component={LiveStreamScreen} />
+
+      <Stack.Screen name="Profile" component={Profile} />
+      {/* <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} /> */}
+      <Stack.Screen
+        options={{headerShown: false}}
+        // DO NOT change the name
+        name="ZegoUIKitPrebuiltCallWaitingScreen"
+        component={ZegoUIKitPrebuiltCallWaitingScreen}
+      />
+      <Stack.Screen
+        options={{headerShown: false}}
+        // DO NOT change the name
+        name="ZegoUIKitPrebuiltCallInCallScreen"
+        component={ZegoUIKitPrebuiltCallInCallScreen}
+      />
     </Stack.Navigator>
   );
 }
