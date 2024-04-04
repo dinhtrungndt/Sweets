@@ -285,6 +285,10 @@ export function AddsScreen({route, navigation}) {
     return /\.(mp4|avi|mov)$/i.test(url);
   };
 
+  const handleLiveStream = () => {
+    console.log('Live Stream');
+  };
+
   useEffect(() => {
     const dateString = Date.now();
     const randomSuffix = Math.floor(Math.random() * 10000000);
@@ -489,7 +493,9 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>Check in</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              style={styles.bottomSheetItem}
+              onPress={handleLiveStream}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_live.png')}
