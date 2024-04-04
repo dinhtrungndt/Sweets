@@ -16,6 +16,15 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  divider:{
+    width: '96%',
+    marginLeft: '2%',
+    height: 1,
+    backgroundColor: 'grey',
+    
+    marginBottom: "5%",
+
+  },
 
   receivedMessage1: {
     backgroundColor: '#4CAF50',
