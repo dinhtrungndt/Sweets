@@ -78,12 +78,9 @@ const Update = ({ route, navigation }) => {
     });
   }
   const handleUpdateanhbia = async () => {
-
-
     const data = new FormData();
     setLoading(true);
     let uploadSuccess = false;
-
     try {
       if (valuecheck == '' || date == 'Ngày sinh') {
         alert('Vui lòng nhập ngày sinh và giới tính là bắt buộc');

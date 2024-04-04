@@ -15,6 +15,10 @@ export const GetRouteNameHome = route => {
     return 'none';
   } else if (routeName?.includes('SettingStoryObjects')) {
     return 'none';
+  } else if (routeName?.includes('ChangeObjects')) {
+    return 'none';
+  } else if (routeName?.includes('ScanQRLogin')) {
+    return 'none';
   }
   return 'flex';
 };

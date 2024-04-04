@@ -16,6 +16,7 @@ import {ChatScreenStack} from './stacks/chatStack';
 import {AddsScreenStack} from './stacks/addsStack';
 import {GetRouteNameAdds} from '../customs/routeAdds';
 
+import {GetRouteNameChat} from '../customs/routeChat';
 const Tab = createBottomTabNavigator();
 
 const HomeNavigation = () => {
@@ -24,6 +25,7 @@ const HomeNavigation = () => {
       <Tab.Screen
         name="HomeStackScreen"
         component={HomeStackScreen}
+        // component={ChatScreenStack}
         options={({route}) => ({
           tabBarStyle: {display: GetRouteNameHome(route)},
           headerShown: false,
@@ -32,7 +34,10 @@ const HomeNavigation = () => {
       <Tab.Screen
         name="ChatScreen"
         component={ChatScreenStack}
-        options={{headerShown: false}}
+        options={({route}) => ({
+          tabBarStyle: {display: GetRouteNameChat(route)},
+          headerShown: false,
+        })}
       />
       <Tab.Screen
         name="AddsScreen"

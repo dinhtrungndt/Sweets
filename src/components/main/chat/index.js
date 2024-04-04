@@ -8,25 +8,23 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useState, useRef } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import React, {useEffect, useState, useRef} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 
 // Data
-import { listOF } from './data/listOF';
+import {listOF} from './data/listOF';
 
 // css
-import { styles } from './styles/chat';
+import {styles} from './styles/chat';
 import io from 'socket.io-client';
 // library
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { GetListUser } from '../../../services/user/userService';
+import {GetListUser} from '../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { updateStatus } from '../../../services/user/userService';
+import {updateStatus} from '../../../services/user/userService';
 
 const ChatScreen = props => {
-
-
-  const { navigation } = props;
+  const {navigation} = props;
   const [user, setUser] = useState('');
   const [user1, setUser1] = useState('');
 
@@ -42,7 +40,6 @@ const ChatScreen = props => {
       getListUser();
     });
 
-
     // Clear up khi component unmount
     return () => {
       socket.current.disconnect();
@@ -52,6 +49,7 @@ const ChatScreen = props => {
   const getListUser = async () => {
     try {
       const _id = await AsyncStorage.getItem('userId');
+
       setUser1(_id);
       const res = await GetListUser(_id);
       setUser(res);
@@ -64,33 +62,29 @@ const ChatScreen = props => {
   useFocusEffect(
     React.useCallback(() => {
       getListUser();
-    }, [])
+    }, []),
   );
 
-
-
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     const updateStatusUser = async () => {
       try {
-
         const body = {
           _id: item._id,
           status: 'Đã xem',
-        }
+        };
         if (item.senderv2 != user1) {
-          navigation.navigate('ChatScreenIn', { receiver: item });
+          navigation.navigate('ChatScreenIn', {receiver: item});
 
-          return
+          return;
         } else {
           await updateStatus(body);
 
-          navigation.navigate('ChatScreenIn', { receiver: item });
-
+          navigation.navigate('ChatScreenIn', {receiver: item});
         }
       } catch (error) {
         console.log('Lỗi update status', error);
       }
-    }
+    };
     return (
       <TouchableOpacity
         style={styles.container_chat}
@@ -102,24 +96,20 @@ const ChatScreen = props => {
           />
         ) : (
           <View>
-            <Image style={styles.image} source={{ uri: item.avatar }} />
-            {item.senderv2 != user1 ? null : (item.status === 'sent' ? (
+            <Image style={styles.image} source={{uri: item.avatar}} />
+            {item.senderv2 != user1 ? null : item.status === 'sent' ? (
               <View style={styles.notificaiton}>
                 <Text style={styles.txtnotification}>1</Text>
               </View>
-            ) : null)
-
-            }
+            ) : null}
           </View>
-
         )}
         <View style={styles.info}>
           <Text style={styles.nameChat}>{item.name}</Text>
           <Text style={styles.TextlistChat}>{item.content}</Text>
         </View>
       </TouchableOpacity>
-    )
-
+    );
   };
 
   return (
@@ -133,7 +123,7 @@ const ChatScreen = props => {
           />
         </TouchableOpacity>
         <Text style={styles.chat}>Đoạn chat</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('SearchScreens')}>
           <Image
             style={styles.image_menu}
             source={require('../../../assets/add_chat.png')}
@@ -141,22 +131,13 @@ const ChatScreen = props => {
         </TouchableOpacity>
       </View>
 
-      {/* sreach */}
-      <TouchableOpacity onPress={() => navigation.navigate('SearchScreens')}>
-        <View style={styles.sreach}>
-          <Image
-            style={styles.image_search}
-            source={require('../../../assets/search_50px.png')}
-          />
-          {/* <TextInput style={styles.inputSearch} placeholder="Tìm kiếm" /> */}
-        </View>
-      </TouchableOpacity>
       <Text style={styles.line} />
+      <View style={styles.divider} />
       <FlatList
         data={user}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item._id}
-        renderItem={({ item }) => renderItem({ item })}
+        renderItem={({item}) => renderItem({item})}
       />
     </View>
   );

@@ -7,7 +7,7 @@ import {styles} from '../../styles/select';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const SelectScreenUp = ({navigation, route}) => {
-  const idObject = route.params.idObject;
+  const idObject = route.params?.idObject;
 
   // console.log('>>>>>>>>>>.SelectScreenUp ---- idObject', idObject);
 
