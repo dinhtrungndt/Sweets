@@ -268,7 +268,7 @@ export function AddsScreen({route, navigation}) {
     });
   };
 
-  const handleCheckIn = async () => {
+  const handleCheckIn = async ({navigation}) => {
     try {
       const location = await getCurrentLocation();
       console.log('Current location:', location);
@@ -285,8 +285,12 @@ export function AddsScreen({route, navigation}) {
     return /\.(mp4|avi|mov)$/i.test(url);
   };
 
-  const handleLiveStream = () => {
-    console.log('Live Stream');
+  const handleLiveStream = (isStream,userName,userId) => {
+
+    console.log('Live Stream>>>>');
+    console.log('isStream:',isStream);
+    console.log('userName:',userName);
+    navigation.navigate('LiveStreamHost',{isStream,userName,userId});
   };
 
   useEffect(() => {
@@ -495,7 +499,7 @@ export function AddsScreen({route, navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomSheetItem}
-              onPress={handleLiveStream}>
+              onPress={()=>handleLiveStream(true,"idol nè con","123")}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_live.png')}

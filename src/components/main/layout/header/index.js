@@ -9,6 +9,13 @@ import {styles} from './styles/header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HeaderScreen = ({onRefresh, navigation}) => {
+  const handleLiveStream = (isStream,userName,userId) => {
+
+    console.log('Live Stream>>>>');
+    console.log('isStream:',isStream);
+    console.log('userName:',userName);
+    navigation.navigate('LiveStreamHost',{isStream,userName,userId});
+  };
   return (
     <View style={styles.T}>
       {/* header */}
@@ -22,7 +29,10 @@ const HeaderScreen = ({onRefresh, navigation}) => {
         <View style={styles.towEnd_Noti_Search}>
           <TouchableOpacity
             style={{paddingRight: 5}}
-            onPress={() => navigation.navigate('LiveStreamScreen')}>
+            onPress={() => 
+              // navigation.navigate('LiveStreamScreen')
+              handleLiveStream(false,'dung báo',"456")
+            }>
             <Ionicons name="videocam" size={28} color="#ff0000" />
           </TouchableOpacity>
           <TouchableOpacity style={{paddingLeft: 5}}>
