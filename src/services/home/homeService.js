@@ -175,7 +175,7 @@ export const submitCommentsC = async (
       `/comments/add/${userId}/${postId}/${parentId}`,
       {content, image},
     );
-    console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    // console.log('comment post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi commentsC bài viết: 11 s', error.response);

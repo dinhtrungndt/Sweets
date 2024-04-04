@@ -34,6 +34,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Swiper from 'react-native-swiper';
 import VideoPlayer from 'react-native-video-player';
+import Video from 'react-native-video';
 import CustomReaction from '../../../../customs/reaction/customreaction';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -50,11 +51,13 @@ import {
 } from '../../../../../services/home/homeService';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import BottomSheetFit from '../../../../customs/bottomsheet/bottomSheetFit';
+import Toast from 'react-native-toast-message';
 
 const CommentsScreen = ({navigation, route}) => {
   const {postId, handleLike} = route.params;
   const [posts, setPosts] = useState([postId]);
   const [showMore, setShowMore] = useState(false);
+  const [showMoreImage, setShowMoreImage] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
   const snapPoints = useMemo(() => ['90%', '60%'], []);
@@ -72,6 +75,7 @@ const CommentsScreen = ({navigation, route}) => {
   const [isLoadingCamera, setIsLoadingCamera] = useState(false);
   const commentInputRef = useRef(null);
   const [parentId, setParentId] = useState(null);
+  const [imageimageShowMore, setImageImageShowMore] = useState(null);
   const [parentUserName, setParentUserName] = useState('');
   const numColumns = 4;
 
@@ -285,6 +289,18 @@ const CommentsScreen = ({navigation, route}) => {
 
   const submitComment = async () => {
     try {
+      if (!commentContent && !imagePath) {
+        return Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Bạn chưa nhập nội dung hoặc chọn ảnh/video',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 40,
+        });
+      }
+
       setIsLoading(true);
       if (parentId) {
         await submitCommentsC(
@@ -303,6 +319,7 @@ const CommentsScreen = ({navigation, route}) => {
         );
       }
       setCommentContent('');
+      setImagePath(null);
       setImage('');
       await reloadComments();
       setIsLoading(false);
@@ -319,6 +336,11 @@ const CommentsScreen = ({navigation, route}) => {
 
   const isVideo = url => {
     return /\.(mp4|avi|mov)$/i.test(url);
+  };
+
+  const handleShowMoreImage = image => {
+    setImageImageShowMore(image);
+    setShowMoreImage(true);
   };
 
   useEffect(() => {
@@ -660,7 +682,7 @@ const CommentsScreen = ({navigation, route}) => {
             <View style={styles.comment}>
               {comments.map((item, index) => {
                 if (item.idParent === null) {
-                  // comment father
+                  // comment cha
                   return (
                     <View style={styles.container_comment} key={index}>
                       {/* Bình luận cha */}
@@ -670,46 +692,60 @@ const CommentsScreen = ({navigation, route}) => {
                           source={{uri: item.idUsers?.avatar}}
                         />
                         <View style={styles.container_comment_content}>
-                          <View style={styles.comment_content}>
+                          <View
+                            style={
+                              item?.content !== ''
+                                ? styles.comment_content
+                                : {backgroundColor: '#fff'}
+                            }>
                             <Text style={styles.name_comment}>
                               {item.idUsers?.name}
                             </Text>
-                            <View>
-                              {item?.content && (
-                                <View>
-                                  <Text>{item.content}</Text>
-                                </View>
-                              )}
-                              {item?.image && item?.image.length > 0 && (
-                                <View style={styles.container_image_camera}>
-                                  {item.image.map((image, imageIndex) => {
-                                    if (isImage(image)) {
-                                      return (
-                                        <Image
-                                          key={imageIndex}
-                                          source={{uri: image}}
-                                          style={styles.content_image}
-                                        />
-                                      );
-                                    } else if (isVideo(image)) {
-                                      return (
-                                        <VideoPlayer
-                                          key={imageIndex}
-                                          video={{uri: image}}
-                                          videoWidth={1600}
-                                          videoHeight={900}
-                                          thumbnail={{uri: image}}
-                                          style={styles.content_video}
-                                        />
-                                      );
-                                    } else {
-                                      return null;
-                                    }
-                                  })}
-                                </View>
-                              )}
-                            </View>
+                            {item?.content && (
+                              <Text style={{color: '#000'}}>
+                                {item.content}
+                              </Text>
+                            )}
                           </View>
+
+                          {item?.image && item?.image.length > 0 && (
+                            <View style={styles.container_image_camera}>
+                              {item.image.map((image, imageIndex) => {
+                                if (isImage(image)) {
+                                  return (
+                                    <TouchableOpacity
+                                      key={imageIndex}
+                                      onPress={() =>
+                                        handleShowMoreImage(image)
+                                      }>
+                                      <Image
+                                        source={{uri: image}}
+                                        style={styles.content_image}
+                                      />
+                                    </TouchableOpacity>
+                                  );
+                                } else if (isVideo(image)) {
+                                  return (
+                                    <TouchableOpacity
+                                      key={imageIndex}
+                                      onPress={() =>
+                                        handleShowMoreImage(image)
+                                      }>
+                                      <VideoPlayer
+                                        video={{uri: image}}
+                                        videoWidth={1600}
+                                        videoHeight={900}
+                                        thumbnail={{uri: image}}
+                                        style={styles.content_video}
+                                      />
+                                    </TouchableOpacity>
+                                  );
+                                } else {
+                                  return null;
+                                }
+                              })}
+                            </View>
+                          )}
                           <View style={styles.comment_time_like}>
                             <Text style={styles.time_comment}>
                               {' '}
@@ -771,32 +807,65 @@ const CommentsScreen = ({navigation, route}) => {
                                 }
                               />
                               <View style={styles.container_comment_content}>
-                                <View style={styles.comment_content}>
+                                <View
+                                  style={
+                                    subItem?.content !== ''
+                                      ? styles.comment_content
+                                      : {backgroundColor: '#fff'}
+                                  }>
                                   <Text style={styles.name_comment}>
                                     {subItem.idUsers?.name}
                                   </Text>
                                   <View>
                                     {subItem?.content && (
-                                      <View>
-                                        <Text>{subItem.content}</Text>
-                                      </View>
+                                      <Text style={{color: '#000'}}>
+                                        {subItem.content}
+                                      </Text>
                                     )}
-                                    {subItem?.image &&
-                                      subItem?.image.length > 0 && (
-                                        <View>
-                                          {subItem.image.map(
-                                            (image, imageIndex) => (
-                                              <Image
-                                                key={imageIndex}
-                                                source={{uri: image}}
-                                                style={styles.content_image}
-                                              />
-                                            ),
-                                          )}
-                                        </View>
-                                      )}
                                   </View>
                                 </View>
+
+                                {subItem?.image &&
+                                  subItem?.image.length > 0 && (
+                                    <View style={styles.container_image_camera}>
+                                      {subItem.image.map(
+                                        (image, imageIndex) => {
+                                          if (isImage(image)) {
+                                            return (
+                                              <TouchableOpacity
+                                                key={imageIndex}
+                                                onPress={() =>
+                                                  handleShowMoreImage(image)
+                                                }>
+                                                <Image
+                                                  source={{uri: image}}
+                                                  style={styles.content_image}
+                                                />
+                                              </TouchableOpacity>
+                                            );
+                                          } else if (isVideo(image)) {
+                                            return (
+                                              <TouchableOpacity
+                                                key={imageIndex}
+                                                onPress={() =>
+                                                  handleShowMoreImage(image)
+                                                }>
+                                                <VideoPlayer
+                                                  video={{uri: image}}
+                                                  videoWidth={1600}
+                                                  videoHeight={900}
+                                                  thumbnail={{uri: image}}
+                                                  style={styles.content_video}
+                                                />
+                                              </TouchableOpacity>
+                                            );
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                      )}
+                                    </View>
+                                  )}
                                 <View style={styles.comment_time_like}>
                                   <Text style={styles.time_comment}>
                                     {formatTime(subItem.createAt)}
@@ -905,6 +974,38 @@ const CommentsScreen = ({navigation, route}) => {
         <Modal
           animationType="fade"
           transparent={true}
+          visible={showMoreImage}
+          onRequestClose={() => {}}>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPressOut={() => setShowMoreImage(false)}
+            style={styles.modalShowMoreImage}>
+            {/* {console.log('>>> showw', imageimageShowMore)} */}
+            {isImage(imageimageShowMore) ? (
+              <Image
+                source={{uri: imageimageShowMore}}
+                style={[styles.content_image, {width: '80%', height: '80%'}]}
+              />
+            ) : isVideo(imageimageShowMore) ? (
+              <Video
+                onBuffer={this.onBuffer}
+                onError={this.videoError}
+                source={{uri: imageimageShowMore}}
+                resizeMode="contain"
+                rate={1}
+                volume={1}
+                muted={false}
+                ignoreSilentSwitch={null}
+                repeat={false}
+                controls={false}
+                style={styles.content_videoShowMore}
+              />
+            ) : null}
+          </TouchableOpacity>
+        </Modal>
+        <Modal
+          animationType="fade"
+          transparent={true}
           visible={modalVisible}
           onRequestClose={() => {}}>
           <View style={styles.modalContainer}>
@@ -926,7 +1027,7 @@ const CommentsScreen = ({navigation, route}) => {
                   style={styles.icon_comment_send}
                   source={require('../../../../../assets/photo_video_50px_pick_camera.png')}
                 />
-                <Text style={styles.text_camera_modal}>Chọn ảnh</Text>
+                <Text style={styles.text_camera_modal}>Chọn ảnh/video</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.button_select_camera}
