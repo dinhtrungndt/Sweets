@@ -8,7 +8,7 @@ import {styles} from './styles/header';
 // Library
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const HeaderScreen = ({onRefresh}) => {
+const HeaderScreen = ({onRefresh, navigation}) => {
   return (
     <View style={styles.T}>
       {/* header */}
@@ -20,7 +20,12 @@ const HeaderScreen = ({onRefresh}) => {
           />
         </TouchableOpacity>
         <View style={styles.towEnd_Noti_Search}>
-          <TouchableOpacity style={styles.container_search}>
+          <TouchableOpacity
+            style={{paddingRight: 5}}
+            onPress={() => navigation.navigate('LiveStreamScreen')}>
+            <Ionicons name="videocam" size={28} color="#ff0000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={{paddingLeft: 5}}>
             <Ionicons name="search-outline" size={28} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.container_noti}>

@@ -254,7 +254,7 @@ export const styles = StyleSheet.create({
     width: '80%',
   },
   comment_content: {
-    backgroundColor: '#e4e6eb',
+    backgroundColor: '#ebebeb',
     borderRadius: 20,
     padding: 10,
   },
@@ -276,14 +276,14 @@ export const styles = StyleSheet.create({
   },
   content_image: {
     width: 80,
-    height: 80,
+    height: 150,
     borderRadius: 10,
     marginTop: 15,
     marginLeft: 10,
   },
   content_video: {
     width: 100,
-    height: 100,
+    height: 150,
     borderRadius: 10,
     marginTop: 15,
     marginLeft: 10,
@@ -364,7 +364,7 @@ export const styles = StyleSheet.create({
     width: '80%',
     margin: 12,
     borderRadius: 14,
-    borderWidth: 5,
+    borderWidth: 1,
     borderColor: '#22b6c0',
     padding: 12,
     flexDirection: 'row',
@@ -374,5 +374,17 @@ export const styles = StyleSheet.create({
   text_camera_modal: {
     textAlign: 'center',
     paddingLeft: 12,
+  },
+  modalShowMoreImage: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  content_videoShowMore: {
+    width: '90%',
+    height: '90%',
   },
 });

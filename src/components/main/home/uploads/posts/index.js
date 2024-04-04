@@ -423,9 +423,7 @@ export function AddsScreen({route, navigation}) {
         </View>
         {/* bottom sheet */}
         <View style={styles.pick_feelings}>
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={styles.boder_image}>
+          <TouchableOpacity onPress={openLibrary} style={styles.boder_image}>
             <Image
               style={styles.avatar_icon_image}
               source={require('../../../../../assets/icon_image.png')}
