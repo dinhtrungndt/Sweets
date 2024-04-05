@@ -76,9 +76,6 @@ export const styles = StyleSheet.create({
         marginLeft: 'auto',
     },
     userIcon: {
-        width: 21,
-        height: 21,
-        transform: [{ rotate: '270deg' }],
         alignSelf: 'center',
     },
     bodyBtnIcon: {

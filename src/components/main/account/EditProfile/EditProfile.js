@@ -1,42 +1,37 @@
 /* eslint-disable prettier/prettier */
 import {
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
   Image,
   TextInput,
   Modal,
-  Pressable,
   ActivityIndicator,
 } from 'react-native';
-import React, {useCallback, useContext, useState, useEffect} from 'react';
-import {UserContext} from '../../../../contexts/user/userContext';
-import {updateProfile} from '../../../../services/user/userService';
+import React, { useCallback, useContext, useState, useEffect } from 'react';
+import { UserContext } from '../../../../contexts/user/userContext';
+import { updateProfile } from '../../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // styles
-import {styles} from '../style/editprofile';
+import { styles } from '../style/editprofile';
 
 // library
 import CheckBox from '@react-native-community/checkbox';
 import DatePicker from 'react-native-date-picker';
-import {set} from 'date-fns';
+import { set } from 'date-fns';
 
 const EditProfile = props => {
-  const {navigation} = props;
-
-  const {user} = useContext(UserContext);
+  const { navigation } = props;
+  const { user } = useContext(UserContext);
 
   const [loading, setLoading] = useState(false);
   const [modalVisibleEdit, setModalVisibleEdit] = useState(false);
   const [modalVisibleDate, setModalVisibleDate] = useState(false);
-
   const [isGender, setIsGender] = useState(user ? user.user.gender : '');
-
   const [editedName, setEditedName] = useState(user ? user.user.name : '');
   const [editedNgaysinh, setEditedNgaysinh] = useState(
-    user ? user.user.date : '',
+    user && user.user && user.user.date !== 'null' ? user.user.date : 'Chưa cập nhật',
   );
 
   const handleEdit = () => {
@@ -76,7 +71,6 @@ const EditProfile = props => {
       console.log('updateProfile err: ', error);
     }
     setLoading(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editedName, isGender, editedNgaysinh]);
 
   return (
@@ -87,7 +81,7 @@ const EditProfile = props => {
             style={styles.imgCover}
             source={
               user && user.user.coverImage
-                ? {uri: user.user.coverImage}
+                ? { uri: user.user.coverImage }
                 : require('../../../../assets/diana.jpg')
             }
           />
@@ -97,7 +91,7 @@ const EditProfile = props => {
             style={styles.imgAvatar}
             source={
               user && user.user.avatar
-                ? {uri: user.user.avatar}
+                ? { uri: user.user.avatar }
                 : require('../../../../assets/diana.jpg')
             }
           />
@@ -105,7 +99,10 @@ const EditProfile = props => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.btnBack}>
-          <Image source={require('../../../../assets/icon_back.png')} />
+          <MaterialIcons
+            name='arrow-back'
+            color={'#000000'}
+            size={30} />
         </TouchableOpacity>
         <View style={styles.editFrame}>
           <Text style={styles.txt1}>Thông tin cá nhân</Text>
@@ -115,11 +112,11 @@ const EditProfile = props => {
           </View>
           <View style={styles.Frame}>
             <Text style={styles.txtTtcn}>Giới tính: </Text>
-            <Text style={styles.txtTtcn1}>{user ? user.user.gender : ''}</Text>
+            <Text style={styles.txtTtcn1}>{user && user.user && user.user.gender !== 'null' ? user.user.gender : 'Chưa cập nhật'}</Text>
           </View>
           <View style={styles.Frame}>
             <Text style={styles.txtTtcn}>Ngày sinh: </Text>
-            <Text style={styles.txtTtcn1}>{user ? user.user.date : ''}</Text>
+            <Text style={styles.txtTtcn1}>{user && user.user && user.user.date !== 'null' ? user.user.date : 'Chưa cập nhật'}</Text>
           </View>
           <TouchableOpacity onPress={handleEdit} style={styles.btnEdit}>
             <Text style={styles.txtEdit}>Chỉnh sửa</Text>
@@ -140,8 +137,10 @@ const EditProfile = props => {
             <TouchableOpacity
               onPress={() => setModalVisibleEdit(!modalVisibleEdit)}
               style={styles.btnCancelEdit}>
-              <Image
-                source={require('../../../../assets/icon_back.png')}
+              <MaterialIcons
+                name='arrow-back'
+                size={30}
+                color={'#FFFFFF'}
                 style={styles.imgAvt}
               />
               <Text style={styles.txtCancelEdit}>Chỉnh sửa thông tin</Text>
@@ -176,7 +175,7 @@ const EditProfile = props => {
                 modal
                 mode="date"
                 open={modalVisibleDate}
-                date={set(new Date(), {year: 2000}, editedNgaysinh)}
+                date={set(new Date(), { year: 2000 }, editedNgaysinh)}
                 onConfirm={onConfirmDate}
                 onCancel={() => {
                   setModalVisibleDate(false);
@@ -188,21 +187,21 @@ const EditProfile = props => {
                 style={styles.CheckBox}
                 value={isGender === 'Nữ'}
                 onValueChange={() => handleCheckboxChange('Nữ')}
-                tintColors={{true: '#22b6c0', false: '#b0b4ba'}}
+                tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
               />
               <Text style={styles.txtCheckbox}>Nữ</Text>
               <CheckBox
                 style={styles.CheckBox}
                 value={isGender === 'Nam'}
                 onValueChange={() => handleCheckboxChange('Nam')}
-                tintColors={{true: '#22b6c0', false: '#b0b4ba'}}
+                tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
               />
               <Text style={styles.txtCheckbox}>Nam</Text>
               <CheckBox
                 style={styles.CheckBox}
                 value={isGender === 'Khác'}
                 onValueChange={() => handleCheckboxChange('Khác')}
-                tintColors={{true: '#22b6c0', false: '#b0b4ba'}}
+                tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
               />
               <Text style={styles.txtCheckbox}>Khác</Text>
             </View>

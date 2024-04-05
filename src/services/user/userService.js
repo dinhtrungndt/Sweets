@@ -128,11 +128,9 @@ export const changePassword = async (_id, password, newPassword) => {
 };
 
 // lấy danh sách bài viết theo id người dùng
-export const getPostByUserId = async idUsers => {
+export const getPostByUserId = async (idUsers) => {
   try {
-    const response = await AxiosInstance().get(
-      `/posts/get-detail-users/${idUsers}`,
-    );
+    const response = await AxiosInstance().get(`/posts/get-detail-users/${idUsers}`);
     // console.log('getPostByUserId response:', response.userPosts);
     return response.userPosts;
   } catch (error) {
