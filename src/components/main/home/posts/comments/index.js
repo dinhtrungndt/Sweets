@@ -44,6 +44,7 @@ import FeelingComponent from '../feeling';
 import {UserContext} from '../../../../../contexts/user/userContext';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {
+  ArrangeCommentFriend,
   deletePostsAccount,
   getComments,
   likeByPost,
@@ -68,7 +69,7 @@ const CommentsScreen = ({navigation, route}) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
   const snapPoints = useMemo(() => ['90%', '60%'], []);
-  const snapPointsFit = useMemo(() => ['45%'], []);
+  const snapPointsFit = useMemo(() => ['35%'], []);
   const bottomSheetRef = useRef(null);
   const initialSnapIndex = -1;
   const bottomSheetRefFit = useRef(null);
@@ -409,6 +410,16 @@ const CommentsScreen = ({navigation, route}) => {
     } catch (error) {
       console.error('Lỗi khi gửi comment:', error);
       setIsLoading(false);
+    }
+  };
+
+  const handleArrange = async () => {
+    try {
+      const res = await ArrangeCommentFriend(user.user._id, postId._id);
+      setComments(res);
+      // console.log('Sắp xếp thành công', res);
+    } catch (error) {
+      console.log('Lỗi sắp xếp !', error);
     }
   };
 
@@ -1136,7 +1147,11 @@ const CommentsScreen = ({navigation, route}) => {
           index={initialSnapIndex}
           snapPoints={snapPointsFit}
           enablePanDownToClose={true}>
-          <BottomSheetFit comment={comments} />
+          <BottomSheetFit
+            comment={comments}
+            handleArrange={handleArrange}
+            reloadComments={reloadComments}
+          />
         </BottomSheet>
         <Modal
           animationType="fade"
@@ -1165,6 +1180,7 @@ const CommentsScreen = ({navigation, route}) => {
                 ignoreSilentSwitch={null}
                 repeat={false}
                 controls={false}
+                progressive={true}
                 style={styles.content_videoShowMore}
               />
             ) : null}

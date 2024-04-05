@@ -224,3 +224,17 @@ export const updateEditPosts = async (idPosts, idUsers, detailPosts) => {
     throw error;
   }
 };
+
+// Sắp xếp comments dựa theo bạn bè
+export const ArrangeCommentFriend = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().get(
+      `/comments/arrange-comment-friend/${idUsers}/${idPosts}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};
