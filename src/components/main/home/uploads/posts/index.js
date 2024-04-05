@@ -39,6 +39,7 @@ export function AddsScreen({route, navigation}) {
   const [imagePath, setImagePath] = useState(null);
   const [upload, setUpload] = useState(false);
   const [_idPosts, setIdPosts] = useState(null);
+  const idPostsUp = _idPosts;
   const [loading, setLoading] = useState(false);
   const selectedId = route.params?.selectedId;
   const idObjectValue =
@@ -134,12 +135,8 @@ export function AddsScreen({route, navigation}) {
     setBottomSheetVisible(false);
   };
 
-  const handleUploadMedia = useCallback(async () => {
+  const handleUploadMedia = useCallback(async idPostsUp => {
     try {
-      if (!_idPosts) {
-        return;
-      }
-
       const mediaArray = imagePath.map(image => {
         const type =
           image.endsWith('.jpg') ||
@@ -154,8 +151,9 @@ export function AddsScreen({route, navigation}) {
 
       await Promise.all(
         mediaArray.map(async media => {
-          const response = await uploadMedia(_idPosts, media);
-          // console.log('>>>>>>> response -> handleUploadMedia', response);
+          const idUp = _idPosts === null ? idPostsUp : _idPosts;
+          const response = await uploadMedia(idUp, media);
+          console.log('>>>>>>> response -> handleUploadMedia', response);
         }),
       );
     } catch (error) {
@@ -179,13 +177,19 @@ export function AddsScreen({route, navigation}) {
       }
 
       if (inputText && imagePath) {
-        await Promise.all([handleUploadMedia(), handleUploadPost()]);
+        await Promise.all([
+          handleUploadMedia(idPostsUp),
+          handleUploadPost(idPostsUp),
+        ]);
       } else if (inputText) {
-        await handleUploadPost();
+        await handleUploadPost(idPostsUp);
       } else if (inputText === '') {
-        await Promise.all([handleUploadMedia(), handleUploadPost()]);
+        await Promise.all([
+          handleUploadMedia(idPostsUp),
+          handleUploadPost(idPostsUp),
+        ]);
       } else if (imagePath) {
-        await handleUploadMedia();
+        await handleUploadMedia(idPostsUp);
       }
 
       if (!upload) {
@@ -224,36 +228,39 @@ export function AddsScreen({route, navigation}) {
     }
   };
 
-  const handleUploadPost = useCallback(async () => {
-    // if (!user || !inputText) {
-    //   return;
-    // }
+  const handleUploadPost = useCallback(
+    async idPostsUp => {
+      // if (!user || !inputText) {
+      //   return;
+      // }
 
-    try {
-      // console.log('Selected ID in AddsScreen:', selectedId);
-      const postDetails = {
-        _id: _idPosts,
-        content: inputText || '',
-        createAt: new Date().toISOString(),
-        idObject: idObjectValue,
-        idTypePosts: '65b20030261511b0721a9913',
-      };
+      try {
+        console.log('_idPosts ID in handleUploadPost:', _idPosts);
+        const postDetails = {
+          _id: _idPosts === null ? idPostsUp : _idPosts,
+          content: inputText || '',
+          createAt: new Date().toISOString(),
+          idObject: idObjectValue,
+          idTypePosts: '65b20030261511b0721a9913',
+        };
 
-      console.log(' >>>>>>>>>>>>>>>> postDetails:', postDetails);
+        console.log(' >>>>>>>>>>>>>>>> postDetails:', postDetails);
 
-      const response = await uploadPost(user.user._id, postDetails);
-      setUpload(response);
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [{name: 'HomeStackScreen'}],
-        }),
-      );
-      console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
-    } catch (error) {
-      console.error('Lỗi catch --->>>>> error :', error);
-    }
-  }, [user, inputText]);
+        const response = await uploadPost(user.user._id, postDetails);
+        setUpload(response);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{name: 'HomeStackScreen'}],
+          }),
+        );
+        console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+      } catch (error) {
+        console.error('Lỗi catch --->>>>> error :', error);
+      }
+    },
+    [user, inputText],
+  );
 
   const getCurrentLocation = () => {
     return new Promise((resolve, reject) => {
@@ -291,7 +298,9 @@ export function AddsScreen({route, navigation}) {
     const dateNumber = new Date(dateString);
     const _idPosts = dateNumber.getTime().toString() + randomSuffix.toString();
     setIdPosts(_idPosts);
+    console.log('useEffectuseEffect _idPosts:', _idPosts);
   }, []);
+  console.log('_idPosts ở ngoài:', _idPosts);
 
   // useEffect(() => {
   //   handleUploadPost();
