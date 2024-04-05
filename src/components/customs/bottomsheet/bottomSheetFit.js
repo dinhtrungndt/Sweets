@@ -1,47 +1,21 @@
 /* eslint-disable prettier/prettier */
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import {getComments} from '../../../services/home/homeService';
 
-const BottomSheetFit = ({comment}) => {
+const BottomSheetFit = ({handleArrange, reloadComments}) => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [filterOption, setFilterOption] = useState('option1');
-  const [comments, setComments] = useState([comment]);
 
-  // console.log('>>>>>>>>>> commentcomment' + comment.map(item => item._id));
-  // console.log('>>>>>>>>>> comments' + comments);
-  const handleOptionSelect = option => {
+  const handleOptionSelect = async option => {
     setSelectedOption(option);
-    setFilterOption(option);
-    // reloadComments();
-  };
-
-  const reloadComments = async () => {
-    try {
-      const response = await getComments(comment.map(item => item._id));
-      const data = await response;
-      // console.log('>>>>>>>>>> data' + data);
-      let filteredComments = [];
-      switch (filterOption) {
-        case 'option1':
-          filteredComments = data.filter(
-            comment => comment.isFriend || comment.isPopular,
-          );
-          break;
-        case 'option2':
-          filteredComments = data.slice().reverse();
-          console.log('>>>>>>>>>>>> option2' + filteredComments);
-          break;
-        case 'option3':
-          filteredComments = data;
-          break;
-        default:
-          filteredComments = data;
-          break;
-      }
-      setComments(filteredComments);
-    } catch (error) {
-      console.error('Lỗi khi tải danh sách bình luận:', error);
+    switch (option) {
+      case 'option1':
+        await handleArrange();
+        break;
+      case 'option2':
+        await reloadComments();
+        break;
+      default:
+        break;
     }
   };
 
@@ -58,35 +32,18 @@ const BottomSheetFit = ({comment}) => {
           )}
         </View>
         <View>
-          <Text style={styles.body_content_text}>Phù hợp nhất</Text>
+          <Text style={styles.body_content_text}>Lọc theo bạn bè</Text>
           <Text style={styles.body_content_text2}>
-            Hiển thị bình luận của bạn bè và những bình luận có nhiều lượt tương
-            tác nhất trước tiên.
-          </Text>
-        </View>
-      </TouchableOpacity>
-      {/* Mới nhất */}
-      <TouchableOpacity
-        style={styles.body_content}
-        onPress={() => handleOptionSelect('option2')}>
-        <View style={styles.radioContainer}>
-          {selectedOption === 'option2' && (
-            <View style={styles.radioSelected} />
-          )}
-        </View>
-        <View>
-          <Text style={styles.body_content_text}>Mới nhất</Text>
-          <Text style={styles.body_content_text2}>
-            Hiển thị tất cả bình luận, theo thứ tự từ mới nhất đến cũ nhất.
+            Hiển thị bình luận của bạn bè và những bạn bè có trong danh sách.
           </Text>
         </View>
       </TouchableOpacity>
       {/* Tất cả bình luận */}
       <TouchableOpacity
         style={styles.body_content}
-        onPress={() => handleOptionSelect('option3')}>
+        onPress={() => handleOptionSelect('option2')}>
         <View style={styles.radioContainer}>
-          {selectedOption === 'option3' && (
+          {selectedOption === 'option2' && (
             <View style={styles.radioSelected} />
           )}
         </View>

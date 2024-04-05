@@ -7,7 +7,7 @@ const config = {
           path: 'posts',
         },
         CommentsScreen: {
-          path: 'posts/:postId/comments',
+          path: 'posts/:postId',
           parse: {
             postId: postId => `${postId}`,
           },

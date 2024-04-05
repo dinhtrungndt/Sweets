@@ -20,6 +20,8 @@ import {deletePostsAccount} from '../../../../../services/home/homeService';
 import DialogDeletePosts from 'react-native-dialog';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {UserContext} from '../../../../../contexts/user/userContext';
+import Video from 'react-native-video';
+
 const {height, width} = Dimensions.get('window');
 
 const PickStory = ({route}) => {
@@ -178,25 +180,30 @@ const PickStory = ({route}) => {
           />
         ) : storys[current] &&
           storys[current].media.some(item => item.type === 'video') ? (
-          <TouchableOpacity onPress={handleVideoPress} style={{opacity: 1}}>
-            <VideoPlayer
-              video={{
+          <TouchableOpacity onPress={handleVideoPress}>
+            <Video
+              source={{
                 uri: storys[current].media
                   .find(item => item.type === 'video')
                   .url.join(),
               }}
-              videoWidth={1600}
-              videoHeight={1000}
-              thumbnail={{
-                uri: storys[current].media
-                  .find(item => item.type === 'video')
-                  .url.join(),
-              }}
-              autoplay={true}
-              hideControls={true}
-              showOnStart={true}
+              onBuffer={this.onBuffer}
+              onError={this.videoError}
+              resizeMode="contain"
+              rate={1}
+              volume={1}
+              isMuted={false}
+              muted={false}
+              ignoreSilentSwitch={null}
+              repeat={true}
               paused={isPaused}
-              style={styles.video_story}
+              controls={false}
+              style={{
+                width: width,
+                height: height,
+                borderRadius: 10,
+              }}
+              progressive={true}
             />
           </TouchableOpacity>
         ) : null}

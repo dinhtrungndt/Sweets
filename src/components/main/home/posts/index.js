@@ -310,7 +310,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   <View style={styles.container_object}>
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('CommentsScreen', {postId: item})
+                        navigation.navigate('CommentsScreen', {
+                          postId: item,
+                        })
                       }>
                       <Text style={styles.time}>
                         {formatTime(item.createAt)}
@@ -392,7 +394,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                           video={{uri: media.url[0]}}
                           videoWidth={1600}
                           videoHeight={900}
-                          thumbnail={{uri: media.url[0]}}
+                          thumbnail={require('../../../../assets/play_96px.png')}
                           // autoplay={true}
                           style={styles.posts}
                         />
@@ -420,7 +422,6 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   onPress={() =>
                     navigation.navigate('CommentsScreen', {
                       postId: item,
-                      handleLike: handleLike,
                     })
                   }
                   style={styles.container_feeling}>
@@ -473,7 +474,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   {item.comment.length > 0 ? (
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('CommentsScreen', {postId: item})
+                        navigation.navigate('CommentsScreen', {
+                          postId: item,
+                        })
                       }
                       style={styles.container_comment}>
                       <Text style={styles.text_comment}>
@@ -490,7 +493,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   {item.share.length > 0 ? (
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('CommentsScreen', {postId: item})
+                        navigation.navigate('CommentsScreen', {
+                          postId: item,
+                        })
                       }
                       style={styles.container_share}>
                       <Text style={styles.text_share}>{item.share.length}</Text>
@@ -578,7 +583,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
               <TouchableOpacity
                 style={styles.like_post}
                 onPress={() =>
-                  navigation.navigate('CommentsScreen', {postId: item})
+                  navigation.navigate('CommentsScreen', {
+                    postId: item,
+                  })
                 }>
                 <MaterialCommunityIcons
                   name="comment-outline"
