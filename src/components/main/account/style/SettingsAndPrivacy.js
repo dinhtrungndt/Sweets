@@ -28,6 +28,12 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
     },
+    imgLanguage: {
+        width: 30,
+        height: 30,
+        position: 'absolute',
+        left: 16,
+    },
     imgIcon: {
         position: 'absolute',
         left: 10,
@@ -36,6 +42,10 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         color: '#000000',
         marginLeft: 10,
+    },
+    checkbox: {
+        position: 'absolute',
+        right: 10,
     },
     btnDark: {
         position: 'absolute',

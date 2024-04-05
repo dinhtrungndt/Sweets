@@ -12,7 +12,7 @@
     "settingsAndprivacy": "Cài đặt & Quyền riêng tư",
     "accountAndSecurity": "Tài khoản & Bảo mật",
     "logout": "Đăng xuất",
-    "editProfile": "Chỉnh sửa hồ sơ",
+    "editProfile": "Chỉnh sửa trang cá nhân",
     "addToPost": "Thêm vào bài viết",
     "posts": "Bài viết",
     "photo": "Ảnh",
@@ -26,5 +26,6 @@
     "liveIn": "Sống tại",
     "from": "Đến từ",
     "viewIntro": "Xem thông tin giới thiệu bản thân",
-    "editPublicDetails": "Chỉnh sửa chi tiết công khai"
+    "editPublicDetails": "Chỉnh sửa chi tiết công khai",
+    "myPhotosAndVideos": "Ảnh và video của tôi"
 }

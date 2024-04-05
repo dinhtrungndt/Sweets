@@ -9,10 +9,12 @@ import VideoPlayer from 'react-native-video-player';
 import { styles } from '../style/postScreen'
 import { getComments, getMedia, getReaction, getShare, likeByPost } from '../../../../../services/home/homeService'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { useTranslation } from 'react-i18next'
 
 const PostScreenAccount = () => {
   const { user } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
+  const { t } = useTranslation();
 
   // console.log(">>>>>>>>>>>. postssss", posts)
 

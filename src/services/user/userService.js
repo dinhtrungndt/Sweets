@@ -79,6 +79,24 @@ export const getUser = async (_id) => {
   }
 };
 
+export const updateAvatar = async (id, data) => {
+  const response = await AxiosInstance().put(
+    `/users/update-avatar/${id}`,
+    data,
+  );
+  console.log('response:', response);
+  return response.data;
+};
+
+export const updateCover = async (id, data) => {
+  const response = await AxiosInstance().put(
+    `/users/update-avatar/${id}`,
+    data,
+  );
+  console.log('response:', response);
+  return response.data;
+};
+
 export const updateProfile = async (_id, name, gender, date) => {
   try {
     const response = await AxiosInstance().post('/users/update-thongtin', {

@@ -97,7 +97,7 @@ export const styles = StyleSheet.create({
     },
     container_media: {},
     swiper: {
-        height: 400,
+        height: 375,
     },
     imageCountContainer: {
         position: 'absolute',
@@ -138,5 +138,9 @@ export const styles = StyleSheet.create({
     },
     text_like_post: {
         marginLeft: 5,
-    }
+    },
+    posts: {
+      width: '100%',
+      height: 350,
+    },
 });

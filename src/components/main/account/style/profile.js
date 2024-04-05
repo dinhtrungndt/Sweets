@@ -84,7 +84,7 @@ export const styles = StyleSheet.create({
     btnMore: {
         position: 'absolute',
         padding: 10,
-        left: 336,
+        left: 339,
     },
     imgMore: {
         width: 24,
@@ -92,13 +92,30 @@ export const styles = StyleSheet.create({
     },
     profileFrame: {
         width: '100%',
-        height: 420,
+        height: 462,
         backgroundColor: '#FFFFFF',
     },
     imgCover: {
         width: '100%',
         height: 210,
         position: 'absolute',
+    },
+    boderCamera: {
+        width: 42,
+        height: 42,
+        borderRadius: 30,
+        backgroundColor: '#bcbcbc',
+        position: 'absolute',
+        top: 153,
+        right: 16,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#FFFFFF',
+    },
+    iconCamera: {
+
     },
     imgAvatar: {
         width: 120,
@@ -108,6 +125,20 @@ export const styles = StyleSheet.create({
         top: 150,
         alignSelf: 'center',
     },
+    boderCameraAvatar: {
+        width: 30,
+        height: 30,
+        borderRadius: 30,
+        backgroundColor: '#bcbcbc',
+        position: 'absolute',
+        top: 225,
+        left: 234,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#FFFFFF',
+    },
     textName: {
         fontFamily: 'Poppins',
         fontStyle: 'normal',
@@ -116,6 +147,26 @@ export const styles = StyleSheet.create({
         marginTop: 270,
         color: '#000000',
         textAlign: 'center',
+    },
+    containerFriends: {
+        width: '100%',
+        height: 'auto',
+        flexDirection: 'row',
+        marginTop: 10,
+    },
+    txtFriendsNumber: {
+        fontFamily: 'Poppins',
+        fontStyle: 'normal',
+        fontSize: 18,
+        color: '#000000',
+        marginLeft: '5%',
+    },
+    txtFriends: {
+        fontFamily: 'Poppins',
+        fontStyle: 'normal',
+        fontSize: 14,
+        alignSelf: 'center',
+        marginLeft: 5,
     },
     btnIntroduce: {
         width: '90%',

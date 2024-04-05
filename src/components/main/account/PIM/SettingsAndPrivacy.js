@@ -150,8 +150,10 @@ const SettingsAndPrivacy = props => {
             <TouchableOpacity
               onPress={() => changeLanguage('vn')}>
               <View style={styles.detailContainer}>
+                <Image source={require('../../../../assets/icon_vietnam_48.png')} style={styles.imgLanguage} />
                 <Text style={styles.text2}>{t('Vietnamese')}</Text>
                 <CheckBox
+                  style={styles.checkbox}
                   value={selectedLanguage === 'vn'}
                   onValueChange={() => changeLanguage('vn')}
                 />
@@ -160,8 +162,10 @@ const SettingsAndPrivacy = props => {
             <TouchableOpacity
               onPress={() => changeLanguage('en')}>
               <View style={styles.detailContainer}>
+              <Image source={require('../../../../assets/icon_english_48.png')} style={styles.imgLanguage} />
                 <Text style={styles.text2}>{t('English')}</Text>
                 <CheckBox
+                  style={styles.checkbox}
                   value={selectedLanguage === 'en'}
                   onValueChange={() => changeLanguage('en')}
                 />

@@ -18,14 +18,18 @@ import { styles } from '../style/profile';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { uploadImageStatus } from '../../../../services/home/homeService';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import AxiosInstance from '../../../../helper/Axiosinstance';
 import PostScreen from './TopTab/PostScreen';
 import ImgScreen from './TopTab/ImgScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Entypo from 'react-native-vector-icons/Entypo'
+import { useTranslation } from 'react-i18next';
 
 const Tab = createMaterialTopTabNavigator();
 
 const Profile = props => {
   const { navigation } = props;
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
 
@@ -36,9 +40,44 @@ const Profile = props => {
   const [imageCoverPath, setImageCoverPath] = useState(null);
   const [modalVisibleCover, setModalVisibleCover] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [friendsCount, setFriendsCount] = useState(0);
 
   const { user, setUser } = useContext(UserContext);
   // console.log('>>>>>>>>>>>>>> user', user);
+
+  useEffect(() => {
+    const fetchFriendsCount = async () => {
+      try {
+        const axiosInstance = AxiosInstance(); // Tạo một instance của Axios
+        // Lấy userId từ AsyncStorage
+        const userId = await AsyncStorage.getItem('userId');
+        // Kiểm tra xem userId có tồn tại không
+        if (userId) {
+          const response = await axiosInstance.get(`/friend/friends/${userId}`);
+          const { friendsList } = response;
+          // Tạo một mảng chứa số lượng bạn bè
+          const friendsCountPromises = friendsList.map(async (friendId) => {
+            try {
+              const friendCountResponse = await axiosInstance.get(`/users/get-user/${friendId}`);
+              return friendCountResponse.user; // Lấy thông tin user từ response
+            } catch (error) {
+              console.error(`Lỗi khi lấy số lượng của bạn bè có id: ${friendId}`, error);
+              return null; // Trả về null nếu có lỗi để xử lý sau
+            }
+          });
+          // Lấy số lượng tất cả bạn bè của người dùng
+          const friendsCount = await Promise.all(friendsCountPromises);
+          // Lọc bỏ các giá trị null (nếu có) và lưu số lượng bạn bè vào state
+          setFriendsCount(friendsCount.filter(friend => friend !== null));
+        } else {
+          console.log('Không tìm thấy userId trong AsyncStorage');
+        }
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách bạn bè:', error);
+      }
+    };
+    fetchFriendsCount();
+  }, []);
 
   const takePhotoAvatar = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
@@ -183,6 +222,9 @@ const Profile = props => {
               <Image style={styles.imgCover} source={{ uri: coverImage.uri }} />
             </TouchableOpacity>
           ))}
+          <View style={styles.boderCamera}>
+            <Entypo name='camera' size={24} color={'#000000'} style={styles.iconCamera} />
+          </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setModalVisibleAvatar(true)}>
           <Image
@@ -200,9 +242,16 @@ const Profile = props => {
               <Image style={styles.imgAvatar} source={{ uri: avatar.uri }} />
             </TouchableOpacity>
           ))}
+          <View style={styles.boderCameraAvatar}>
+            <Entypo name='camera' size={18} color={'#000000'} style={styles.iconCamera} />
+          </View>
         </TouchableOpacity>
         <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
-        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.btnIntroduce}>
+        <View style={styles.containerFriends} >
+          <Text style={styles.txtFriendsNumber}>{friendsCount.length}</Text>
+          <Text style={styles.txtFriends}>{t('friends')}</Text>
+        </View >
+        <TouchableOpacity style={styles.btnIntroduce}>
           <Image
             style={styles.imgEdit}
             source={require('../../../../assets/icon_add_32.png')}
@@ -216,7 +265,7 @@ const Profile = props => {
             style={styles.imgEdit}
             source={require('../../../../assets/icon_edit_24.png')}
           />
-          <Text style={styles.txtEdit}>Chỉnh sửa trang cá nhân</Text>
+          <Text style={styles.txtEdit}>{t('editProfile')}</Text>
         </TouchableOpacity>
         <View style={styles.editFrame}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -226,9 +275,9 @@ const Profile = props => {
               color={'#000000'}
               style={styles.imgBack} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnMore}>
+          {/* <TouchableOpacity style={styles.btnMore}>
             <Image style={styles.imgMore} source={require('../../../../assets/icon_more_story.png')} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -352,7 +401,7 @@ const Profile = props => {
             backgroundColor: '#22b6c0',
           },
           tabBarPressColor: 'rgba(0,0,0,0.1)',
-          }}>
+        }}>
         <Tab.Screen name="Bài viết" component={PostScreen} />
         <Tab.Screen name="Ảnh" component={ImgScreen} />
       </Tab.Navigator>
