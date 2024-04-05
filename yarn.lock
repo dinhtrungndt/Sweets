@@ -2216,6 +2216,11 @@
     react-native-screens "^3.18.2"
     react-native-sound "^0.11.2"
 
+"@zegocloud/zego-uikit-prebuilt-live-streaming-rn@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@zegocloud/zego-uikit-prebuilt-live-streaming-rn/-/zego-uikit-prebuilt-live-streaming-rn-2.2.1.tgz#b1063d0a9e4dcb63fb92b82c4790a43dffad88c2"
+  integrity sha512-dSdkyaEdvN/Jaimx5Ic2FQhA8wqpo+VS3W9NPuEp5AnUg1gL4mrJr/ZJ+jOurL4JgQlWUTqTIKzAfb9yJ2fN+A==
+
 "@zegocloud/zego-uikit-rn@^2.7.4":
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/@zegocloud/zego-uikit-rn/-/zego-uikit-rn-2.7.4.tgz#f14417e7c38cd7beb6f202d32bc6033dae5f4eb3"

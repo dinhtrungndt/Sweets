@@ -25,7 +25,7 @@ import {
   ZegoUIKitPrebuiltCallWaitingScreen,
   ZegoUIKitPrebuiltCallInCallScreen,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-
+import LiveStreamHost from '../../../components/main/home/liveStream/LiveStreamHost';
 const Stack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
@@ -58,6 +58,7 @@ export function HomeStackScreen() {
         component={ModalEditPostsAccount}
       />
       <Stack.Screen name="LiveStreamScreen" component={LiveStreamScreen} />
+      <Stack.Screen name="LiveStreamHost" component={LiveStreamHost} />
 
       <Stack.Screen name="Profile" component={Profile} />
       {/* <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} /> */}
@@ -73,6 +74,7 @@ export function HomeStackScreen() {
         name="ZegoUIKitPrebuiltCallInCallScreen"
         component={ZegoUIKitPrebuiltCallInCallScreen}
       />
+
     </Stack.Navigator>
   );
 }
