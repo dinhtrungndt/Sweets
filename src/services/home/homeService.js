@@ -169,13 +169,14 @@ export const submitCommentsC = async (
   parentId,
   content,
   image,
+  parentUserName,
 ) => {
   try {
     const response = await AxiosInstance().post(
       `/comments/add/${userId}/${postId}/${parentId}`,
-      {content, image},
+      {content, image, parentUserName},
     );
-    console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    // console.log('comment post >>>>>>>>>>>>>>> 20 ', response);
     return response.data;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi commentsC bài viết: 11 s', error.response);
@@ -215,6 +216,20 @@ export const updateEditPosts = async (idPosts, idUsers, detailPosts) => {
     const response = await AxiosInstance().put(
       `/posts/update-posts/${idPosts}/${idUsers}`,
       detailPosts,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Sắp xếp comments dựa theo bạn bè
+export const ArrangeCommentFriend = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().get(
+      `/comments/arrange-comment-friend/${idUsers}/${idPosts}`,
     );
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response;

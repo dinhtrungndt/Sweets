@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import { UserContext } from '../../../../contexts/user/userContext';
+import AxiosInstance from '../../../../helper/Axiosinstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { updateAvatar, updateCover } from '../../../../services/user/userService';
 // style
@@ -32,7 +33,6 @@ const Profile = props => {
   const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
-
   const [imageAvatar, setImageAvatar] = useState([]);
   const [imageAvatarPath, setImageAvatarPath] = useState(null);
   const [modalVisibleAvatar, setModalVisibleAvatar] = useState(false);
@@ -97,9 +97,7 @@ const Profile = props => {
       });
 
       const data = await uploadImageStatus(formData);
-      // console.log('5955 995959 >>>>>>>>>> Data 59 data', data);
       setImageAvatarPath(data.urls);
-      // console.log('6226262626 >>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 
@@ -166,7 +164,7 @@ const Profile = props => {
       multiple: true,
     };
     await launchImageLibrary(options, takePhotoCover);
-    setModalVisibleAvatar(false);
+    setModalVisibleCover(false);
   }, []);
 
   const handleAvatarUpdate = useCallback(async () => {
@@ -202,6 +200,40 @@ const Profile = props => {
   useEffect(() => {
     handleCoverUpdate();
   }, [handleCoverUpdate]);
+
+  useEffect(() => {
+    const fetchFriendsCount = async () => {
+      try {
+        const axiosInstance = AxiosInstance(); // Tạo một instance của Axios
+        // Lấy userId từ AsyncStorage
+        const userId = await AsyncStorage.getItem('userId');
+        // Kiểm tra xem userId có tồn tại không
+        if (userId) {
+          const response = await axiosInstance.get(`/friend/friends/${userId}`);
+          const { friendsList } = response;
+          // Tạo một mảng chứa số lượng bạn bè
+          const friendsCountPromises = friendsList.map(async (friendId) => {
+            try {
+              const friendCountResponse = await axiosInstance.get(`/users/get-user/${friendId}`);
+              return friendCountResponse.user; // Lấy thông tin user từ response
+            } catch (error) {
+              console.error(`Lỗi khi lấy số lượng của bạn bè có id: ${friendId}`, error);
+              return null; // Trả về null nếu có lỗi để xử lý sau
+            }
+          });
+          // Lấy số lượng tất cả bạn bè của người dùng
+          const friendsCount = await Promise.all(friendsCountPromises);
+          // Lọc bỏ các giá trị null (nếu có) và lưu số lượng bạn bè vào state
+          setFriendsCount(friendsCount.filter(friend => friend !== null));
+        } else {
+          console.log('Không tìm thấy userId trong AsyncStorage');
+        }
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách bạn bè:', error);
+      }
+    };
+    fetchFriendsCount();
+  }, []);
 
   return (
     <View style={styles.body}>

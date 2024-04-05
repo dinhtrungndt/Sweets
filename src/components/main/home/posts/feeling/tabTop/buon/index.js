@@ -5,7 +5,7 @@ import {UserContext} from '../../../../../../../contexts/user/userContext';
 
 const BuonFeeling = ({route}) => {
   const reactions = route.params.reactions;
-  const wowReactions = reactions.filter(item => item.type === 'Wow');
+  const wowReactions = reactions.filter(item => item.type === 'Buồn');
   const {user} = useContext(UserContext);
 
   const getIcon = type => {

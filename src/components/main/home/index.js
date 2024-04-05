@@ -139,7 +139,7 @@ const HomeScreen = props => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         <ToastManager />
-        <HeaderScreen onRefresh={onRefresh} />
+        <HeaderScreen onRefresh={onRefresh} navigation={navigation} />
         <StoryScreen story={filteredStore} navigation={navigation} />
         <PostsScreen
           posts={filteredPosts}

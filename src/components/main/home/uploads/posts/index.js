@@ -25,6 +25,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import {CommonActions} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import VideoPlayer from 'react-native-video-player';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Geolocation from '@react-native-community/geolocation';
 
@@ -38,12 +39,13 @@ export function AddsScreen({route, navigation}) {
   const [imagePath, setImagePath] = useState(null);
   const [upload, setUpload] = useState(false);
   const [_idPosts, setIdPosts] = useState(null);
+  const idPostsUp = _idPosts;
   const [loading, setLoading] = useState(false);
   const selectedId = route.params?.selectedId;
   const idObjectValue =
     selectedId && selectedId._id ? selectedId._id : '65b1fe1be09b1e99f9e8a235';
 
-  // console.log('>>>>> idObjectValue: ' + idObjectValue);
+  console.log('>>>>> idObjectValue: ' + idObjectValue);
 
   const idObject = () => [
     {
@@ -122,7 +124,7 @@ export function AddsScreen({route, navigation}) {
   }, []);
 
   const handleInputChange = text => {
-    setInputText(text);
+    setInputText(text || '');
   };
 
   const showBottomSheet = () => {
@@ -133,12 +135,8 @@ export function AddsScreen({route, navigation}) {
     setBottomSheetVisible(false);
   };
 
-  const handleUploadMedia = useCallback(async () => {
+  const handleUploadMedia = useCallback(async idPostsUp => {
     try {
-      if (!_idPosts) {
-        return;
-      }
-
       const mediaArray = imagePath.map(image => {
         const type =
           image.endsWith('.jpg') ||
@@ -153,8 +151,9 @@ export function AddsScreen({route, navigation}) {
 
       await Promise.all(
         mediaArray.map(async media => {
-          const response = await uploadMedia(_idPosts, media);
-          // console.log('>>>>>>> response -> handleUploadMedia', response);
+          const idUp = _idPosts === null ? idPostsUp : _idPosts;
+          const response = await uploadMedia(idUp, media);
+          console.log('>>>>>>> response -> handleUploadMedia', response);
         }),
       );
     } catch (error) {
@@ -178,11 +177,19 @@ export function AddsScreen({route, navigation}) {
       }
 
       if (inputText && imagePath) {
-        await Promise.all([handleUploadMedia(), handleUploadPost()]);
+        await Promise.all([
+          handleUploadMedia(idPostsUp),
+          handleUploadPost(idPostsUp),
+        ]);
       } else if (inputText) {
-        await handleUploadPost();
+        await handleUploadPost(idPostsUp);
+      } else if (inputText === '') {
+        await Promise.all([
+          handleUploadMedia(idPostsUp),
+          handleUploadPost(idPostsUp),
+        ]);
       } else if (imagePath) {
-        await handleUploadMedia();
+        await handleUploadMedia(idPostsUp);
       }
 
       if (!upload) {
@@ -221,34 +228,39 @@ export function AddsScreen({route, navigation}) {
     }
   };
 
-  const handleUploadPost = useCallback(async () => {
-    if (!user || !inputText) {
-      return;
-    }
+  const handleUploadPost = useCallback(
+    async idPostsUp => {
+      // if (!user || !inputText) {
+      //   return;
+      // }
 
-    try {
-      // console.log('Selected ID in AddsScreen:', selectedId);
-      const postDetails = {
-        _id: _idPosts,
-        content: inputText,
-        createAt: new Date().toISOString(),
-        idObject: idObjectValue,
-        idTypePosts: '65b20030261511b0721a9913',
-      };
+      try {
+        console.log('_idPosts ID in handleUploadPost:', _idPosts);
+        const postDetails = {
+          _id: _idPosts === null ? idPostsUp : _idPosts,
+          content: inputText || '',
+          createAt: new Date().toISOString(),
+          idObject: idObjectValue,
+          idTypePosts: '65b20030261511b0721a9913',
+        };
 
-      const response = await uploadPost(user.user._id, postDetails);
-      setUpload(response);
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [{name: 'HomeStackScreen'}],
-        }),
-      );
-      // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
-    } catch (error) {
-      console.error('Lỗi catch --->>>>> error :', error);
-    }
-  }, [user, inputText]);
+        console.log(' >>>>>>>>>>>>>>>> postDetails:', postDetails);
+
+        const response = await uploadPost(user.user._id, postDetails);
+        setUpload(response);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{name: 'HomeStackScreen'}],
+          }),
+        );
+        console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+      } catch (error) {
+        console.error('Lỗi catch --->>>>> error :', error);
+      }
+    },
+    [user, inputText],
+  );
 
   const getCurrentLocation = () => {
     return new Promise((resolve, reject) => {
@@ -263,7 +275,7 @@ export function AddsScreen({route, navigation}) {
     });
   };
 
-  const handleCheckIn = async () => {
+  const handleCheckIn = async ({navigation}) => {
     try {
       const location = await getCurrentLocation();
       console.log('Current location:', location);
@@ -272,17 +284,31 @@ export function AddsScreen({route, navigation}) {
     }
   };
 
+  const isImage = url => {
+    return /\.(jpeg|jpg|png)$/i.test(url);
+  };
+
+  const isVideo = url => {
+    return /\.(mp4|avi|mov)$/i.test(url);
+  };
+
+  const handleLiveStream = (isStream,liveID) => {
+    navigation.navigate('LiveStreamHost',{isStream,liveID});
+  };
+
   useEffect(() => {
     const dateString = Date.now();
     const randomSuffix = Math.floor(Math.random() * 10000000);
     const dateNumber = new Date(dateString);
     const _idPosts = dateNumber.getTime().toString() + randomSuffix.toString();
     setIdPosts(_idPosts);
+    console.log('useEffectuseEffect _idPosts:', _idPosts);
   }, []);
+  console.log('_idPosts ở ngoài:', _idPosts);
 
-  useEffect(() => {
-    handleUploadPost();
-  }, [user]);
+  // useEffect(() => {
+  //   handleUploadPost();
+  // }, [user]);
 
   return (
     <View style={styles.T}>
@@ -299,7 +325,7 @@ export function AddsScreen({route, navigation}) {
           onPress={handlePostUpload}
           style={[
             styles.upHeaderButton,
-            {backgroundColor: inputText ? '#7ec1a5' : '#CBCBCB'},
+            {backgroundColor: inputText || imagePath ? '#7ec1a5' : '#CBCBCB'},
           ]}>
           <Text style={styles.textHeaderUp}>Đăng</Text>
         </TouchableOpacity>
@@ -372,17 +398,35 @@ export function AddsScreen({route, navigation}) {
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({item, index}) => (
                     <TouchableOpacity key={index}>
-                      <Image
-                        source={{uri: item.uri}}
-                        style={{
-                          width:
-                            Dimensions.get('window').width / numColumns - 10,
-                          height:
-                            Dimensions.get('window').width / numColumns - 10,
-                          margin: 5,
-                          borderRadius: 5,
-                        }}
-                      />
+                      {isImage(item.uri) ? (
+                        <Image
+                          source={{uri: item.uri}}
+                          style={{
+                            width:
+                              Dimensions.get('window').width / numColumns - 10,
+                            height:
+                              Dimensions.get('window').width / numColumns - 10,
+                            margin: 5,
+                            borderRadius: 5,
+                          }}
+                        />
+                      ) : isVideo(item.uri) ? (
+                        <VideoPlayer
+                          key={index}
+                          video={{uri: item.uri}}
+                          videoWidth={1600}
+                          videoHeight={900}
+                          thumbnail={require('../../../../../assets/play_96px.png')}
+                          style={{
+                            width:
+                              Dimensions.get('window').width / numColumns - 10,
+                            height:
+                              Dimensions.get('window').width / numColumns - 10,
+                            margin: 5,
+                            borderRadius: 5,
+                          }}
+                        />
+                      ) : null}
                     </TouchableOpacity>
                   )}
                 />
@@ -392,9 +436,7 @@ export function AddsScreen({route, navigation}) {
         </View>
         {/* bottom sheet */}
         <View style={styles.pick_feelings}>
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={styles.boder_image}>
+          <TouchableOpacity onPress={openLibrary} style={styles.boder_image}>
             <Image
               style={styles.avatar_icon_image}
               source={require('../../../../../assets/icon_image.png')}
@@ -460,7 +502,9 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>Check in</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              style={styles.bottomSheetItem}
+              onPress={()=>handleLiveStream(true,user.id)}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_live.png')}

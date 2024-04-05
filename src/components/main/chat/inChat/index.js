@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState, useRef} from 'react';
+import React, {useEffect, useContext, useState, useRef} from 'react';
 import {
   FlatList,
   Image,
@@ -21,6 +21,7 @@ import ZegoUIKitPrebuiltCallService, {
   ZegoUIKitPrebuiltCallInCallScreen,
   ZegoSendCallInvitationButton,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ChatScreenIn = ({route, navigation}) => {
   const {receiver} = route.params;
@@ -58,15 +59,12 @@ const ChatScreenIn = ({route, navigation}) => {
     };
   }, []);
 
-  0;
-
   const fetchData = async () => {
     try {
       const idSender = user.user._id;
       const idReceiver = receiver.receiverv2;
-
       const response = await GetMessageSR(idSender, idReceiver);
-      setMessages(response.slice(-100));
+      setMessages(response);
     } catch (error) {
       console.error('Lỗi:', error);
     }
@@ -85,9 +83,6 @@ const ChatScreenIn = ({route, navigation}) => {
     socket.current.emit('new_message', newMessage);
     setMessageInput('');
   };
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  console.log('>>>>>>>>>>>>>>>>>>>>>>> 90', receiver);
-
   const renderItem = ({item}) => {
     return (
       <View style={styles.chat}>
@@ -109,38 +104,54 @@ const ChatScreenIn = ({route, navigation}) => {
   return (
     <View style={styles.T}>
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.back_user}
-          onPress={() => navigation.goBack()}>
-          <Image
-            style={styles.back}
-            source={require('../../../../assets/back_50px.png')}
-          />
-          <TouchableOpacity style={styles.account}>
-            <Image source={{uri: receiver.avatar}} style={styles.avatar} />
-            <Text style={styles.name_user}>{receiver.name}</Text>
+        <View style={{alignItems: 'center', flexDirection: 'row'}}>
+          <TouchableOpacity
+            style={styles.back_user}
+            onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back-outline" size={26} color={'#000'} />
           </TouchableOpacity>
-        </TouchableOpacity>
+          {console.log('>>>>>>> kakakaka', receiver.receiverv2)}
+          {receiver.receiverv2 === user.user._id ? (
+            <TouchableOpacity
+              style={styles.account}
+              onPress={() => navigation.navigate('Profile')}>
+              <Image source={{uri: receiver.avatar}} style={styles.avatar} />
+              <Text style={styles.name_user}>{receiver.name}</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.account}
+              onPress={() =>
+                navigation.navigate('OtherUserA', {
+                  accountzzz: receiver,
+                })
+              }>
+              <Image source={{uri: receiver.avatar}} style={styles.avatar} />
+              <Text style={styles.name_user}>{receiver.name}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
         <View style={styles.call_video}>
           <ZegoSendCallInvitationButton
-              invitees={[{userID: receiver.receiverv2, userName: receiver.name}]}
-              isVideoCall={false}
-              resourceID={'sweets_call'}
-            />
-            <ZegoSendCallInvitationButton
-              invitees={[{userID: receiver.receiverv2, userName: receiver.name}]}
-              isVideoCall={true}
-              resourceID={'sweets_call'}
-            />
+            invitees={[{userID: receiver.receiverv2, userName: receiver.name}]}
+            isVideoCall={false}
+            resourceID={'sweets_call'}
+          />
+          <ZegoSendCallInvitationButton
+            invitees={[{userID: receiver.receiverv2, userName: receiver.name}]}
+            isVideoCall={true}
+            resourceID={'sweets_call'}
+          />
         </View>
       </View>
       <Text style={styles.line} />
+      {loadingMore && <ActivityIndicator size="small" color="#0000ff" />}
       <FlatList
+        inverted={true}
         data={messages.slice().reverse()}
-        keyExtractor={(item, index) => index.toString()} // Sử dụng index như một key
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => renderItem({item})}
       />
-      {loadingMore && <ActivityIndicator size="small" color="#0000ff" />}
       <View style={styles.input}>
         <TextInput
           style={styles.input_text}

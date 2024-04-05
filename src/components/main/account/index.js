@@ -45,7 +45,7 @@ const AccountScreen = props => {
         await AsyncStorage.removeItem('userPassword');
         navigation.navigate('Login');
       } catch (error) {
-        console.log('Lỗi khi đăng xuất:', error);
+        console.log('Lỗi khi đăng xuấtzzzz:', error);
       }
     }
   };
@@ -108,14 +108,23 @@ const AccountScreen = props => {
           />
           <Text style={styles.text0}>{t('group')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnIcon}>
+
+        <TouchableOpacity
+          style={styles.btnIcon}
+          onPress={() => {
+            console.log('>>>>>>>>> video call');
+          }}>
           <Image
             style={styles.imgIcon}
             source={require('../../../assets/icon_video.png')}
           />
           <Text style={styles.text0}>Video</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnIcon}>
+        <TouchableOpacity
+          style={styles.btnIcon}
+          onPress={() => {
+            navigation.navigate('ScanQRLogin');
+          }}>
           <Image
             style={styles.imgIcon}
             source={require('../../../assets/icon_heart_48.png')}

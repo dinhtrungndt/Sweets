@@ -32,6 +32,7 @@ import ModalEditPostsAccount from './editPosts/account';
 import ModalEditPostsGuest from './editPosts/guest';
 import Share from 'react-native-share';
 import {useLinkTo} from '@react-navigation/native';
+import linking from '../../../../utils/linking';
 
 const PostsScreen = ({posts, navigation, handleLike}) => {
   const [showMore, setShowMore] = useState(false);
@@ -219,34 +220,19 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
     }
   };
 
-  Linking.addEventListener('url', event => {
-    const {path} = event;
-    if (path.startsWith('/post/')) {
-      const postId = path.split('/').pop();
+  const handleShare = async item => {
+    try {
+      const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
+      const shareOptions = {
+        title: 'Share',
+        message: 'Chia sẻ bài viết này!',
+        url: deepLink,
+      };
+      await Share.open(shareOptions);
+    } catch (error) {
+      console.log('Lỗi chia sẻ nè:', error);
     }
-  });
-
-  const createDeepLinkForPost = postId => {
-    return `https://sweets-eight.vercel.app/posts/${postId}`;
   };
-
-  const sharePostWithDeepLink = item => {
-    const postId = item._id;
-    const deepLink = createDeepLinkForPost(postId);
-    const message = `${deepLink}`;
-    Share.open({
-      message: message,
-    })
-      .then(() => console.log('Chia sẻ thành công'))
-      .catch(error => console.log('Lỗi khi chia sẻ:', error));
-  };
-
-  Linking.addEventListener('url', event => {
-    const {path} = event;
-    if (path.startsWith('/post/')) {
-      const postId = path.split('/').pop();
-    }
-  });
 
   useEffect(() => {
     handleReaction.current = {
@@ -324,7 +310,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   <View style={styles.container_object}>
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('CommentsScreen', {postId: item})
+                        navigation.navigate('CommentsScreen', {
+                          postId: item,
+                        })
                       }>
                       <Text style={styles.time}>
                         {formatTime(item.createAt)}
@@ -358,25 +346,29 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
               )}
             </View>
             {/* content */}
-            <View style={styles.baiVietContent}>
-              {showMore ? (
-                <Text style={styles.content}>{item.content}</Text>
-              ) : (
-                <Text style={styles.content}>
-                  {item.content?.slice(0, 100)}
-                </Text>
-              )}
-              {/* Toggle button */}
-              {item.content && item.content.length > 100 && (
-                <TouchableOpacity
-                  style={styles.showMore}
-                  onPress={handleShowMore}>
-                  <Text style={{color: 'blue'}}>
-                    {showMore ? 'Ẩn' : 'Xem thêm'}
+            {item.content === '' ? (
+              <></>
+            ) : (
+              <View style={styles.baiVietContent}>
+                {showMore ? (
+                  <Text style={styles.content}>{item.content}</Text>
+                ) : (
+                  <Text style={styles.content}>
+                    {item.content?.slice(0, 100)}
                   </Text>
-                </TouchableOpacity>
-              )}
-            </View>
+                )}
+                {/* Toggle button */}
+                {item.content && item.content.length > 100 && (
+                  <TouchableOpacity
+                    style={styles.showMore}
+                    onPress={handleShowMore}>
+                    <Text style={{color: 'blue'}}>
+                      {showMore ? 'Ẩn' : 'Xem thêm'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
 
             {/* media */}
             {item.media.length > 0 ? (
@@ -402,7 +394,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                           video={{uri: media.url[0]}}
                           videoWidth={1600}
                           videoHeight={900}
-                          thumbnail={{uri: media.url[0]}}
+                          thumbnail={require('../../../../assets/play_96px.png')}
                           // autoplay={true}
                           style={styles.posts}
                         />
@@ -430,7 +422,6 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   onPress={() =>
                     navigation.navigate('CommentsScreen', {
                       postId: item,
-                      handleLike: handleLike,
                     })
                   }
                   style={styles.container_feeling}>
@@ -483,7 +474,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   {item.comment.length > 0 ? (
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('CommentsScreen', {postId: item})
+                        navigation.navigate('CommentsScreen', {
+                          postId: item,
+                        })
                       }
                       style={styles.container_comment}>
                       <Text style={styles.text_comment}>
@@ -500,7 +493,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                   {item.share.length > 0 ? (
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate('CommentsScreen', {postId: item})
+                        navigation.navigate('CommentsScreen', {
+                          postId: item,
+                        })
                       }
                       style={styles.container_share}>
                       <Text style={styles.text_share}>{item.share.length}</Text>
@@ -588,7 +583,9 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
               <TouchableOpacity
                 style={styles.like_post}
                 onPress={() =>
-                  navigation.navigate('CommentsScreen', {postId: item})
+                  navigation.navigate('CommentsScreen', {
+                    postId: item,
+                  })
                 }>
                 <MaterialCommunityIcons
                   name="comment-outline"
@@ -600,7 +597,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
               {/* share */}
               <TouchableOpacity
                 style={styles.like_post}
-                onPress={() => sharePostWithDeepLink(item)}>
+                onPress={() => handleShare(item)}>
                 <MaterialCommunityIcons
                   name="share-outline"
                   size={23}
@@ -635,7 +632,6 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
           />
         </TouchableOpacity>
       </Modal>
-
       <Modal
         animationType="slide"
         transparent={true}

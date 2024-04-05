@@ -37,7 +37,7 @@ export const login = async (email, password) => {
       password: password,
     };
     const response = await AxiosInstance().post('/users/post-login', body);
-   
+
     return response;
   } catch (error) {
     console.log('register: ', error);
@@ -45,7 +45,7 @@ export const login = async (email, password) => {
   }
 };
 
-export const GetListUser = async (_id) => {
+export const GetListUser = async _id => {
   try {
     const res = await AxiosInstance().get(`/message/listchat/${_id}`);
 
@@ -69,7 +69,7 @@ export const updateStatus = async (_id, status) => {
   }
 };
 
-export const getUser = async (_id) => {
+export const getUser = async _id => {
   try {
     const res = await AxiosInstance().get(`/users/get-user/${_id}`);
     return res;

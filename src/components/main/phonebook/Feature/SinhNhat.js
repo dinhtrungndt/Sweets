@@ -21,9 +21,10 @@ const SinhNhat = () => {
     const fetchUpcomingBirthdays = async () => {
       try {
         const currentFriendsBirthdays = await AsyncStorage.getItem('currentFriendsBirthdays');
+        console.log('log ngày sinh', currentFriendsBirthdays)
         if (currentFriendsBirthdays) {
           const parsedBirthdays = JSON.parse(currentFriendsBirthdays);
-
+  
           const today = moment().startOf('day');
           const upcoming = parsedBirthdays.map(birthdayData => {
             const { name, birthday, avatar } = birthdayData;
@@ -32,19 +33,31 @@ const SinhNhat = () => {
               'date': parseInt(day),
               'month': parseInt(month) - 1
             });
-            const daysUntilBirthday = birthdayDate.diff(today, 'days');
-            return { name, daysUntilBirthday, avatar };
+  
+            // Kiểm tra xem ngày sinh nhật có nằm trong năm hiện tại không
+            if (birthdayDate.isSame(today, 'year')) {
+              const daysUntilBirthday = birthdayDate.diff(today, 'days');
+              return { name, daysUntilBirthday, avatar };
+            } else {
+              // Nếu sinh nhật nằm trong năm sau, trả về null
+              return null;
+            }
           });
-
-          setUpcomingBirthdays(upcoming);
+  
+          // Lọc bỏ các sinh nhật null và các sinh nhật đã qua
+          const filteredBirthdays = upcoming.filter(birthdayData => birthdayData !== null && birthdayData.daysUntilBirthday >= 0);
+  
+          setUpcomingBirthdays(filteredBirthdays);
         }
       } catch (error) {
         console.error('Lỗi khi lấy dữ liệu sinh nhật từ AsyncStorage:', error);
       }
     };
-
+  
     fetchUpcomingBirthdays();
   }, []);
+  
+  
 
   const getMarkedDates = () => {
     const markedDates = {};

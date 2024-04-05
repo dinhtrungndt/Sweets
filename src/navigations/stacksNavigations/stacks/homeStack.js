@@ -20,7 +20,12 @@ import Profile from '../../../components/main/account/Profile/Profile';
 import ModalEditPostsAccount from '../../../components/main/home/posts/editPosts/account';
 import SelectScreenUp from '../../../components/main/home/uploads/posts/select';
 import ChangeObjects from '../../../components/main/home/posts/editPosts/account/objects';
-
+import LiveStreamScreen from '../../../components/main/home/liveStream';
+import {
+  ZegoUIKitPrebuiltCallWaitingScreen,
+  ZegoUIKitPrebuiltCallInCallScreen,
+} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import LiveStreamHost from '../../../components/main/home/liveStream/LiveStreamHost';
 const Stack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
@@ -44,13 +49,32 @@ export function HomeStackScreen() {
         component={SettingStoryObjects}
       />
       <Stack.Screen name="OtherUserA" component={OtherUserA} />
-      <Stack.Screen name="Profile" component={Profile} />
+
+      {/* <Stack.Screen name="Profile" component={Profile} /> */}
       <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />
       <Stack.Screen name="ChangeObjects" component={ChangeObjects} />
       <Stack.Screen
         name="ModalEditPostsAccount"
         component={ModalEditPostsAccount}
       />
+      <Stack.Screen name="LiveStreamScreen" component={LiveStreamScreen} />
+      <Stack.Screen name="LiveStreamHost" component={LiveStreamHost} />
+
+      <Stack.Screen name="Profile" component={Profile} />
+      {/* <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} /> */}
+      <Stack.Screen
+        options={{headerShown: false}}
+        // DO NOT change the name
+        name="ZegoUIKitPrebuiltCallWaitingScreen"
+        component={ZegoUIKitPrebuiltCallWaitingScreen}
+      />
+      <Stack.Screen
+        options={{headerShown: false}}
+        // DO NOT change the name
+        name="ZegoUIKitPrebuiltCallInCallScreen"
+        component={ZegoUIKitPrebuiltCallInCallScreen}
+      />
+
     </Stack.Navigator>
   );
 }

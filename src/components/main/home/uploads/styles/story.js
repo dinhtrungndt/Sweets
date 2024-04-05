@@ -26,10 +26,9 @@ export const styles = StyleSheet.create({
   },
   video_story: {
     width: '100%',
-    height: '80%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 100,
   },
   video_story_me: {
     width: '100%',
@@ -37,5 +36,10 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 100,
+  },
+
+  icon_mess_send: {
+    width: 30,
+    height: 30,
   },
 });
