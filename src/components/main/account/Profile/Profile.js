@@ -8,29 +8,28 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import React, { useContext, useState, useCallback, useEffect } from 'react';
-import { UserContext } from '../../../../contexts/user/userContext';
+import React, {useContext, useState, useCallback, useEffect} from 'react';
+import {UserContext} from '../../../../contexts/user/userContext';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { updateAvatar, updateCover } from '../../../../services/user/userService';
+import {updateAvatar, updateCover} from '../../../../services/user/userService';
 // style
-import { styles } from '../style/profile';
+import {styles} from '../style/profile';
 // library
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { uploadImageStatus } from '../../../../services/home/homeService';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import AxiosInstance from '../../../../helper/Axiosinstance';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {uploadImageStatus} from '../../../../services/home/homeService';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import PostScreen from './TopTab/PostScreen';
 import ImgScreen from './TopTab/ImgScreen';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import Entypo from 'react-native-vector-icons/Entypo'
-import { useTranslation } from 'react-i18next';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {useTranslation} from 'react-i18next';
 
 const Tab = createMaterialTopTabNavigator();
 
 const Profile = props => {
-  const { navigation } = props;
-  const { t } = useTranslation();
+  const {navigation} = props;
+  const {t} = useTranslation();
 
   const [loading, setLoading] = useState(false);
   const [imageAvatar, setImageAvatar] = useState([]);
@@ -42,7 +41,7 @@ const Profile = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [friendsCount, setFriendsCount] = useState(0);
 
-  const { user, setUser } = useContext(UserContext);
+  const {user, setUser} = useContext(UserContext);
   // console.log('>>>>>>>>>>>>>> user', user);
 
   useEffect(() => {
@@ -54,14 +53,19 @@ const Profile = props => {
         // Kiểm tra xem userId có tồn tại không
         if (userId) {
           const response = await axiosInstance.get(`/friend/friends/${userId}`);
-          const { friendsList } = response;
+          const {friendsList} = response;
           // Tạo một mảng chứa số lượng bạn bè
-          const friendsCountPromises = friendsList.map(async (friendId) => {
+          const friendsCountPromises = friendsList.map(async friendId => {
             try {
-              const friendCountResponse = await axiosInstance.get(`/users/get-user/${friendId}`);
+              const friendCountResponse = await axiosInstance.get(
+                `/users/get-user/${friendId}`,
+              );
               return friendCountResponse.user; // Lấy thông tin user từ response
             } catch (error) {
-              console.error(`Lỗi khi lấy số lượng của bạn bè có id: ${friendId}`, error);
+              console.error(
+                `Lỗi khi lấy số lượng của bạn bè có id: ${friendId}`,
+                error,
+              );
               return null; // Trả về null nếu có lỗi để xử lý sau
             }
           });
@@ -171,7 +175,9 @@ const Profile = props => {
     try {
       if (imageAvatarPath) {
         setLoading(true);
-        const res = await updateAvatar(user.user._id, { avatar: JSON.stringify(imageAvatarPath) });
+        const res = await updateAvatar(user.user._id, {
+          avatar: JSON.stringify(imageAvatarPath),
+        });
         setLoading(false);
       }
     } catch (error) {
@@ -184,7 +190,9 @@ const Profile = props => {
     try {
       if (imageCoverPath) {
         setLoading(true);
-        const res = await updateCover(user.user._id, { coverImage: JSON.stringify(imageCoverPath) });
+        const res = await updateCover(user.user._id, {
+          coverImage: JSON.stringify(imageCoverPath),
+        });
         setLoading(false);
       }
     } catch (error) {
@@ -210,14 +218,19 @@ const Profile = props => {
         // Kiểm tra xem userId có tồn tại không
         if (userId) {
           const response = await axiosInstance.get(`/friend/friends/${userId}`);
-          const { friendsList } = response;
+          const {friendsList} = response;
           // Tạo một mảng chứa số lượng bạn bè
-          const friendsCountPromises = friendsList.map(async (friendId) => {
+          const friendsCountPromises = friendsList.map(async friendId => {
             try {
-              const friendCountResponse = await axiosInstance.get(`/users/get-user/${friendId}`);
+              const friendCountResponse = await axiosInstance.get(
+                `/users/get-user/${friendId}`,
+              );
               return friendCountResponse.user; // Lấy thông tin user từ response
             } catch (error) {
-              console.error(`Lỗi khi lấy số lượng của bạn bè có id: ${friendId}`, error);
+              console.error(
+                `Lỗi khi lấy số lượng của bạn bè có id: ${friendId}`,
+                error,
+              );
               return null; // Trả về null nếu có lỗi để xử lý sau
             }
           });
@@ -243,7 +256,7 @@ const Profile = props => {
             style={styles.imgCover}
             source={
               user && user.user.coverImage
-                ? { uri: user.user.coverImage }
+                ? {uri: user.user.coverImage}
                 : require('../../../../assets/account.png')
             }
           />
@@ -251,11 +264,16 @@ const Profile = props => {
             <TouchableOpacity
               key={index}
               onPress={() => handleCoverUpdate(coverImage)}>
-              <Image style={styles.imgCover} source={{ uri: coverImage.uri }} />
+              <Image style={styles.imgCover} source={{uri: coverImage.uri}} />
             </TouchableOpacity>
           ))}
           <View style={styles.boderCamera}>
-            <Entypo name='camera' size={24} color={'#000000'} style={styles.iconCamera} />
+            <Entypo
+              name="camera"
+              size={24}
+              color={'#000000'}
+              style={styles.iconCamera}
+            />
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setModalVisibleAvatar(true)}>
@@ -263,7 +281,7 @@ const Profile = props => {
             style={styles.imgAvatar}
             source={
               user && user.user.avatar
-                ? { uri: user.user.avatar }
+                ? {uri: user.user.avatar}
                 : require('../../../../assets/account.png')
             }
           />
@@ -271,18 +289,23 @@ const Profile = props => {
             <TouchableOpacity
               key={index}
               onPress={() => handleAvatarUpdate(avatar)}>
-              <Image style={styles.imgAvatar} source={{ uri: avatar.uri }} />
+              <Image style={styles.imgAvatar} source={{uri: avatar.uri}} />
             </TouchableOpacity>
           ))}
           <View style={styles.boderCameraAvatar}>
-            <Entypo name='camera' size={18} color={'#000000'} style={styles.iconCamera} />
+            <Entypo
+              name="camera"
+              size={18}
+              color={'#000000'}
+              style={styles.iconCamera}
+            />
           </View>
         </TouchableOpacity>
         <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
-        <View style={styles.containerFriends} >
+        <View style={styles.containerFriends}>
           <Text style={styles.txtFriendsNumber}>{friendsCount.length}</Text>
           <Text style={styles.txtFriends}>{t('friends')}</Text>
-        </View >
+        </View>
         <TouchableOpacity style={styles.btnIntroduce}>
           <Image
             style={styles.imgEdit}
@@ -302,10 +325,11 @@ const Profile = props => {
         <View style={styles.editFrame}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialIcons
-              name='arrow-back'
+              name="arrow-back"
               size={30}
               color={'#000000'}
-              style={styles.imgBack} />
+              style={styles.imgBack}
+            />
           </TouchableOpacity>
           {/* <TouchableOpacity style={styles.btnMore}>
             <Image style={styles.imgMore} source={require('../../../../assets/icon_more_story.png')} />
@@ -317,7 +341,7 @@ const Profile = props => {
         animationType="slide"
         transparent={true}
         visible={modalVisibleCover}
-        onRequestClose={() => { }}>
+        onRequestClose={() => {}}>
         <View style={styles.modalContainerCoverImg}>
           <TouchableOpacity style={styles.btnShowImg}>
             <Image
@@ -358,7 +382,7 @@ const Profile = props => {
         animationType="slide"
         transparent={true}
         visible={modalVisibleAvatar}
-        onRequestClose={() => { }}>
+        onRequestClose={() => {}}>
         <View style={styles.modalContainerAvatar}>
           <TouchableOpacity style={styles.btnShowImg}>
             <Image
@@ -437,7 +461,6 @@ const Profile = props => {
         <Tab.Screen name="Bài viết" component={PostScreen} />
         <Tab.Screen name="Ảnh" component={ImgScreen} />
       </Tab.Navigator>
-
     </View>
   );
 };

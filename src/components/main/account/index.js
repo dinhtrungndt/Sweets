@@ -1,25 +1,20 @@
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import {Text, View, Image, TouchableOpacity} from 'react-native';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserContext } from '../../../contexts/user/userContext';
-import Entypo from 'react-native-vector-icons/Entypo'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { useTranslation } from 'react-i18next';
+import {UserContext} from '../../../contexts/user/userContext';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useTranslation} from 'react-i18next';
 
 //styles
-import { styles } from './style/accountScreen';
+import {styles} from './style/accountScreen';
 
 const AccountScreen = props => {
-  const { navigation } = props;
-  const { t, i18n } = useTranslation();
+  const {navigation} = props;
+  const {t, i18n} = useTranslation();
 
-  const { user } = useContext(UserContext);
-  const { onLogout } = useContext(UserContext);
+  const {user} = useContext(UserContext);
+  const {onLogout} = useContext(UserContext);
   // console.log(">>>>>>>>> test user", user);
 
   const [loading, setLoading] = useState(false);
@@ -70,7 +65,7 @@ const AccountScreen = props => {
           style={styles.imgAvatar}
           source={
             user && user.user.avatar
-              ? { uri: user.user.avatar }
+              ? {uri: user.user.avatar}
               : require('../../../assets/diana.jpg')
           }
         />
@@ -79,7 +74,7 @@ const AccountScreen = props => {
           onPress={() => navigation.navigate('Account_Transfer')}
           style={styles.container2}>
           <MaterialIcons
-            name='navigate-next'
+            name="navigate-next"
             size={30}
             color={'#000000'}
             style={styles.userIcon}
@@ -127,9 +122,9 @@ const AccountScreen = props => {
           }}>
           <Image
             style={styles.imgIcon}
-            source={require('../../../assets/icon_heart_48.png')}
+            source={require('../../../assets/qr_code_50px.png')}
           />
-          <Text style={styles.text0}>{t('dating')}</Text>
+          <Text style={styles.text0}>{t('ScanQR')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnIcon}>
           <Image
@@ -145,10 +140,10 @@ const AccountScreen = props => {
           onPress={() => navigation.navigate('HelpAndSupport')}
           style={styles.btnHelp}>
           <Entypo
-            name='help-with-circle'
+            name="help-with-circle"
             size={27}
             color="#bcbcbc"
-            style={{ position: 'absolute', left: '5%' }}
+            style={{position: 'absolute', left: '5%'}}
           />
           <Text style={styles.textbtn1}>{t('helpAndSupport')}</Text>
         </TouchableOpacity>
