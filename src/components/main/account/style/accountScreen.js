@@ -76,8 +76,6 @@ export const styles = StyleSheet.create({
         marginLeft: 'auto',
     },
     userIcon: {
-        width: 21,
-        height: 21,
         alignSelf: 'center',
     },
     bodyBtnIcon: {

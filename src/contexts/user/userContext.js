@@ -41,7 +41,7 @@ export const UserProvider = props => {
     try {
       await AsyncStorage.removeItem('userEmail');
       await AsyncStorage.removeItem('userPassword');
-      await onUserLogout();
+      // await onUserLogout();
       console.log('onUserLogout được gọi thành công');
       setUser(null);
     } catch (error) {

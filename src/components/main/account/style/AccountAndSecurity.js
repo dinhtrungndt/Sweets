@@ -9,8 +9,8 @@ export const styles = StyleSheet.create({
         alignItems: 'center',   
     },
     imgBack: {
-        width: 24,
-        height: 24,
+        // width: 24,
+        // height: 24,
         marginLeft: 10,
     },
     txtBack: {

@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
     body: {
         flex: 1,
         backgroundColor: '#E5E5E5',
+        // backgroundColor: '#FFFFFF'
     },
     modalContainerCoverImg: {
         position: 'absolute',
@@ -78,21 +79,16 @@ export const styles = StyleSheet.create({
     imgBack: {
         width: 24,
         height: 24,
-        position: 'absolute',
-        left: 16,
-        top: 10,
+        marginLeft: 6
     },
     btnMore: {
         position: 'absolute',
         padding: 10,
-        left: 330,
+        left: 336,
     },
     imgMore: {
         width: 24,
         height: 24,
-        position: 'absolute',
-        left: 16,
-        top: 10,
     },
     profileFrame: {
         width: '100%',
@@ -115,6 +111,7 @@ export const styles = StyleSheet.create({
     textName: {
         fontFamily: 'Poppins',
         fontStyle: 'normal',
+        fontWeight: 'bold',
         fontSize: 20,
         marginTop: 270,
         color: '#000000',
@@ -128,11 +125,14 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         marginTop: 15,
+        flexDirection: 'row'
     },
     textIntroduce: {
         fontSize: 16,
+        fontWeight: 'bold',
         color: '#FFFFFF',
         textAlign: 'center',
+        alignSelf: 'center',
     },
     btnEditProfile: {
         width: '90%',
@@ -142,19 +142,18 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         marginTop: 15,
+        flexDirection: 'row'
+
     },
     imgEdit: {
-        width: 24,
-        height: 24,
-        position: 'absolute',
-        right: 48,
-        justifyContent: 'center',
+        width: 21,
+        height: 21,
         alignSelf: 'center',
+        left: -3
     },
     txtEdit: {
         fontSize: 16,
         color: '#000000',
-        textAlign: 'center',
+        alignSelf: 'center',
     },
-   
 });

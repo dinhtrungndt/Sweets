@@ -78,3 +78,45 @@ export const getUser = async (_id) => {
     return error;
   }
 };
+
+export const updateProfile = async (_id, name, gender, date) => {
+  try {
+    const response = await AxiosInstance().post('/users/update-thongtin', {
+      _id: _id,
+      name: name,
+      gender: gender,
+      date: date,
+    });
+    return response;
+  } catch (error) {
+    console.log('updateProfile err: ', error);
+    return error;
+  }
+};
+
+export const changePassword = async (_id, password, newPassword) => {
+  try {
+    const body = {
+      _id: _id,
+      password: password,
+      newPassword: newPassword,
+    };
+    const res = await AxiosInstance().post('/users/post-update-password', body);
+    return res;
+  } catch (error) {
+    console.log('changePassword error', error);
+    return error;
+  }
+};
+
+// lấy danh sách bài viết theo id người dùng
+export const getPostByUserId = async (idUsers) => {
+  try {
+    const response = await AxiosInstance().get(`/posts/get-detail-users/${idUsers}`);
+    // console.log('getPostByUserId response:', response.userPosts);
+    return response.userPosts;
+  } catch (error) {
+    console.error('getPostByUserId error:', error);
+    throw error;
+  }
+};
