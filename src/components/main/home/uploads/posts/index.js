@@ -285,12 +285,8 @@ export function AddsScreen({route, navigation}) {
     return /\.(mp4|avi|mov)$/i.test(url);
   };
 
-  const handleLiveStream = (isStream,userName,userId) => {
-
-    console.log('Live Stream>>>>');
-    console.log('isStream:',isStream);
-    console.log('userName:',userName);
-    navigation.navigate('LiveStreamHost',{isStream,userName,userId});
+  const handleLiveStream = (isStream,liveID) => {
+    navigation.navigate('LiveStreamHost',{isStream,liveID});
   };
 
   useEffect(() => {
@@ -499,7 +495,7 @@ export function AddsScreen({route, navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomSheetItem}
-              onPress={()=>handleLiveStream(true,"idol nè con","123")}>
+              onPress={()=>handleLiveStream(true,user.id)}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_live.png')}

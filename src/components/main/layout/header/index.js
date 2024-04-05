@@ -1,20 +1,16 @@
 /* eslint-disable prettier/prettier */
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-
+import { getAllLiveStream } from '../../../../services/livestream/LiveStreamService';
 // styles
 import {styles} from './styles/header';
 
 // Library
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const HeaderScreen = ({onRefresh, navigation}) => {
-  const handleLiveStream = (isStream,userName,userId) => {
-
-    console.log('Live Stream>>>>');
-    console.log('isStream:',isStream);
-    console.log('userName:',userName);
-    navigation.navigate('LiveStreamHost',{isStream,userName,userId});
+const HeaderScreen =  ({onRefresh, navigation}) => {
+  const handleLiveStream =  () => {
+    navigation.navigate('LiveStreamScreen');
   };
   return (
     <View style={styles.T}>
@@ -30,8 +26,7 @@ const HeaderScreen = ({onRefresh, navigation}) => {
           <TouchableOpacity
             style={{paddingRight: 5}}
             onPress={() => 
-              // navigation.navigate('LiveStreamScreen')
-              handleLiveStream(false,'dung báo',"456")
+              handleLiveStream()
             }>
             <Ionicons name="videocam" size={28} color="#ff0000" />
           </TouchableOpacity>

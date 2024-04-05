@@ -1,44 +1,46 @@
 import { Text, View, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
+import { getAllLiveStream } from '../../../../services/livestream/LiveStreamService';
+import { UserContext } from '../../../../contexts/user/userContext';
 
-const LiveStreamScreen = ({ navigation }) => {
-
-
-  const listlive = [
-    {
-      avatar: '../../../../assets/avatar.jpg',
-      username: "Nguyễn Hữu Dũng",
-      id: "555asd3as56a2xa86a",
-
-    },
-    {
-      avatar: '../../../../assets/avatar.jpg',
-      username: "Nguyễn Đình Trứng",
-      id: "6as95a3wxa35s56a43a",
-    },
-  ]
-
+const LiveStreamScreen = ({ navigation,route }) => {
+  const {user} = useContext(UserContext);
+  const handleLiveStream = (isStream,liveID) => {
+    navigation.navigate('LiveStreamHost',{isStream,liveID});
+  };
+  
+  const [listlive, setListlive] = useState('');
+  const onGetAllLiveStream = async () => {
+    const response = await getAllLiveStream();
+    setListlive(response.data);
+    console.log('listlive', response.data);
+  };
+  useEffect(() => {
+    onGetAllLiveStream();
+  }, []);
 
   const renderitem = ({ item }) => {
     return (
       <View style={styles.viewitem}>
         <View style={styles.item}>
           <View style={styles.viewavt}>
-            <Image style={styles.avatar} source={require('../../../../assets/avatar.jpg')} />
+            <Image style={styles.avatar} source={{ uri: item.avatar }} />
           </View>
           <View style={styles.username}>
             <Text style={styles.txtname}>{item.username}</Text>
-            <Text style={styles.txtid}>ID: {item.id}</Text>
+            <Text style={styles.txtid}>ID: {item._id}</Text>
           </View>
 
 
           <View style={styles.viewbutton}>
-            <View style={styles.bgbutton}>
+            <TouchableOpacity style={styles.bgbutton}
+            onPress={() => handleLiveStream(false,item.liveid)}
+            >
               <Text style={styles.txtitembuttom}>Xem Live</Text>
-            </View>
-            <View style={styles.bgbutton}>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.bgbutton}>
               <Text style={styles.txtitembuttom}> Profile</Text>
-            </View>
+            </TouchableOpacity>
           </View>
 
         </View>
@@ -68,7 +70,7 @@ const LiveStreamScreen = ({ navigation }) => {
         style={styles.viewflatlist}
         data={listlive}
         renderItem={renderitem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id}
 
       />
     </View>
