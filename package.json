@@ -50,7 +50,7 @@
     "react-native-keep-awake": "4.0.0",
     "react-native-modal": "^13.0.1",
     "react-native-modal-datetime-picker": "^17.1.0",
-    "react-native-pager-view": "^6.2.3",
+    "react-native-pager-view": "^6.3.0",
     "react-native-permissions": "^4.1.4",
     "react-native-picker-select": "^9.0.0",
     "react-native-qrcode-scanner": "^1.5.5",

@@ -1,50 +1,99 @@
-/* eslint-disable prettier/prettier */
 import {
   FlatList,
   Image,
-  Linking,
   Modal,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
-
-// styles
-import {styles} from '../styles/posts';
-
-// library
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
+import {
+  deletePostsAccount,
+  getComments,
+  getMedia,
+  getPosts,
+  getPostsAll,
+  getReaction,
+  getShare,
+  likeByPost,
+} from '../../../../../../services/home/homeService';
+import {UserContext} from '../../../../../../contexts/user/userContext';
+import ModalEditPostsAccount from '../../editPosts/account';
+import ModalEditPostsGuest from '../../editPosts/guest';
+import {styles} from '../../../styles/posts';
+import moment from 'moment';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import moment from 'moment';
 import Swiper from 'react-native-swiper';
-import CustomReaction from '../../../customs/reaction/customreaction';
 import VideoPlayer from 'react-native-video-player';
-import {UserContext} from '../../../../contexts/user/userContext';
-import {
-  deletePostsAccount,
-  likeByPost,
-} from '../../../../services/home/homeService';
-import ModalEditPostsAccount from './editPosts/account';
-import ModalEditPostsGuest from './editPosts/guest';
 import Share from 'react-native-share';
-import {useLinkTo} from '@react-navigation/native';
-import linking from '../../../../utils/linking';
+import CustomReaction from '../../../../../customs/reaction/customreaction';
+import linking from '../../../../../../utils/linking';
+import {LoadingScreen} from '../../../../../../utils/loading';
 
-const PostsScreen = ({posts, navigation}) => {
+const AllPostsSearch = ({navigation, posts}) => {
+  const [post, setPost] = useState(posts);
+  const {user} = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
   const [modalEditPostsAccount, setModalEditPostsAccount] = useState(false);
   const [modalEditPostsGuest, setModalEditPostsGuest] = useState(false);
-  const {user} = useContext(UserContext);
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [editPostsItemAccount, setEditPostsItemAccount] = useState(null);
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
-  const [post, setPost] = useState(posts);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleLike = async idPosts => {
+    try {
+      const idUsers = user.user._id;
+      const type = 'Thích';
+      const response = await likeByPost(idUsers, idPosts, type);
+
+      if (response.status === 1) {
+        const updatedPosts = posts.map(post => {
+          if (post._id === idPosts) {
+            const updatedReaction = post.reaction.map(reactionItem => {
+              if (reactionItem.idUsers._id === user.id) {
+                return {...reactionItem, type: 'Thích'};
+              }
+              return reactionItem;
+            });
+            return {
+              ...post,
+              reaction: updatedReaction,
+            };
+          }
+          return post;
+        });
+        // console.log('postsposts:', updatedPosts);
+        setPost(updatedPosts);
+      } else {
+        console.error('Lỗi khi thay đổi trạng thái like:', response.message);
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu API:', error);
+    }
+  };
+
+  const onRefresh = useCallback(async () => {
+    setIsLoading(true);
+    await getPostsAll();
+    setIsLoading(false);
+  }, []);
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -122,38 +171,6 @@ const PostsScreen = ({posts, navigation}) => {
     setShowMore(!showMore);
   };
 
-  const handleLike = async idPosts => {
-    try {
-      const idUsers = user.user._id;
-      const type = 'Thích';
-      const response = await likeByPost(idUsers, idPosts, type);
-
-      if (response.status === 1) {
-        const updatedPosts = posts.map(post => {
-          if (post._id === idPosts) {
-            const updatedReaction = post.reaction.map(reactionItem => {
-              if (reactionItem.idUsers._id === user.id) {
-                return {...reactionItem, type: 'Thích'};
-              }
-              return reactionItem;
-            });
-            return {
-              ...post,
-              reaction: updatedReaction,
-            };
-          }
-          return post;
-        });
-        // console.log('postsposts:', updatedPosts);
-        setPost(updatedPosts);
-      } else {
-        console.error('Lỗi khi thay đổi trạng thái like:', response.message);
-      }
-    } catch (error) {
-      console.error('Lỗi khi gửi yêu cầu API:', error);
-    }
-  };
-
   const formatTime = createdAt => {
     const currentTime = moment();
     const postTime = moment(createdAt);
@@ -179,19 +196,19 @@ const PostsScreen = ({posts, navigation}) => {
   const getFeelingIcon = type => {
     switch (type) {
       case 'Thích':
-        return require('../../../../assets/icon_like_feeling.png');
+        return require('../../../../../../assets/icon_like_feeling.png');
       case 'Yêu thích':
-        return require('../../../../assets/love_25px.png');
+        return require('../../../../../../assets/love_25px.png');
       case 'Haha':
-        return require('../../../../assets/haha_25px.png');
+        return require('../../../../../../assets/haha_25px.png');
       case 'Wow':
-        return require('../../../../assets/wow_25px.png');
+        return require('../../../../../../assets/wow_25px.png');
       case 'Buồn':
-        return require('../../../../assets/sad_25px.png');
+        return require('../../../../../../assets/sad_25px.png');
       case 'Tức giận':
-        return require('../../../../assets/angry_25px.png');
+        return require('../../../../../../assets/angry_25px.png');
       default:
-        return require('../../../../assets/icon_like_feeling.png');
+        return require('../../../../../../assets/icon_like_feeling.png');
     }
   };
 
@@ -250,6 +267,7 @@ const PostsScreen = ({posts, navigation}) => {
       console.log('>>>. Lỗi delete Posts', error);
     }
   };
+  // console.log('>>>. Lỗi delete Posts', post);
 
   const handleShare = async item => {
     try {
@@ -281,8 +299,15 @@ const PostsScreen = ({posts, navigation}) => {
     };
   }, []);
 
-  return (
-    <View style={styles.T}>
+  return isLoading ? (
+    <LoadingScreen />
+  ) : (
+    <ScrollView
+      style={styles.T}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <FlatList
         data={post}
         scrollEnabled={false}
@@ -425,7 +450,7 @@ const PostsScreen = ({posts, navigation}) => {
                           video={{uri: media.url[0]}}
                           videoWidth={1600}
                           videoHeight={900}
-                          thumbnail={require('../../../../assets/play_96px.png')}
+                          thumbnail={require('../../../../../../assets/play_96px.png')}
                           // autoplay={true}
                           style={styles.posts}
                         />
@@ -675,8 +700,8 @@ const PostsScreen = ({posts, navigation}) => {
           <ModalEditPostsGuest editPostsItemGuest={editPostsItemGuest} />
         </TouchableOpacity>
       </Modal>
-    </View>
+    </ScrollView>
   );
 };
 
-export default PostsScreen;
+export default AllPostsSearch;

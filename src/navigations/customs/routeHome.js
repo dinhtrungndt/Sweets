@@ -23,6 +23,8 @@ export const GetRouteNameHome = route => {
     return 'none';
   } else if (routeName?.includes('LiveStreamHost')) {
     return 'none';
+  } else if (routeName?.includes('SearchPosts')) {
+    return 'none';
   }
   return 'flex';
 };
