@@ -394,7 +394,7 @@ const PostsScreen = ({posts, navigation, handleLike}) => {
                           video={{uri: media.url[0]}}
                           videoWidth={1600}
                           videoHeight={900}
-                          thumbnail={{uri: media.url[0]}}
+                          thumbnail={require('../../../../assets/play_96px.png')}
                           // autoplay={true}
                           style={styles.posts}
                         />

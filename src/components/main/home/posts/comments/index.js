@@ -582,7 +582,7 @@ const CommentsScreen = ({navigation, route}) => {
                             video={{uri: media.url.join()}}
                             videoWidth={1600}
                             videoHeight={900}
-                            thumbnail={{uri: media.url.join()}}
+                            thumbnail={require('../../../../../assets/play_96px.png')}
                             // autoplay={true}
                             style={styles.posts}
                           />
@@ -864,7 +864,7 @@ const CommentsScreen = ({navigation, route}) => {
                                         video={{uri: image}}
                                         videoWidth={1600}
                                         videoHeight={900}
-                                        thumbnail={{uri: image}}
+                                        thumbnail={require('../../../../../assets/play_96px.png')}
                                         style={styles.content_video}
                                       />
                                     </TouchableOpacity>
@@ -1000,7 +1000,7 @@ const CommentsScreen = ({navigation, route}) => {
                                                     video={{uri: image}}
                                                     videoWidth={1600}
                                                     videoHeight={900}
-                                                    thumbnail={{uri: image}}
+                                                    thumbnail={require('../../../../../assets/play_96px.png')}
                                                     style={styles.content_video}
                                                   />
                                                 </TouchableOpacity>
@@ -1079,7 +1079,7 @@ const CommentsScreen = ({navigation, route}) => {
                           video={{uri: item.uri}}
                           videoWidth={1600}
                           videoHeight={900}
-                          thumbnail={{uri: item.uri}}
+                          thumbnail={require('../../../../../assets/play_96px.png')}
                           style={{
                             width:
                               Dimensions.get('window').width / numColumns - 10,
