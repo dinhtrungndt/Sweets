@@ -25,7 +25,9 @@ const HeaderScreen = ({onRefresh, navigation}) => {
             onPress={() => navigation.navigate('LiveStreamScreen')}>
             <Ionicons name="videocam" size={28} color="#ff0000" />
           </TouchableOpacity>
-          <TouchableOpacity style={{paddingLeft: 5}}>
+          <TouchableOpacity
+            style={{paddingLeft: 5}}
+            onPress={() => navigation.navigate('SearchPosts')}>
             <Ionicons name="search-outline" size={28} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.container_noti}>

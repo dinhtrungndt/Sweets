@@ -86,39 +86,6 @@ const HomeScreen = props => {
     setIsLoading(false);
   }, []);
 
-  const handleLike = async idPosts => {
-    try {
-      const idUsers = user.id;
-      const type = 'Thích';
-      const response = await likeByPost(idUsers, idPosts, type);
-
-      if (response.status === 1) {
-        const updatedPosts = posts.map(post => {
-          if (post._id === idPosts) {
-            const updatedReaction = post.reaction.map(reactionItem => {
-              if (reactionItem.idUsers._id === user.id) {
-                return {...reactionItem, type: 'Thích'};
-              }
-              return reactionItem;
-            });
-            return {
-              ...post,
-              reaction: updatedReaction,
-            };
-          }
-          return post;
-        });
-        console.log('postsposts:', updatedPosts);
-
-        setPosts(updatedPosts);
-      } else {
-        console.error('Lỗi khi thay đổi trạng thái like:', response.message);
-      }
-    } catch (error) {
-      console.error('Lỗi khi gửi yêu cầu API:', error);
-    }
-  };
-
   useEffect(() => {
     onGetPosts();
   }, []);
@@ -141,11 +108,7 @@ const HomeScreen = props => {
         <ToastManager />
         <HeaderScreen onRefresh={onRefresh} navigation={navigation} />
         <StoryScreen story={filteredStore} navigation={navigation} />
-        <PostsScreen
-          posts={filteredPosts}
-          navigation={navigation}
-          handleLike={handleLike}
-        />
+        <PostsScreen posts={filteredPosts} navigation={navigation} />
       </ScrollView>
     </>
   );

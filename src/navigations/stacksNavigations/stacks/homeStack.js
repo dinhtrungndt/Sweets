@@ -21,6 +21,7 @@ import ModalEditPostsAccount from '../../../components/main/home/posts/editPosts
 import SelectScreenUp from '../../../components/main/home/uploads/posts/select';
 import ChangeObjects from '../../../components/main/home/posts/editPosts/account/objects';
 import LiveStreamScreen from '../../../components/main/home/liveStream';
+import SearchPosts from '../../../components/main/home/posts/search';
 
 const Stack = createNativeStackNavigator();
 
@@ -53,6 +54,7 @@ export function HomeStackScreen() {
         component={ModalEditPostsAccount}
       />
       <Stack.Screen name="LiveStreamScreen" component={LiveStreamScreen} />
+      <Stack.Screen name="SearchPosts" component={SearchPosts} />
     </Stack.Navigator>
   );
 }
