@@ -19,6 +19,10 @@ export const GetRouteNameHome = route => {
     return 'none';
   } else if (routeName?.includes('ScanQRLogin')) {
     return 'none';
+  } else if (routeName?.includes('LiveStreamScreen')) {
+    return 'none';
+  } else if (routeName?.includes('LiveStreamHost')) {
+    return 'none';
   }
   return 'flex';
 };
