@@ -403,7 +403,7 @@ export function AddsScreen({route, navigation}) {
                           video={{uri: item.uri}}
                           videoWidth={1600}
                           videoHeight={900}
-                          thumbnail={{uri: item.uri}}
+                          thumbnail={require('../../../../../assets/play_96px.png')}
                           style={{
                             width:
                               Dimensions.get('window').width / numColumns - 10,
