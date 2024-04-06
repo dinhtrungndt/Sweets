@@ -3,7 +3,10 @@ import io from 'socket.io-client';
 import {View, Alert, StyleSheet, Button, Text} from 'react-native';
 import {Camera} from 'react-native-camera-kit';
 import {UserContext} from '../../../../contexts/user/userContext';
-import {CreateDevice, UpdateDevice} from '../../../../services/QRCode/QRCodeService';
+import {
+  CreateDevice,
+  UpdateDevice,
+} from '../../../../services/QRCode/QRCodeService';
 const ScanQRLogin = () => {
   const {user} = useContext(UserContext);
   const [scanning, setScanning] = useState(true); // Trạng thái của việc quét
@@ -11,19 +14,21 @@ const ScanQRLogin = () => {
   const [device, setDevice] = useState('');
   // Them idUser vao bang qr code
   const onUpdateDevice = async () => {
-    const response = await UpdateDevice(user.user._id,device);
+    const response = await UpdateDevice(user.user._id, device);
     console.log('>>>>>>>>>> response: ', response.status);
-    socket.current.emit('UpdateDevice',{response: response.status})
-  };  
+    socket.current.emit('UpdateDevice', {response: response.status});
+  };
   useEffect(() => {
     // baseURL: 'https://sweets-nodejs.onrender.com/',
-    socket.current = io('http://192.168.1.55:3001/');
+    socket.current = io('https://sweets-nodejs.onrender.com/');
   }, []);
-
 
   const handleBarcodeScan = event => {
     // Alert.alert('QR code found', event.nativeEvent.codeStringValue);
-    socket.current.emit('send_device_iduser', {deviceid: event.nativeEvent.codeStringValue, iduser: user.user._id});
+    socket.current.emit('send_device_iduser', {
+      deviceid: event.nativeEvent.codeStringValue,
+      iduser: user.user._id,
+    });
     setScanning(false);
   };
 
