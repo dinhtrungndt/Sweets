@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
     body: {
         flex: 1,
         backgroundColor: '#E5E5E5',
+        // backgroundColor: '#FFFFFF'
     },
     modalContainerCoverImg: {
         position: 'absolute',
@@ -78,31 +79,43 @@ export const styles = StyleSheet.create({
     imgBack: {
         width: 24,
         height: 24,
-        position: 'absolute',
-        left: 16,
-        top: 10,
+        marginLeft: 6
     },
     btnMore: {
         position: 'absolute',
         padding: 10,
-        left: 330,
+        left: 339,
     },
     imgMore: {
         width: 24,
         height: 24,
-        position: 'absolute',
-        left: 16,
-        top: 10,
     },
     profileFrame: {
         width: '100%',
-        height: 420,
+        height: 462,
         backgroundColor: '#FFFFFF',
     },
     imgCover: {
         width: '100%',
         height: 210,
         position: 'absolute',
+    },
+    boderCamera: {
+        width: 42,
+        height: 42,
+        borderRadius: 30,
+        backgroundColor: '#bcbcbc',
+        position: 'absolute',
+        top: 153,
+        right: 16,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#FFFFFF',
+    },
+    iconCamera: {
+
     },
     imgAvatar: {
         width: 120,
@@ -112,13 +125,48 @@ export const styles = StyleSheet.create({
         top: 150,
         alignSelf: 'center',
     },
+    boderCameraAvatar: {
+        width: 30,
+        height: 30,
+        borderRadius: 30,
+        backgroundColor: '#bcbcbc',
+        position: 'absolute',
+        top: 225,
+        left: 234,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#FFFFFF',
+    },
     textName: {
         fontFamily: 'Poppins',
         fontStyle: 'normal',
+        fontWeight: 'bold',
         fontSize: 20,
         marginTop: 270,
         color: '#000000',
         textAlign: 'center',
+    },
+    containerFriends: {
+        width: '100%',
+        height: 'auto',
+        flexDirection: 'row',
+        marginTop: 10,
+    },
+    txtFriendsNumber: {
+        fontFamily: 'Poppins',
+        fontStyle: 'normal',
+        fontSize: 18,
+        color: '#000000',
+        marginLeft: '5%',
+    },
+    txtFriends: {
+        fontFamily: 'Poppins',
+        fontStyle: 'normal',
+        fontSize: 14,
+        alignSelf: 'center',
+        marginLeft: 5,
     },
     btnIntroduce: {
         width: '90%',
@@ -128,11 +176,14 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         marginTop: 15,
+        flexDirection: 'row'
     },
     textIntroduce: {
         fontSize: 16,
+        fontWeight: 'bold',
         color: '#FFFFFF',
         textAlign: 'center',
+        alignSelf: 'center',
     },
     btnEditProfile: {
         width: '90%',
@@ -142,19 +193,18 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         marginTop: 15,
+        flexDirection: 'row'
+
     },
     imgEdit: {
-        width: 24,
-        height: 24,
-        position: 'absolute',
-        right: 48,
-        justifyContent: 'center',
+        width: 21,
+        height: 21,
         alignSelf: 'center',
+        left: -3
     },
     txtEdit: {
         fontSize: 16,
         color: '#000000',
-        textAlign: 'center',
+        alignSelf: 'center',
     },
-   
 });

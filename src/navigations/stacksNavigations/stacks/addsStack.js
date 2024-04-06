@@ -2,12 +2,13 @@
 import React from 'react';
 
 // Stack
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 
 // Screen
 import {AddsScreen} from '../../../components/main/home/uploads/posts';
 import SelectScreenUp from '../../../components/main/home/uploads/posts/select';
 import SelectBB from '../../../components/main/home/uploads/posts/select/selectBB';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 

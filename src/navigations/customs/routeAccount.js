@@ -13,6 +13,12 @@ export const GetRouteNameAccount = route => {
     return 'none';
   } else if (routeName?.includes('Account_Transfer')) {
     return 'none';
+  } else if (routeName?.includes('SettingsAndPrivacy')) {
+    return 'none';
+  } else if (routeName?.includes('HelpAndSupport')) {
+    return 'none';
+  } else if (routeName?.includes('ScanQRLogin')) {
+    return 'none';
   }
   return 'flex';
 };

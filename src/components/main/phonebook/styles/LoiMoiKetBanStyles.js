@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
-        margin:5
+        marginHorizontal:5
        
        
       },
@@ -74,12 +74,20 @@ const styles = StyleSheet.create({
         alignSelf:'center',
        marginVertical:5
       },
+      txtXoas2:{
+        fontWeight:'bold',
+        color:'white',
+        alignSelf:'center',
+       marginVertical:5,
+      
+      },
       imgOption2:{
         borderWidth:0.7,
         width:120,height:33,
         borderRadius:10,
-        borderColor:'#22b6c0',
-        marginHorizontal:15
+        backgroundColor:'#22b6c0',
+        marginHorizontal:15,
+        borderColor:'#22b6c0'
         
       },
 })

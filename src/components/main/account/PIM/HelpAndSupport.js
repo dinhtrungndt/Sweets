@@ -1,5 +1,6 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 // styles
 import {styles} from '../style/HelpAndSupport';
@@ -12,9 +13,11 @@ const HelpAndSupport = props => {
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.btnBack}>
-        <Image
+        <MaterialIcons
           style={styles.imgBack}
-          source={require('../../../../assets/icon_back.png')}
+          name='arrow-back'
+          color={'#FFFFFF'} 
+          size={30}
         />
         <Text style={styles.txtBack}>Trợ giúp và hỗ trợ</Text>
       </TouchableOpacity>

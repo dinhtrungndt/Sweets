@@ -275,7 +275,7 @@ export function AddsScreen({route, navigation}) {
     });
   };
 
-  const handleCheckIn = async () => {
+  const handleCheckIn = async ({navigation}) => {
     try {
       const location = await getCurrentLocation();
       console.log('Current location:', location);
@@ -290,6 +290,10 @@ export function AddsScreen({route, navigation}) {
 
   const isVideo = url => {
     return /\.(mp4|avi|mov)$/i.test(url);
+  };
+
+  const handleLiveStream = (isStream,liveID) => {
+    navigation.navigate('LiveStreamHost',{isStream,liveID});
   };
 
   useEffect(() => {
@@ -498,7 +502,9 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>Check in</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              style={styles.bottomSheetItem}
+              onPress={()=>handleLiveStream(true,user.id)}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_live.png')}

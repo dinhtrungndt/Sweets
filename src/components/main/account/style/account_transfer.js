@@ -9,8 +9,8 @@ export const styles = StyleSheet.create({
         backgroundColor: '#22b6c0',
     },
     imgBack: {
-        width: 24,
-        height: 24,
+        // width: 24,
+        // height: 24,
         marginLeft: 10,
     },
     txt1: {
@@ -65,6 +65,28 @@ export const styles = StyleSheet.create({
         fontSize: 14,
         position: 'absolute',
         right: 15,
+    },
+    btnBottomSheet: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    btnCancel:{
+        width: 135,
+        height: 45,
+        backgroundColor: '#E5E5E5',
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 12
+    },
+    btnOk: {
+        width: 135,
+        height: 45,
+        backgroundColor: '#E5E5E5',
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 12
     }
 })
 

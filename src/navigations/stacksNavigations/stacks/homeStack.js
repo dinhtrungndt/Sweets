@@ -21,6 +21,11 @@ import ModalEditPostsAccount from '../../../components/main/home/posts/editPosts
 import SelectScreenUp from '../../../components/main/home/uploads/posts/select';
 import ChangeObjects from '../../../components/main/home/posts/editPosts/account/objects';
 import LiveStreamScreen from '../../../components/main/home/liveStream';
+import {
+  ZegoUIKitPrebuiltCallWaitingScreen,
+  ZegoUIKitPrebuiltCallInCallScreen,
+} from '@zegocloud/zego-uikit-prebuilt-call-rn';
+import LiveStreamHost from '../../../components/main/home/liveStream/LiveStreamHost';
 import SearchPosts from '../../../components/main/home/posts/search';
 
 const Stack = createNativeStackNavigator();
@@ -46,7 +51,8 @@ export function HomeStackScreen() {
         component={SettingStoryObjects}
       />
       <Stack.Screen name="OtherUserA" component={OtherUserA} />
-      <Stack.Screen name="Profile" component={Profile} />
+
+      {/* <Stack.Screen name="Profile" component={Profile} /> */}
       <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />
       <Stack.Screen name="ChangeObjects" component={ChangeObjects} />
       <Stack.Screen
@@ -54,6 +60,23 @@ export function HomeStackScreen() {
         component={ModalEditPostsAccount}
       />
       <Stack.Screen name="LiveStreamScreen" component={LiveStreamScreen} />
+      <Stack.Screen name="LiveStreamHost" component={LiveStreamHost} />
+
+      <Stack.Screen name="Profile" component={Profile} />
+      {/* <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} /> */}
+      <Stack.Screen
+        options={{headerShown: false}}
+        // DO NOT change the name
+        name="ZegoUIKitPrebuiltCallWaitingScreen"
+        component={ZegoUIKitPrebuiltCallWaitingScreen}
+      />
+      <Stack.Screen
+        options={{headerShown: false}}
+        // DO NOT change the name
+        name="ZegoUIKitPrebuiltCallInCallScreen"
+        component={ZegoUIKitPrebuiltCallInCallScreen}
+      />
+
       <Stack.Screen name="SearchPosts" component={SearchPosts} />
     </Stack.Navigator>
   );

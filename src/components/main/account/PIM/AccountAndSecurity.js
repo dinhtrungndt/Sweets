@@ -1,7 +1,8 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React, {useContext} from 'react';
 import {UserContext} from '../../../../contexts/user/userContext';
-
+import Fontisto from 'react-native-vector-icons/Fontisto'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // styles
 import {styles} from '../style/AccountAndSecurity';
 
@@ -14,9 +15,11 @@ const AccountAndSecurity = props => {
       <TouchableOpacity
         onPress={() => navigation.goBack()}
         style={styles.btnBack}>
-        <Image
+        <MaterialIcons
           style={styles.imgBack}
-          source={require('../../../../assets/icon_back.png')}
+          name='arrow-back'
+          color={'#FFFFFF'}
+          size={30}
         />
         <Text style={styles.txtBack}>Tài khoản và bảo mật</Text>
       </TouchableOpacity>
@@ -65,7 +68,7 @@ const AccountAndSecurity = props => {
 
       <View style={styles.bodySecurity}>
         <Text style={styles.txtAccount}>Bảo mật</Text>
-        <TouchableOpacity style={styles.qrFrame}>
+        {/* <TouchableOpacity style={styles.qrFrame}>
           <Image
             style={styles.imgEmail}
             source={require('../../../../assets/icon_lock.png')}
@@ -86,7 +89,7 @@ const AccountAndSecurity = props => {
             style={styles.imgNext2}
             source={require('../../../../assets/icon_next.png')}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={styles.qrFrame}>
           <Image
             style={styles.imgEmail}
