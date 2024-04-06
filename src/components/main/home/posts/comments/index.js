@@ -1126,7 +1126,7 @@ const CommentsScreen = ({navigation, route}) => {
             <TouchableOpacity onPress={submitComment}>
               <Image
                 style={styles.icon_comment_send}
-                source={require('../../../../../assets/send_comment_icon.png')}
+                source={require('../../../../../assets/send_comment_50px.png')}
               />
             </TouchableOpacity>
           </View>
