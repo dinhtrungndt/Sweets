@@ -16,9 +16,7 @@ const SelectScreenUp = ({navigation, route}) => {
   const handleOptionSelect = option => {
     setSelectedOption(option);
     const selectedId = idObject.find(item => item.name === option);
-    setTimeout(() => {
-      navigation.navigate('AddsScreenStack', {selectedId: selectedId});
-    }, 1000);
+    navigation.navigate('AddsScreenStack', {selectedId: selectedId});
   };
 
   return (
