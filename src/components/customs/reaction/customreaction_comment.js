@@ -6,6 +6,7 @@ import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 import {styles} from '../style/reaction';
 import {likeByPost} from '../../../services/home/homeService';
 import {UserContext} from '../../../contexts/user/userContext';
+import * as Animatable from 'react-native-animatable';
 
 const Customreaction_Comment = ({reactions, clone, posts, reloadPosts}) => {
   const [selectedReaction, setSelectedReaction] = useState(null);
@@ -62,7 +63,11 @@ const Customreaction_Comment = ({reactions, clone, posts, reloadPosts}) => {
   };
 
   return (
-    <View style={[{flexDirection: 'row'}, styles.cardContainer]}>
+    <Animatable.View
+      animation="bounceIn"
+      delay={reaction.id * 100}
+      key={reaction.id}
+      style={{flexDirection: 'row'}}>
       {reactions.map(reaction => (
         <TouchableOpacity
           key={reaction.id}
@@ -77,7 +82,7 @@ const Customreaction_Comment = ({reactions, clone, posts, reloadPosts}) => {
           </Text>
         </TouchableOpacity>
       ))}
-    </View>
+    </Animatable.View>
   );
 };
 
