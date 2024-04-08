@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
         height: 140,
     },
     avatar3: {
-        width: 55,
-        height:55,
+        width: "75",
+        height:75,
         margin:10,
         alignSelf:'center'
 
@@ -60,17 +60,70 @@ const styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: 'bold',
         margin: 5,
-        borderBottomWidth:0.5,
+      
+        padding:5,
+        borderColor:'#22b6c0',
+        color:'#22b6c0'
+    },
+    
+    txtTitle1: {
+        fontSize: 15,
+       
+        margin: 7,
+      
         padding:5,
         borderColor:'#22b6c0',
         color:'#22b6c0'
     },
     txtContentInfoUser2: {
         fontWeight:'bold',
+        fontSize:15,
+        marginHorizontal:15,
+        marginVertical:17,
+      
+    },
+    
+    txtContentInfoUser3: {
+        fontWeight:'bold',
         fontSize:16,
         marginHorizontal:15,
-        marginVertical:17
-    }
+       
+    },
+    imvCheck:{
+        borderColor:'#22b6c0',
+        borderWidth:1,
+        fontSize:13,
+        fontWeight:'bold',
+        backgroundColor:'#F0F8FF',
+        height:30,
+        marginVertical:17,
+        borderRadius:10,
+        padding:6
+    },
+    wrapDay:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        padding:6,
+        backgroundColor:'#DCDCDC',
+        borderColor: '#22b6c0',
+       
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    inputWish: {
+        backgroundColor: '#f2f2f2',
+        padding: 7,
+        borderRadius: 8,
+       
+        width: 200, 
+      }
+      
 
 });
 

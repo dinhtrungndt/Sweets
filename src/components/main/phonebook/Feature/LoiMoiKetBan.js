@@ -99,15 +99,7 @@ const LoiMoiKetBan = (props) => {
 
   return (
     <View>
-      <View style={styles.wrapContent1}>
-        <TouchableOpacity style={styles.friendItem}  onPress={() => navigation.navigate('PhoneBookScreen')}>
-          <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
-        </TouchableOpacity>
-        <Text style={styles.txtContent1}>Danh sách lời mời</Text>
-        <TouchableOpacity style={styles.friendItem} onPress={toggleModal}>
-          <Image source={require('../../../../assets/option.png')} style={styles.avatar} />
-        </TouchableOpacity>
-      </View>
+    
       <View style={styles.wrapContent2}>
         <Text style={styles.txtContent11}>Lời mời kết bạn</Text>
         <Text style={styles.txtContent2}>Sắp xếp</Text>
@@ -131,7 +123,7 @@ const LoiMoiKetBan = (props) => {
             <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, elevation: 5 }}>
               <TouchableOpacity  
               style={{height:20}}
-              onPress={() => navigation.navigate('LoiMoiDaGui')} >
+              >
                 <Text style={{fontWeight:'bold',fontSize:18,color:'black'}}>Xem danh sách đã gửi kết bạn</Text>
               </TouchableOpacity>
               

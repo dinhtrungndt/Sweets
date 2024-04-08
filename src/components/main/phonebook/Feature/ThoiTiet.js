@@ -132,6 +132,9 @@ const ThoiTiet = (props) => {
         <TouchableOpacity style={styles.friendItem}  onPress={() => navigation.navigate('PhoneBookScreen')}>
           <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
         </TouchableOpacity>
+        <TouchableOpacity style={{marginTop:20}}  onPress={() => navigation.navigate('ThoiTiet2')}>
+         <Text>xem thêm</Text>
+        </TouchableOpacity>
       
         
    

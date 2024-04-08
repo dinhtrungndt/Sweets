@@ -19,10 +19,12 @@ const LoiMoiDaGui = (props) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
       const response = await AxiosInstance().get(`/friend/friend-requests-sent/${userId}`);
+      
       if (response.success) {
         setFriendInvitations(response.friendRequestsSent);
         const usersPromises = response.friendRequestsSent.map(async (invitation) => {
           const userResponse = await AxiosInstance().get(`/users/get-user/${invitation.idFriendReceiver}`);
+          console.log('userResponse.user',userResponse.user)
           return userResponse.user;
         });
         const users = await Promise.all(usersPromises);
@@ -79,20 +81,14 @@ const LoiMoiDaGui = (props) => {
 
   return (
     <View>
-      <View style={styles.wrapContent1}>
-        <TouchableOpacity style={styles.friendItem}  onPress={() => navigation.navigate('LoiMoiKetBan')}>
-          <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
-        </TouchableOpacity>
-        <Text style={styles.txtContent1}>Lời mời đã gửi</Text>
-        
-      </View>
+     
     
       <FlatList
         data={userInfo}
         renderItem={renderItem}
         keyExtractor={item => item._id}
       />
-      
+    
 
       
     </View>

@@ -14,93 +14,61 @@ import QRCODE from './Feature/QRCODE';
 
 const Tab = createMaterialTopTabNavigator();
 
-const data = [
-  { id: '1', title: require('../../../assets/hppn2.png'), name: 'Sinh nhật \n sắp tới' },
-  { id: '2', title: require('../../../assets/add-friend-receive3.png'), name: 'Lời mời \n đã nhận' },
-  { id: '3', title: require('../../../assets/add-friend-sent2.png'), name: 'Lời mời \n đã gửi' },
-  { id: '4', title: require('../../../assets/cluold2.png'), name: 'Thời tiết \n hôm nay' },
-  { id: '5', title: require('../../../assets/qr-scan.png'), name: 'Quét mã \n qrcode' },
-];
+
 const PhoneBookScreen = props => {
   const { navigation } = props;
-  const renderItem = useCallback(({ item }) => (
-    <View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          if (item.id === '1') {
-            navigation.navigate('SinhNhat');
-          } if (item.id === '3') {
-            navigation.navigate('QRCODE');
-          } if (item.id === '2') {
-            navigation.navigate('LoiMoiKetBan');
-          } if (item.id === '4') {
-            navigation.navigate('ThoiTiet');
-          }if (item.id === '5') {
-            navigation.navigate('QuetQR');
-          }
-          else {
-
-          } {
-            // Xử lý logic cho các button khác nếu cần
-          }
-        }}>
-        <Image source={item.title} style={styles.buttonImg} />
-      </TouchableOpacity>
-      <Text style={styles.txtFlatlist}>{item.name}</Text>
-    </View>
-  ), [setModalVisible]);
 
 
-  const [isModalVisible, setModalVisible] = useState(false);
+
 
   return (
     <NavigationContainer independent={true}>
 
       <View style={styles.wrapBackground}>
-      <Text style={styles.txtFlat2}>Danh sách bạn bè</Text>
-      </View>
-      <View style={styles.ViewFlatlist}>
-       
-        <View style={styles.WrapFaltlist}>
-       <View style={{flexDirection:"row",borderBottomWidth:0.5,
-          borderColor:'#22b6c0',marginHorizontal:5}}>
-        <Image 
-        style={{width:35,height:35,marginLeft:5,marginVertical:4}}
-        source={require('../../../assets/fireworks.png')}/>
-       <Text style={styles.txtFlat}>Thông tin khác</Text>
-       </View>
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.flatListContent}
-          />
+        <Text style={styles.txtFlat2}>Danh sách bạn bè</Text>
+        <View style={{ flexDirection: 'row', marginHorizontal: 10, marginVertical: 5 }}>
+          <TouchableOpacity style={styles.imgOption} onPress={() => navigation.navigate('QuetQR')}>
+            <Image source={require('../../../assets/qr-codess.png')} style={styles.buttonImg2} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.imgOption} onPress={() => navigation.navigate('BothRes')}>
+            <Image source={require('../../../assets/friend.png')} style={styles.buttonImg2} />
+          </TouchableOpacity>
         </View>
-      </View>
 
-      <MyModal isVisible={isModalVisible} onClose={() => setModalVisible(false)} />
+      </View>
+    
+
+      
+
+      <TouchableOpacity style={styles.ToQR} onPress={() => navigation.navigate('ThoiTiet')}>
+        <Image source={require('../../../assets/cluold2.png')} style={styles.buttonImg3} />
+        <Text style={styles.txtToQR}>Thời tiết hôm nay</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.ToQR} onPress={() => navigation.navigate('SinhNhat')}>
+        <Image source={require('../../../assets/hppn2.png')} style={styles.buttonImg3} />
+        <Text style={styles.txtToQR}>Sinh nhật sắp tới</Text>
+      </TouchableOpacity>
+
 
       <Tab.Navigator
-      tabBarOptions={{
-        labelStyle: { fontSize: 15, fontWeight: 'bold' },
-        tabStyle: { width: 'auto' },
-        style: {
-          backgroundColor: 'transparent',
-          elevation: 0,
-        },
-        activeTintColor: '#22b6c0',
-        inactiveTintColor: '#bdc3c7',
-        indicatorStyle: { backgroundColor: '#22b6c0' },
-        activeBackgroundColor: '#22b6c0', // Thay đổi màu nền của tab hiện tại khi được chọn
-      }}
-    >
-      <Tab.Screen name="Tất cả" component={AllFriend} />
-      <Tab.Screen name="Gần đây" component={NearFriend} />
-      <Tab.Screen name="Khác" component={OtherFriend} />
-    </Tab.Navigator>
+        tabBarOptions={{
+          labelStyle: { fontSize: 15, fontWeight: 'bold' },
+          tabStyle: { width: 'auto' },
+          style: {
+            backgroundColor: 'transparent',
+            elevation: 0,
+          },
+          activeTintColor: '#22b6c0',
+          inactiveTintColor: '#bdc3c7',
+          indicatorStyle: { backgroundColor: '#22b6c0' },
+          activeBackgroundColor: '#22b6c0', // Thay đổi màu nền của tab hiện tại khi được chọn
+        }}
+      >
+        <Tab.Screen name="Tất cả" component={AllFriend} />
+        <Tab.Screen name="Gần đây" component={NearFriend} />
+        <Tab.Screen name="Khác" component={OtherFriend} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 };

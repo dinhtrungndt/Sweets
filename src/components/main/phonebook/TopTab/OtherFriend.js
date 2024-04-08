@@ -43,7 +43,7 @@ const OtherFriend = (props) => {
             const matchingFriendsInfo = await Promise.all(matchingFriends.map(async (friendId) => {
               try {
                 const friendInfoResponse = await AxiosInstance().get(`/users/get-user/${friendId}`);
-               // console.log('friendInfoResponse', friendInfoResponse.user)
+                // console.log('friendInfoResponse', friendInfoResponse.user)
                 const { avatar, name } = friendInfoResponse.user;
                 return { avatar, name }; // Trả về thông tin của bạn bè chung
               } catch (error) {
@@ -53,12 +53,12 @@ const OtherFriend = (props) => {
             }));
             // Gán matchingFriendsInfo vào item
             item.matchingFriendsInfo = matchingFriendsInfo;
-           // console.log('Thông tin bạn chunggggg:', matchingFriendsInfo);
+            // console.log('Thông tin bạn chunggggg:', matchingFriendsInfo);
           } catch (error) {
             console.error('Lỗi khi xem danh sách bạn bè:', error);
           }
         }));
-        // console.log('filteredUsers',filteredUsers)
+        console.log('filteredUsers', filteredUsers)
 
         setFilteredUsers(filteredUsers);
       } catch (error) {
@@ -121,18 +121,18 @@ const OtherFriend = (props) => {
                     <Text style={styles.friendItemText3}>Bạn chung: {item.matchingFriends ? item.matchingFriends.length : 0}</Text>
 
                     <View style={{ flexDirection: 'row', marginVertical: 3 }}>
-  {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 0 && (
-    item.matchingFriendsInfo.slice(0, 1).map((friendInfo, index) => (
-      <View key={index} style={{ flexDirection: 'row' }}>
-        <Image source={{ uri: friendInfo.avatar }} style={{ width: 25, height: 25, borderRadius: 12 }} />
-        <Text style={{ color: 'black',fontSize:13 }}>{friendInfo.name}</Text>
-      </View>
-    ))
-  )}
-  {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 1 && (
-    <Text style={{ color: 'black',fontSize:13 }}> và {item.matchingFriendsInfo.length - 1} bạn khác...</Text>
-  )}
-</View>
+                      {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 0 && (
+                        item.matchingFriendsInfo.slice(0, 1).map((friendInfo, index) => (
+                          <View key={index} style={{ flexDirection: 'row' }}>
+                            <Image source={{ uri: friendInfo.avatar }} style={{ width: 25, height: 25, borderRadius: 12 }} />
+                            <Text style={{ color: 'black', fontSize: 13 }}>{friendInfo.name}</Text>
+                          </View>
+                        ))
+                      )}
+                      {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 1 && (
+                        <Text style={{ color: 'black', fontSize: 13 }}> và {item.matchingFriendsInfo.length - 1} bạn khác...</Text>
+                      )}
+                    </View>
 
                   </View>
                 </View>
