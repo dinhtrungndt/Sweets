@@ -26,6 +26,11 @@ import VideoPlayer from 'react-native-video-player';
 import {UserContext} from '../../../../contexts/user/userContext';
 import {
   deletePostsAccount,
+  getComments,
+  getMedia,
+  getPosts,
+  getReaction,
+  getShare,
   likeByPost,
 } from '../../../../services/home/homeService';
 import ModalEditPostsAccount from './editPosts/account';
@@ -48,6 +53,38 @@ const PostsScreen = ({posts, navigation}) => {
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
+  };
+
+  const reloadPosts = async () => {
+    try {
+      const res = await getPosts(user.user._id);
+      const postsWithMedia = await Promise.all(
+        res.map(async post => {
+          const mediaResponse = await getMedia(post._id);
+          const media = mediaResponse;
+
+          const reactionResponse = await getReaction(post._id);
+          const reaction = reactionResponse;
+
+          const commentResponse = await getComments(post._id);
+          const comment = commentResponse;
+
+          const shareResponse = await getShare(post._id);
+          const share = shareResponse;
+
+          return {
+            ...post,
+            media,
+            reaction,
+            comment,
+            share,
+          };
+        }),
+      );
+      setPost(postsWithMedia);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
   const reactions = [
@@ -144,8 +181,12 @@ const PostsScreen = ({posts, navigation}) => {
           }
           return post;
         });
-        // console.log('postsposts:', updatedPosts);
+        // console.log(
+        //   'postsposts:',
+        //   updatedPosts.map(post => post.reaction),
+        // );
         setPost(updatedPosts);
+        await reloadPosts();
       } else {
         console.error('Lỗi khi thay đổi trạng thái like:', response.message);
       }
@@ -280,6 +321,10 @@ const PostsScreen = ({posts, navigation}) => {
       handleReaction.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    setPost(posts);
+  }, [posts]);
 
   return (
     <View style={styles.T}>
@@ -554,10 +599,6 @@ const PostsScreen = ({posts, navigation}) => {
                 onLongPress={() =>
                   handleReaction.current.handleLongPress(item._id)
                 }>
-                {console.log(
-                  '>>>>>>>>>>>. item.isUserReacted',
-                  isUserReacted(item.reaction, user.user._id),
-                )}
                 {isUserReacted(item.reaction, user.user._id) ? (
                   <>
                     {item.reaction
@@ -606,6 +647,7 @@ const PostsScreen = ({posts, navigation}) => {
                     reactions={reactions}
                     clone={handleReaction.current.handlePressOut}
                     posts={item}
+                    reloadPosts={reloadPosts}
                   />
                 </View>
               )}

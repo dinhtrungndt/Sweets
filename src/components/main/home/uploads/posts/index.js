@@ -235,7 +235,7 @@ export function AddsScreen({route, navigation}) {
       // }
 
       try {
-        console.log('_idPosts ID in handleUploadPost:', _idPosts);
+        console.log('idObjectValue in handleUploadPost:', idObjectValue);
         const postDetails = {
           _id: _idPosts === null ? idPostsUp : _idPosts,
           content: inputText || '',
@@ -292,8 +292,8 @@ export function AddsScreen({route, navigation}) {
     return /\.(mp4|avi|mov)$/i.test(url);
   };
 
-  const handleLiveStream = (isStream,liveID) => {
-    navigation.navigate('LiveStreamHost',{isStream,liveID});
+  const handleLiveStream = (isStream, liveID) => {
+    navigation.navigate('LiveStreamHost', {isStream, liveID});
   };
 
   useEffect(() => {
@@ -504,7 +504,7 @@ export function AddsScreen({route, navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomSheetItem}
-              onPress={()=>handleLiveStream(true,user.id)}>
+              onPress={() => handleLiveStream(true, user.id)}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_live.png')}

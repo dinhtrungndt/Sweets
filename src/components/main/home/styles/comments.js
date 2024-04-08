@@ -253,6 +253,10 @@ export const styles = StyleSheet.create({
     marginLeft: 10,
     width: '80%',
   },
+  container_comment_contentCC: {
+    marginLeft: 10,
+    width: '79%',
+  },
   comment_content: {
     backgroundColor: '#ebebeb',
     borderRadius: 20,
@@ -319,6 +323,9 @@ export const styles = StyleSheet.create({
   childComment: {
     marginLeft: 20,
   },
+  childCommentCC: {
+    marginLeft: 40,
+  },
   container_reply_comment: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -349,7 +356,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input_comment_text: {
-    width: '53%',
+    width: '48.5%',
   },
   input_comment_textAll: {
     width: '97%',
@@ -374,6 +381,38 @@ export const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
   },
+  // list user
+  userList: {
+    width: '100%',
+    height: 250,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 10,
+    left: 0,
+    bottom: '100%',
+    position: 'absolute',
+    borderWidth: 1,
+    borderColor: '#22b6c0',
+    zIndex: 1,
+  },
+  listUser_container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    paddingTop: 5,
+  },
+  listUser_image: {
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+  },
+  listUser_text: {
+    fontSize: 14,
+    color: '#000',
+    fontWeight: '500',
+    paddingLeft: 10,
+  },
+  // Model
   modalView: {
     width: '100%',
     height: 300,

@@ -32,6 +32,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Octicons from 'react-native-vector-icons/Octicons';
 import Swiper from 'react-native-swiper';
 import VideoPlayer from 'react-native-video-player';
 import Video from 'react-native-video';
@@ -47,6 +48,9 @@ import {
   ArrangeCommentFriend,
   deletePostsAccount,
   getComments,
+  getListUser,
+  getReactionComments,
+  likeByComments,
   likeByPost,
   submitComments,
   submitCommentsC,
@@ -90,14 +94,78 @@ const CommentsScreen = ({navigation, route}) => {
   const [modalEditPostsAccount, setModalEditPostsAccount] = useState(false);
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
   const [modalEditPostsGuest, setModalEditPostsGuest] = useState(false);
+  const [showUserList, setShowUserList] = useState(false);
+  const [listUser, setListUser] = useState([]);
+  const [searchNameInList, setSearchNameInList] = useState([]);
+  const [reactionLiked, setReactionLiked] = useState([]);
   const numColumns = 4;
 
-  // console.log('>>>>>>>>> CommentsScreen postId', postId);
+  // console.log('>>>>>>>>> listUser listUser', listUser);
   // console.log('>>>>>>>>> comments comments', comments);
 
   const handleCloneBottomSheet = () => bottomSheetRef.current?.close();
   const handleOnpenBottomSheet = () => bottomSheetRef.current?.expand();
   const handleOnpenBottomSheetFit = () => bottomSheetRefFit.current?.expand();
+
+  const handleSearch = text => {
+    const filteredUsers = listUser.filter(user =>
+      user.name.toLowerCase().includes(text.toLowerCase()),
+    );
+    setSearchNameInList(filteredUsers.slice(0, 5));
+  };
+
+  const handleTextChange = text => {
+    setCommentContent(text);
+    const lastAtPos = text.lastIndexOf('@');
+    if (lastAtPos > -1) {
+      setShowUserList(true);
+      handleSearch(text.substring(lastAtPos + 1));
+    } else {
+      setShowUserList(false);
+    }
+  };
+
+  const handleUserSelect = userName => {
+    const lastAtPos = commentContent.lastIndexOf('@');
+    const newText = commentContent.substring(0, lastAtPos) + `@${userName} `;
+    setParentUserName(newText);
+    setCommentContent('');
+    setShowUserList(false);
+    commentInputRef.current.focus();
+  };
+
+  const onGetListUser = async () => {
+    const res = await getListUser();
+    setListUser(res);
+    // console.log('>>>>>>>> res', res);
+  };
+
+  // const onGetReactionIdComments = async idComments => {
+  //   if (!idComments) {
+  //     console.log('idComments là undefined, không thể thực hiện truy vấn');
+  //     return;
+  //   }
+  //   try {
+  //     const res = await getReactionComments(idComments);
+  //     setReactionLiked(res);
+  //   } catch (error) {
+  //     console.log('Lỗi khi lấy danh sách liked comments', error);
+  //   }
+  // };
+
+  const handleLikeComments = async idComments => {
+    try {
+      const idUsers = user.user._id;
+      const type = 'Thích';
+      const response = await likeByComments(idUsers, idComments, type);
+      if (response.status === 1) {
+        await reloadComments();
+      }
+      // console.log('Like comments thành công !', response);
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu API:', error);
+    }
+  };
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -298,7 +366,7 @@ const CommentsScreen = ({navigation, route}) => {
 
       setIsLoadingCamera(true);
       const data = await uploadImageStatus(formData);
-      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
       setImagePath(data.urls);
       // console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
       setIsLoadingCamera(false);
@@ -329,7 +397,13 @@ const CommentsScreen = ({navigation, route}) => {
   const reloadComments = async () => {
     try {
       const response = await getComments(postId._id);
-      setComments(response.reverse());
+      const postComments = await Promise.all(
+        response.map(async comment => {
+          const reaction = await getReactionComments(comment._id);
+          return {...comment, reaction};
+        }),
+      );
+      setComments(postComments.reverse());
     } catch (error) {
       console.error('Lỗi khi tải danh sách bình luận:', error);
     }
@@ -337,7 +411,7 @@ const CommentsScreen = ({navigation, route}) => {
 
   const handleLike = async idPosts => {
     try {
-      const idUsers = user.id;
+      const idUsers = user.user._id;
       const type = 'Thích';
       const response = await likeByPost(idUsers, idPosts, type);
 
@@ -357,7 +431,7 @@ const CommentsScreen = ({navigation, route}) => {
           }
           return post;
         });
-        // console.log('postsposts:', updatedPosts);
+        console.log('postsposts:', updatedPosts);
 
         setPosts(updatedPosts);
       } else {
@@ -368,7 +442,7 @@ const CommentsScreen = ({navigation, route}) => {
     }
   };
 
-  const submitComment = async () => {
+  const submitCommentSend = async () => {
     try {
       if (!commentContent && !imagePath) {
         return Toast.show({
@@ -384,7 +458,7 @@ const CommentsScreen = ({navigation, route}) => {
 
       setIsLoading(true);
       if (parentId && parentUserName !== null) {
-        await submitCommentsC(
+        const response = await submitCommentsC(
           user.user._id,
           postId._id,
           parentId,
@@ -392,13 +466,16 @@ const CommentsScreen = ({navigation, route}) => {
           imagePath,
           parentUserName,
         );
+        // console.log('Tải danh sách bình luận con:', response);
       } else {
-        await submitComments(
+        const response = await submitComments(
           user.user._id,
           postId._id,
           commentContent,
           imagePath,
+          parentUserName,
         );
+        // console.log('Tải danh sách bình luận cha:', response);
       }
       setCommentContent('');
       setImagePath(null);
@@ -411,6 +488,12 @@ const CommentsScreen = ({navigation, route}) => {
       console.error('Lỗi khi gửi comment:', error);
       setIsLoading(false);
     }
+  };
+
+  const removeImage = index => {
+    const newImages = [...image];
+    newImages.splice(index, 1);
+    setImage(newImages);
   };
 
   const handleArrange = async () => {
@@ -474,6 +557,10 @@ const CommentsScreen = ({navigation, route}) => {
   useEffect(() => {
     reloadComments();
   }, [route.params.postId]);
+
+  useEffect(() => {
+    onGetListUser();
+  }, []);
 
   // useEffect(() => {
   //   commentInputRef.current.focus();
@@ -830,11 +917,28 @@ const CommentsScreen = ({navigation, route}) => {
                             <Text style={styles.name_comment}>
                               {item.idUsers?.name}
                             </Text>
-                            {item?.content && (
-                              <Text style={{color: '#000'}}>
-                                {item.content}
-                              </Text>
-                            )}
+                            <View style={{flexDirection: 'row'}}>
+                              <TouchableOpacity>
+                                <Text
+                                  style={{
+                                    color: '#1b9e9a',
+                                    paddingRight: 5,
+                                  }}>
+                                  {item.parentUserName}
+                                </Text>
+                              </TouchableOpacity>
+                              {item?.content && (
+                                <View style={{flexDirection: 'row'}}>
+                                  <Text
+                                    style={{
+                                      color: '#000',
+                                      width: '70%',
+                                    }}>
+                                    {item.content}
+                                  </Text>
+                                </View>
+                              )}
+                            </View>
                           </View>
 
                           {item?.image && item?.image.length > 0 && (
@@ -879,7 +983,12 @@ const CommentsScreen = ({navigation, route}) => {
                             <Text style={styles.time_comment}>
                               {formatTime(item.createAt)}
                             </Text>
-                            <TouchableOpacity style={styles.like_like_comment}>
+                            <TouchableOpacity
+                              style={styles.like_like_comment}
+                              onPress={() => handleLikeComments(item._id)}
+                              onLongPress={() =>
+                                handleReaction.current.handleLongPress()
+                              }>
                               <Text style={styles.like_like_comment}>
                                 Thích
                               </Text>
@@ -894,6 +1003,13 @@ const CommentsScreen = ({navigation, route}) => {
                                 Phản hồi
                               </Text>
                             </TouchableOpacity>
+                            {item.reaction && item.reaction.length > 0 && (
+                              <View style={styles.like_like_comment}>
+                                <Text style={styles.like_like_comment}>
+                                  {item.reaction.length} lượt thích
+                                </Text>
+                              </View>
+                            )}
                           </View>
                         </View>
                       </View>
@@ -947,21 +1063,44 @@ const CommentsScreen = ({navigation, route}) => {
                                       {subItem.idUsers?.name}
                                     </Text>
                                     <View style={{flexDirection: 'row'}}>
-                                      <TouchableOpacity>
-                                        <Text
-                                          style={{
-                                            color: '#1b9e9a',
-                                            paddingRight: 10,
-                                          }}>
-                                          {subItem.parentUserName}
-                                        </Text>
-                                      </TouchableOpacity>
+                                      {subItem.idUsers.name !==
+                                      user.user.name ? (
+                                        <TouchableOpacity
+                                          onPress={() =>
+                                            navigation.navigate('OtherUserA', {
+                                              account: subItem,
+                                            })
+                                          }>
+                                          <Text
+                                            style={{
+                                              color: '#1b9e9a',
+                                              paddingRight: 5,
+                                            }}>
+                                            {subItem.parentUserName}
+                                          </Text>
+                                        </TouchableOpacity>
+                                      ) : (
+                                        <TouchableOpacity
+                                          onPress={() =>
+                                            navigation.navigate('Profile', {
+                                              account: subItem,
+                                            })
+                                          }>
+                                          <Text
+                                            style={{
+                                              color: '#1b9e9a',
+                                              paddingRight: 5,
+                                            }}>
+                                            {subItem.parentUserName}
+                                          </Text>
+                                        </TouchableOpacity>
+                                      )}
                                       {subItem?.content && (
                                         <View style={{flexDirection: 'row'}}>
                                           <Text
                                             style={{
                                               color: '#000',
-                                              width: '60%',
+                                              width: '70%',
                                             }}>
                                             {subItem.content}
                                           </Text>
@@ -1025,7 +1164,7 @@ const CommentsScreen = ({navigation, route}) => {
                                     <TouchableOpacity
                                       style={styles.like_like_comment}
                                       onPress={() => {
-                                        setParentId(subItem.idParent._id);
+                                        setParentId(subItem._id);
                                         setParentUserName(subItem.idUsers.name);
                                       }}>
                                       <Text style={styles.like_like_comment}>
@@ -1034,6 +1173,192 @@ const CommentsScreen = ({navigation, route}) => {
                                     </TouchableOpacity>
                                   </View>
                                 </View>
+                              </View>
+
+                              {/* Bình luận lòng con */}
+                              <View
+                                style={{
+                                  paddingLeft: 45,
+                                }}>
+                                {console.log(
+                                  '>>>> asasd',
+                                  comments.filter(
+                                    subItemC =>
+                                      subItemC.idParent &&
+                                      subItemC.idParent?._id &&
+                                      subItemC.idParent?.idParent ===
+                                        subItem._id,
+                                  ),
+                                )}
+                                {comments
+                                  .filter(
+                                    subItemC =>
+                                      subItemC.idParent?._id === subItem._id,
+                                  )
+                                  .map((subItemC, subIndex) => (
+                                    <View
+                                      style={{
+                                        borderLeftWidth: 2,
+                                        borderColor: '#c6c6c6',
+                                        borderBottomLeftRadius: 50,
+                                      }}
+                                      key={subIndex}>
+                                      <View
+                                        style={[
+                                          styles.container_comment_body,
+                                          styles.childCommentCC,
+                                        ]}>
+                                        <Image
+                                          style={[
+                                            styles.avatar_comment,
+                                            {width: 25, height: 25},
+                                          ]}
+                                          source={
+                                            subItemC.idUsers?.avatar === '' ||
+                                            subItemC.idUsers?.avatar === null ||
+                                            subItemC.idUsers?.avatar ===
+                                              undefined ||
+                                            subItemC.idUsers?.avatar ===
+                                              'default' ||
+                                            subItemC.idUsers?.avatar === 'null'
+                                              ? require('../../../../../assets/account.png')
+                                              : {uri: subItemC.idUsers?.avatar}
+                                          }
+                                        />
+                                        <View
+                                          style={
+                                            styles.container_comment_contentCC
+                                          }>
+                                          <View
+                                            style={
+                                              subItemC?.content !== ''
+                                                ? styles.comment_content
+                                                : {backgroundColor: '#fff'}
+                                            }>
+                                            <Text
+                                              style={[
+                                                styles.name_comment,
+                                                {fontSize: 14},
+                                              ]}>
+                                              {subItemC.idUsers?.name}
+                                            </Text>
+                                            <View
+                                              style={{flexDirection: 'row'}}>
+                                              <TouchableOpacity>
+                                                <Text
+                                                  style={{
+                                                    color: '#1b9e9a',
+                                                    paddingRight: 5,
+                                                  }}>
+                                                  {subItemC.parentUserName}
+                                                </Text>
+                                              </TouchableOpacity>
+                                              {subItemC?.content && (
+                                                <View
+                                                  style={{
+                                                    flexDirection: 'row',
+                                                  }}>
+                                                  <Text
+                                                    style={{
+                                                      color: '#000',
+                                                      width: '60%',
+                                                      fontSize: 14,
+                                                    }}>
+                                                    {subItemC.content}
+                                                  </Text>
+                                                </View>
+                                              )}
+                                            </View>
+                                          </View>
+
+                                          {subItemC?.image &&
+                                            subItemC?.image.length > 0 && (
+                                              <View
+                                                style={
+                                                  styles.container_image_camera
+                                                }>
+                                                {subItemC.image.map(
+                                                  (image, imageIndex) => {
+                                                    if (isImage(image)) {
+                                                      return (
+                                                        <TouchableOpacity
+                                                          key={imageIndex}
+                                                          onPress={() =>
+                                                            handleShowMoreImage(
+                                                              image,
+                                                            )
+                                                          }>
+                                                          <Image
+                                                            source={{
+                                                              uri: image,
+                                                            }}
+                                                            style={
+                                                              styles.content_image
+                                                            }
+                                                          />
+                                                        </TouchableOpacity>
+                                                      );
+                                                    } else if (isVideo(image)) {
+                                                      return (
+                                                        <TouchableOpacity
+                                                          key={imageIndex}
+                                                          onPress={() =>
+                                                            handleShowMoreImage(
+                                                              image,
+                                                            )
+                                                          }>
+                                                          <VideoPlayer
+                                                            video={{uri: image}}
+                                                            videoWidth={1600}
+                                                            videoHeight={900}
+                                                            thumbnail={require('../../../../../assets/play_96px.png')}
+                                                            style={
+                                                              styles.content_video
+                                                            }
+                                                          />
+                                                        </TouchableOpacity>
+                                                      );
+                                                    } else {
+                                                      return null;
+                                                    }
+                                                  },
+                                                )}
+                                              </View>
+                                            )}
+                                          <View
+                                            style={styles.comment_time_like}>
+                                            <Text style={styles.time_comment}>
+                                              {formatTime(subItemC.createAt)}
+                                            </Text>
+                                            <TouchableOpacity
+                                              style={styles.like_like_comment}>
+                                              <Text
+                                                style={
+                                                  styles.like_like_comment
+                                                }>
+                                                Thích
+                                              </Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                              style={styles.like_like_comment}
+                                              onPress={() => {
+                                                setParentId(subItemC._id);
+                                                setParentUserName(
+                                                  subItemC.idUsers.name,
+                                                );
+                                              }}>
+                                              <Text
+                                                style={
+                                                  styles.like_like_comment
+                                                }>
+                                                Phản hồi
+                                              </Text>
+                                            </TouchableOpacity>
+                                          </View>
+                                        </View>
+                                      </View>
+                                    </View>
+                                  ))}
                               </View>
                             </View>
                           ))}
@@ -1063,32 +1388,73 @@ const CommentsScreen = ({navigation, route}) => {
                       key={index}
                       onPress={() => handleShowMoreImageList(item.uri)}>
                       {isImage(item.uri) ? (
-                        <Image
-                          source={{uri: item.uri}}
+                        <View
                           style={{
-                            width:
-                              Dimensions.get('window').width / numColumns - 10,
-                            height:
-                              Dimensions.get('window').width / numColumns - 10,
-                            margin: 5,
-                            borderRadius: 5,
-                          }}
-                        />
+                            alignItems: 'center',
+                          }}>
+                          {/* cho clone ảnh và cho item.uri = null */}
+                          {console.log('>>> item', item)}
+                          <TouchableOpacity
+                            style={styles.container_image_camera}
+                            onPress={() => {
+                              removeImage(item);
+                              setImagePath(null);
+                            }}>
+                            <Octicons
+                              name="x-circle"
+                              size={16}
+                              color="#666666"
+                            />
+                          </TouchableOpacity>
+                          <Image
+                            source={{uri: item.uri}}
+                            style={{
+                              width:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              height:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              margin: 5,
+                              borderRadius: 5,
+                            }}
+                          />
+                          {console.log('>>> item.uri', item.uri)}
+                        </View>
                       ) : isVideo(item.uri) ? (
-                        <VideoPlayer
-                          video={{uri: item.uri}}
-                          videoWidth={1600}
-                          videoHeight={900}
-                          thumbnail={require('../../../../../assets/play_96px.png')}
+                        <View
                           style={{
-                            width:
-                              Dimensions.get('window').width / numColumns - 10,
-                            height:
-                              Dimensions.get('window').width / numColumns - 10,
-                            margin: 5,
-                            borderRadius: 5,
-                          }}
-                        />
+                            alignItems: 'center',
+                          }}>
+                          <TouchableOpacity
+                            style={styles.container_image_camera}
+                            onPress={() => {
+                              removeImage(item);
+                              setImagePath(null);
+                            }}>
+                            <Octicons
+                              name="x-circle"
+                              size={16}
+                              color="#666666"
+                            />
+                          </TouchableOpacity>
+                          <VideoPlayer
+                            video={{uri: item.uri}}
+                            videoWidth={1600}
+                            videoHeight={900}
+                            thumbnail={require('../../../../../assets/play_96px.png')}
+                            style={{
+                              width:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              height:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              margin: 5,
+                              borderRadius: 5,
+                            }}
+                          />
+                        </View>
                       ) : null}
                     </TouchableOpacity>
                   )}
@@ -1105,25 +1471,72 @@ const CommentsScreen = ({navigation, route}) => {
             </TouchableOpacity>
             <View style={styles.input_comment}>
               {parentUserName !== null ? (
-                <Text style={styles.parentUserName}>{parentUserName}</Text>
+                <>
+                  <TouchableOpacity onPress={() => setParentUserName(null)}>
+                    <Octicons name="x-circle" size={16} color="#666666" />
+                  </TouchableOpacity>
+                  <Text style={styles.parentUserName}>{parentUserName}</Text>
+                </>
               ) : null}
               {parentUserName !== null ? (
-                <TextInput
-                  ref={commentInputRef}
-                  style={styles.input_comment_text}
-                  placeholder={`Bình luận dưới tên ${user.user.name}`}
-                  onChangeText={text => setCommentContent(text)}
-                />
+                <>
+                  <TextInput
+                    ref={commentInputRef}
+                    style={styles.input_comment_text}
+                    placeholder={`Bình luận dưới tên ${user.user.name}`}
+                    onChangeText={handleTextChange}
+                    value={commentContent}
+                  />
+                  {showUserList && (
+                    <View style={styles.userList}>
+                      {searchNameInList.map(user => (
+                        <TouchableOpacity
+                          key={user._id}
+                          onPress={() => handleUserSelect(user.name)}
+                          style={styles.listUser_container}>
+                          <Image
+                            style={styles.listUser_image}
+                            source={{uri: user.avatar}}
+                          />
+                          <Text style={styles.listUser_text}>{user.name}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+                </>
               ) : (
-                <TextInput
-                  ref={commentInputRef}
-                  style={styles.input_comment_textAll}
-                  placeholder={`Bình luận dưới tên ${user.user.name}`}
-                  onChangeText={text => setCommentContent(text)}
-                />
+                <>
+                  <TextInput
+                    ref={commentInputRef}
+                    style={styles.input_comment_textAll}
+                    placeholder={`Bình luận dưới tên ${user.user.name}`}
+                    onChangeText={handleTextChange}
+                    value={commentContent}
+                  />
+                  {showUserList && (
+                    <View style={styles.userList}>
+                      {searchNameInList.map(user => (
+                        <TouchableOpacity
+                          key={user._id}
+                          onPress={() => handleUserSelect(user.name)}
+                          style={styles.listUser_container}>
+                          <Image
+                            style={styles.listUser_image}
+                            source={{uri: user.avatar}}
+                          />
+                          <Text style={styles.listUser_text}>{user.name}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+                </>
               )}
             </View>
-            <TouchableOpacity onPress={submitComment}>
+            <TouchableOpacity
+              onPress={() => {
+                submitCommentSend();
+                setCommentContent('');
+              }}>
               <Image
                 style={styles.icon_comment_send}
                 source={require('../../../../../assets/send_comment_50px.png')}

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 
 // css
@@ -7,7 +7,7 @@ import {styles} from '../style/reaction';
 import {likeByPost} from '../../../services/home/homeService';
 import {UserContext} from '../../../contexts/user/userContext';
 
-const CustomReaction = ({reactions, clone, posts}) => {
+const CustomReaction = ({reactions, clone, posts, reloadPosts}) => {
   const [selectedReaction, setSelectedReaction] = useState(null);
   const [reaction, setReaction] = useState('');
   const [post, setPost] = useState(posts);
@@ -16,6 +16,7 @@ const CustomReaction = ({reactions, clone, posts}) => {
   const handlePress = reaction => {
     setSelectedReaction(reaction);
     setReaction(reaction.name);
+    // console.log('??>>>>>>>>>>>>>>>>>>. đã chọn :', reaction);
     clone();
   };
 
@@ -36,7 +37,7 @@ const CustomReaction = ({reactions, clone, posts}) => {
           updatedPosts = posts.map(post => {
             if (post._id === idPosts) {
               const updatedReaction = post.reaction.map(reactionItem => {
-                if (reactionItem.idUsers[0]._id.join() === user.id) {
+                if (reactionItem.idUsers._id.join() === user.user._id) {
                   return {...reactionItem, type: reactionType};
                 }
                 return reactionItem;
@@ -52,6 +53,7 @@ const CustomReaction = ({reactions, clone, posts}) => {
           updatedPosts = [posts];
         }
         setPost(updatedPosts);
+        reloadPosts();
       } else {
         console.error('Lỗi khi thay đổi trạng thái like:', response.message);
       }

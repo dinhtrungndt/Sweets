@@ -76,6 +76,20 @@ export const getReaction = async idPosts => {
   }
 };
 
+// Lấy cảm xúc theo idPosts và idComments
+export const getReactionComments = async idComments => {
+  try {
+    const response = await AxiosInstance().get(
+      `/reaction/get-idComments/${idComments}`,
+    );
+    // console.log('get post >>>>>>>>>>>>>>> Service getReaction 8 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi get: 4777777 getReaction', error);
+    throw error;
+  }
+};
+
 // Lấy danh sách comments theo idPosts
 export const getComments = async idPosts => {
   try {
@@ -95,6 +109,20 @@ export const likeByPost = async (idUsers, idPosts, type) => {
   try {
     const response = await AxiosInstance().post(
       `/reaction/add/${idUsers}/${idPosts}`,
+      {type},
+    );
+    return response;
+  } catch (error) {
+    console.error('Lỗi khi gửi yêu cầu API:', error);
+    throw error;
+  }
+};
+
+// Like comments theo idUsers và idComments và type
+export const likeByComments = async (idUsers, idComments, type) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/reaction/add-comments/${idUsers}/${idComments}`,
       {type},
     );
     return response;
@@ -134,6 +162,20 @@ export const uploadMedia = async (idPosts, cbMediaType) => {
   }
 };
 
+// Xóa ảnh trên cloudinary
+export const deleteMediaCloudinary = async () => {
+  try {
+    const response = await AxiosInstance().delete(
+      `/media/delete-media-cloudinary`,
+    );
+    console.log('upload post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi upload mediaaa : 11 s', error);
+    throw error;
+  }
+};
+
 // Upload ảnh status
 export const uploadImageStatus = async form => {
   const response = await AxiosInstance('multipart/form-data').post(
@@ -159,13 +201,19 @@ export const likePost = async (userId, postId) => {
 };
 
 // Comment theo idUsers và idPosts
-export const submitComments = async (userId, postId, content, image) => {
+export const submitComments = async (
+  userId,
+  postId,
+  content,
+  image,
+  parentUserName,
+) => {
   try {
     const response = await AxiosInstance().post(
       `/comments/add/${userId}/${postId}`,
-      {content, image},
+      {content, image, parentUserName},
     );
-    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    // console.log('submitComments post >>>>>>>>>>>>>>> 20 ', response.data);
     return response.data;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi comments bài viết: 11 s', error);
@@ -244,6 +292,18 @@ export const ArrangeCommentFriend = async (idUsers, idPosts) => {
     );
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Lấy danh sách user
+export const getListUser = async () => {
+  try {
+    const response = await AxiosInstance().get(`/users/get-users`);
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response.users;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
     throw error;
