@@ -7,7 +7,7 @@ import {styles} from '../style/reaction';
 import {likeByPost} from '../../../services/home/homeService';
 import {UserContext} from '../../../contexts/user/userContext';
 
-const Customreaction_Comment = ({reactions, clone, posts}) => {
+const Customreaction_Comment = ({reactions, clone, posts, reloadPosts}) => {
   const [selectedReaction, setSelectedReaction] = useState(null);
   const [reaction, setReaction] = useState('');
   const [post, setPost] = useState(posts);
@@ -52,6 +52,7 @@ const Customreaction_Comment = ({reactions, clone, posts}) => {
           updatedPosts = [posts];
         }
         setPost(updatedPosts);
+        reloadPosts();
       } else {
         console.error('Lỗi khi thay đổi trạng thái like:', response.message);
       }
