@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
+import { View, Text, TouchableOpacity, Image, FlatList,Alert} from 'react-native';
 import styles from '../styles/LoiMoiDaGuiStyles';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +10,8 @@ const LoiMoiDaGui = (props) => {
   const [friendInvitations, setFriendInvitations] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
+  const ListDaGui = userInfo.map(obj => obj._id);;
+  console.log('LítDagui',ListDaGui)
   
   useEffect(() => {
     fetchFriendInvitations();
@@ -24,11 +26,13 @@ const LoiMoiDaGui = (props) => {
         setFriendInvitations(response.friendRequestsSent);
         const usersPromises = response.friendRequestsSent.map(async (invitation) => {
           const userResponse = await AxiosInstance().get(`/users/get-user/${invitation.idFriendReceiver}`);
-          console.log('userResponse.user',userResponse.user)
+          //console.log('userResponse.user',userResponse.user)
           return userResponse.user;
         });
         const users = await Promise.all(usersPromises);
         setUserInfo(users);
+        await AsyncStorage.setItem('ListDaGui', JSON.stringify(ListDaGui));
+        console.log('Mảng đã được lưu vào AsyncStorage');
       } else {
         console.log('No friend invitations found.');
       }
@@ -96,3 +100,4 @@ const LoiMoiDaGui = (props) => {
 };
 
 export default LoiMoiDaGui;
+
