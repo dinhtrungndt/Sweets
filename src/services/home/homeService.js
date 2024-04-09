@@ -309,3 +309,31 @@ export const getListUser = async () => {
     throw error;
   }
 };
+
+// lấy lịch sử tìm kiếm
+export const getHistorySearch = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/users/search-history/${idUsers}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response.searchHistory);
+    return response.searchHistory;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// thêm lịch sử tìm kiếm
+export const addHistorySearch = async (id, name) => {
+  try {
+    const response = await AxiosInstance().post(`/users/search-user/${id}`, {
+      name,
+    });
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response.users);
+    return response.users;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};

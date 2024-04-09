@@ -27,6 +27,7 @@ import {
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import LiveStreamHost from '../../../components/main/home/liveStream/LiveStreamHost';
 import SearchPosts from '../../../components/main/home/posts/search';
+import AllTopTabSearch from '../../../components/main/home/posts/search/allTop';
 
 const Stack = createNativeStackNavigator();
 
@@ -78,6 +79,7 @@ export function HomeStackScreen() {
       />
 
       <Stack.Screen name="SearchPosts" component={SearchPosts} />
+      <Stack.Screen name="AllTopTabSearch" component={AllTopTabSearch} />
     </Stack.Navigator>
   );
 }

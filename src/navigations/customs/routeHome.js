@@ -25,6 +25,8 @@ export const GetRouteNameHome = route => {
     return 'none';
   } else if (routeName?.includes('SearchPosts')) {
     return 'none';
+  } else if (routeName?.includes('AllTopTabSearch')) {
+    return 'none';
   }
   return 'flex';
 };
