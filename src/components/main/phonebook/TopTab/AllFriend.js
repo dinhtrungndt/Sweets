@@ -6,7 +6,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  Modal
+  Modal,RefreshControl
 } from 'react-native';
 import AxiosInstance from '../../../../helper/Axiosinstance'; // Thay đường dẫn tới file AxiosInstance.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,7 +19,8 @@ const AllFriend = () => {
   const [friendInvitations, setFriendInvitations] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
   const [refresh, setRefresh] = useState(false); // Thêm biến state refresh
-
+  const [sortByName, setSortByName] = useState(false); // Thêm biến state để sắp xếp theo tên
+  const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     const fetchFriendsDetails = async () => {
       try {
@@ -104,7 +105,25 @@ const AllFriend = () => {
       console.error('Error accepting friend request:', error);
     }
   };
+
+  const handleSortByName = () => {
+    setSortByName(!sortByName); // Đảo ngược trạng thái sắp xếp theo tên
+    if (!sortByName) {
+      // Sắp xếp tăng dần theo tên nếu sortByName là false
+      setFilteredFriends([...filteredFriends].sort((a, b) => a.name.localeCompare(b.name)));
+    } else {
+      // Sắp xếp giảm dần theo tên nếu sortByName là true
+      setFilteredFriends([...filteredFriends].sort((a, b) => b.name.localeCompare(a.name)));
+    }
+  };
+
   
+  // Hàm này được gọi khi người dùng kéo xuống để làm mới
+  const onRefresh = async () => {
+    setRefreshing(true); // Đặt trạng thái là đang làm mới
+    await friendsDetails(); // Tải dữ liệu mới
+    setRefreshing(false); // Kết thúc làm mới
+  };
 
   return (
     <View style={styles.container}>
@@ -124,13 +143,14 @@ const AllFriend = () => {
           placeholderTextColor="#22b6c0"
           onChangeText={handleSearch} 
           value={searchValue}>
-
-          </TextInput>
+        </TextInput>
       </View>
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={styles.title}> Có {friendsDetails.length} người bạn</Text>
-        <Text style={styles.title}>Sắp xếp</Text>
+        <TouchableOpacity onPress={handleSortByName}>
+          <Text style={styles.title}>Sắp xếp</Text>
+        </TouchableOpacity>
       </View>
      
         <FlatList
@@ -148,9 +168,10 @@ const AllFriend = () => {
           )}
           keyExtractor={(item, index) => index.toString()} 
           extraData={refresh}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> // Thêm RefreshControl để xử lý làm mới
+          }
         />
-       
-     
     </View>
   );
 };
