@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { View, Alert, StyleSheet, Button, Text } from 'react-native';
 import { Camera } from 'react-native-camera-kit';
-
-const ScanQR = () => {
+import { UserContext } from '../../../../contexts/user/userContext';
+const ScanQR = (props) => {
+  const { navigation } = props;
   const [scanning, setScanning] = useState(true); // Trạng thái của việc quét
-
+  const { updateUserInfo } = useContext(UserContext);
   const handleBarcodeScan = (event) => {
-    Alert.alert('QR code found', event.nativeEvent.codeStringValue);
-    // Lưu thông tin mã QR vào cơ sở dữ liệu hoặc thực hiện các thao tác khác tùy thuộc vào yêu cầu của bạn
-
+    const scannedData = event.nativeEvent.codeStringValue; // Dữ liệu đã quét được
+    Alert.alert('QR code found', scannedData.name);
+    console.log('scannedData',scannedData)
+    // Chuyển sang màn hình OtherUserA và truyền dữ liệu đã quét được
+    navigation.navigate('OtherUserA', { userData: scannedData });
     // Dừng quét
     setScanning(false);
   };
+  
 
   const handleReturnToScan = () => {
     // Quay lại quét khi người dùng bấm nút quét lại

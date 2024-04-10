@@ -40,6 +40,21 @@ const styles = StyleSheet.create({
     width: 23,
     height: 23,
   },
+  buttonImg2: {
+    alignSelf: 'center',
+    marginVertical: 10,
+    width: 35,
+    height: 35,
+    marginRight:10
+  },
+  
+  buttonImg3: {
+    alignSelf: 'center',
+    marginVertical: 10,
+    width: 28,
+    height: 28,
+    marginRight:10
+  },
   ViewFlatlist: {
     marginVertical: 20,
 
@@ -78,9 +93,12 @@ const styles = StyleSheet.create({
   },
   wrapBackground:{
     width:'100',
-    height:100,
+    height:70,
     backgroundColor:'#22b6c0',
     zIndex:1,
+    flexDirection:'row',
+    justifyContent:'space-between'
+
     
   },
   
@@ -91,6 +109,20 @@ const styles = StyleSheet.create({
     marginVertical:8,
     marginHorizontal:5,
  padding:8
+  },
+  ToQR:{
+    backgroundColor:'#ffffff',
+    height:45,
+    flexDirection:'row',
+    padding:10,
+  
+  },
+  txtToQR:{
+    fontSize:17,
+    fontWeight:'bold',
+    marginHorizontal:20,
+    
+  color:'#22b6c0'
   }
 });
 
