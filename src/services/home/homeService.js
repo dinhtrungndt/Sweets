@@ -337,3 +337,17 @@ export const addHistorySearch = async (id, name) => {
     throw error;
   }
 };
+
+// Lấy bài viết chúc mừng sinh nhật
+export const getPostsBirthday = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/posts/get-birthday-posts/${idUsers}`,
+    );
+    // console.log('birthdayPosts post >>>>>>>>>>>>>>> 20 ', response.birthdayPosts);
+    return response.birthdayPosts;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};

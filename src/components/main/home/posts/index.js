@@ -29,6 +29,7 @@ import {
   getComments,
   getMedia,
   getPosts,
+  getPostsBirthday,
   getReaction,
   getShare,
   likeByPost,
@@ -51,6 +52,18 @@ const PostsScreen = ({posts, navigation}) => {
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
   const [post, setPost] = useState(posts);
   const [showLengthMedia, setShowLengthMedia] = useState(true);
+  const [birthday, setBirthDay] = useState(null);
+  const OBirthday = birthday?.map(b => b.taggedFriends);
+
+  const onGetPostsBirthday = async () => {
+    try {
+      const res = await getPostsBirthday(user.user._id);
+      setBirthDay(res);
+      // console.log('getPostsBirthday:', res);
+    } catch (error) {
+      console.error('Lỗi lấy danh sahcs getPostsBirthday:', error);
+    }
+  };
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -330,6 +343,10 @@ const PostsScreen = ({posts, navigation}) => {
   }, []);
 
   useEffect(() => {
+    onGetPostsBirthday();
+  }, []);
+
+  useEffect(() => {
     setPost(posts);
   }, [posts]);
 
@@ -381,14 +398,37 @@ const PostsScreen = ({posts, navigation}) => {
                       <Text style={styles.name}>{item.idUsers?.name}</Text>
                     </TouchableOpacity>
                   ) : (
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate('Profile', {
-                          account: item,
-                        })
-                      }>
-                      <Text style={styles.name}>{item.idUsers?.name}</Text>
-                    </TouchableOpacity>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('Profile', {
+                            account: item,
+                          })
+                        }>
+                        <Text style={styles.name}>{item.idUsers?.name}</Text>
+                      </TouchableOpacity>
+                      {OBirthday && birthday !== null ? (
+                        <>
+                          {OBirthday.map((b, index) => (
+                            <View
+                              key={index}
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                              }}>
+                              <Text style={{paddingLeft: 2}}> cùng với </Text>
+                              <TouchableOpacity>
+                                <Text style={[styles.name, {marginLeft: 2}]}>
+                                  {b.name}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          ))}
+                        </>
+                      ) : (
+                        <View></View>
+                      )}
+                    </View>
                   )}
                   <View style={styles.container_object}>
                     <TouchableOpacity
