@@ -128,6 +128,14 @@ const OtherFriend = (props) => {
       console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
     }
   };
+  const truncateString = (str, maxLength) => {
+    if (str.length <= maxLength) {
+      return str;
+    } else {
+      return str.slice(0, maxLength) + '...';
+    }
+  };
+  
 
   // Hàm này được gọi khi người dùng kéo xuống để làm mới
   const onRefresh = async () => {
@@ -157,7 +165,7 @@ const OtherFriend = (props) => {
                     />
                   </TouchableOpacity>
                   <View style={{ marginVertical: 10 }}>
-                    <Text style={styles.friendItemText}>{item.name}</Text>
+                  <Text style={styles.friendItemText}>{truncateString(item.name, 15)}</Text>
                     <Text style={styles.friendItemText3}>Bạn chung: {item.matchingFriends ? item.matchingFriends.length : 0}</Text>
 
                     <View style={{ flexDirection: 'row', marginVertical: 3 }}>
@@ -165,13 +173,16 @@ const OtherFriend = (props) => {
                         item.matchingFriendsInfo.slice(0, 1).map((friendInfo, index) => (
                           <View key={index} style={{ flexDirection: 'row' }}>
                             <Image source={{ uri: friendInfo.avatar }} style={{ width: 25, height: 25, borderRadius: 12 }} />
-                            <Text style={{ color: 'black', fontSize: 13 }}>{friendInfo.name}</Text>
+                           <View>
+                           <Text style={{ color: 'black', fontSize: 13 }}>{friendInfo.name}</Text>
+                           {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 1 && (
+                        <Text style={{ color: 'black', fontSize: 13 }}> và {item.matchingFriendsInfo.length - 1} bạn khác...</Text>
+                      )}
+                           </View>
                           </View>
                         ))
                       )}
-                      {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 1 && (
-                        <Text style={{ color: 'black', fontSize: 13 }}> và {item.matchingFriendsInfo.length - 1} bạn khác...</Text>
-                      )}
+                     
                     </View>
 
                   </View>
