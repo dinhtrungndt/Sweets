@@ -11,16 +11,13 @@ const LoiMoiKetBan = (props) => {
   const [userInfo, setUserInfo] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const ListDanhan = userInfo.map(obj => obj._id);
-
-console.log('ListDanhan', ListDanhan);
  
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
   useEffect(() => {
     fetchFriendInvitations();
-  }, [friendInvitations, userInfo]);
+  }, []);
 
   const fetchFriendInvitations = async () => {
     try {
@@ -35,6 +32,9 @@ console.log('ListDanhan', ListDanhan);
         const users = await Promise.all(usersPromises);
         setUserInfo(users);
       
+  const ListDanhan = users.map(obj => obj._id);
+
+  console.log('ListDanhan', ListDanhan);
         await AsyncStorage.setItem('ListDaNhan', JSON.stringify(ListDanhan));
         console.log('Mảng đã được lưu vào AsyncStorage22');
       } else {
