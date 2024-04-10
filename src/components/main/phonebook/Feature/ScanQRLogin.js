@@ -17,7 +17,7 @@ const ScanQRLogin = () => {
   };  
   useEffect(() => {
     // baseURL: 'https://sweets-nodejs.onrender.com/',
-    socket.current = io('http://192.168.1.55:3001/');
+    socket.current = io('https://sweets-nodejs.onrender.com/');
   }, []);
 
 
