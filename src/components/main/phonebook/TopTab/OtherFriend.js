@@ -18,6 +18,7 @@ const OtherFriend = (props) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
       const storedData = await AsyncStorage.getItem('friendData');
+      console.log('Mảng đã lấy từ AsyncStorageFrinedđ:', storedData);
       const ListDaGui = await AsyncStorage.getItem('ListDaGui');
       const parsedListDaGui = JSON.parse(ListDaGui);
       console.log('Mảng đã lấy từ AsyncStorage:', parsedListDaGui);

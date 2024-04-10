@@ -10,12 +10,11 @@ const LoiMoiDaGui = (props) => {
   const [friendInvitations, setFriendInvitations] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
-  const ListDaGui = userInfo.map(obj => obj._id);;
-  console.log('LítDagui',ListDaGui)
+ 
   
   useEffect(() => {
     fetchFriendInvitations();
-  }, [friendInvitations, userInfo]);
+  }, []);
 
   const fetchFriendInvitations = async () => {
     try {
@@ -31,6 +30,8 @@ const LoiMoiDaGui = (props) => {
         });
         const users = await Promise.all(usersPromises);
         setUserInfo(users);
+        const ListDaGui = users.map(obj => obj._id);;
+        console.log('LítDagui',ListDaGui)
         await AsyncStorage.setItem('ListDaGui', JSON.stringify(ListDaGui));
         console.log('Mảng đã được lưu vào AsyncStorage');
       } else {
