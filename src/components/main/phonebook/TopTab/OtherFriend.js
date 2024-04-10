@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, FlatList, TouchableOpacity, Image,RefreshControl } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, Image, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import styles from '../styles/OtherFriendStyles';
@@ -9,7 +9,7 @@ const OtherFriend = (props) => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
-   
+
 
     loadFilteredUsers();
   }, []);
@@ -104,13 +104,13 @@ const OtherFriend = (props) => {
   const handleFriendAction = async (selectedUserId) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-  
+
       const response = await AxiosInstance().post('/friend/send-friend-request', {
         idFriendSender: userId,
         idFriendReceiver: selectedUserId,
         time: 10
       });
-  
+
       if (response && response.success) {
         // Cập nhật lại thuộc tính checkGui của user sau khi gửi yêu cầu kết bạn thành công
         const updatedUsers = filteredUsers.map(user => {
@@ -127,7 +127,7 @@ const OtherFriend = (props) => {
       console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
     }
   };
-  
+
   // Hàm này được gọi khi người dùng kéo xuống để làm mới
   const onRefresh = async () => {
     setRefreshing(true); // Đặt trạng thái là đang làm mới
@@ -175,15 +175,15 @@ const OtherFriend = (props) => {
 
                   </View>
                 </View>
-                <TouchableOpacity 
-  style={[styles.imgOption, item.checkGui ? styles.touchableDisabled : null]}
-  onPress={() => handleFriendAction(item._id)}
-  disabled={item.checkGui}
->
-  <Text style={[styles.friendItemText2, item.checkGui ? styles.textDisabled : null]}>
-    {item.checkGui ? 'Thu hồi' : item.checkNhan ? 'Đồng ý' : 'Kết bạn'}
-  </Text>
-</TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.imgOption, item.checkGui ? styles.touchableDisabled : null]}
+                  onPress={() => handleFriendAction(item._id)}
+                  disabled={item.checkGui}
+                >
+                  <Text style={[styles.friendItemText2, item.checkGui ? styles.textDisabled : null]}>
+                    {item.checkGui ? 'Thu hồi' : item.checkNhan ? 'Đồng ý' : 'Kết bạn'}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           )}
