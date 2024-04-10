@@ -105,6 +105,7 @@ export const styles = StyleSheet.create({
     opacity: 0.8,
     margin: 16,
     marginTop: 10,
+    paddingLeft: 0,
     marginBottom: 0,
   },
   feeling: {
@@ -144,7 +145,6 @@ export const styles = StyleSheet.create({
   },
   text_peopleLike: {
     fontSize: 16,
-    paddingLeft: 5,
     color: '#000',
     fontWeight: '600',
   },
@@ -176,6 +176,14 @@ export const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#ededed',
     marginTop: 8,
+  },
+  cssLengthMeYou: {
+    position: 'absolute',
+    left: 46,
+  },
+  cssLengthMeYou2: {
+    position: 'absolute',
+    left: 25,
   },
   container_media: {
     flexDirection: 'row',
@@ -429,6 +437,31 @@ export const styles = StyleSheet.create({
     padding: 16,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalViewFeelingClose: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    opacity: 1,
+  },
+  modalContainerFeeling: {
+    width: '100%',
+    height: '100%',
+  },
+  modalViewFeeling: {
+    width: '100%',
+    height: '60%',
+    backgroundColor: '#fff',
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 0,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    position: 'absolute',
+    zIndex: 1,
   },
   button_select_camera: {
     width: '80%',

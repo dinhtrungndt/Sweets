@@ -85,6 +85,7 @@ const CommentsScreen = ({navigation, route}) => {
   const [image, setImage] = useState([]);
   const [imagePath, setImagePath] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleFeeling, setModalVisibleFeeling] = useState(false);
   const [commentContent, setCommentContent] = useState('');
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -818,7 +819,7 @@ const CommentsScreen = ({navigation, route}) => {
                 <View style={styles.container_feeling_commnet_share}>
                   {/* feeling */}
                   <TouchableOpacity
-                    onPress={handleOnpenBottomSheet}
+                    onPress={() => setModalVisibleFeeling(true)}
                     style={styles.container_feeling}>
                     {getUniqueReactions(item.reaction).map(
                       (reaction, index) => (
@@ -847,56 +848,28 @@ const CommentsScreen = ({navigation, route}) => {
                         </View>
                       ),
                     )}
-                    {/* {console.log(
-                      '>>>. reaction: ' + JSON.stringify(item.reaction),
-                    )}
-                    {console.log(
-                      '>>>. reaction id usserr: ' +
-                        item.reaction.map(item => item.idUsers).join(),
-                    )} */}
-                    {item.reaction.length > 0 && (
-                      <>
+                    {item.reaction.length > 1 ? (
+                      <View style={styles.cssLengthMeYou}>
                         {item.reaction.map(item => item.idUsers._id).join() ===
                         user.user._id ? (
                           <Text style={styles.text_peopleLike}>Bạn</Text>
-                        ) : item.reaction
-                            .map(item => item.idUsers._id)
-                            .join() === user.user._id ||
-                          item.reaction.length > 2 ? (
-                          <Text style={styles.text_peopleLike}>
-                            Bạn,
-                            {item.reaction
-                              .filter(
-                                reaction =>
-                                  reaction.idUsers._id !== user.user._id &&
-                                  item.reaction.slice(0, 1),
-                              )
-                              .map(reaction => reaction.idUsers.name)
-                              .join(', ')}
-                            và những người khác
-                          </Text>
-                        ) : item.reaction
-                            .map(item => item.idUsers._id)
-                            .join() !== user.user._id ? (
-                          <Text style={styles.text_peopleLike}>
-                            {item.reaction
-                              .map(item => item.idUsers.name)
-                              .join(', ')}
-                          </Text>
-                        ) : item.reaction
-                            .map(item => item.idUsers._id)
-                            .join() !== user.user._id ||
-                          item.reaction.length > 2 ? (
-                          <Text style={styles.text_peopleLike}>
-                            {item.reaction
-                              .map(item => item.idUsers.name)
-                              .join()}
-                            và những người khác
-                          </Text>
                         ) : (
-                          <Text>No</Text>
+                          <Text style={styles.text_peopleLike}>
+                            {item.reaction.length} người khác
+                          </Text>
                         )}
-                      </>
+                      </View>
+                    ) : (
+                      <View style={styles.cssLengthMeYou2}>
+                        {item.reaction.map(item => item.idUsers._id).join() ===
+                        user.user._id ? (
+                          <Text style={styles.text_peopleLike}>Bạn</Text>
+                        ) : (
+                          <Text style={styles.text_peopleLike}>
+                            {item.reaction.length} người khác
+                          </Text>
+                        )}
+                      </View>
                     )}
                   </TouchableOpacity>
                   {/* line */}
@@ -1584,16 +1557,6 @@ const CommentsScreen = ({navigation, route}) => {
         </>
         {/* bottom sheet */}
         <BottomSheet
-          ref={bottomSheetRef}
-          index={initialSnapIndex}
-          snapPoints={snapPoints}
-          enablePanDownToClose={true}>
-          <FeelingComponent
-            reactions={postId.reaction}
-            clone={handleCloneBottomSheet}
-          />
-        </BottomSheet>
-        <BottomSheet
           ref={bottomSheetRefFit}
           index={initialSnapIndex}
           snapPoints={snapPointsFit}
@@ -1604,6 +1567,25 @@ const CommentsScreen = ({navigation, route}) => {
             reloadComments={reloadComments}
           />
         </BottomSheet>
+
+        {/* modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisibleFeeling}
+          onRequestClose={() => {}}>
+          <View style={styles.modalContainerFeeling}>
+            <TouchableOpacity
+              style={styles.modalViewFeelingClose}
+              onPress={() => setModalVisibleFeeling(false)}></TouchableOpacity>
+            <View style={styles.modalViewFeeling}>
+              <FeelingComponent
+                reactions={postId.reaction}
+                clone={handleCloneBottomSheet}
+              />
+            </View>
+          </View>
+        </Modal>
         <Modal
           animationType="fade"
           transparent={true}

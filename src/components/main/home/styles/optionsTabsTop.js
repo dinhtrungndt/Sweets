@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import {Text} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import React from 'react';
 
 export const optionsTabsTop = ({route}) => {
@@ -20,7 +20,7 @@ export const optionsTabsTop = ({route}) => {
     tabBarLabel: ({focused}) => {
       const color = focused ? emotionColors[route.name] : '#000';
       const label = getTabLabel(route.name, reactionTypes);
-      return <Text style={{color}}>{label}</Text>;
+      return <Text style={[styles.tabBarLabel, {color}]}>{label}</Text>;
     },
     tabBarIndicatorStyle: {
       backgroundColor: emotionColors[route.name],
@@ -70,3 +70,11 @@ const getTabLabel = (routeName, reactionTypes) => {
 const countReactions = (type, reactionTypes) => {
   return reactionTypes.filter(reactionType => reactionType === type).length;
 };
+
+const styles = StyleSheet.create({
+  tabBarLabel: {
+    width: '100%',
+    flex: 1,
+    textAlign: 'center',
+  },
+});

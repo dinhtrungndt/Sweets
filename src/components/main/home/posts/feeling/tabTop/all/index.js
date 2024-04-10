@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {UserContext} from '../../../../../../../contexts/user/userContext';
 
 const AllFeeling = ({route}) => {
@@ -35,10 +35,23 @@ const AllFeeling = ({route}) => {
     }
   };
 
+  useEffect(() => {
+    const reactionsArray = reactions.reactions;
+    const index = reactionsArray.findIndex(
+      item => item.idUsers._id === user.user._id,
+    );
+    if (index > 0) {
+      const item = reactionsArray[index];
+      reactionsArray.splice(index, 1);
+      reactionsArray.unshift(item);
+    }
+  }, []);
+
   return (
     <View style={styles.T}>
       <FlatList
         data={reactions.reactions}
+        showsVerticalScrollIndicator={false}
         renderItem={({item}) => (
           <View style={styles.container_reaction}>
             <Text style={styles.typeIcon}>{getIcon(item.type)}</Text>
