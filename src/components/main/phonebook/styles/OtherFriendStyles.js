@@ -59,6 +59,13 @@ const styles = StyleSheet.create({
     backgroundColor:'#22b6c0',
     borderRadius:5
   },
+  touchableDisabled: {
+    backgroundColor: 'lightgray', // Màu nền khi vô hiệu hóa
+  },
+  
+  textDisabled: {
+    color: 'gray', // Màu chữ khi vô hiệu hóa
+  },
 })
 
 export default styles

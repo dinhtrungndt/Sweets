@@ -240,7 +240,7 @@ export function AddsScreen({route, navigation}) {
           _id: _idPosts === null ? idPostsUp : _idPosts,
           content: inputText || '',
           createAt: new Date().toISOString(),
-          idObject: idObjectValue,
+          idObject: route.params?.selectedId?._id || idObjectValue,
           idTypePosts: '65b20030261511b0721a9913',
         };
 
@@ -259,7 +259,7 @@ export function AddsScreen({route, navigation}) {
         console.error('Lỗi catch --->>>>> error :', error);
       }
     },
-    [user, inputText],
+    [user, inputText, route.params?.selectedId],
   );
 
   const getCurrentLocation = () => {

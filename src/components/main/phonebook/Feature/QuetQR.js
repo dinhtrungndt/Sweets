@@ -7,10 +7,11 @@ import AxiosInstance from '../../../../helper/Axiosinstance';
 import RNFS from 'react-native-fs';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import styles from '../styles/MaqrStyles';
+
 const QuetQR = (props) => {
     const { navigation } = props;
   const [userData, setUserData] = useState(null);
-
+  
   useEffect(() => {
     const fetchUserData = async () => {
       try {

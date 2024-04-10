@@ -50,6 +50,7 @@ const PostsScreen = ({posts, navigation}) => {
   const [editPostsItemAccount, setEditPostsItemAccount] = useState(null);
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
   const [post, setPost] = useState(posts);
+  const [showLengthMedia, setShowLengthMedia] = useState(true);
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -307,6 +308,12 @@ const PostsScreen = ({posts, navigation}) => {
   };
 
   useEffect(() => {
+    setTimeout(() => {
+      setShowLengthMedia(false);
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
     handleReaction.current = {
       handlePressOut: () => {
         setReaction(false);
@@ -475,11 +482,13 @@ const PostsScreen = ({posts, navigation}) => {
                           style={styles.posts}
                         />
                       )}
-                      <View style={styles.imageCountContainer}>
-                        <Text style={styles.imageCountText}>
-                          {index + 1}/{item.media.length}
-                        </Text>
-                      </View>
+                      {showLengthMedia && (
+                        <View style={styles.imageCountContainer}>
+                          <Text style={styles.imageCountText}>
+                            {index + 1}/{item.media.length}
+                          </Text>
+                        </View>
+                      )}
                     </View>
                   ))}
                 </Swiper>

@@ -48,7 +48,18 @@ const AllFriend = () => {
 
           // Lấy thông tin chi tiết của tất cả bạn bè
           const friendsDetails = await Promise.all(friendsDetailsPromises);
-
+         // console.log('friendsDetails', friendsDetails);
+          
+          // Tạo một mảng mới chứa thông tin đầy đủ về bạn bè (tên, avatar, ngày sinh nhật)
+          const birthdaysWithDetails = friendsDetails.map(friend => ({
+            name: friend.name,
+            avatar: friend.avatar,
+            birthday: friend.date // Giả sử 'date' là ngày sinh nhật của bạn bè
+          }));
+          console.log('birthdaysWithDetails', birthdaysWithDetails);
+          // Lưu mảng birthdaysWithDetails vào AsyncStorage
+          await AsyncStorage.setItem('currentFriendsBirthdays', JSON.stringify(birthdaysWithDetails));
+          
           // Lọc bỏ các giá trị null (nếu có) và lưu thông tin chi tiết vào state
           await setFriendsDetails(friendsDetails.filter(friend => friend !== null));
         } else {
@@ -82,6 +93,8 @@ const AllFriend = () => {
       if (response && response.success) {
         // Xoá item khỏi danh sách filteredFriends và cập nhật lại FlatList
         setFilteredFriends(prevFriends => prevFriends.filter(friend => friend._id !== item._id));
+        // Cập nhật lại danh sách bạn bè sau khi xoá thành công
+        setFriendsDetails(prevFriends => prevFriends.filter(friend => friend._id !== item._id));
         // Cập nhật lại biến state refresh để FlatList render lại
         setRefresh(prevRefresh => !prevRefresh);
       } else if (response && response.message) {
@@ -91,6 +104,7 @@ const AllFriend = () => {
       console.error('Error accepting friend request:', error);
     }
   };
+  
 
   return (
     <View style={styles.container}>

@@ -18,6 +18,7 @@ import TucGianFeeling from './tucGian';
 const TabTop = createMaterialTopTabNavigator();
 
 const FeelingTop = ({reactions}) => {
+  const reactionsType = reactions.map(item => item.type);
   return (
     <View style={styles.T}>
       <TabTop.Navigator
@@ -29,36 +30,48 @@ const FeelingTop = ({reactions}) => {
           component={AllFeeling}
           initialParams={{reactions}}
         />
-        <TabTop.Screen
-          name="LikeFeeling"
-          component={LikeFeeling}
-          initialParams={{reactions}}
-        />
-        <TabTop.Screen
-          name="LoveFeeling"
-          component={LoveFeeling}
-          initialParams={{reactions}}
-        />
-        <TabTop.Screen
-          name="HahaFeeling"
-          component={HahaFeeling}
-          initialParams={{reactions}}
-        />
-        <TabTop.Screen
-          name="WowFeeling"
-          component={WowFeeling}
-          initialParams={{reactions}}
-        />
-        <TabTop.Screen
-          name="BuonFeeling"
-          component={BuonFeeling}
-          initialParams={{reactions}}
-        />
-        <TabTop.Screen
-          name="TucGianFeeling"
-          component={TucGianFeeling}
-          initialParams={{reactions}}
-        />
+        {reactionsType.find(item => item === 'Thích') && (
+          <TabTop.Screen
+            name="LikeFeeling"
+            component={LikeFeeling}
+            initialParams={{reactions}}
+          />
+        )}
+        {reactionsType.find(item => item === 'Yêu thích') && (
+          <TabTop.Screen
+            name="LoveFeeling"
+            component={LoveFeeling}
+            initialParams={{reactions}}
+          />
+        )}
+        {reactionsType.find(item => item === 'Haha') && (
+          <TabTop.Screen
+            name="HahaFeeling"
+            component={HahaFeeling}
+            initialParams={{reactions}}
+          />
+        )}
+        {reactionsType.find(item => item === 'Wow') && (
+          <TabTop.Screen
+            name="WowFeeling"
+            component={WowFeeling}
+            initialParams={{reactions}}
+          />
+        )}
+        {reactionsType.find(item => item === 'Buồn') && (
+          <TabTop.Screen
+            name="BuonFeeling"
+            component={BuonFeeling}
+            initialParams={{reactions}}
+          />
+        )}
+        {reactionsType.find(item => item === 'Tức giận') && (
+          <TabTop.Screen
+            name="TucGianFeeling"
+            component={TucGianFeeling}
+            initialParams={{reactions}}
+          />
+        )}
       </TabTop.Navigator>
     </View>
   );
@@ -70,5 +83,6 @@ const styles = StyleSheet.create({
   T: {
     width: '100%',
     height: '100%',
+    backgroundColor: '#fff',
   },
 });
