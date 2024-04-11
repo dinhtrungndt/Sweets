@@ -24,8 +24,23 @@ export default styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 15,
     margin: 2,
-    width: 100,
+    width: '55%',
     height: 40,
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  txtprofile2: {
+    padding: 8,
+    backgroundColor: '#E5E5E5',
+    borderRadius: 10,
+    color: 'black',
+    fontWeight: '400',
+    fontSize: 15,
+    margin: 2,
+    width: '55%',
+    height: 40,
+   
     textAlign: 'center',
     justifyContent: 'center',
     alignItems: 'center',
@@ -34,21 +49,22 @@ export default styles = StyleSheet.create({
     flexDirection: 'column',
     width: "100%",
     height: 'auto',
-    backgroundColor: '#E8E8E8',
+   
     borderRadius: 10,
     padding: 5,
-    marginBottom: 10,
+    marginBottom: 5,
    
   },
   fl: {
     flexDirection: 'row',
+    justifyContent:'space-evenly'
   },
   item2: {
-    width: '40%',
+    width: '90%',
     height: 'auto',
     padding: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+  
+    flexDirection:'row'
 
   },
   divider:{
@@ -69,7 +85,7 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: '2%',
-    width: '65%',
+    width: '80%',
 
   },
   moinguoi: {
@@ -104,18 +120,19 @@ export default styles = StyleSheet.create({
   },
 
   itemname: {
-    fontSize: 17,
+    fontSize: 18,
     color: 'black',
-    fontWeight: 'bold'
+    fontWeight: '600'
   },
   itemavata: {
-    width: 60,
-    height: 60,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   itemthongtin: {
     marginLeft: 5,
-    width: '75%',
+    width: '100%',
+ 
    
   },
   txttrangthai: {
@@ -129,16 +146,20 @@ export default styles = StyleSheet.create({
   txtstatus: {
     color: 'black',
     fontSize: 15,
-    fontWeight: 'bold',
-    width: '90%',
-    marginLeft: '3%',
-    marginBottom: '3%'
+    fontWeight: '400',
+  
   },
   bird: {
     marginTop: 8,
     color: 'black',
     fontSize: 15,
 
+  },
+  itemthongtin2:{
+    flexDirection:'row',
+    justifyContent:'space-between',
+ 
+   padding:6
   }
 
 });

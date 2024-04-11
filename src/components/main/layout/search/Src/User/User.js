@@ -25,8 +25,29 @@ const User = ({ navigation }) => {
           receiverv2: user._id
         }));
         const modifiedUsers2 = modifiedUsers.filter(user => user._id !== userid);
-        setUsers(modifiedUsers2);
-        console.log(modifiedUsers2);
+        console.log('userDun', modifiedUsers2)
+
+        const modifiedUsers2WithCheckBanBe = modifiedUsers2.map(user => ({
+          ...user,
+          checkBanBe: false
+        }));
+
+        console.log('userDun22', modifiedUsers2WithCheckBanBe)
+        const storedData = await AsyncStorage.getItem('friendData');
+        console.log('Mảng đã lấy từ AsyncStorageFrinedđ:', storedData);
+
+        modifiedUsers2WithCheckBanBe.forEach(user => {
+          if (storedData.includes(user._id)) {
+            user.checkBanBe = true;
+          }
+        });
+
+        console.log('userDun4442', modifiedUsers2WithCheckBanBe);
+
+
+        setUsers(modifiedUsers2WithCheckBanBe);
+
+
       } else {
         // Không có dữ liệu trả về từ API, gán mảng rỗng cho users
         setUsers([]);
@@ -59,28 +80,33 @@ const User = ({ navigation }) => {
               <Image source={{ uri: item.avatar }} style={styles.itemavata} />
             </View>
             <View style={styles.itemthongtin}>
-              <View>
+              <View style={styles.itemthongtin2}>
                 <Text style={styles.itemname}>{item.name}</Text>
+                <Text style={styles.txtstatus}>
+                  {item.checkBanBe ? 'Bạn Bè' : 'Chưa là bạn bè'}
+                </Text>
               </View>
-              <View>
-                <Text style={styles.bird}>{item.date == 'null' ? 'Chưa cập nhật' : item.date}</Text>
+            
+
+              <View style={styles.item2}>
+                <Text style={styles.txtprofile} onPress={() =>
+                  navigation.navigate('ChatScreenIn', { receiver: item })
+                }>
+                  Nhắn tin
+                </Text>
+                <Text style={styles.txtprofile2} onPress={handleprofile}>
+                  Profile
+                </Text>
+
               </View>
             </View>
           </View>
-          <View style={styles.item2}>
-            <Text style={styles.txtprofile} onPress={() =>
-              navigation.navigate('ChatScreenIn', { receiver: item })
-            }>
-              Nhắn tin
-            </Text>
-            <Text style={styles.txtprofile} onPress={handleprofile}>
-              Profile
-            </Text>
 
-          </View>
 
         </View>
-        <Text style={styles.txtstatus}>Trạng thái: Đang cập nhật</Text>
+
+
+
         <View>
 
         </View>
@@ -102,7 +128,7 @@ const User = ({ navigation }) => {
 
       </View>
       <TextInput value={name} onChangeText={setname} placeholder='Tìm kiếm' style={styles.headerinput} onSubmitEditing={searchUser} />
-     <View style={styles.divider}></View>
+      <View style={styles.divider}></View>
       <Text style={styles.moinguoi}>Mọi người</Text>
       {loading ? (
         <ActivityIndicator size="large" color="blue" />
@@ -120,8 +146,8 @@ const User = ({ navigation }) => {
           ) : (
             <View style={{ marginTop: '5%', marginLeft: '5%' }}>
               <Text>
-               Nhập tên người dùng hoặc tìm kiếm lại 
-                </Text>
+                Nhập tên người dùng hoặc tìm kiếm lại
+              </Text>
             </View>
           )}
         </>

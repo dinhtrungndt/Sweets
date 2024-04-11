@@ -21,6 +21,11 @@ const AllFriend = () => {
   const [refresh, setRefresh] = useState(false); // Thêm biến state refresh
   const [sortByName, setSortByName] = useState(false); // Thêm biến state để sắp xếp theo tên
   const [refreshing, setRefreshing] = useState(false);
+
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [selectedFriendToDelete, setSelectedFriendToDelete] = useState(null);
+  
+
   useEffect(() => {
     const fetchFriendsDetails = async () => {
       try {
@@ -72,16 +77,15 @@ const AllFriend = () => {
     };
 
     fetchFriendsDetails();
-  }, []); // Chỉ chạy một lần khi component được render
+  }, []); 
 
   useEffect(() => {
     // Lọc danh sách bạn bè dựa trên giá trị tìm kiếm và cập nhật state mới
     const filtered = friendsDetails.filter(friend => friend.name.toLowerCase().includes(searchValue.toLowerCase()));
     setFilteredFriends(filtered);
-  }, [searchValue, friendsDetails]); // Chạy lại mỗi khi giá trị tìm kiếm hoặc danh sách bạn bè thay đổi
-
+  }, [searchValue, friendsDetails]); 
   const handleSearch = (text) => {
-    setSearchValue(text); // Cập nhật giá trị tìm kiếm
+    setSearchValue(text); 
   };
 
   const handleDeleteFriendRequest = async (item) => {
@@ -107,12 +111,12 @@ const AllFriend = () => {
   };
 
   const handleSortByName = () => {
-    setSortByName(!sortByName); // Đảo ngược trạng thái sắp xếp theo tên
+    setSortByName(!sortByName); 
     if (!sortByName) {
-      // Sắp xếp tăng dần theo tên nếu sortByName là false
+      
       setFilteredFriends([...filteredFriends].sort((a, b) => a.name.localeCompare(b.name)));
     } else {
-      // Sắp xếp giảm dần theo tên nếu sortByName là true
+      
       setFilteredFriends([...filteredFriends].sort((a, b) => b.name.localeCompare(a.name)));
     }
   };
@@ -124,6 +128,19 @@ const AllFriend = () => {
     await friendsDetails(); // Tải dữ liệu mới
     setRefreshing(false); // Kết thúc làm mới
   };
+
+  const openDeleteModal = (friend) => {
+    setSelectedFriendToDelete(friend);
+    setDeleteModalVisible(true);
+  };
+  
+  const confirmDeleteFriend = async () => {
+    if (selectedFriendToDelete) {
+      await handleDeleteFriendRequest(selectedFriendToDelete);
+      setDeleteModalVisible(false);
+    }
+  };
+  
 
   return (
     <View style={styles.container}>
@@ -161,7 +178,7 @@ const AllFriend = () => {
              <Image source={{ uri: item.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />
               <Text style={styles.txtName}>{item.name}</Text>
              </View>
-             <TouchableOpacity style={styles.imgOption}  onPress={() => handleDeleteFriendRequest(item)}>
+             <TouchableOpacity style={styles.imgOption}  onPress={() => openDeleteModal(item)}>
               <Text style={styles.txtXoas}>Xoá</Text>
             </TouchableOpacity>
             </TouchableOpacity>
@@ -172,6 +189,35 @@ const AllFriend = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> // Thêm RefreshControl để xử lý làm mới
           }
         />
+
+<Modal
+        animationType="slide"
+        transparent={true}
+        visible={isDeleteModalVisible}
+        onRequestClose={() => setDeleteModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}> Xoá <Text style={styles.highlightedText}>{selectedFriendToDelete ? selectedFriendToDelete.name : ''}</Text> khỏi danh sách bạn bè?</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+             
+              <TouchableOpacity
+                style={{ ...styles.openButton, backgroundColor: '#d63031' ,marginRight:10}}
+                onPress={() => setDeleteModalVisible(false)}
+              >
+                <Text style={styles.textStyle}>Huỷ</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{ ...styles.openButton, backgroundColor: '#22b6c0',marginLeft:10 }}
+                onPress={confirmDeleteFriend}
+              >
+                <Text style={styles.textStyle}>Đồng Ý</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
