@@ -420,7 +420,7 @@ const PostsScreen = ({posts, navigation}) => {
                             style={{flexDirection: 'row', alignItems: 'center'}}
                             onPress={() =>
                               navigation.navigate('OtherUserA', {
-                                account: item.taggedFriends,
+                                accountzzz: item.taggedFriends,
                               })
                             }>
                             <Text
