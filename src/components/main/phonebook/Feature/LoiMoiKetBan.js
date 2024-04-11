@@ -30,6 +30,8 @@ const LoiMoiKetBan = (props) => {
           return userResponse.user;
         });
         const users = await Promise.all(usersPromises);
+        console.log('users',users.length)
+        await AsyncStorage.setItem('Count', users.length.toString()); 
         setUserInfo(users);
       
   const ListDanhan = users.map(obj => obj._id);
@@ -52,10 +54,10 @@ const LoiMoiKetBan = (props) => {
         idFriendSender: item._id,
         idFriendReceiver: userId
       });
-      if (response.data && response.data.success) {
+      if (response && response.success) {
        await setFriendInvitations(prevInvitations => prevInvitations.filter(invitation => invitation._id !== item._id));
        await setUserInfo(prevUsers => prevUsers.filter(user => user._id !== item._id));
-      }  else if (response.data && response.data.message) {
+      }  else if (response && response.message) {
         console.error('Error accepting friend request:', response.data.message);
       }
     } catch (error) {

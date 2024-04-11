@@ -34,7 +34,9 @@ const ThoiTiet2 = () => {
         Animated.timing(translateX, {
             toValue: isTextInputVisible ? 100 : 0,
             duration: 200, // Adjust duration for desired animation speed
-        }).start();
+        },
+        setWeatherData('')
+        ).start();
     };
     const fetchWeather = async (country) => {
         try {

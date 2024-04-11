@@ -72,16 +72,15 @@ const AllFriend = () => {
     };
 
     fetchFriendsDetails();
-  }, []); // Chỉ chạy một lần khi component được render
+  }, []); 
 
   useEffect(() => {
     // Lọc danh sách bạn bè dựa trên giá trị tìm kiếm và cập nhật state mới
     const filtered = friendsDetails.filter(friend => friend.name.toLowerCase().includes(searchValue.toLowerCase()));
     setFilteredFriends(filtered);
-  }, [searchValue, friendsDetails]); // Chạy lại mỗi khi giá trị tìm kiếm hoặc danh sách bạn bè thay đổi
-
+  }, [searchValue, friendsDetails]); 
   const handleSearch = (text) => {
-    setSearchValue(text); // Cập nhật giá trị tìm kiếm
+    setSearchValue(text); 
   };
 
   const handleDeleteFriendRequest = async (item) => {
@@ -107,12 +106,12 @@ const AllFriend = () => {
   };
 
   const handleSortByName = () => {
-    setSortByName(!sortByName); // Đảo ngược trạng thái sắp xếp theo tên
+    setSortByName(!sortByName); 
     if (!sortByName) {
-      // Sắp xếp tăng dần theo tên nếu sortByName là false
+      
       setFilteredFriends([...filteredFriends].sort((a, b) => a.name.localeCompare(b.name)));
     } else {
-      // Sắp xếp giảm dần theo tên nếu sortByName là true
+      
       setFilteredFriends([...filteredFriends].sort((a, b) => b.name.localeCompare(a.name)));
     }
   };

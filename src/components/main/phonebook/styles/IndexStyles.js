@@ -47,6 +47,13 @@ const styles = StyleSheet.create({
     height: 35,
     marginRight:10
   },
+  buttonImg4: {
+    alignSelf: 'center',
+   
+    width: 35,
+    height: 35,
+   
+  },
   
   buttonImg3: {
     alignSelf: 'center',
