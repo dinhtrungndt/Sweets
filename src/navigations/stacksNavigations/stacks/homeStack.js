@@ -20,12 +20,13 @@ import Profile from '../../../components/main/account/Profile/Profile';
 import ModalEditPostsAccount from '../../../components/main/home/posts/editPosts/account';
 import SelectScreenUp from '../../../components/main/home/uploads/posts/select';
 import ChangeObjects from '../../../components/main/home/posts/editPosts/account/objects';
-import LiveStreamScreen from '../../../components/main/home/liveStream';
+
 import {
   ZegoUIKitPrebuiltCallWaitingScreen,
   ZegoUIKitPrebuiltCallInCallScreen,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import LiveStreamHost from '../../../components/main/home/liveStream/LiveStreamHost';
+import LiveStreamScreen from '../../../components/main/home/liveStream';
 const Stack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
