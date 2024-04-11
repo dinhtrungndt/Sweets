@@ -21,6 +21,11 @@ const AllFriend = () => {
   const [refresh, setRefresh] = useState(false); // Thêm biến state refresh
   const [sortByName, setSortByName] = useState(false); // Thêm biến state để sắp xếp theo tên
   const [refreshing, setRefreshing] = useState(false);
+
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [selectedFriendToDelete, setSelectedFriendToDelete] = useState(null);
+  
+
   useEffect(() => {
     const fetchFriendsDetails = async () => {
       try {
@@ -124,6 +129,19 @@ const AllFriend = () => {
     setRefreshing(false); // Kết thúc làm mới
   };
 
+  const openDeleteModal = (friend) => {
+    setSelectedFriendToDelete(friend);
+    setDeleteModalVisible(true);
+  };
+  
+  const confirmDeleteFriend = async () => {
+    if (selectedFriendToDelete) {
+      await handleDeleteFriendRequest(selectedFriendToDelete);
+      setDeleteModalVisible(false);
+    }
+  };
+  
+
   return (
     <View style={styles.container}>
       <View
@@ -160,7 +178,7 @@ const AllFriend = () => {
              <Image source={{ uri: item.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />
               <Text style={styles.txtName}>{item.name}</Text>
              </View>
-             <TouchableOpacity style={styles.imgOption}  onPress={() => handleDeleteFriendRequest(item)}>
+             <TouchableOpacity style={styles.imgOption}  onPress={() => openDeleteModal(item)}>
               <Text style={styles.txtXoas}>Xoá</Text>
             </TouchableOpacity>
             </TouchableOpacity>
@@ -171,6 +189,35 @@ const AllFriend = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> // Thêm RefreshControl để xử lý làm mới
           }
         />
+
+<Modal
+        animationType="slide"
+        transparent={true}
+        visible={isDeleteModalVisible}
+        onRequestClose={() => setDeleteModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}> Bạn có chắc muốn xoá <Text style={styles.highlightedText}>{selectedFriendToDelete ? selectedFriendToDelete.name : ''}</Text> không?</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+             
+              <TouchableOpacity
+                style={{ ...styles.openButton, backgroundColor: '#d63031' ,marginRight:10}}
+                onPress={() => setDeleteModalVisible(false)}
+              >
+                <Text style={styles.textStyle}>Huỷ</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{ ...styles.openButton, backgroundColor: '#22b6c0',marginLeft:10 }}
+                onPress={confirmDeleteFriend}
+              >
+                <Text style={styles.textStyle}>Đồng Ý</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
