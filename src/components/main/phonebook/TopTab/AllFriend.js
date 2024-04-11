@@ -198,7 +198,7 @@ const AllFriend = () => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}> Bạn có chắc muốn xoá <Text style={styles.highlightedText}>{selectedFriendToDelete ? selectedFriendToDelete.name : ''}</Text> không?</Text>
+            <Text style={styles.modalText}> Xoá <Text style={styles.highlightedText}>{selectedFriendToDelete ? selectedFriendToDelete.name : ''}</Text> khỏi danh sách bạn bè?</Text>
             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
              
               <TouchableOpacity
