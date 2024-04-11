@@ -1,14 +1,21 @@
-import { Text, View, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import React, { useState,useEffect,useContext } from 'react';
-import { getAllLiveStream } from '../../../../services/livestream/LiveStreamService';
-import { UserContext } from '../../../../contexts/user/userContext';
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useEffect, useContext} from 'react';
+import {getAllLiveStream} from '../../../../services/livestream/LiveStreamService';
+import {UserContext} from '../../../../contexts/user/userContext';
 
-const LiveStreamScreen = ({ navigation,route }) => {
+const LiveStreamScreen = ({navigation, route}) => {
   const {user} = useContext(UserContext);
-  const handleLiveStream = (isStream,liveID) => {
-    navigation.navigate('LiveStreamHost',{isStream,liveID});
+  const handleLiveStream = (isStream, liveID) => {
+    navigation.navigate('LiveStreamHost', {isStream, liveID});
   };
-  
+
   const [listlive, setListlive] = useState('');
   const onGetAllLiveStream = async () => {
     const response = await getAllLiveStream();
@@ -19,59 +26,63 @@ const LiveStreamScreen = ({ navigation,route }) => {
     onGetAllLiveStream();
   }, []);
 
-  const renderitem = ({ item }) => {
+  const renderitem = ({item}) => {
     return (
       <View style={styles.viewitem}>
         <View style={styles.item}>
           <View style={styles.viewavt}>
-            <Image style={styles.avatar} source={{ uri: item.avatar }} />
+            <Image style={styles.avatar} source={{uri: item.avatar}} />
           </View>
           <View style={styles.username}>
             <Text style={styles.txtname}>{item.username}</Text>
             <Text style={styles.txtid}>ID: {item._id}</Text>
           </View>
 
-
           <View style={styles.viewbutton}>
-            <TouchableOpacity style={styles.bgbutton}
-            onPress={() => handleLiveStream(false,item.liveid)}
-            >
+            <TouchableOpacity
+              style={styles.bgbutton}
+              onPress={() => handleLiveStream(false, item.liveid)}>
               <Text style={styles.txtitembuttom}>Xem Live</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.bgbutton}>
               <Text style={styles.txtitembuttom}> Profile</Text>
             </TouchableOpacity>
           </View>
-
         </View>
-
-
       </View>
-    )
-  }
+    );
+  };
   const handleback = () => {
     navigation.goBack();
-  }
+  };
 
   return (
     <View>
       <View style={styles.viewheader}>
-        <TouchableOpacity style={styles.viewlive} onPress={handleback} >
-          <Image style={styles.back} source={require('../../../../assets/back_50px.png')} />
+        <TouchableOpacity style={styles.viewlive} onPress={handleback}>
+          <Image
+            style={styles.back}
+            source={require('../../../../assets/back_50px.png')}
+          />
         </TouchableOpacity>
         <View>
           <Text style={styles.txtlive}>Live Stream</Text>
         </View>
-
+        <TouchableOpacity
+          style={{ flex: 1, alignItems: 'flex-end'}}
+          onPress={() => handleLiveStream(true, user.id)}>
+          <Image
+            style={{marginRight: 20}}
+            source={require('../../../../assets/icon_live.png')}
+          />
+        </TouchableOpacity>
       </View>
-      <View style={styles.divider}>
-      </View>
+      <View style={styles.divider}></View>
       <FlatList
         style={styles.viewflatlist}
         data={listlive}
         renderItem={renderitem}
         keyExtractor={item => item._id}
-
       />
     </View>
   );
@@ -80,7 +91,7 @@ const LiveStreamScreen = ({ navigation,route }) => {
 export default LiveStreamScreen;
 const styles = StyleSheet.create({
   bgbutton: {
-    width: "90%",
+    width: '90%',
     height: 30,
     backgroundColor: '#22B6C0',
     borderRadius: 10,
@@ -95,7 +106,6 @@ const styles = StyleSheet.create({
 
     fontWeight: 'bold',
     textAlign: 'center',
-
   },
   txtid: {
     fontSize: 17,
@@ -105,7 +115,6 @@ const styles = StyleSheet.create({
   viewavt: {
     width: '20%',
     marginLeft: 20,
-
   },
   txtname: {
     fontSize: 18,
@@ -137,19 +146,17 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginLeft: 10,
     marginTop: 20,
-    borderColor: "red",
+    borderColor: 'red',
     borderWidth: 1,
   },
   viewitem: {
     height: 'auto',
     width: '90%',
     borderRadius: 10,
-    borderColor: "#22B6C0",
+    borderColor: '#22B6C0',
     borderWidth: 1,
     marginTop: 10,
-    marginLeft: '5%'
-
-
+    marginLeft: '5%',
   },
   viewflatlist: {
     height: '90%',
@@ -164,7 +171,7 @@ const styles = StyleSheet.create({
     marginLeft: '5%',
   },
   viewlive: {
-    width: '38%',
+    flex: 1, alignItems: 'flex-start'
   },
   viewheader: {
     flexDirection: 'row',
@@ -175,16 +182,15 @@ const styles = StyleSheet.create({
   back: {
     width: 28,
     height: 28,
-    marginTop: 20,
-    marginLeft: 20,
+    // marginTop: 20,
+    marginLeft: 19,
   },
   txtlive: {
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 20,
-    color: 'black'
+    color: 'black',
+    flex: 2, alignItems: 'center'
   },
 });
-
-
