@@ -52,18 +52,6 @@ const PostsScreen = ({posts, navigation}) => {
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
   const [post, setPost] = useState(posts);
   const [showLengthMedia, setShowLengthMedia] = useState(true);
-  const [birthday, setBirthDay] = useState(null);
-  const OBirthday = birthday?.map(b => b.taggedFriends);
-
-  const onGetPostsBirthday = async () => {
-    try {
-      const res = await getPostsBirthday(user.user._id);
-      setBirthDay(res);
-      // console.log('getPostsBirthday:', res);
-    } catch (error) {
-      console.error('Lỗi lấy danh sahcs getPostsBirthday:', error);
-    }
-  };
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -86,12 +74,16 @@ const PostsScreen = ({posts, navigation}) => {
           const shareResponse = await getShare(post._id);
           const share = shareResponse;
 
+          const birthdayResponse = await getPostsBirthday(user.user._id);
+          const birthday = birthdayResponse;
+
           return {
             ...post,
             media,
             reaction,
             comment,
             share,
+            birthday,
           };
         }),
       );
@@ -300,6 +292,7 @@ const PostsScreen = ({posts, navigation}) => {
       const updatedPosts = posts.filter(post => post._id !== _idDelete);
       setPost(updatedPosts);
       setModalEditPostsAccount(false);
+      await reloadPosts();
       // console.log('>>>. Xóa thành công', res);
     } catch (error) {
       console.log('>>>. Lỗi delete Posts', error);
@@ -308,13 +301,17 @@ const PostsScreen = ({posts, navigation}) => {
 
   const handleShare = async item => {
     try {
-      const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
-      const shareOptions = {
-        title: 'Share',
-        message: 'Chia sẻ bài viết này!',
-        url: deepLink,
-      };
-      await Share.open(shareOptions);
+      if (item && item._id) {
+        const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
+        const shareOptions = {
+          title: 'Share',
+          message: 'Chia sẻ bài viết này!',
+          url: deepLink,
+        };
+        await Share.open(shareOptions);
+      } else {
+        console.log('Bài viết không hợp lệ để chia sẻ');
+      }
     } catch (error) {
       console.log('Lỗi chia sẻ nè:', error);
     }
@@ -340,10 +337,6 @@ const PostsScreen = ({posts, navigation}) => {
     return () => {
       handleReaction.current = null;
     };
-  }, []);
-
-  useEffect(() => {
-    onGetPostsBirthday();
   }, []);
 
   useEffect(() => {
@@ -407,26 +400,39 @@ const PostsScreen = ({posts, navigation}) => {
                         }>
                         <Text style={styles.name}>{item.idUsers?.name}</Text>
                       </TouchableOpacity>
-                      {OBirthday && birthday !== null ? (
-                        <>
-                          {OBirthday.map((b, index) => (
-                            <View
-                              key={index}
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
-                              <Text style={{paddingLeft: 2}}> cùng với </Text>
-                              <TouchableOpacity>
-                                <Text style={[styles.name, {marginLeft: 2}]}>
-                                  {b.name}
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
-                          ))}
-                        </>
+                      {item.taggedFriends === null ? (
+                        <View />
                       ) : (
-                        <View></View>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            width: '50%',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                            }}>
+                            {' '}
+                            cùng với
+                          </Text>
+                          <TouchableOpacity
+                            style={{flexDirection: 'row', alignItems: 'center'}}
+                            onPress={() =>
+                              navigation.navigate('OtherUserA', {
+                                account: item.taggedFriends,
+                              })
+                            }>
+                            <Text
+                              style={[
+                                styles.name,
+                                {color: '#ff0000', marginLeft: 5},
+                              ]}>
+                              {item.taggedFriends.name}
+                            </Text>
+                            <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                          </TouchableOpacity>
+                        </View>
                       )}
                     </View>
                   )}

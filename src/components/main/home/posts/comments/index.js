@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -46,11 +47,14 @@ import {UserContext} from '../../../../../contexts/user/userContext';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {
   ArrangeCommentFriend,
+  deleteComments,
+  deleteCommentsC,
   deletePostsAccount,
   getComments,
   getListUser,
   getMedia,
   getPosts,
+  getPostsDetail,
   getReaction,
   getReactionComments,
   getShare,
@@ -68,10 +72,12 @@ import linking from '../../../../../utils/linking';
 import Share from 'react-native-share';
 import ModalEditPostsAccount from '../editPosts/account';
 import ModalEditPostsGuest from '../editPosts/guest';
+import DialogDeletePosts from 'react-native-dialog';
 
 const CommentsScreen = ({navigation, route}) => {
   const {postId} = route.params;
   const [posts, setPosts] = useState([postId]);
+  // console.log('>>>>>>>>> postsposts in commnets', postId);
   const [showMore, setShowMore] = useState(false);
   const [showMoreImage, setShowMoreImage] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -103,6 +109,9 @@ const CommentsScreen = ({navigation, route}) => {
   const [listUser, setListUser] = useState([]);
   const [searchNameInList, setSearchNameInList] = useState([]);
   const [reactionLiked, setReactionLiked] = useState([]);
+  const [visibleDiaLogDelete, setVisibleDiaLogDelete] = useState(false);
+  const [idComments, setIdComments] = useState(null);
+  const [detailPosts, setDetailPosts] = useState(null);
   const numColumns = 4;
 
   // console.log('>>>>>>>>> listUser listUser', listUser);
@@ -111,6 +120,16 @@ const CommentsScreen = ({navigation, route}) => {
   const handleCloneBottomSheet = () => bottomSheetRef.current?.close();
   const handleOnpenBottomSheet = () => bottomSheetRef.current?.expand();
   const handleOnpenBottomSheetFit = () => bottomSheetRefFit.current?.expand();
+
+  const onGetDetailPosts = async () => {
+    try {
+      const res = await getPostsDetail(postId._id || postId);
+      // console.log('>>>>>>>> handleGetDetailPosts res', res);
+      setDetailPosts(res);
+    } catch (error) {
+      console.log('Lỗi khi lấy danh sách handleGetDetailPosts', error);
+    }
+  };
 
   const handleSearch = text => {
     const filteredUsers = listUser.filter(user =>
@@ -172,8 +191,33 @@ const CommentsScreen = ({navigation, route}) => {
     }
   };
 
+  const showDialogDelete = idComments => {
+    setVisibleDiaLogDelete(true);
+    setIdComments(idComments);
+  };
+
+  const handleCancelDelete = () => {
+    setVisibleDiaLogDelete(false);
+  };
+
+  const handleDeleteComments = async () => {
+    try {
+      if (parentId !== null) {
+        const res = await deleteCommentsC(user.user._id, idComments);
+        setVisibleDiaLogDelete(false);
+        await reloadComments();
+      } else {
+        const res = await deleteComments(idComments);
+        setVisibleDiaLogDelete(false);
+        await reloadComments();
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu API:', error);
+    }
+  };
+
   const isUserReacted = (reactions, userId) => {
-    return reactions.some(reaction => reaction.idUsers._id === userId);
+    return reactions?.some(reaction => reaction.idUsers._id === userId);
   };
 
   const handleModalEditPostsAccount = item => {
@@ -433,7 +477,8 @@ const CommentsScreen = ({navigation, route}) => {
 
   const reloadComments = async () => {
     try {
-      const response = await getComments(postId._id);
+      // setIsLoading(true);
+      const response = await getComments(postId._id || postId);
       const postComments = await Promise.all(
         response.map(async comment => {
           const reaction = await getReactionComments(comment._id);
@@ -441,6 +486,7 @@ const CommentsScreen = ({navigation, route}) => {
         }),
       );
       setComments(postComments.reverse());
+      // setIsLoading(false);
     } catch (error) {
       console.error('Lỗi khi tải danh sách bình luận:', error);
     }
@@ -494,7 +540,6 @@ const CommentsScreen = ({navigation, route}) => {
         });
       }
 
-      setIsLoading(true);
       if (parentId && parentUserName !== null) {
         const response = await submitCommentsC(
           user.user._id,
@@ -520,7 +565,6 @@ const CommentsScreen = ({navigation, route}) => {
       setImage('');
       setParentUserName(null);
       await reloadComments();
-      setIsLoading(false);
       commentInputRef.current.clear();
     } catch (error) {
       console.error('Lỗi khi gửi comment:', error);
@@ -598,6 +642,7 @@ const CommentsScreen = ({navigation, route}) => {
 
   useEffect(() => {
     onGetListUser();
+    onGetDetailPosts();
   }, []);
 
   // useEffect(() => {
@@ -617,28 +662,138 @@ const CommentsScreen = ({navigation, route}) => {
                 style={styles.icon_backTO}>
                 <Ionicons name="arrow-back" size={23} color="#666" />
               </TouchableOpacity>
-              {posts.map(post => (
-                <View key={post._id} style={styles.baiVietHeaderLeft}>
-                  <Image
-                    style={styles.baiVietAvatar}
-                    source={{uri: post.idUsers?.avatar}}
-                  />
-                  <View style={styles.baiVietNameTime}>
-                    <Text style={styles.baiVietName}>{post.idUsers?.name}</Text>
-                    <View style={styles.container_time}>
-                      <Text style={styles.baiVietTime}>
-                        {formatTime(post.createAt)}
+              {detailPosts === null ? (
+                <>
+                  {posts.map(post => (
+                    <View key={post._id} style={styles.baiVietHeaderLeft}>
+                      <Image
+                        style={styles.baiVietAvatar}
+                        source={{uri: post.idUsers?.avatar}}
+                      />
+                      <View style={styles.baiVietNameTime}>
+                        <Text style={styles.baiVietName}>
+                          {post.idUsers?.name}
+                        </Text>
+                        {post.taggedFriends === null ? (
+                          <View />
+                        ) : (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              width: '50%',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                paddingLeft: 13,
+                              }}>
+                              {' '}
+                              cùng với
+                            </Text>
+                            <TouchableOpacity
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                              }}
+                              onPress={() =>
+                                navigation.navigate('OtherUserA', {
+                                  account: post.taggedFriends,
+                                })
+                              }>
+                              <Text
+                                style={[
+                                  styles.baiVietName,
+                                  {color: '#ff0000', marginLeft: 5},
+                                ]}>
+                                {post.taggedFriends.name}
+                              </Text>
+                              <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                        <View style={styles.container_time}>
+                          <Text style={styles.baiVietTime}>
+                            {formatTime(post.createAt)}
+                          </Text>
+                          <Text style={{paddingLeft: 5, fontSize: 6}}>●</Text>
+                          <TouchableOpacity>
+                            {post.idObject
+                              ? changeIdObject(post.idObject)
+                              : null}
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </View>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <View style={styles.baiVietHeaderLeft}>
+                    <Image
+                      style={styles.baiVietAvatar}
+                      source={{uri: detailPosts?.idUsers?.avatar}}
+                    />
+                    <View style={styles.baiVietNameTime}>
+                      <Text style={styles.baiVietName}>
+                        {detailPosts?.idUsers?.name}
                       </Text>
-                      <Text style={{paddingLeft: 5, fontSize: 6}}>●</Text>
-                      <TouchableOpacity>
-                        {post.idObject ? changeIdObject(post.idObject) : null}
-                      </TouchableOpacity>
+
+                      {detailPosts.taggedFriends === null ? (
+                        <View />
+                      ) : (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            width: '50%',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              paddingLeft: 13,
+                            }}>
+                            {' '}
+                            cùng với
+                          </Text>
+                          <TouchableOpacity
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}
+                            onPress={() =>
+                              navigation.navigate('OtherUserA', {
+                                account: detailPosts.taggedFriends,
+                              })
+                            }>
+                            <Text
+                              style={[
+                                styles.baiVietName,
+                                {color: '#ff0000', marginLeft: 5},
+                              ]}>
+                              {detailPosts.taggedFriends.name}
+                            </Text>
+                            <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                      <View style={styles.container_time}>
+                        <Text style={styles.baiVietTime}>
+                          {formatTime(detailPosts?.createAt)}
+                        </Text>
+                        <Text style={{paddingLeft: 5, fontSize: 6}}>●</Text>
+                        <TouchableOpacity>
+                          {detailPosts?.idObject
+                            ? changeIdObject(detailPosts?.idObject)
+                            : null}
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
-                </View>
-              ))}
-              {/* {console.log('>>>>>>>> posts', posts[0].idUsers)} */}
-              {posts[0].idUsers._id !== user.user._id ? (
+                </>
+              )}
+              {/* {console.log('>>>>>>>> detailPosts', detailPosts)} */}
+              {posts[0].idUsers?._id !== user.user._id ? (
                 <TouchableOpacity
                   onPress={() => handleModalEditPostsGuest(posts[0])}>
                   <Entypo
@@ -665,64 +820,146 @@ const CommentsScreen = ({navigation, route}) => {
           {posts.map(item => (
             <View key={item._id}>
               {/* content */}
-              <View style={styles.baiVietContent}>
-                {showMore ? (
-                  <Text style={styles.content}>{item.content}</Text>
-                ) : (
-                  <Text style={styles.content}>
-                    {item.content?.slice(0, 100)}
-                  </Text>
-                )}
-                {/* Toggle button */}
-                {item.content && item.content.length > 100 && (
-                  <TouchableOpacity
-                    style={styles.showMore}
-                    onPress={handleShowMore}>
-                    <Text style={{color: 'blue'}}>
-                      {showMore ? 'Ẩn' : 'Xem thêm'}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
+              {detailPosts === null ? (
+                <>
+                  {item.content === '' ? (
+                    <></>
+                  ) : (
+                    <View style={styles.baiVietContent}>
+                      {showMore ? (
+                        <Text style={styles.content}>{item.content}</Text>
+                      ) : (
+                        <Text style={styles.content}>
+                          {item.content?.slice(0, 100)}
+                        </Text>
+                      )}
+                      {/* Toggle button */}
+                      {item.content && item.content.length > 100 && (
+                        <TouchableOpacity
+                          style={styles.showMore}
+                          onPress={handleShowMore}>
+                          <Text style={{color: 'blue'}}>
+                            {showMore ? 'Ẩn' : 'Xem thêm'}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  )}
+                </>
+              ) : (
+                <>
+                  {detailPosts.content === '' ? (
+                    <></>
+                  ) : (
+                    <View style={styles.baiVietContent}>
+                      {showMore ? (
+                        <Text style={styles.content}>
+                          {detailPosts?.content}
+                        </Text>
+                      ) : (
+                        <Text style={styles.content}>
+                          {detailPosts?.content?.slice(0, 100)}
+                        </Text>
+                      )}
+                      {/* Toggle button */}
+                      {detailPosts?.content &&
+                        detailPosts?.content.length > 100 && (
+                          <TouchableOpacity
+                            style={styles.showMore}
+                            onPress={handleShowMore}>
+                            <Text style={{color: 'blue'}}>
+                              {showMore ? 'Ẩn' : 'Xem thêm'}
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                    </View>
+                  )}
+                </>
+              )}
 
               {/* media */}
-              {item.media.length > 0 ? (
-                <View style={styles.container_media}>
-                  <Swiper
-                    style={styles.swiper}
-                    showsButtons={false}
-                    loop={false}
-                    paginationStyle={{bottom: 10}}
-                    activeDotColor="#22b6c0"
-                    onIndexChanged={index => setActiveSlide(index)}>
-                    {item.media?.map((media, index) => (
-                      <View key={media._id}>
-                        {media.type === 'image' ? (
-                          <Image
-                            source={{uri: media.url.join()}}
-                            style={styles.posts}
-                          />
-                        ) : (
-                          <VideoPlayer
-                            video={{uri: media.url.join()}}
-                            videoWidth={1600}
-                            videoHeight={900}
-                            thumbnail={require('../../../../../assets/play_96px.png')}
-                            // autoplay={true}
-                            style={styles.posts}
-                          />
-                        )}
-                        <View style={styles.imageCountContainer}>
-                          <Text style={styles.imageCountText}>
-                            {index + 1}/{item.media.length}
-                          </Text>
-                        </View>
-                      </View>
-                    ))}
-                  </Swiper>
-                </View>
+              {detailPosts === null ? (
+                <>
+                  {item.media?.length > 0 ? (
+                    <View style={styles.container_media}>
+                      <Swiper
+                        style={styles.swiper}
+                        showsButtons={false}
+                        loop={false}
+                        paginationStyle={{bottom: 10}}
+                        activeDotColor="#22b6c0"
+                        onIndexChanged={index => setActiveSlide(index)}>
+                        {item.media?.map((media, index) => (
+                          <View key={media._id}>
+                            {media.type === 'image' ? (
+                              <Image
+                                source={{uri: media.url.join()}}
+                                style={styles.posts}
+                              />
+                            ) : (
+                              <VideoPlayer
+                                video={{uri: media.url.join()}}
+                                videoWidth={1600}
+                                videoHeight={900}
+                                thumbnail={require('../../../../../assets/play_96px.png')}
+                                // autoplay={true}
+                                style={styles.posts}
+                              />
+                            )}
+                            <View style={styles.imageCountContainer}>
+                              <Text style={styles.imageCountText}>
+                                {index + 1}/{item.media.length}
+                              </Text>
+                            </View>
+                          </View>
+                        ))}
+                      </Swiper>
+                    </View>
+                  ) : (
+                    <View style={{height: 0}} />
+                  )}
+                </>
               ) : (
-                <View style={{height: 0}} />
+                <>
+                  {detailPosts?.media?.length > 0 ? (
+                    <View style={styles.container_media}>
+                      <Swiper
+                        style={styles.swiper}
+                        showsButtons={false}
+                        loop={false}
+                        paginationStyle={{bottom: 10}}
+                        activeDotColor="#22b6c0"
+                        onIndexChanged={index => setActiveSlide(index)}>
+                        {detailPosts?.media?.map((media, index) => (
+                          <View key={media._id}>
+                            {media.type === 'image' ? (
+                              <Image
+                                source={{uri: media.url.join()}}
+                                style={styles.posts}
+                              />
+                            ) : (
+                              <VideoPlayer
+                                video={{uri: media.url.join()}}
+                                videoWidth={1600}
+                                videoHeight={900}
+                                thumbnail={require('../../../../../assets/play_96px.png')}
+                                // autoplay={true}
+                                style={styles.posts}
+                              />
+                            )}
+                            <View style={styles.imageCountContainer}>
+                              <Text style={styles.imageCountText}>
+                                {index + 1}/{detailPosts?.media.length}
+                              </Text>
+                            </View>
+                          </View>
+                        ))}
+                      </Swiper>
+                    </View>
+                  ) : (
+                    <View style={{height: 0}} />
+                  )}
+                </>
               )}
 
               {/* line */}
@@ -815,7 +1052,7 @@ const CommentsScreen = ({navigation, route}) => {
               <Text style={styles.linePostsEnd} />
 
               {/* feeling */}
-              {item.reaction.length > 0 ? (
+              {item.reaction?.length > 0 ? (
                 <View style={styles.container_feeling_commnet_share}>
                   {/* feeling */}
                   <TouchableOpacity
@@ -881,7 +1118,7 @@ const CommentsScreen = ({navigation, route}) => {
               {/* share */}
               <View style={styles.comment_share}>
                 {/* share */}
-                {item.share.length > 0 ? (
+                {item.share?.length > 0 ? (
                   <TouchableOpacity style={styles.container_share}>
                     <Text style={styles.text_share}>{item.share.length}</Text>
                     <Text style={[styles.text_share, {paddingLeft: 5}]}>
@@ -913,7 +1150,9 @@ const CommentsScreen = ({navigation, route}) => {
                   return (
                     <View style={styles.container_comment} key={index}>
                       {/* Bình luận cha */}
-                      <View style={styles.container_comment_header}>
+                      <Pressable
+                        onLongPress={() => showDialogDelete(item._id)}
+                        style={styles.container_comment_header}>
                         <Image
                           style={styles.avatar_comment}
                           source={{uri: item.idUsers?.avatar}}
@@ -1000,9 +1239,19 @@ const CommentsScreen = ({navigation, route}) => {
                               onLongPress={() =>
                                 handleReaction.current.handleLongPress()
                               }>
-                              <Text style={styles.like_like_comment}>
-                                Thích
-                              </Text>
+                              {isUserReacted(item.reaction, user.user._id) ? (
+                                <Text
+                                  style={[
+                                    styles.like_like_comment,
+                                    {color: '#22b6c0'},
+                                  ]}>
+                                  Thích
+                                </Text>
+                              ) : (
+                                <Text style={styles.like_like_comment}>
+                                  Thích
+                                </Text>
+                              )}
                             </TouchableOpacity>
                             <TouchableOpacity
                               style={styles.like_like_comment}
@@ -1023,7 +1272,7 @@ const CommentsScreen = ({navigation, route}) => {
                             )}
                           </View>
                         </View>
-                      </View>
+                      </Pressable>
                       {/* Bình luận con */}
                       <View
                         style={{
@@ -1043,7 +1292,11 @@ const CommentsScreen = ({navigation, route}) => {
                                 borderBottomLeftRadius: 50,
                               }}
                               key={subIndex}>
-                              <View
+                              <Pressable
+                                onLongPress={() => {
+                                  showDialogDelete(subItem._id),
+                                    setParentId(subItem._id);
+                                }}
                                 style={[
                                   styles.container_comment_body,
                                   styles.childComment,
@@ -1167,10 +1420,29 @@ const CommentsScreen = ({navigation, route}) => {
                                       {formatTime(subItem.createAt)}
                                     </Text>
                                     <TouchableOpacity
-                                      style={styles.like_like_comment}>
-                                      <Text style={styles.like_like_comment}>
-                                        Thích
-                                      </Text>
+                                      style={styles.like_like_comment}
+                                      onPress={() =>
+                                        handleLikeComments(subItem._id)
+                                      }
+                                      onLongPress={() =>
+                                        handleReaction.current.handleLongPress()
+                                      }>
+                                      {isUserReacted(
+                                        subItem.reaction,
+                                        user.user._id,
+                                      ) ? (
+                                        <Text
+                                          style={[
+                                            styles.like_like_comment,
+                                            {color: '#22b6c0'},
+                                          ]}>
+                                          Thích
+                                        </Text>
+                                      ) : (
+                                        <Text style={styles.like_like_comment}>
+                                          Thích
+                                        </Text>
+                                      )}
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                       style={styles.like_like_comment}
@@ -1182,16 +1454,25 @@ const CommentsScreen = ({navigation, route}) => {
                                         Phản hồi
                                       </Text>
                                     </TouchableOpacity>
+                                    {subItem.reaction &&
+                                      subItem.reaction.length > 0 && (
+                                        <View style={styles.like_like_comment}>
+                                          <Text
+                                            style={styles.like_like_comment}>
+                                            {subItem.reaction.length} lượt thích
+                                          </Text>
+                                        </View>
+                                      )}
                                   </View>
                                 </View>
-                              </View>
+                              </Pressable>
 
                               {/* Bình luận lòng con */}
                               <View
                                 style={{
-                                  paddingLeft: 45,
+                                  paddingLeft: 30,
                                 }}>
-                                {console.log(
+                                {/* {console.log(
                                   '>>>> asasd',
                                   comments.filter(
                                     subItemC =>
@@ -1200,14 +1481,18 @@ const CommentsScreen = ({navigation, route}) => {
                                       subItemC.idParent?.idParent ===
                                         subItem._id,
                                   ),
-                                )}
+                                )} */}
                                 {comments
                                   .filter(
                                     subItemC =>
                                       subItemC.idParent?._id === subItem._id,
                                   )
                                   .map((subItemC, subIndex) => (
-                                    <View
+                                    <Pressable
+                                      onLongPress={() => {
+                                        showDialogDelete(subItemC._id),
+                                          setParentId(subItemC._id);
+                                      }}
                                       style={{
                                         borderLeftWidth: 2,
                                         borderColor: '#c6c6c6',
@@ -1342,13 +1627,32 @@ const CommentsScreen = ({navigation, route}) => {
                                               {formatTime(subItemC.createAt)}
                                             </Text>
                                             <TouchableOpacity
-                                              style={styles.like_like_comment}>
-                                              <Text
-                                                style={
-                                                  styles.like_like_comment
-                                                }>
-                                                Thích
-                                              </Text>
+                                              style={styles.like_like_comment}
+                                              onPress={() =>
+                                                handleLikeComments(subItemC._id)
+                                              }
+                                              onLongPress={() =>
+                                                handleReaction.current.handleLongPress()
+                                              }>
+                                              {isUserReacted(
+                                                subItemC.reaction,
+                                                user.user._id,
+                                              ) ? (
+                                                <Text
+                                                  style={[
+                                                    styles.like_like_comment,
+                                                    {color: '#22b6c0'},
+                                                  ]}>
+                                                  Thích
+                                                </Text>
+                                              ) : (
+                                                <Text
+                                                  style={
+                                                    styles.like_like_comment
+                                                  }>
+                                                  Thích
+                                                </Text>
+                                              )}
                                             </TouchableOpacity>
                                             <TouchableOpacity
                                               style={styles.like_like_comment}
@@ -1365,10 +1669,25 @@ const CommentsScreen = ({navigation, route}) => {
                                                 Phản hồi
                                               </Text>
                                             </TouchableOpacity>
+                                            {subItemC.reaction &&
+                                              subItemC.reaction.length > 0 && (
+                                                <View
+                                                  style={
+                                                    styles.like_like_comment
+                                                  }>
+                                                  <Text
+                                                    style={
+                                                      styles.like_like_comment
+                                                    }>
+                                                    {subItemC.reaction.length}{' '}
+                                                    thích
+                                                  </Text>
+                                                </View>
+                                              )}
                                           </View>
                                         </View>
                                       </View>
-                                    </View>
+                                    </Pressable>
                                   ))}
                               </View>
                             </View>
@@ -1685,6 +2004,18 @@ const CommentsScreen = ({navigation, route}) => {
             <ModalEditPostsGuest editPostsItemGuest={editPostsItemGuest} />
           </TouchableOpacity>
         </Modal>
+
+        <DialogDeletePosts.Container visible={visibleDiaLogDelete}>
+          <DialogDeletePosts.Title>Xóa comments này ?</DialogDeletePosts.Title>
+          <DialogDeletePosts.Description>
+            Sau khi xóa comments này bạn không thể khôi phục.
+          </DialogDeletePosts.Description>
+          <DialogDeletePosts.Button label="Hủy" onPress={handleCancelDelete} />
+          <DialogDeletePosts.Button
+            label="Chấp nhận"
+            onPress={handleDeleteComments}
+          />
+        </DialogDeletePosts.Container>
       </View>
     </GestureHandlerRootView>
   );

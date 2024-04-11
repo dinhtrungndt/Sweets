@@ -17,6 +17,7 @@ import {
   getComments,
   getMedia,
   getPosts,
+  getPostsBirthday,
   getPostsByUser,
   getReaction,
   getShare,
@@ -56,6 +57,9 @@ const HomeScreen = props => {
           const shareResponse = await getShare(post._id);
           const share = shareResponse;
 
+          const birthdayResponse = await getPostsBirthday(user.user._id);
+          const birthday = birthdayResponse;
+
           const likedByCurrentUser = reaction.some(
             reactionItem =>
               reactionItem.idUsers._id === user.id &&
@@ -69,6 +73,7 @@ const HomeScreen = props => {
             reaction,
             comment,
             share,
+            birthday,
             isLiked: likedByCurrentUser,
           };
         }),
