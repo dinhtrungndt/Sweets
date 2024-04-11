@@ -29,6 +29,7 @@ import {
   getComments,
   getMedia,
   getPosts,
+  getPostsBirthday,
   getReaction,
   getShare,
   likeByPost,
@@ -73,12 +74,16 @@ const PostsScreen = ({posts, navigation}) => {
           const shareResponse = await getShare(post._id);
           const share = shareResponse;
 
+          const birthdayResponse = await getPostsBirthday(user.user._id);
+          const birthday = birthdayResponse;
+
           return {
             ...post,
             media,
             reaction,
             comment,
             share,
+            birthday,
           };
         }),
       );
@@ -287,6 +292,7 @@ const PostsScreen = ({posts, navigation}) => {
       const updatedPosts = posts.filter(post => post._id !== _idDelete);
       setPost(updatedPosts);
       setModalEditPostsAccount(false);
+      await reloadPosts();
       // console.log('>>>. Xóa thành công', res);
     } catch (error) {
       console.log('>>>. Lỗi delete Posts', error);
@@ -295,13 +301,17 @@ const PostsScreen = ({posts, navigation}) => {
 
   const handleShare = async item => {
     try {
-      const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
-      const shareOptions = {
-        title: 'Share',
-        message: 'Chia sẻ bài viết này!',
-        url: deepLink,
-      };
-      await Share.open(shareOptions);
+      if (item && item._id) {
+        const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
+        const shareOptions = {
+          title: 'Share',
+          message: 'Chia sẻ bài viết này!',
+          url: deepLink,
+        };
+        await Share.open(shareOptions);
+      } else {
+        console.log('Bài viết không hợp lệ để chia sẻ');
+      }
     } catch (error) {
       console.log('Lỗi chia sẻ nè:', error);
     }
@@ -381,14 +391,50 @@ const PostsScreen = ({posts, navigation}) => {
                       <Text style={styles.name}>{item.idUsers?.name}</Text>
                     </TouchableOpacity>
                   ) : (
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate('Profile', {
-                          account: item,
-                        })
-                      }>
-                      <Text style={styles.name}>{item.idUsers?.name}</Text>
-                    </TouchableOpacity>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('Profile', {
+                            account: item,
+                          })
+                        }>
+                        <Text style={styles.name}>{item.idUsers?.name}</Text>
+                      </TouchableOpacity>
+                      {item.taggedFriends === null ? (
+                        <View />
+                      ) : (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            width: '50%',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                            }}>
+                            {' '}
+                            cùng với
+                          </Text>
+                          <TouchableOpacity
+                            style={{flexDirection: 'row', alignItems: 'center'}}
+                            onPress={() =>
+                              navigation.navigate('OtherUserA', {
+                                accountzzz: item.taggedFriends,
+                              })
+                            }>
+                            <Text
+                              style={[
+                                styles.name,
+                                {color: '#ff0000', marginLeft: 5},
+                              ]}>
+                              {item.taggedFriends.name}
+                            </Text>
+                            <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                    </View>
                   )}
                   <View style={styles.container_object}>
                     <TouchableOpacity

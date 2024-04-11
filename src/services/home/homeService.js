@@ -25,6 +25,21 @@ export const getPosts = async idUsers => {
     throw error;
   }
 };
+
+// Lấy chi tiết bài viết theo idPosts
+export const getPostsDetail = async idPosts => {
+  try {
+    const response = await AxiosInstance().get(
+      `/posts/get-detail-post/${idPosts}`,
+    );
+    // console.log('get post >>>>>>>>>>>>>>> Service GetPosts 8 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Error fetching posts: 11 s', error);
+    throw error;
+  }
+};
+
 export const getPostsByUser = async idUsers => {
   try {
     const response = await AxiosInstance().get(
@@ -124,6 +139,32 @@ export const likeByComments = async (idUsers, idComments, type) => {
     const response = await AxiosInstance().post(
       `/reaction/add-comments/${idUsers}/${idComments}`,
       {type},
+    );
+    return response;
+  } catch (error) {
+    console.error('Lỗi khi gửi yêu cầu API:', error);
+    throw error;
+  }
+};
+
+// Xóa comments theo idUsers và idComments
+export const deleteCommentsC = async (idUsers, idComments) => {
+  try {
+    const response = await AxiosInstance().delete(
+      `/comments/delete/${idUsers}/${idComments}`,
+    );
+    return response;
+  } catch (error) {
+    console.error('Lỗi khi gửi yêu cầu API:', error);
+    throw error;
+  }
+};
+
+// Xóa nguyên comments
+export const deleteComments = async idComments => {
+  try {
+    const response = await AxiosInstance().delete(
+      `/comments/delete/${idComments}`,
     );
     return response;
   } catch (error) {
@@ -332,6 +373,34 @@ export const addHistorySearch = async (id, name) => {
     });
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response.users);
     return response.users;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Lấy bài viết chúc mừng sinh nhật
+export const getPostsBirthday = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/posts/get-birthday-posts/${idUsers}`,
+    );
+    // console.log('birthdayPosts post >>>>>>>>>>>>>>> 20 ', response.birthdayPosts);
+    return response.birthdayPosts;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Lấy danh sách reaction theo idUsers và idPosts
+export const getReactionDetail = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().get(
+      `/reaction/get-idUsers/${idUsers}/${idPosts}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
     throw error;
