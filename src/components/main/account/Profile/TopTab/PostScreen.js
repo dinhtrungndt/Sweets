@@ -201,20 +201,20 @@ const PostScreenAccount = () => {
       <Text style={styles.text1}>Chi tiết</Text>
       <View style={styles.detailContainer}>
         <Image style={styles.imgIcon} source={require('../../../../../assets/icon_home_30.png')} />
-        <Text style={styles.text2}>Sống tại</Text>
+        <Text style={styles.text2}>{t('liveIn')}</Text>
         <Text style={styles.text3}>Hồ Chí Minh</Text>
       </View>
       <View style={styles.detailContainer}>
         <Image style={styles.imgIcon} source={require('../../../../../assets/icon_location_64.png')} />
-        <Text style={styles.text2}>Đến từ</Text>
+        <Text style={styles.text2}>{t('from')}</Text>
         <Text style={styles.text3}>Đăk Mil, Đăk Nông</Text>
       </View>
       <View style={styles.detailContainer}>
         <Image style={styles.imgIcon} source={require('../../../../../assets/icon_more.png')} />
-        <Text style={styles.text2}>Xem thông tin giới thiệu bản thân</Text>
+        <Text style={styles.text2}>{t('viewIntro')}</Text>
       </View>
       <TouchableOpacity style={styles.BtnEditDetail}>
-        <Text style={styles.text4}>Chỉnh sửa chi tiết công khai</Text>
+        <Text style={styles.text4}>{t('editPublicDetails')}</Text>
       </TouchableOpacity>
     </View>
   );

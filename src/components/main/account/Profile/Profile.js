@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Text,
   View,
@@ -311,7 +309,7 @@ const Profile = props => {
             style={styles.imgEdit}
             source={require('../../../../assets/icon_add_32.png')}
           />
-          <Text style={styles.textIntroduce}>Thêm vào tin</Text>
+          <Text style={styles.textIntroduce}>{t('addToNews')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate('EditProfile')}

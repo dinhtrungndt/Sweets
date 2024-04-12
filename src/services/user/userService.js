@@ -140,3 +140,45 @@ export const getPostByUserId = async idUsers => {
     throw error;
   }
 };
+
+export const forgetPassword = async (email) => {
+  try {
+    const body = {
+      email: email,
+    };
+    const response = await AxiosInstance().post('/users/forgot-password', body);
+    return response;
+  } catch (error) {
+    console.log('forgetPassword error:', error);
+    return error;
+  }
+};
+
+export const checkOTP = async (email, otp) => {
+  try {
+    const body = {
+      email: email,
+      otp: otp,
+    };
+    const response = await AxiosInstance().post('/users/check-otp', body);
+    return response;
+  } catch (error) {
+    console.log('checkOTP error:', error);
+    return error;
+  }
+};
+
+export const resetPassword = async (email, otp, newPassword) => {
+  try {
+    const body = {
+      email: email,
+      otp: otp,
+      newPassword: newPassword,
+    };
+    const response = await AxiosInstance().post('/users/reset-password', body);
+    return response;
+  } catch (error) {
+    console.log('resetPassword error:', error);
+    return error;
+  }
+};

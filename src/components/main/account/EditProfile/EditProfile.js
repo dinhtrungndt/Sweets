@@ -23,7 +23,7 @@ import { set } from 'date-fns';
 
 const EditProfile = props => {
   const { navigation } = props;
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const [loading, setLoading] = useState(false);
   const [modalVisibleEdit, setModalVisibleEdit] = useState(false);

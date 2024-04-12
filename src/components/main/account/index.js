@@ -174,18 +174,18 @@ const AccountScreen = props => {
       {showConfirmLogout && (
         <View style={styles.confirmLogoutContainer}>
           <Text style={styles.confirmLogoutText}>
-            Đăng xuất khỏi tài khoản của bạn?
+            {t('areYouSureYouWantToLogout')}?
           </Text>
           <View style={styles.confirmLogoutButtons}>
             <TouchableOpacity
               style={styles.confirmLogoutButton}
               onPress={() => setShowConfirmLogout(false)}>
-              <Text style={styles.confirmLogoutButtonText}>Hủy</Text>
+              <Text style={styles.confirmLogoutButtonText1}>{t('cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.confirmLogoutButton}
               onPress={confirmLogout}>
-              <Text style={styles.confirmLogoutButtonText}>Đồng ý</Text>
+              <Text style={styles.confirmLogoutButtonText2}>{t('agree')}</Text>
             </TouchableOpacity>
           </View>
         </View>

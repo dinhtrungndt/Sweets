@@ -223,10 +223,15 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: '#E5E5E5',
     },
-    confirmLogoutButtonText: {
+    confirmLogoutButtonText1: {
         fontFamily: 'Poppins',
         fontSize: 16,
         color: '#000000',
+    },
+    confirmLogoutButtonText2: {
+        fontFamily: 'Poppins',
+        fontSize: 16,
+        color: 'red',
     },
     setting: {
         width: '100%',
