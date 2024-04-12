@@ -17,7 +17,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import {UserContext} from '../../../../../../contexts/user/userContext';
 import {getListFriend} from '../../../../../../services/home/addsService';
 
-const TabFriendUpLoad = ({navigation, cancel}) => {
+const TabFriendUpLoad = ({navigation, cancel, getSelectTag}) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const {user} = useContext(UserContext);
   const [listFriend, setListFriend] = useState([]);
@@ -46,9 +46,9 @@ const TabFriendUpLoad = ({navigation, cancel}) => {
         item => item.id === selectedOptions[0],
       );
       //   console.log('Người dùng đã chọn:', selectedUser);
-      cancel({selectedUser: selectedUser});
+      getSelectTag({selectedUser: selectedUser});
     } else {
-      console.log('Chưa chọn người dùng nào');
+      // console.log('Chưa chọn người dùng nào');
     }
   };
 

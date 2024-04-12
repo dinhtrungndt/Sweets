@@ -393,6 +393,20 @@ export const getPostsBirthday = async idUsers => {
   }
 };
 
+// Lấy bài viết location
+export const getPostsLocation = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/posts/get-location-posts/${idUsers}`,
+    );
+    // console.log('locationPosts post >>>>>>>>>>>>>>> 20 ', response.locationPosts);
+    return response.locationPosts;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};
+
 // Lấy danh sách reaction theo idUsers và idPosts
 export const getReactionDetail = async (idUsers, idPosts) => {
   try {

@@ -189,19 +189,20 @@ export function AddsScreen({route, navigation}) {
         });
       }
 
+      console.log(' tagSelectedUser:', tagSelectedUser?.id);
       if (inputText && imagePath) {
         await Promise.all([
           handleUploadMedia(idPostsUp),
-          handleUploadPost(idPostsUp),
+          handleUploadPost(idPostsUp, tagSelectedUser, locationData),
           handleUploadColor(idPostsUp),
         ]);
       } else if (inputText) {
-        await handleUploadPost(idPostsUp);
+        await handleUploadPost(idPostsUp, tagSelectedUser, locationData);
         await handleUploadColor(idPostsUp);
       } else if (inputText === '') {
         await Promise.all([
           handleUploadMedia(idPostsUp),
-          handleUploadPost(idPostsUp),
+          handleUploadPost(idPostsUp, tagSelectedUser, locationData),
         ]);
       } else if (imagePath) {
         await handleUploadMedia(idPostsUp);
@@ -246,7 +247,7 @@ export function AddsScreen({route, navigation}) {
   };
 
   const handleUploadPost = useCallback(
-    async idPostsUp => {
+    async (idPostsUp, tagSelectedUser, locationData) => {
       // if (!user || !inputText) {
       //   return;
       // }
@@ -261,6 +262,7 @@ export function AddsScreen({route, navigation}) {
           idObject: route.params?.selectedId?._id || idObjectValue,
           idTypePosts: '65b20030261511b0721a9913',
           taggedFriends: tagSelectedUser ? tab : null,
+          location: locationData || null,
         };
 
         console.log(' >>>>>>>>>>>>>>>> postDetails:', postDetails);
@@ -342,6 +344,7 @@ export function AddsScreen({route, navigation}) {
 
   const fetchLocationData = async (lat, lon) => {
     try {
+      setLoading(true);
       const response = await AxiosInstance().get(
         `weather?lat=${lat}&lon=${lon}&appid=b0e86008293e7c25b2deb2caa5a36b0c`,
       );
@@ -460,6 +463,35 @@ export function AddsScreen({route, navigation}) {
                     {tagSelectedUser?.name}
                   </Text>
                   <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {locationData === null ? null : (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                  }}>
+                  {' '}
+                  đang ở tại
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={[
+                      styles.body_name,
+                      {color: '#22b6c0', marginLeft: 5},
+                    ]}>
+                    {locationData}
+                  </Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -633,7 +665,10 @@ export function AddsScreen({route, navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomSheetItem}
-              onPress={handleCheckIn}>
+              onPress={() => {
+                handleCheckIn();
+                hideBottomSheet();
+              }}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_checkin.png')}
@@ -700,10 +735,10 @@ export function AddsScreen({route, navigation}) {
           style={[styles.modalContainer, {padding: 0}]}
           onPressOut={() => setModalVisibleTab(false)}>
           <TabFriendUpLoad
-            cancel={selectedUser => {
+            getSelectTag={selectedUser => {
               setTagSelectedUser(selectedUser.selectedUser);
-              setModalVisibleTab(false);
             }}
+            cancel={() => setModalVisibleTab(false)}
             navigation={navigation}
           />
         </TouchableOpacity>
