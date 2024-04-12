@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
     container_avatar_name2: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft  : 16,
+        marginLeft: 16,
     },
     postContainer: {
         marginTop: 10,
@@ -66,8 +66,8 @@ export const styles = StyleSheet.create({
         marginBottom: 10,
     },
     avatar: {
-        width: 30,
-        height: 30,
+        width: 36,
+        height: 36,
         borderRadius: 30,
         marginRight: 10,
     },
@@ -75,6 +75,14 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#000000',
+        position: 'absolute',
+        left: 45,
+        top: 0
+    },
+    time: {
+        position: 'absolute',
+        left: 45,
+        top: 18
     },
     postContent: {
         fontSize: 16,
@@ -87,16 +95,38 @@ export const styles = StyleSheet.create({
         resizeMode: 'cover',
         marginBottom: 10,
     },
+    container_media: {},
+    swiper: {
+        height: 375,
+    },
+    imageCountContainer: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 10,
+    },
+    imageCountText: {
+        color: '#FFF',
+        fontSize: 12,
+    },
     postAction: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingLeft: 16,
         paddingRight: 16,
-        paddingBottom: 10,
+        paddingTop: 6,
+        paddingBottom: 6,
+        borderTopWidth: 1,
+        borderTopColor: '#ccc'
     },
     postActionItem: {
         flexDirection: 'row',
-        alignItems: 'center',
+        // alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center'
     },
     postActionIcon: {
         width: 20,
@@ -106,5 +136,12 @@ export const styles = StyleSheet.create({
     postActionText: {
         fontSize: 16,
     },
-    
+    text_like_post: {
+        marginLeft: 5,
+    },
+    posts: {
+      width: '100%',
+      height: 350,
+    },
 });
+    
