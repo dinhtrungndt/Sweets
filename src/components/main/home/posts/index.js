@@ -391,50 +391,87 @@ const PostsScreen = ({posts, navigation}) => {
                       <Text style={styles.name}>{item.idUsers?.name}</Text>
                     </TouchableOpacity>
                   ) : (
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          navigation.navigate('Profile', {
-                            account: item,
-                          })
-                        }>
-                        <Text style={styles.name}>{item.idUsers?.name}</Text>
-                      </TouchableOpacity>
-                      {item.taggedFriends === null ? (
+                    <>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate('Profile', {
+                              account: item,
+                            })
+                          }>
+                          <Text style={styles.name}>{item.idUsers?.name}</Text>
+                        </TouchableOpacity>
+                        {item.taggedFriends === null ? (
+                          <View />
+                        ) : (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              width: '50%',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                              }}>
+                              {' '}
+                              cùng với
+                            </Text>
+                            <TouchableOpacity
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                              }}
+                              onPress={() =>
+                                navigation.navigate('OtherUserA', {
+                                  accountzzz: item.taggedFriends,
+                                })
+                              }>
+                              <Text
+                                style={[
+                                  styles.name,
+                                  {color: '#ff0000', marginLeft: 5},
+                                ]}>
+                                {item.taggedFriends.name}
+                              </Text>
+                              <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                      </View>
+                      {item.location === null ? (
                         <View />
                       ) : (
                         <View
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
-                            width: '50%',
+                            paddingLeft: 6,
                           }}>
                           <Text
                             style={{
                               fontSize: 14,
                             }}>
                             {' '}
-                            cùng với
+                            đang ở tại
                           </Text>
                           <TouchableOpacity
-                            style={{flexDirection: 'row', alignItems: 'center'}}
-                            onPress={() =>
-                              navigation.navigate('OtherUserA', {
-                                accountzzz: item.taggedFriends,
-                              })
-                            }>
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}>
                             <Text
                               style={[
                                 styles.name,
-                                {color: '#ff0000', marginLeft: 5},
+                                {color: '#22b6c0', marginLeft: 5},
                               ]}>
-                              {item.taggedFriends.name}
+                              {item.location}
                             </Text>
-                            <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                           </TouchableOpacity>
                         </View>
                       )}
-                    </View>
+                    </>
                   )}
                   <View style={styles.container_object}>
                     <TouchableOpacity
@@ -480,11 +517,49 @@ const PostsScreen = ({posts, navigation}) => {
             ) : (
               <View style={styles.baiVietContent}>
                 {showMore ? (
-                  <Text style={styles.content}>{item.content}</Text>
+                  <>
+                    {item?.color?.map(color => color.colors)[0] !==
+                    undefined ? (
+                      <Text
+                        style={[
+                          styles.content,
+                          {
+                            backgroundColor: item.color.map(
+                              color => color.colors,
+                            )[0],
+                            borderRadius: 16,
+                            padding: 16,
+                          },
+                        ]}>
+                        {item.content}
+                      </Text>
+                    ) : (
+                      <Text style={styles.content}>{item.content}</Text>
+                    )}
+                  </>
                 ) : (
-                  <Text style={styles.content}>
-                    {item.content?.slice(0, 100)}
-                  </Text>
+                  <>
+                    {item?.color?.map(color => color.colors)[0] !==
+                    undefined ? (
+                      <Text
+                        style={[
+                          styles.content,
+                          {
+                            backgroundColor: item.color.map(
+                              color => color.colors,
+                            )[0],
+                            borderRadius: 16,
+                            padding: 16,
+                          },
+                        ]}>
+                        {item.content?.slice(0, 100)}
+                      </Text>
+                    ) : (
+                      <Text style={styles.content}>
+                        {item.content?.slice(0, 100)}
+                      </Text>
+                    )}
+                  </>
                 )}
                 {/* Toggle button */}
                 {item.content && item.content.length > 100 && (
@@ -528,13 +603,13 @@ const PostsScreen = ({posts, navigation}) => {
                           style={styles.posts}
                         />
                       )}
-                      {showLengthMedia && (
+                      {showLengthMedia ? (
                         <View style={styles.imageCountContainer}>
                           <Text style={styles.imageCountText}>
                             {index + 1}/{item.media.length}
                           </Text>
                         </View>
-                      )}
+                      ) : null}
                     </View>
                   ))}
                 </Swiper>

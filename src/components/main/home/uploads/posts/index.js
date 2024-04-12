@@ -6,6 +6,8 @@ import {
   FlatList,
   Image,
   Modal,
+  PermissionsAndroid,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -17,6 +19,7 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {styles} from '../styles/posts';
 import {UserContext} from '../../../../../contexts/user/userContext';
 import {
+  addBackgroundColor,
   uploadImageStatus,
   uploadMedia,
   uploadPost,
@@ -27,7 +30,10 @@ import {CommonActions} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import VideoPlayer from 'react-native-video-player';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
+import TabFriendUpLoad from './tags';
+import ModelBackground from './background';
+import AxiosInstance from '../../../../../helper/AxiosWeather';
 
 export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
@@ -35,6 +41,8 @@ export function AddsScreen({route, navigation}) {
   const [image, setImage] = useState([]);
   const numColumns = 4;
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleTab, setModalVisibleTab] = useState(false);
+  const [modalBackground, setModalBackground] = useState(false);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true);
   const [imagePath, setImagePath] = useState(null);
   const [upload, setUpload] = useState(false);
@@ -44,8 +52,13 @@ export function AddsScreen({route, navigation}) {
   const selectedId = route.params?.selectedId;
   const idObjectValue =
     selectedId && selectedId._id ? selectedId._id : '65b1fe1be09b1e99f9e8a235';
+  const [tagSelectedUser, setTagSelectedUser] = useState(null);
+  const [selectColor, setSelectColor] = useState(undefined);
+  const [location, setLocation] = useState(null);
+  const [locationData, setLocationData] = useState(null);
 
-  console.log('>>>>> idObjectValue: ' + idObjectValue);
+  // console.log('>>>>> idObjectValue: ' + idObjectValue);
+  // console.log('>>>>> location: ' + JSON.stringify(location));
 
   const idObject = () => [
     {
@@ -153,7 +166,7 @@ export function AddsScreen({route, navigation}) {
         mediaArray.map(async media => {
           const idUp = _idPosts === null ? idPostsUp : _idPosts;
           const response = await uploadMedia(idUp, media);
-          console.log('>>>>>>> response -> handleUploadMedia', response);
+          // console.log('>>>>>>> response -> handleUploadMedia', response);
         }),
       );
     } catch (error) {
@@ -176,20 +189,25 @@ export function AddsScreen({route, navigation}) {
         });
       }
 
+      console.log(' tagSelectedUser:', tagSelectedUser?.id);
       if (inputText && imagePath) {
         await Promise.all([
           handleUploadMedia(idPostsUp),
-          handleUploadPost(idPostsUp),
+          handleUploadPost(idPostsUp, tagSelectedUser, locationData),
+          handleUploadColor(idPostsUp),
         ]);
       } else if (inputText) {
-        await handleUploadPost(idPostsUp);
+        await handleUploadPost(idPostsUp, tagSelectedUser, locationData);
+        await handleUploadColor(idPostsUp);
       } else if (inputText === '') {
         await Promise.all([
           handleUploadMedia(idPostsUp),
-          handleUploadPost(idPostsUp),
+          handleUploadPost(idPostsUp, tagSelectedUser, locationData),
         ]);
       } else if (imagePath) {
         await handleUploadMedia(idPostsUp);
+      } else {
+        return;
       }
 
       if (!upload) {
@@ -229,19 +247,22 @@ export function AddsScreen({route, navigation}) {
   };
 
   const handleUploadPost = useCallback(
-    async idPostsUp => {
+    async (idPostsUp, tagSelectedUser, locationData) => {
       // if (!user || !inputText) {
       //   return;
       // }
 
       try {
-        console.log('idObjectValue in handleUploadPost:', idObjectValue);
+        console.log('tagSelectedUser in tagSelectedUser:', tagSelectedUser?.id);
+        const tab = tagSelectedUser?.id;
         const postDetails = {
           _id: _idPosts === null ? idPostsUp : _idPosts,
           content: inputText || '',
           createAt: new Date().toISOString(),
           idObject: route.params?.selectedId?._id || idObjectValue,
           idTypePosts: '65b20030261511b0721a9913',
+          taggedFriends: tagSelectedUser ? tab : null,
+          location: locationData || null,
         };
 
         console.log(' >>>>>>>>>>>>>>>> postDetails:', postDetails);
@@ -254,7 +275,7 @@ export function AddsScreen({route, navigation}) {
             routes: [{name: 'HomeStackScreen'}],
           }),
         );
-        console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+        // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
       } catch (error) {
         console.error('Lỗi catch --->>>>> error :', error);
       }
@@ -262,25 +283,90 @@ export function AddsScreen({route, navigation}) {
     [user, inputText, route.params?.selectedId],
   );
 
-  const getCurrentLocation = () => {
-    return new Promise((resolve, reject) => {
+  const handleUploadColor = useCallback(
+    async idPostsUp => {
+      try {
+        // console.log('>>>>>>>selectColor innn handleUploadColor', selectColor);
+        const color = selectColor;
+        const response = await addBackgroundColor(
+          user.user._id,
+          _idPosts === null ? idPostsUp : _idPosts,
+          color,
+        );
+        // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', response);
+      } catch (error) {
+        console.error('Lỗi ở handleUploadColor nè', error);
+      }
+    },
+    [selectColor],
+  );
+
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Ứng dụng cần quyền truy cập vị trí của bạn',
+          message: 'Chúng tôi cần biết vị trí của bạn để check in',
+          buttonNeutral: 'Hỏi sau',
+          buttonNegative: 'Hủy',
+          buttonPositive: 'Đồng ý',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Quyền truy cập vị trí đã được cấp');
+        getLocation();
+      } else {
+        console.log('Quyền truy cập vị trí bị từ chối');
+      }
+    } catch (error) {
+      console.error('Lỗi khi yêu cầu quyền truy cập vị trí:', error);
+    }
+  };
+
+  const getLocation = async () => {
+    try {
       Geolocation.getCurrentPosition(
         position => {
           const {latitude, longitude} = position.coords;
-          resolve({latitude, longitude});
+          setLocation({latitude, longitude});
+          fetchLocationData(latitude, longitude);
         },
-        error => reject(error),
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+        error => {
+          console.error('Lỗi khi lấy vị trí:', error);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
-    });
+    } catch (error) {
+      console.error('Lỗi khi lấy vị trí:', error);
+    }
   };
 
-  const handleCheckIn = async ({navigation}) => {
+  const fetchLocationData = async (lat, lon) => {
     try {
-      const location = await getCurrentLocation();
-      console.log('Current location:', location);
+      setLoading(true);
+      const response = await AxiosInstance().get(
+        `weather?lat=${lat}&lon=${lon}&appid=b0e86008293e7c25b2deb2caa5a36b0c`,
+      );
+
+      console.log('Locationnnnn Data:', response.name);
+      setLocationData(response.name);
+      setLoading(false);
     } catch (error) {
-      console.error('Error getting current location:', error);
+      console.error('Lỗi khi lấy dữ liệu thời tiết:', error);
+      Alert.alert(
+        'Lỗi',
+        'Có lỗi xảy ra khi lấy dữ liệu thời tiết. Vui lòng kiểm tra lại định vị của bạn.',
+      );
+      setLoading(false);
+    }
+  };
+
+  const handleCheckIn = async () => {
+    try {
+      await requestLocationPermission();
+    } catch (error) {
+      console.error('Lỗi khi check in:', error);
     }
   };
 
@@ -304,7 +390,11 @@ export function AddsScreen({route, navigation}) {
     setIdPosts(_idPosts);
     console.log('useEffectuseEffect _idPosts:', _idPosts);
   }, []);
-  console.log('_idPosts ở ngoài:', _idPosts);
+  // console.log('_idPosts ở ngoài:', _idPosts);
+
+  useEffect(() => {
+    setTagSelectedUser(tagSelectedUser);
+  }, [tagSelectedUser]);
 
   // useEffect(() => {
   //   handleUploadPost();
@@ -338,7 +428,73 @@ export function AddsScreen({route, navigation}) {
           <Image style={styles.body_avatar} source={{uri: user.user.avatar}} />
           <View style={styles.body_content}>
             {/* name */}
-            <Text style={styles.body_name}>{user.user.name}</Text>
+            {tagSelectedUser === null ? (
+              <Text style={styles.body_name}>{user.user.name}</Text>
+            ) : (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.body_name}>{user.user.name}</Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                  }}>
+                  {' '}
+                  cùng với
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    width: '30%',
+                  }}
+                  onPress={() =>
+                    navigation.navigate('OtherUserA', {
+                      accountzzz: tagSelectedUser,
+                    })
+                  }>
+                  <Text
+                    style={[
+                      styles.body_name,
+                      {color: '#ff0000', marginLeft: 5},
+                    ]}>
+                    {tagSelectedUser?.name}
+                  </Text>
+                  <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {locationData === null ? null : (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                  }}>
+                  {' '}
+                  đang ở tại
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={[
+                      styles.body_name,
+                      {color: '#22b6c0', marginLeft: 5},
+                    ]}>
+                    {locationData}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
             {/* {console.log('user post', user.user.name)} */}
             <View style={{flexDirection: 'row'}}>
               {/* congkhai */}
@@ -381,7 +537,11 @@ export function AddsScreen({route, navigation}) {
         {/* Content */}
         <View style={{height: 570}}>
           <TextInput
-            style={styles.body_content_input}
+            style={[
+              selectColor
+                ? {backgroundColor: selectColor}
+                : styles.body_content_input,
+            ]}
             placeholder="Bạn đang nghĩ gì?"
             multiline={true}
             onChangeText={handleInputChange}
@@ -445,7 +605,9 @@ export function AddsScreen({route, navigation}) {
               Ảnh/video
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.boder_image}>
+          <TouchableOpacity
+            style={styles.boder_image}
+            onPress={() => setModalVisibleTab(true)}>
             <Image
               style={styles.avatar_icon_image}
               source={require('../../../../../assets/user_tag_25px.png')}
@@ -471,7 +633,10 @@ export function AddsScreen({route, navigation}) {
         {bottomSheetVisible && (
           <View style={styles.bottomSheet}>
             <TouchableOpacity
-              onPress={openLibrary}
+              onPress={() => {
+                openLibrary();
+                hideBottomSheet();
+              }}
               style={styles.bottomSheetItem}>
               <Image
                 style={styles.bottomSheetIcon}
@@ -479,7 +644,12 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>Ảnh/video</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              style={styles.bottomSheetItem}
+              onPress={() => {
+                setModalVisibleTab(true);
+                hideBottomSheet();
+              }}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/user_tag_25px.png')}
@@ -495,7 +665,10 @@ export function AddsScreen({route, navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomSheetItem}
-              onPress={handleCheckIn}>
+              onPress={() => {
+                handleCheckIn();
+                hideBottomSheet();
+              }}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_checkin.png')}
@@ -511,7 +684,12 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>Video trực tiếp</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalBackground(true);
+                hideBottomSheet();
+              }}
+              style={styles.bottomSheetItem}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_text.png')}
@@ -545,6 +723,39 @@ export function AddsScreen({route, navigation}) {
             <Text onPress={openLibrary}>Chọn ảnh</Text>
             <Text onPress={() => setModalVisible(false)}>Cancel</Text>
           </View>
+        </View>
+      </Modal>
+      {/* modal tab */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleTab}
+        onRequestClose={() => {}}>
+        <TouchableOpacity
+          style={[styles.modalContainer, {padding: 0}]}
+          onPressOut={() => setModalVisibleTab(false)}>
+          <TabFriendUpLoad
+            getSelectTag={selectedUser => {
+              setTagSelectedUser(selectedUser.selectedUser);
+            }}
+            cancel={() => setModalVisibleTab(false)}
+            navigation={navigation}
+          />
+        </TouchableOpacity>
+      </Modal>
+      {/* modal background */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalBackground}
+        onRequestClose={() => {}}>
+        <View style={styles.modalContainerColor}>
+          <ModelBackground
+            getSelectColor={selectedColor => {
+              setSelectColor(selectedColor.selectedColor);
+            }}
+            cancel={() => setModalBackground(false)}
+          />
         </View>
       </Modal>
     </View>

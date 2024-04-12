@@ -190,4 +190,8 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  modalContainerColor: {
+    width: '100%',
+    height: '100%',
+  },
 });

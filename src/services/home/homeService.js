@@ -393,6 +393,20 @@ export const getPostsBirthday = async idUsers => {
   }
 };
 
+// Lấy bài viết location
+export const getPostsLocation = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/posts/get-location-posts/${idUsers}`,
+    );
+    // console.log('locationPosts post >>>>>>>>>>>>>>> 20 ', response.locationPosts);
+    return response.locationPosts;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};
+
 // Lấy danh sách reaction theo idUsers và idPosts
 export const getReactionDetail = async (idUsers, idPosts) => {
   try {
@@ -403,6 +417,35 @@ export const getReactionDetail = async (idUsers, idPosts) => {
     return response;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Lấy backgroundColor theo idUsers và idPosts
+export const getBackgroundColor = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().get(
+      `/colors/get-detail/${idUsers}/${idPosts}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi getBackgroundColor : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Thêm backgroundColor theo idUsers và idPosts
+export const addBackgroundColor = async (idUsers, idPosts, color) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/colors/add/${idUsers}/${idPosts}`,
+      {color},
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi addBackgroundColor : 11 s', error.response);
     throw error;
   }
 };
