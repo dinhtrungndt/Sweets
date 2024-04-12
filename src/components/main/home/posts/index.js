@@ -53,6 +53,11 @@ const PostsScreen = ({posts, navigation}) => {
   const [post, setPost] = useState(posts);
   const [showLengthMedia, setShowLengthMedia] = useState(true);
 
+  console.log(
+    'posts:',
+    post.map(item => item.location),
+  );
+
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
   };
@@ -382,14 +387,87 @@ const PostsScreen = ({posts, navigation}) => {
                 )}
                 <View>
                   {item.idUsers._id !== user.user._id ? (
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate('OtherUserA', {
-                          account: item,
-                        })
-                      }>
-                      <Text style={styles.name}>{item.idUsers?.name}</Text>
-                    </TouchableOpacity>
+                    <>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate('OtherUserA', {
+                              account: item,
+                            })
+                          }>
+                          <Text style={styles.name}>{item.idUsers?.name}</Text>
+                        </TouchableOpacity>
+                        {item.taggedFriends === null ? (
+                          <View />
+                        ) : (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              width: '50%',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                              }}>
+                              {' '}
+                              cùng với
+                            </Text>
+                            <TouchableOpacity
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                              }}
+                              onPress={() =>
+                                navigation.navigate('OtherUserA', {
+                                  accountzzz: item.taggedFriends,
+                                })
+                              }>
+                              <Text
+                                style={[
+                                  styles.name,
+                                  {color: '#ff0000', marginLeft: 5},
+                                ]}>
+                                {item.taggedFriends.name}
+                              </Text>
+                              <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                      </View>
+                      {item.location === null ? (
+                        <View />
+                      ) : (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            paddingLeft: 6,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                            }}>
+                            {' '}
+                            đang ở tại
+                          </Text>
+                          <TouchableOpacity
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                            }}>
+                            <Text
+                              style={[
+                                styles.name,
+                                {color: '#22b6c0', marginLeft: 5},
+                              ]}>
+                              {item.location}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                    </>
                   ) : (
                     <>
                       <View
