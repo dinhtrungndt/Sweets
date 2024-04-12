@@ -4,7 +4,12 @@ import {StyleSheet} from 'react-native';
 export const styles = StyleSheet.create({
   T: {
     width: '100%',
-    height: '100%',
+    height: '80%',
+    bottom: 0,
+    position: 'absolute',
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   header: {
     flexDirection: 'row',
@@ -43,7 +48,7 @@ export const styles = StyleSheet.create({
     paddingLeft: 30,
     bottom: 5,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#e6e6e6',
   },
   body_content_icon: {
     width: 37,

@@ -14,6 +14,7 @@ import PostsScreen from './posts';
 
 // data
 import {
+  getBackgroundColor,
   getComments,
   getMedia,
   getPosts,
@@ -60,6 +61,12 @@ const HomeScreen = props => {
           const birthdayResponse = await getPostsBirthday(user.user._id);
           const birthday = birthdayResponse;
 
+          const colorResponse = await getBackgroundColor(
+            user.user._id,
+            post._id,
+          );
+          const color = colorResponse;
+
           const likedByCurrentUser = reaction.some(
             reactionItem =>
               reactionItem.idUsers._id === user.id &&
@@ -74,6 +81,7 @@ const HomeScreen = props => {
             comment,
             share,
             birthday,
+            color,
             isLiked: likedByCurrentUser,
           };
         }),

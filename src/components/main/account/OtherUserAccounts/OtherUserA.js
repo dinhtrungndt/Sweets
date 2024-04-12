@@ -6,21 +6,21 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import React, {useContext, useState, useCallback, useEffect} from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {GetListUserById} from '../../../../services/user/userService';
+import React, { useContext, useState, useCallback, useEffect } from 'react';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { GetListUserById } from '../../../../services/user/userService';
 // screens
 import PostOtherScreen from './TopTabOther/PostOtherScreen';
 import ImgOtherScreen from './TopTabOther/ImgOtherScreen';
 // styles
-import {styles} from '../style/otherUserA';
-import {UserContext} from '../../../../contexts/user/userContext';
+import { styles } from '../style/otherUserA';
+import { UserContext } from '../../../../contexts/user/userContext';
 
 const Tab = createMaterialTopTabNavigator();
 
-const OtherUserA = ({navigation, route}) => {
-  const {account, accountzzz} = route.params;
-  const {user} = useContext(UserContext);
+const OtherUserA = ({ navigation, route }) => {
+  const { account, accountzzz } = route.params;
+  const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null); // State để lưu thông tin người dùng
 
@@ -33,7 +33,7 @@ const OtherUserA = ({navigation, route}) => {
         <View style={styles.body}>
           <View style={styles.profileFrame}>
             {accountzzz?.coverImage === 'null' ||
-            accountzzz?.coverImage === 'default' ? (
+              accountzzz?.coverImage === 'default' ? (
               <TouchableOpacity>
                 <Image
                   style={styles.imgCover}
@@ -44,7 +44,7 @@ const OtherUserA = ({navigation, route}) => {
               <TouchableOpacity>
                 <Image
                   style={styles.imgCover}
-                  source={{uri: accountzzz?.coverImage}}
+                  source={{ uri: accountzzz?.coverImage }}
                 />
               </TouchableOpacity>
             )}
@@ -59,7 +59,7 @@ const OtherUserA = ({navigation, route}) => {
               <TouchableOpacity>
                 <Image
                   style={styles.imgAvatar}
-                  source={{uri: accountzzz?.avatar}}
+                  source={{ uri: accountzzz?.avatar }}
                 />
               </TouchableOpacity>
             )}
@@ -104,7 +104,6 @@ const OtherUserA = ({navigation, route}) => {
               tabBarLabelStyle: {
                 fontSize: 14,
                 fontWeight: 'bold',
-                textAlign: 'left',
               },
               tabBarStyle: {
                 backgroundColor: '#fff',
@@ -130,7 +129,7 @@ const OtherUserA = ({navigation, route}) => {
         <View style={styles.body}>
           <View style={styles.profileFrame}>
             {account.idUsers?.coverImage === 'null' ||
-            account.idUsers?.coverImage === 'default' ? (
+              account.idUsers?.coverImage === 'default' ? (
               <TouchableOpacity>
                 <Image
                   style={styles.imgCover}
@@ -141,7 +140,7 @@ const OtherUserA = ({navigation, route}) => {
               <TouchableOpacity>
                 <Image
                   style={styles.imgCover}
-                  source={{uri: account.idUsers?.coverImage}}
+                  source={{ uri: account.idUsers?.coverImage }}
                 />
               </TouchableOpacity>
             )}
@@ -156,7 +155,7 @@ const OtherUserA = ({navigation, route}) => {
               <TouchableOpacity>
                 <Image
                   style={styles.imgAvatar}
-                  source={{uri: account.idUsers?.avatar}}
+                  source={{ uri: account.idUsers?.avatar }}
                 />
               </TouchableOpacity>
             )}
@@ -198,29 +197,33 @@ const OtherUserA = ({navigation, route}) => {
 
           <Tab.Navigator
             screenOptions={{
-              tabBarLabelStyle: {
-                fontSize: 14,
-                fontWeight: 'bold',
-                textAlign: 'left',
-              },
-              tabBarStyle: {
-                backgroundColor: '#fff',
-                borderTopColor: '#ddd',
-                marginTop: 6,
-              },
               tabBarActiveTintColor: '#22b6c0',
               tabBarInactiveTintColor: '#bdc3c7',
-              tabBarIndicatorStyle: {
-                backgroundColor: '#22b6c0',
+              tabBarLabelStyle: {
+                fontSize: 14,
+                fontWeight: 'bold'
               },
-              tabBarPressColor: 'rgba(0,0,0,0.1)',
+              tabBarItemStyle: {
+                width: 'auto'
+              },
+              tabBarIndicatorStyle: {
+                backgroundColor: '#22b6c0'
+              },
+              tabBarStyle: {
+                backgroundColor: '#FFF',
+                elevation: 1,
+                marginTop: 6
+              }
             }}>
             <Tab.Screen
               name="Bài viết"
-              posts={userData}
+              initialParams={{ account: account, accountzzz: accountzzz }}
               component={PostOtherScreen}
             />
-            <Tab.Screen name="Ảnh" component={ImgOtherScreen} />
+            <Tab.Screen
+              name="Ảnh"
+              initialParams={{ account: account }}
+              component={ImgOtherScreen} />
           </Tab.Navigator>
         </View>
       ) : null}
