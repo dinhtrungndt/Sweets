@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   Modal,
+  PermissionsAndroid,
   ScrollView,
   StyleSheet,
   Text,
@@ -29,9 +30,10 @@ import {CommonActions} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import VideoPlayer from 'react-native-video-player';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import TabFriendUpLoad from './tags';
 import ModelBackground from './background';
+import AxiosInstance from '../../../../../helper/AxiosWeather';
 
 export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
@@ -52,9 +54,11 @@ export function AddsScreen({route, navigation}) {
     selectedId && selectedId._id ? selectedId._id : '65b1fe1be09b1e99f9e8a235';
   const [tagSelectedUser, setTagSelectedUser] = useState(null);
   const [selectColor, setSelectColor] = useState(undefined);
+  const [location, setLocation] = useState(null);
+  const [locationData, setLocationData] = useState(null);
 
   // console.log('>>>>> idObjectValue: ' + idObjectValue);
-  // console.log('>>>>> selectColor: ' + selectColor);
+  // console.log('>>>>> location: ' + JSON.stringify(location));
 
   const idObject = () => [
     {
@@ -295,25 +299,71 @@ export function AddsScreen({route, navigation}) {
     [selectColor],
   );
 
-  const getCurrentLocation = () => {
-    return new Promise((resolve, reject) => {
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Ứng dụng cần quyền truy cập vị trí của bạn',
+          message: 'Chúng tôi cần biết vị trí của bạn để check in',
+          buttonNeutral: 'Hỏi sau',
+          buttonNegative: 'Hủy',
+          buttonPositive: 'Đồng ý',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Quyền truy cập vị trí đã được cấp');
+        getLocation();
+      } else {
+        console.log('Quyền truy cập vị trí bị từ chối');
+      }
+    } catch (error) {
+      console.error('Lỗi khi yêu cầu quyền truy cập vị trí:', error);
+    }
+  };
+
+  const getLocation = async () => {
+    try {
       Geolocation.getCurrentPosition(
         position => {
           const {latitude, longitude} = position.coords;
-          resolve({latitude, longitude});
+          setLocation({latitude, longitude});
+          fetchLocationData(latitude, longitude);
         },
-        error => reject(error),
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+        error => {
+          console.error('Lỗi khi lấy vị trí:', error);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
-    });
+    } catch (error) {
+      console.error('Lỗi khi lấy vị trí:', error);
+    }
   };
 
-  const handleCheckIn = async ({navigation}) => {
+  const fetchLocationData = async (lat, lon) => {
     try {
-      const location = await getCurrentLocation();
-      console.log('Current location:', location);
+      const response = await AxiosInstance().get(
+        `weather?lat=${lat}&lon=${lon}&appid=b0e86008293e7c25b2deb2caa5a36b0c`,
+      );
+
+      console.log('Locationnnnn Data:', response.name);
+      setLocationData(response.name);
+      setLoading(false);
     } catch (error) {
-      console.error('Error getting current location:', error);
+      console.error('Lỗi khi lấy dữ liệu thời tiết:', error);
+      Alert.alert(
+        'Lỗi',
+        'Có lỗi xảy ra khi lấy dữ liệu thời tiết. Vui lòng kiểm tra lại định vị của bạn.',
+      );
+      setLoading(false);
+    }
+  };
+
+  const handleCheckIn = async () => {
+    try {
+      await requestLocationPermission();
+    } catch (error) {
+      console.error('Lỗi khi check in:', error);
     }
   };
 
