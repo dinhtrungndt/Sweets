@@ -17,12 +17,16 @@ import styles from './Style';
 import { UserContext } from '../../../contexts/user/userContext';
 import { onUserLogin } from '../../call/HomeTest';
 import { getUser } from '../../../services/user/userService';
+import { useTranslation } from 'react-i18next';
+
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { onLogin } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const {user} = useContext(UserContext);
+  const { t, i18n } = useTranslation();
+
   const handleLogin = async () => {
     setLoading(true);
     const response = await onLogin(email, password);
@@ -61,12 +65,12 @@ const LoginScreen = ({ navigation }) => {
         />
       </View>
       <View style={styles.viewlogin}>
-        <Text style={styles.txt}> Log In</Text>
+        <Text style={styles.txt}>{t('')}</Text>
       </View>
       <View style={styles.viewif}>
-        <Text style={styles.txt1}> If You Need Any Support </Text>
+        <Text style={styles.txt1}> {t('ifYouNeedSupport')} </Text>
         <TouchableOpacity>
-          <Text style={styles.txt2}>Click Here</Text>
+          <Text style={styles.txt2}>{t('clickHere')}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.viewinput}>
@@ -96,20 +100,20 @@ const LoginScreen = ({ navigation }) => {
           />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.forgot}>
-        <Text style={styles.txt1}> Forgot Password?</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword')} style={styles.forgot}>
+        <Text style={styles.txt1}> {t('forgotPassword')}?</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         {loading ? (
           <ActivityIndicator size="small" color="white" />
         ) : (
-          <Text style={styles.txt3}>Log In</Text>
+          <Text style={styles.txt3}>{t('login')}</Text>
         )}
       </TouchableOpacity>
       <View style={styles.acc}>
-        <Text style={styles.txt1}> Don't have an account? </Text>
+        <Text style={styles.txt1}> {t('dontHaveAnAccount')} </Text>
         <TouchableOpacity onPress={handleregister}>
-          <Text style={styles.register}>Register</Text>
+          <Text style={styles.register}>{t('register')}</Text>
         </TouchableOpacity>
       </View>
     </View>

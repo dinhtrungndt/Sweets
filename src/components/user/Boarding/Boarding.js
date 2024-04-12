@@ -9,8 +9,11 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
+
 const BoardingScreens = ({navigation}) => {
   const [loading, setLoading] = useState(true);
+  const { t, i18n } = useTranslation();
 
   const checkToken = async () => {
     try {
@@ -68,10 +71,10 @@ const BoardingScreens = ({navigation}) => {
             />
           </View>
           <TouchableOpacity style={styles.button} onPress={handleSignup}>
-            <Text style={styles.txt}> Sign Up Free</Text>
+            <Text style={styles.txt}> {t('signUpFree')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.viewlogin} onPress={handlelogin}>
-            <Text style={styles.login}> Login</Text>
+            <Text style={styles.login}> {t('login')}</Text>
           </TouchableOpacity>
         </View>
       )}

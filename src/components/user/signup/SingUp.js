@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { register } from '../../../services/user/userService';
 import { UserContext } from '../../../contexts/user/userContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Style';
 const SingUpScreen = ({ navigation }) => {
@@ -31,6 +32,8 @@ const SingUpScreen = ({ navigation }) => {
   );
   const [coverImage, setAnhbia] = useState('null');
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const { t, i18n } = useTranslation();
+
   const handleRegister = async () => {
     setLoading(true);
     // chuyển email thành chữ thường
@@ -125,12 +128,12 @@ const SingUpScreen = ({ navigation }) => {
         />
       </View>
       <View>
-        <Text style={styles.txt}>Register</Text>
+        <Text style={styles.txt}>{t('register')}</Text>
       </View>
       <View style={styles.viewif}>
-        <Text style={styles.txt1}> If You Need Any Support </Text>
+        <Text style={styles.txt1}> {t('ifYouNeedSupport')} </Text>
         <TouchableOpacity>
-          <Text style={styles.txt2}>Click Here</Text>
+          <Text style={styles.txt2}>{t('clickHere')}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.viewinput}>
@@ -192,13 +195,13 @@ const SingUpScreen = ({ navigation }) => {
         {loading ? (
           <ActivityIndicator size="small" color="white" />
         ) : (
-          <Text style={styles.txt3}>Register</Text>
+          <Text style={styles.txt3}>{t('register')}</Text>
         )}
       </TouchableOpacity>
       <View style={styles.acc}>
-        <Text style={styles.txt1}>have an account? </Text>
+        <Text style={styles.txt1}>{t('haveAnAccount')} </Text>
         <TouchableOpacity onPress={handlelogin}>
-          <Text style={styles.register}>Login</Text>
+          <Text style={styles.register}>{t('login')}</Text>
         </TouchableOpacity>
       </View>
     </View>

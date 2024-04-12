@@ -3,10 +3,12 @@ import { View, Text, TouchableOpacity, TextInput, ActivityIndicator, Image, Aler
 import { changePassword } from '../../../../services/user/userService';
 import { UserContext } from '../../../../contexts/user/userContext';
 import { styles } from '../style/changePassword';
+import { useTranslation } from 'react-i18next';
 
 const ChangePassword = (props) => {
     const { navigation } = props;
     const { user } = useContext(UserContext);
+    const { t } = useTranslation();
 
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -56,10 +58,10 @@ const ChangePassword = (props) => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Image source={require('../../../../assets/icon_back.png')} style={styles.imgAvt} />
                 </TouchableOpacity>
-                <Text style={styles.txtShowImg}>Đổi mật khẩu</Text>
+                <Text style={styles.txtShowImg}>{t('changepassword')}</Text>
             </View>
             <View style={styles.title}>
-                <Text style={styles.txt1}>Mật khẩu hiện tại:</Text>
+                <Text style={styles.txt1}>{t('currentPassword')}:</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Nhập mật khẩu hiện tại"
@@ -69,7 +71,7 @@ const ChangePassword = (props) => {
                 />
             </View>
             <View style={styles.title}>
-                <Text style={styles.txt1}>Mật khẩu mới:</Text>
+                <Text style={styles.txt1}>{t('newPassword')}:</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Nhập mật khẩu mới"
