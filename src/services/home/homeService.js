@@ -406,3 +406,32 @@ export const getReactionDetail = async (idUsers, idPosts) => {
     throw error;
   }
 };
+
+// Lấy backgroundColor theo idUsers và idPosts
+export const getBackgroundColor = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().get(
+      `/colors/get-detail/${idUsers}/${idPosts}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi getBackgroundColor : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Thêm backgroundColor theo idUsers và idPosts
+export const addBackgroundColor = async (idUsers, idPosts, color) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/colors/add/${idUsers}/${idPosts}`,
+      {color},
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi addBackgroundColor : 11 s', error.response);
+    throw error;
+  }
+};

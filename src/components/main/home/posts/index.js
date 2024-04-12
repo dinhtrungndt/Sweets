@@ -480,11 +480,49 @@ const PostsScreen = ({posts, navigation}) => {
             ) : (
               <View style={styles.baiVietContent}>
                 {showMore ? (
-                  <Text style={styles.content}>{item.content}</Text>
+                  <>
+                    {item?.color?.map(color => color.colors)[0] !==
+                    undefined ? (
+                      <Text
+                        style={[
+                          styles.content,
+                          {
+                            backgroundColor: item.color.map(
+                              color => color.colors,
+                            )[0],
+                            borderRadius: 16,
+                            padding: 16,
+                          },
+                        ]}>
+                        {item.content}
+                      </Text>
+                    ) : (
+                      <Text style={styles.content}>{item.content}</Text>
+                    )}
+                  </>
                 ) : (
-                  <Text style={styles.content}>
-                    {item.content?.slice(0, 100)}
-                  </Text>
+                  <>
+                    {item?.color?.map(color => color.colors)[0] !==
+                    undefined ? (
+                      <Text
+                        style={[
+                          styles.content,
+                          {
+                            backgroundColor: item.color.map(
+                              color => color.colors,
+                            )[0],
+                            borderRadius: 16,
+                            padding: 16,
+                          },
+                        ]}>
+                        {item.content?.slice(0, 100)}
+                      </Text>
+                    ) : (
+                      <Text style={styles.content}>
+                        {item.content?.slice(0, 100)}
+                      </Text>
+                    )}
+                  </>
                 )}
                 {/* Toggle button */}
                 {item.content && item.content.length > 100 && (

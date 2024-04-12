@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   Modal,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -17,6 +18,7 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {styles} from '../styles/posts';
 import {UserContext} from '../../../../../contexts/user/userContext';
 import {
+  addBackgroundColor,
   uploadImageStatus,
   uploadMedia,
   uploadPost,
@@ -28,6 +30,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import VideoPlayer from 'react-native-video-player';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Geolocation from '@react-native-community/geolocation';
+import TabFriendUpLoad from './tags';
+import ModelBackground from './background';
 
 export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
@@ -35,6 +39,8 @@ export function AddsScreen({route, navigation}) {
   const [image, setImage] = useState([]);
   const numColumns = 4;
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleTab, setModalVisibleTab] = useState(false);
+  const [modalBackground, setModalBackground] = useState(false);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(true);
   const [imagePath, setImagePath] = useState(null);
   const [upload, setUpload] = useState(false);
@@ -44,8 +50,11 @@ export function AddsScreen({route, navigation}) {
   const selectedId = route.params?.selectedId;
   const idObjectValue =
     selectedId && selectedId._id ? selectedId._id : '65b1fe1be09b1e99f9e8a235';
+  const [tagSelectedUser, setTagSelectedUser] = useState(null);
+  const [selectColor, setSelectColor] = useState(undefined);
 
-  console.log('>>>>> idObjectValue: ' + idObjectValue);
+  // console.log('>>>>> idObjectValue: ' + idObjectValue);
+  // console.log('>>>>> selectColor: ' + selectColor);
 
   const idObject = () => [
     {
@@ -153,7 +162,7 @@ export function AddsScreen({route, navigation}) {
         mediaArray.map(async media => {
           const idUp = _idPosts === null ? idPostsUp : _idPosts;
           const response = await uploadMedia(idUp, media);
-          console.log('>>>>>>> response -> handleUploadMedia', response);
+          // console.log('>>>>>>> response -> handleUploadMedia', response);
         }),
       );
     } catch (error) {
@@ -180,9 +189,11 @@ export function AddsScreen({route, navigation}) {
         await Promise.all([
           handleUploadMedia(idPostsUp),
           handleUploadPost(idPostsUp),
+          handleUploadColor(idPostsUp),
         ]);
       } else if (inputText) {
         await handleUploadPost(idPostsUp);
+        await handleUploadColor(idPostsUp);
       } else if (inputText === '') {
         await Promise.all([
           handleUploadMedia(idPostsUp),
@@ -190,6 +201,8 @@ export function AddsScreen({route, navigation}) {
         ]);
       } else if (imagePath) {
         await handleUploadMedia(idPostsUp);
+      } else {
+        return;
       }
 
       if (!upload) {
@@ -235,13 +248,15 @@ export function AddsScreen({route, navigation}) {
       // }
 
       try {
-        console.log('idObjectValue in handleUploadPost:', idObjectValue);
+        console.log('tagSelectedUser in tagSelectedUser:', tagSelectedUser?.id);
+        const tab = tagSelectedUser?.id;
         const postDetails = {
           _id: _idPosts === null ? idPostsUp : _idPosts,
           content: inputText || '',
           createAt: new Date().toISOString(),
           idObject: route.params?.selectedId?._id || idObjectValue,
           idTypePosts: '65b20030261511b0721a9913',
+          taggedFriends: tagSelectedUser ? tab : null,
         };
 
         console.log(' >>>>>>>>>>>>>>>> postDetails:', postDetails);
@@ -254,12 +269,30 @@ export function AddsScreen({route, navigation}) {
             routes: [{name: 'HomeStackScreen'}],
           }),
         );
-        console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+        // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
       } catch (error) {
         console.error('Lỗi catch --->>>>> error :', error);
       }
     },
     [user, inputText, route.params?.selectedId],
+  );
+
+  const handleUploadColor = useCallback(
+    async idPostsUp => {
+      try {
+        // console.log('>>>>>>>selectColor innn handleUploadColor', selectColor);
+        const color = selectColor;
+        const response = await addBackgroundColor(
+          user.user._id,
+          _idPosts === null ? idPostsUp : _idPosts,
+          color,
+        );
+        // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', response);
+      } catch (error) {
+        console.error('Lỗi ở handleUploadColor nè', error);
+      }
+    },
+    [selectColor],
   );
 
   const getCurrentLocation = () => {
@@ -304,7 +337,11 @@ export function AddsScreen({route, navigation}) {
     setIdPosts(_idPosts);
     console.log('useEffectuseEffect _idPosts:', _idPosts);
   }, []);
-  console.log('_idPosts ở ngoài:', _idPosts);
+  // console.log('_idPosts ở ngoài:', _idPosts);
+
+  useEffect(() => {
+    setTagSelectedUser(tagSelectedUser);
+  }, [tagSelectedUser]);
 
   // useEffect(() => {
   //   handleUploadPost();
@@ -338,7 +375,44 @@ export function AddsScreen({route, navigation}) {
           <Image style={styles.body_avatar} source={{uri: user.user.avatar}} />
           <View style={styles.body_content}>
             {/* name */}
-            <Text style={styles.body_name}>{user.user.name}</Text>
+            {tagSelectedUser === null ? (
+              <Text style={styles.body_name}>{user.user.name}</Text>
+            ) : (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.body_name}>{user.user.name}</Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                  }}>
+                  {' '}
+                  cùng với
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    width: '30%',
+                  }}
+                  onPress={() =>
+                    navigation.navigate('OtherUserA', {
+                      accountzzz: tagSelectedUser,
+                    })
+                  }>
+                  <Text
+                    style={[
+                      styles.body_name,
+                      {color: '#ff0000', marginLeft: 5},
+                    ]}>
+                    {tagSelectedUser?.name}
+                  </Text>
+                  <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             {/* {console.log('user post', user.user.name)} */}
             <View style={{flexDirection: 'row'}}>
               {/* congkhai */}
@@ -381,7 +455,11 @@ export function AddsScreen({route, navigation}) {
         {/* Content */}
         <View style={{height: 570}}>
           <TextInput
-            style={styles.body_content_input}
+            style={[
+              selectColor
+                ? {backgroundColor: selectColor}
+                : styles.body_content_input,
+            ]}
             placeholder="Bạn đang nghĩ gì?"
             multiline={true}
             onChangeText={handleInputChange}
@@ -445,7 +523,9 @@ export function AddsScreen({route, navigation}) {
               Ảnh/video
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.boder_image}>
+          <TouchableOpacity
+            style={styles.boder_image}
+            onPress={() => setModalVisibleTab(true)}>
             <Image
               style={styles.avatar_icon_image}
               source={require('../../../../../assets/user_tag_25px.png')}
@@ -471,7 +551,10 @@ export function AddsScreen({route, navigation}) {
         {bottomSheetVisible && (
           <View style={styles.bottomSheet}>
             <TouchableOpacity
-              onPress={openLibrary}
+              onPress={() => {
+                openLibrary();
+                hideBottomSheet();
+              }}
               style={styles.bottomSheetItem}>
               <Image
                 style={styles.bottomSheetIcon}
@@ -479,7 +562,12 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>Ảnh/video</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              style={styles.bottomSheetItem}
+              onPress={() => {
+                setModalVisibleTab(true);
+                hideBottomSheet();
+              }}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/user_tag_25px.png')}
@@ -511,7 +599,12 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>Video trực tiếp</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              onPress={() => {
+                setModalBackground(true);
+                hideBottomSheet();
+              }}
+              style={styles.bottomSheetItem}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_text.png')}
@@ -545,6 +638,39 @@ export function AddsScreen({route, navigation}) {
             <Text onPress={openLibrary}>Chọn ảnh</Text>
             <Text onPress={() => setModalVisible(false)}>Cancel</Text>
           </View>
+        </View>
+      </Modal>
+      {/* modal tab */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleTab}
+        onRequestClose={() => {}}>
+        <TouchableOpacity
+          style={[styles.modalContainer, {padding: 0}]}
+          onPressOut={() => setModalVisibleTab(false)}>
+          <TabFriendUpLoad
+            cancel={selectedUser => {
+              setTagSelectedUser(selectedUser.selectedUser);
+              setModalVisibleTab(false);
+            }}
+            navigation={navigation}
+          />
+        </TouchableOpacity>
+      </Modal>
+      {/* modal background */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalBackground}
+        onRequestClose={() => {}}>
+        <View style={styles.modalContainerColor}>
+          <ModelBackground
+            getSelectColor={selectedColor => {
+              setSelectColor(selectedColor.selectedColor);
+            }}
+            cancel={() => setModalBackground(false)}
+          />
         </View>
       </Modal>
     </View>
