@@ -92,7 +92,7 @@ export const styles = StyleSheet.create({
     },
     profileFrame: {
         width: '100%',
-        height: 462,
+        height: 459,
         backgroundColor: '#FFFFFF',
     },
     imgCover: {
@@ -115,7 +115,6 @@ export const styles = StyleSheet.create({
         borderColor: '#FFFFFF',
     },
     iconCamera: {
-
     },
     imgAvatar: {
         width: 120,

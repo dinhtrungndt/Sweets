@@ -6,28 +6,28 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import React, {useContext, useState, useCallback, useEffect} from 'react';
-import {UserContext} from '../../../../contexts/user/userContext';
+import React, { useContext, useState, useCallback, useEffect } from 'react';
+import { UserContext } from '../../../../contexts/user/userContext';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {updateAvatar, updateCover} from '../../../../services/user/userService';
+import { updateAvatar, updateCover } from '../../../../services/user/userService';
 // style
-import {styles} from '../style/profile';
+import { styles } from '../style/profile';
 // library
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {uploadImageStatus} from '../../../../services/home/homeService';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { uploadImageStatus } from '../../../../services/home/homeService';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import PostScreen from './TopTab/PostScreen';
 import ImgScreen from './TopTab/ImgScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const Tab = createMaterialTopTabNavigator();
 
 const Profile = props => {
-  const {navigation} = props;
-  const {t} = useTranslation();
+  const { navigation } = props;
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
   const [imageAvatar, setImageAvatar] = useState([]);
@@ -39,7 +39,7 @@ const Profile = props => {
   const [modalVisible, setModalVisible] = useState(false);
   const [friendsCount, setFriendsCount] = useState(0);
 
-  const {user, setUser} = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   // console.log('>>>>>>>>>>>>>> user', user);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const Profile = props => {
         // Kiểm tra xem userId có tồn tại không
         if (userId) {
           const response = await axiosInstance.get(`/friend/friends/${userId}`);
-          const {friendsList} = response;
+          const { friendsList } = response;
           // Tạo một mảng chứa số lượng bạn bè
           const friendsCountPromises = friendsList.map(async friendId => {
             try {
@@ -216,7 +216,7 @@ const Profile = props => {
         // Kiểm tra xem userId có tồn tại không
         if (userId) {
           const response = await axiosInstance.get(`/friend/friends/${userId}`);
-          const {friendsList} = response;
+          const { friendsList } = response;
           // Tạo một mảng chứa số lượng bạn bè
           const friendsCountPromises = friendsList.map(async friendId => {
             try {
@@ -254,7 +254,7 @@ const Profile = props => {
             style={styles.imgCover}
             source={
               user && user.user.coverImage
-                ? {uri: user.user.coverImage}
+                ? { uri: user.user.coverImage }
                 : require('../../../../assets/account.png')
             }
           />
@@ -262,7 +262,7 @@ const Profile = props => {
             <TouchableOpacity
               key={index}
               onPress={() => handleCoverUpdate(coverImage)}>
-              <Image style={styles.imgCover} source={{uri: coverImage.uri}} />
+              <Image style={styles.imgCover} source={{ uri: coverImage.uri }} />
             </TouchableOpacity>
           ))}
           <View style={styles.boderCamera}>
@@ -279,7 +279,7 @@ const Profile = props => {
             style={styles.imgAvatar}
             source={
               user && user.user.avatar
-                ? {uri: user.user.avatar}
+                ? { uri: user.user.avatar }
                 : require('../../../../assets/account.png')
             }
           />
@@ -287,7 +287,7 @@ const Profile = props => {
             <TouchableOpacity
               key={index}
               onPress={() => handleAvatarUpdate(avatar)}>
-              <Image style={styles.imgAvatar} source={{uri: avatar.uri}} />
+              <Image style={styles.imgAvatar} source={{ uri: avatar.uri }} />
             </TouchableOpacity>
           ))}
           <View style={styles.boderCameraAvatar}>
@@ -339,7 +339,7 @@ const Profile = props => {
         animationType="slide"
         transparent={true}
         visible={modalVisibleCover}
-        onRequestClose={() => {}}>
+        onRequestClose={() => { }}>
         <View style={styles.modalContainerCoverImg}>
           <TouchableOpacity style={styles.btnShowImg}>
             <Image
@@ -380,7 +380,7 @@ const Profile = props => {
         animationType="slide"
         transparent={true}
         visible={modalVisibleAvatar}
-        onRequestClose={() => {}}>
+        onRequestClose={() => { }}>
         <View style={styles.modalContainerAvatar}>
           <TouchableOpacity style={styles.btnShowImg}>
             <Image
@@ -439,22 +439,23 @@ const Profile = props => {
 
       <Tab.Navigator
         screenOptions={{
+          tabBarActiveTintColor: '#22b6c0',
+          tabBarInactiveTintColor: '#bdc3c7',
           tabBarLabelStyle: {
             fontSize: 14,
-            fontWeight: 'bold',
+            fontWeight: 'bold'
+          },
+          tabBarItemStyle: {
+            width: 'auto'
+          },
+          tabBarIndicatorStyle: {
+            backgroundColor: '#22b6c0'
           },
           tabBarStyle: {
-            backgroundColor: '#fff',
-            borderTopWidth: 0,
-            borderTopColor: '#ddd',
-            marginTop: 6,
+            backgroundColor: '#FFF',
+            elevation: 1,
+            marginTop: 6
           },
-          tabBarActiveTintColor: '#22b6c0',
-          tabBarInactiveTintColor: '#999',
-          tabBarIndicatorStyle: {
-            backgroundColor: '#22b6c0',
-          },
-          tabBarPressColor: 'rgba(0,0,0,0.1)',
         }}>
         <Tab.Screen name="Bài viết" component={PostScreen} />
         <Tab.Screen name="Ảnh" component={ImgScreen} />

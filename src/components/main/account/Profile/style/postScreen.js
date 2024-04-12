@@ -76,12 +76,12 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000000',
         position: 'absolute',
-        left: 39,
+        left: 45,
         top: 0
     },
     time: {
         position: 'absolute',
-        left: 39,
+        left: 45,
         top: 18
     },
     postContent: {
