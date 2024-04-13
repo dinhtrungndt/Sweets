@@ -174,9 +174,9 @@ const OtherFriend = (props) => {
                           <View key={index} style={{ flexDirection: 'row' }}>
                             <Image source={{ uri: friendInfo.avatar }} style={{ width: 25, height: 25, borderRadius: 12 }} />
                            <View>
-                           <Text style={{ color: 'black', fontSize: 13 }}>{friendInfo.name}</Text>
+                           <Text style={{ color: 'black', fontSize: 12,fontWeight:'400' ,marginTop:3}}>{friendInfo.name}</Text>
                            {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 1 && (
-                        <Text style={{ color: 'black', fontSize: 13 }}> và {item.matchingFriendsInfo.length - 1} bạn khác...</Text>
+                        <Text style={{ color: 'black', fontSize: 12,fontWeight:'400' }}> và {item.matchingFriendsInfo.length - 1} bạn khác...</Text>
                       )}
                            </View>
                           </View>

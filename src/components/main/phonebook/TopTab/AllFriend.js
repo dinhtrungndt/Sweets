@@ -38,13 +38,17 @@ const AllFriend = () => {
         if (userId) {
           const response = await axiosInstance.get(`/friend/friends/${userId}`);
           const { friendsList } = response;
+
+          console.log('responsessss',response)
         
           await AsyncStorage.setItem('friendData', JSON.stringify(response.friendsList));
 
           // Tạo một mảng chứa thông tin chi tiết của các bạn bè
           const friendsDetailsPromises = friendsList.map(async (friendId) => {
             try {
-              const friendDetailsResponse = await axiosInstance.get(`/users/get-user/${friendId}`);
+              console.log('friendId',friendId)
+              const friendDetailsResponse = await axiosInstance.get(`/users/get-user/${friendId.id}`);
+              console.log('friendDetailsResponse2222',friendDetailsResponse)
               return friendDetailsResponse.user; // Lấy thông tin user từ response
             } catch (error) {
               console.error(`Lỗi khi lấy thông tin của bạn bè có id: ${friendId}`, error);
