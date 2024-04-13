@@ -33,14 +33,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color:'#22b6c0'
       },
+      
+      txtContent2: {
+        fontSize: 14,
+        color: '#888',
+      },
       txtContent1: {
         fontSize: 19,
         fontWeight: 'bold',
        
-      },
-      txtContent2: {
-        fontSize: 14,
-        color: '#888',
       },
       modalContainer: {
         flex: 1,
