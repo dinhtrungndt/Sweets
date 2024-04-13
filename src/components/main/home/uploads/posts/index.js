@@ -353,10 +353,10 @@ export function AddsScreen({route, navigation}) {
       setLocationData(response.name);
       setLoading(false);
     } catch (error) {
-      console.error('Lỗi khi lấy dữ liệu thời tiết:', error);
+      console.error('Lỗi khi lấy dữ liệu check in:', error);
       Alert.alert(
         'Lỗi',
-        'Có lỗi xảy ra khi lấy dữ liệu thời tiết. Vui lòng kiểm tra lại định vị của bạn.',
+        'Có lỗi xảy ra khi lấy dữ liệu checkin. Vui lòng kiểm tra lại định vị của bạn.',
       );
       setLoading(false);
     }

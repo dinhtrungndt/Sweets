@@ -33,6 +33,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Swiper from 'react-native-swiper';
 import VideoPlayer from 'react-native-video-player';
@@ -1793,11 +1794,8 @@ const CommentsScreen = ({navigation, route}) => {
             </>
           )}
           <View style={styles.container_reply_comment}>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Image
-                style={styles.icon_comment}
-                source={require('../../../../../assets/icon_camera_comment.png')}
-              />
+            <TouchableOpacity onPress={openLibrary}>
+              <MaterialIcons name="video-library" size={24} color="#666666" />
             </TouchableOpacity>
             <View style={styles.input_comment}>
               {parentUserName !== null ? (
