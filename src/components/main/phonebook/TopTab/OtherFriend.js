@@ -40,10 +40,11 @@ const OtherFriend = (props) => {
         }
         return user;
       });
+
       const filteredUsers = usersWithCommonFriends.filter(
         user => user._id !== userId && !friendsFromStorage.friendsList.includes(user._id),
       );
-
+        console.log('filteredUsersfilteredUsers',filteredUsers)
       // Tính toán số lượng bạn chung và lưu vào mảng filteredUsers
       await Promise.all(filteredUsers.map(async (item) => {
         try {

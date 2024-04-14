@@ -6,7 +6,7 @@ import {
   ImageBackground,
   ActivityIndicator,
   Image,
-  Alert,TouchableOpacity
+  Alert, TouchableOpacity
 } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
@@ -82,7 +82,7 @@ const ThoiTiet = (props) => {
     try {
       // Sử dụng AxiosInstance để thực hiện HTTP request để lấy dữ liệu thời tiết
       const response = await AxiosInstance().get(
-        `weather?lat=${lat}&lon=${lon}&appid=b0e86008293e7c25b2deb2caa5a36b0c`,
+        `weather?lat=${lat}&lon=${lon}&lang=vi&appid=b0e86008293e7c25b2deb2caa5a36b0c`,
       );
 
       //console.log('Weather Data:', response);
@@ -113,7 +113,7 @@ const ThoiTiet = (props) => {
 
   return (
     <ImageBackground
-      source={require('../../../../assets/sunny.jpg')}
+      source={require('../../../../assets/bg1.png')}
       style={styles.background}>
       <View style={styles.container}>
 
@@ -126,37 +126,82 @@ const ThoiTiet = (props) => {
             </Text> */}
             {/* Hiển thị dữ liệu thời tiết ở đây */}
             {weatherData && (
-              <View style={styles.weatherContainer}>
+              <View>
+                <View style={{ flexDirection: 'row', padding: 4 }}>
 
+                  <TouchableOpacity style={styles.friendItem2} onPress={() => navigation.navigate('PhoneBookScreen')}>
+                    <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
+                  </TouchableOpacity>
 
-        <TouchableOpacity style={styles.friendItem}  onPress={() => navigation.navigate('PhoneBookScreen')}>
-          <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
-        </TouchableOpacity>
-        <TouchableOpacity style={{marginTop:20}}  onPress={() => navigation.navigate('ThoiTiet2')}>
-         <Text>xem thêm</Text>
-        </TouchableOpacity>
-      
-        
-   
-                <View style={styles.header}>
-                  <Text style={styles.cityText}>
-                    {weatherData.name}, {weatherData.sys.country}
-                  </Text>
-                  <Text style={styles.dateTimeText}>
-                    {format(currentDateTime, "eeee, d MMMM HH:mm")}
-                  </Text>
+                  <TouchableOpacity style={styles.friendItem} onPress={() => navigation.navigate('ThoiTiet2')}>
+                    <Text style={{ fontSize: 15, color: 'black', padding: 1 }}>Xem thêm</Text>
+                  </TouchableOpacity>
                 </View>
+
+                <View style={styles.weatherContainer}>
+
+
+
+
+
+                  <View style={styles.header}>
+                    <Text style={styles.cityText}>
+                      {weatherData.name}, {weatherData.sys.country}
+                    </Text>
+                    <Text style={styles.dateTimeText}>
+                      {format(currentDateTime, "eeee, d MMMM HH:mm")}
+                    </Text>
+                  </View>
+                 
+                </View>
+
+
+
+             
                 <View style={styles.weatherInfo}>
-                  <Image
-                    source={{
-                      uri: `https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`,
-                    }}
-                    style={styles.weatherIcon}
-                  />
-                  <Text style={styles.temperatureText}>
-                    Nhiệt độ: {(weatherData.main.temp - 273.15).toFixed(2)} °C
-                  </Text>
-                </View>
+                    <Image
+                      source={{
+                        uri: `https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`,
+                      }}
+                      style={styles.weatherIcon}
+                    />
+                    <Text style={styles.temperatureText}>
+                       {(weatherData.main.temp - 273.15).toFixed(2)} °
+                    </Text>
+                  </View>
+
+                  <View style={styles.weatherInfo2}>
+                 
+
+                  
+                 <View style={{ flexDirection: 'row', margin: 15 }}>
+
+
+                   <View style={{ flexDirection: 'row', marginHorizontal: 20 }}>
+                     <Image source={require('../../../../assets/wind.png')} style={styles.weatherIcon2} />
+                     <Text style={styles.txtInfo}>{weatherData.wind.speed}km</Text>
+                   </View>
+                   <View style={{ flexDirection: 'row', marginHorizontal: 20 }}>
+                     <Image source={require('../../../../assets/water.png')} style={styles.weatherIco2} />
+                     <Text style={styles.txtInfo}>{weatherData.main.humidity}%</Text>
+                   </View>
+
+                 </View>
+
+                 <View style={{ flexDirection: 'row', margin: 15 }}>
+                   <View style={{ flexDirection: 'row', marginHorizontal: 20 }}>
+                     <Image source={require('../../../../assets/clock.png')} style={styles.weatherIcon2} />
+                     <Text style={styles.txtInfo}>{weatherData.timezone}</Text>
+                   </View>
+                   <View style={{ flexDirection: 'row', marginHorizontal: 20 }}>
+                     <Image source={require('../../../../assets/cluold.png')} style={styles.weatherIco2} />
+                     <Text style={styles.txtInfo}>{weatherData.clouds.all}</Text>
+                   </View>
+                 </View>
+                 {/* Thêm các thông tin khác của thời tiết nếu cần */}
+               </View>
+
+
               </View>
 
             )}
@@ -193,7 +238,7 @@ const styles = StyleSheet.create({
 
 
   weatherContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: 10,
     padding: 20,
     alignItems: 'center',
@@ -202,27 +247,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   weatherInfo: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
   },
   cityText: {
-    fontSize: 28,
+    fontSize: 37,
     fontWeight: 'bold',
-    color: 'blue',
+    color: 'yellow',
+    fontFamily: 'Arial, sans-serif',
+    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)',
   },
+  
   dateTimeText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#cce1ff',
+    alignSelf:'center'
   },
   weatherIcon: {
-    width: 100,
-    height: 100,
+    width: 250,
+    height: 250,
     marginRight: 10,
   },
   temperatureText: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 90,
+   
     color: 'white',
   },
 
@@ -232,26 +281,49 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     backgroundColor: '#22b6c0',
-   
+
   },
-  
-      friendItem: {
-        padding: 5,
-        backgroundColor:'yellow',
-        alignSelf:'flex-start'
-      },
-      avatar: {
-        width: 20,
-        height: 20,
-      },
-      
-      txtContent1: {
-        fontSize: 19,
-        fontWeight: 'bold',
-        
-        marginRight:116
-       
-      },
+
+  friendItem2: {
+    padding: 6,
+    backgroundColor: 'lightgray',
+    alignSelf: 'flex-start',
+    borderRadius: 10,
+    marginLeft: 10,
+    marginTop: 3
+  },
+  friendItem: {
+    padding: 6,
+    backgroundColor: 'lightgray',
+    alignSelf: 'flex-start',
+    borderRadius: 10,
+    marginLeft: 10
+  },
+  avatar: {
+    width: 15,
+    height: 15,
+  },
+
+  txtContent1: {
+    fontSize: 19,
+    fontWeight: 'bold',
+
+    marginRight: 116
+
+  },
+  txtInfo:{
+    color:'white',
+    marginHorizontal:10,
+    fontSize:17
+},
+weatherInfo2: {
+     
+  alignItems: 'center',
+  width:'90%'
+
+ 
+
+},
 });
 
 export default ThoiTiet;
