@@ -53,10 +53,10 @@ const PostsScreen = ({posts, navigation}) => {
   const [post, setPost] = useState(posts);
   const [showLengthMedia, setShowLengthMedia] = useState(true);
 
-  console.log(
-    'posts:',
-    post.map(item => item.location),
-  );
+  // console.log(
+  //   'posts:',
+  //   post.map(item => item.location),
+  // );
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);

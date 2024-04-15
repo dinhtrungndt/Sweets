@@ -61,10 +61,7 @@ const HomeScreen = props => {
           const birthdayResponse = await getPostsBirthday(user.user._id);
           const birthday = birthdayResponse;
 
-          const colorResponse = await getBackgroundColor(
-            user.user._id,
-            post._id,
-          );
+          const colorResponse = await getBackgroundColor(post._id);
           const color = colorResponse;
 
           const likedByCurrentUser = reaction.some(

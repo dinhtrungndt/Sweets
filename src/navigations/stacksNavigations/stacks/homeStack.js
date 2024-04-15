@@ -27,6 +27,8 @@ import {
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import LiveStreamHost from '../../../components/main/home/liveStream/LiveStreamHost';
 import LiveStreamScreen from '../../../components/main/home/liveStream';
+import SearchPosts from '../../../components/main/home/posts/search';
+import AllTopTabSearch from '../../../components/main/home/posts/search/allTop';
 const Stack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
@@ -54,6 +56,8 @@ export function HomeStackScreen() {
       {/* <Stack.Screen name="Profile" component={Profile} /> */}
       <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />
       <Stack.Screen name="ChangeObjects" component={ChangeObjects} />
+      <Stack.Screen name="SearchPosts" component={SearchPosts} />
+      <Stack.Screen name="AllTopTabSearch" component={AllTopTabSearch} />
       <Stack.Screen
         name="ModalEditPostsAccount"
         component={ModalEditPostsAccount}
@@ -75,7 +79,6 @@ export function HomeStackScreen() {
         name="ZegoUIKitPrebuiltCallInCallScreen"
         component={ZegoUIKitPrebuiltCallInCallScreen}
       />
-
     </Stack.Navigator>
   );
 }

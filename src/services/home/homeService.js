@@ -320,7 +320,7 @@ export const updateEditPosts = async (idPosts, idUsers, detailPosts) => {
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    console.error(' >>>>>>>>> Lỗi updateEditPosts : 11 s', error.response);
     throw error;
   }
 };
@@ -334,7 +334,10 @@ export const ArrangeCommentFriend = async (idUsers, idPosts) => {
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    console.error(
+      ' >>>>>>>>> Lỗi Cập nhập ArrangeCommentFriend : 11 s',
+      error.response,
+    );
     throw error;
   }
 };
@@ -346,7 +349,7 @@ export const getListUser = async () => {
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response.users;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    console.error(' >>>>>>>>> Lỗi Cập nhập getListUser : 11 s', error.response);
     throw error;
   }
 };
@@ -360,7 +363,10 @@ export const getHistorySearch = async idUsers => {
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response.searchHistory);
     return response.searchHistory;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    console.error(
+      ' >>>>>>>>> Lỗi Cập nhập getHistorySearch : 11 s',
+      error.response,
+    );
     throw error;
   }
 };
@@ -374,7 +380,7 @@ export const addHistorySearch = async (id, name) => {
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response.users);
     return response.users;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    console.error(' >>>>>>>>> Lỗi addHistorySearch : 11 s', error.response);
     throw error;
   }
 };
@@ -388,7 +394,10 @@ export const getPostsBirthday = async idUsers => {
     // console.log('birthdayPosts post >>>>>>>>>>>>>>> 20 ', response.birthdayPosts);
     return response.birthdayPosts;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    console.error(
+      ' >>>>>>>>> Lỗi Cập nhập  getPostsBirthday : 11 s',
+      error.response,
+    );
     throw error;
   }
 };
@@ -402,7 +411,10 @@ export const getPostsLocation = async idUsers => {
     // console.log('locationPosts post >>>>>>>>>>>>>>> 20 ', response.locationPosts);
     return response.locationPosts;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    console.error(
+      ' >>>>>>>>> Lỗi Cập nhập getPostsLocation : 11 s',
+      error.response,
+    );
     throw error;
   }
 };
@@ -416,17 +428,18 @@ export const getReactionDetail = async (idUsers, idPosts) => {
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response;
   } catch (error) {
-    console.error(' >>>>>>>>> Lỗi Cập nhập edit posts : 11 s', error.response);
+    console.error(
+      ' >>>>>>>>> Lỗi Cập nhập getReactionDetail : 11 s',
+      error.response,
+    );
     throw error;
   }
 };
 
-// Lấy backgroundColor theo idUsers và idPosts
-export const getBackgroundColor = async (idUsers, idPosts) => {
+// Lấy backgroundColor theo idPosts
+export const getBackgroundColor = async idPosts => {
   try {
-    const response = await AxiosInstance().get(
-      `/colors/get-detail/${idUsers}/${idPosts}`,
-    );
+    const response = await AxiosInstance().get(`/colors/get-detail/${idPosts}`);
     // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
     return response;
   } catch (error) {
