@@ -828,11 +828,49 @@ const CommentsScreen = ({navigation, route}) => {
                   ) : (
                     <View style={styles.baiVietContent}>
                       {showMore ? (
-                        <Text style={styles.content}>{item.content}</Text>
+                        <>
+                          {item?.color?.map(color => color.colors)[0] !==
+                          undefined ? (
+                            <Text
+                              style={[
+                                styles.content,
+                                {
+                                  backgroundColor: item.color.map(
+                                    color => color.colors,
+                                  )[0],
+                                  borderRadius: 16,
+                                  padding: 16,
+                                },
+                              ]}>
+                              {item.content}
+                            </Text>
+                          ) : (
+                            <Text style={styles.content}>{item.content}</Text>
+                          )}
+                        </>
                       ) : (
-                        <Text style={styles.content}>
-                          {item.content?.slice(0, 100)}
-                        </Text>
+                        <>
+                          {item?.color?.map(color => color.colors)[0] !==
+                          undefined ? (
+                            <Text
+                              style={[
+                                styles.content,
+                                {
+                                  backgroundColor: item.color.map(
+                                    color => color.colors,
+                                  )[0],
+                                  borderRadius: 16,
+                                  padding: 16,
+                                },
+                              ]}>
+                              {item.content?.slice(0, 100)}
+                            </Text>
+                          ) : (
+                            <Text style={styles.content}>
+                              {item.content?.slice(0, 100)}
+                            </Text>
+                          )}
+                        </>
                       )}
                       {/* Toggle button */}
                       {item.content && item.content.length > 100 && (
@@ -854,13 +892,51 @@ const CommentsScreen = ({navigation, route}) => {
                   ) : (
                     <View style={styles.baiVietContent}>
                       {showMore ? (
-                        <Text style={styles.content}>
-                          {detailPosts?.content}
-                        </Text>
+                        <>
+                          {item?.color?.map(color => color.colors)[0] !==
+                          undefined ? (
+                            <Text
+                              style={[
+                                styles.content,
+                                {
+                                  backgroundColor: item.color.map(
+                                    color => color.colors,
+                                  )[0],
+                                  borderRadius: 16,
+                                  padding: 16,
+                                },
+                              ]}>
+                              {detailPosts?.content}
+                            </Text>
+                          ) : (
+                            <Text style={styles.content}>
+                              {detailPosts?.content}
+                            </Text>
+                          )}
+                        </>
                       ) : (
-                        <Text style={styles.content}>
-                          {detailPosts?.content?.slice(0, 100)}
-                        </Text>
+                        <>
+                          {item?.color?.map(color => color.colors)[0] !==
+                          undefined ? (
+                            <Text
+                              style={[
+                                styles.content,
+                                {
+                                  backgroundColor: item.color.map(
+                                    color => color.colors,
+                                  )[0],
+                                  borderRadius: 16,
+                                  padding: 16,
+                                },
+                              ]}>
+                              {detailPosts?.content?.slice(0, 100)}
+                            </Text>
+                          ) : (
+                            <Text style={styles.content}>
+                              {detailPosts?.content?.slice(0, 100)}
+                            </Text>
+                          )}
+                        </>
                       )}
                       {/* Toggle button */}
                       {detailPosts?.content &&
@@ -1658,7 +1734,7 @@ const CommentsScreen = ({navigation, route}) => {
                                             <TouchableOpacity
                                               style={styles.like_like_comment}
                                               onPress={() => {
-                                                setParentId(subItemC._id);
+                                                setParentId(subItem._id);
                                                 setParentUserName(
                                                   subItemC.idUsers.name,
                                                 );
