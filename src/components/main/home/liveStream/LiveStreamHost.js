@@ -21,7 +21,7 @@ export default function LiveStreamHost({route, navigation}) {
     user.user.avatar,
   );
   const onAddLiveStream = async () => {
-    if(!isStream) return;
+    if (!isStream) return;
     const response = await addLiveStream(
       user.id,
       user.user.name,
@@ -49,9 +49,9 @@ export default function LiveStreamHost({route, navigation}) {
   return (
     <View style={styles.container}>
       <ZegoUIKitPrebuiltLiveStreaming
-        appID={1118161000}
+        appID={50895724}
         appSign={
-          '27731bc32f59a8bc056052a22bcc281a8fee4379f2960c212225af6cde6f0fd9'
+          '0542a8137123457d8afdda9cbb16efb3819186858cc5b50c8c4c8e958d0fa8ea'
         }
         userID={user.id}
         userName={user.user.name}

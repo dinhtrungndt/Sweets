@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import { getAllLiveStream } from '../../../../services/livestream/LiveStreamService';
+import {getAllLiveStream} from '../../../../services/livestream/LiveStreamService';
 // styles
 import {styles} from './styles/header';
 
 // Library
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const HeaderScreen =  ({onRefresh, navigation}) => {
-  const handleLiveStream =  () => {
+const HeaderScreen = ({onRefresh, navigation}) => {
+  const handleLiveStream = () => {
     navigation.navigate('LiveStreamScreen');
   };
   return (
@@ -25,9 +25,7 @@ const HeaderScreen =  ({onRefresh, navigation}) => {
         <View style={styles.towEnd_Noti_Search}>
           <TouchableOpacity
             style={{paddingRight: 5}}
-            onPress={() => 
-              handleLiveStream()
-            }>
+            onPress={() => handleLiveStream()}>
             <Ionicons name="videocam" size={28} color="#ff0000" />
           </TouchableOpacity>
           <TouchableOpacity

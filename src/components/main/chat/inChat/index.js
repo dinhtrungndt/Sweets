@@ -110,7 +110,7 @@ const ChatScreenIn = ({route, navigation}) => {
             onPress={() => navigation.goBack()}>
             <Ionicons name="chevron-back-outline" size={26} color={'#000'} />
           </TouchableOpacity>
-          {console.log('>>>>>>> kakakaka', receiver.receiverv2)}
+          {/* {console.log('>>>>>>> kakakaka', receiver.receiverv2)} */}
           {receiver.receiverv2 === user.user._id ? (
             <TouchableOpacity
               style={styles.account}
@@ -119,16 +119,19 @@ const ChatScreenIn = ({route, navigation}) => {
               <Text style={styles.name_user}>{receiver.name}</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity
-              style={styles.account}
-              onPress={() =>
-                navigation.navigate('OtherUserA', {
-                  accountzzz: receiver,
-                })
-              }>
-              <Image source={{uri: receiver.avatar}} style={styles.avatar} />
-              <Text style={styles.name_user}>{receiver.name}</Text>
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity
+                style={styles.account}
+                onPress={() =>
+                  navigation.navigate('OtherUserA2', {
+                    accountzzz: receiver,
+                  })
+                }>
+                <Image source={{uri: receiver.avatar}} style={styles.avatar} />
+                <Text style={styles.name_user}>{receiver.name}</Text>
+              </TouchableOpacity>
+              {console.log('>>>>>>>>>>>. iteiitemmm ', receiver)}
+            </>
           )}
         </View>
         <View style={styles.call_video}>

@@ -29,6 +29,8 @@ import LiveStreamHost from '../../../components/main/home/liveStream/LiveStreamH
 import LiveStreamScreen from '../../../components/main/home/liveStream';
 import SearchPosts from '../../../components/main/home/posts/search';
 import AllTopTabSearch from '../../../components/main/home/posts/search/allTop';
+import PostOtherScreen from '../../../components/main/account/OtherUserAccounts/TopTabOther/PostOtherScreen';
+import OtherUserA2 from '../../../components/main/account/OtherUserAccounts/OtherUserA2';
 const Stack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
@@ -52,6 +54,8 @@ export function HomeStackScreen() {
         component={SettingStoryObjects}
       />
       <Stack.Screen name="OtherUserA" component={OtherUserA} />
+      <Stack.Screen name="PostOtherScreen" component={PostOtherScreen} />
+      <Stack.Screen name="OtherUserA2" component={OtherUserA2} />
 
       {/* <Stack.Screen name="Profile" component={Profile} /> */}
       <Stack.Screen name="SelectScreenUp" component={SelectScreenUp} />

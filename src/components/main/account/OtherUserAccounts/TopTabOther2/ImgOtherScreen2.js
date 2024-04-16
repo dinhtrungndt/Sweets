@@ -8,7 +8,7 @@ import VideoPlayer from 'react-native-video-player';
 // styles
 import {styles} from '../style/imgOtherScreen';
 
-const ImgOtherScreen = ({navigation, route}) => {
+const ImgOtherScreen2 = ({navigation, route}) => {
   const {account} = route.params;
   const [posts, setPosts] = useState([]);
   const {t} = useTranslation();
@@ -17,7 +17,7 @@ const ImgOtherScreen = ({navigation, route}) => {
   useEffect(() => {
     const onGetPosts = async () => {
       try {
-        const res = await getPostByUserId(account.idUsers._id);
+        const res = await getPostByUserId(account._id);
         const postsWithMedia = await Promise.all(
           res.map(async post => {
             const mediaResponse = await getMedia(post._id);
@@ -34,7 +34,7 @@ const ImgOtherScreen = ({navigation, route}) => {
       }
     };
     onGetPosts();
-  }, [account?.idUsers._id]);
+  }, [account?._id]);
 
   const renderItem = ({item}) => {
     return (
@@ -81,4 +81,4 @@ const ImgOtherScreen = ({navigation, route}) => {
   );
 };
 
-export default ImgOtherScreen;
+export default ImgOtherScreen2;
