@@ -129,7 +129,7 @@ const AllFriend = () => {
   // Hàm này được gọi khi người dùng kéo xuống để làm mới
   const onRefresh = async () => {
     setRefreshing(true); // Đặt trạng thái là đang làm mới
-    await friendsDetails(); // Tải dữ liệu mới
+    await fetchFriendsDetails(); // Tải dữ liệu mới
     setRefreshing(false); // Kết thúc làm mới
   };
 
