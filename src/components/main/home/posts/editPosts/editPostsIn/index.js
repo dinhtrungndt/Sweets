@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -25,7 +26,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheetEditPosts from './bottomSheet';
 import BottomSheet from '@gorhom/bottom-sheet';
+import VideoPlayer from 'react-native-video-player';
+import Feather from 'react-native-vector-icons/Feather';
 import {
+  deleteMedia,
   updateEditPosts,
   uploadImageStatus,
   uploadMedia,
@@ -51,16 +55,46 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
   const [upload, setUpload] = useState(false);
   const {user} = useContext(UserContext);
   const [selectedId, setSelectedId] = useState(null);
+  const idPostsUp = _idPosts;
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = text => {
-    setInputText(text);
+    setInputText(text || '');
   };
+
+  const idObject = () => [
+    {
+      _id: '65b1fe1be09b1e99f9e8a235',
+      name: 'Công khai',
+      icon: 'https://res.cloudinary.com/dqo8whkdr/image/upload/v1711327221/f4yxj5cnlrnlpginqfpp.png',
+    },
+    {
+      _id: '65b1fe6dab07bc8ddd7de469',
+      name: 'Bạn bè',
+      icon: 'https://res.cloudinary.com/dqo8whkdr/image/upload/v1711327699/ouv89aqjnoshfp5nncpg.png',
+    },
+    {
+      _id: '65b1fe77ab07bc8ddd7de46c',
+      name: 'Chỉ mình tôi',
+      icon: 'https://res.cloudinary.com/dqo8whkdr/image/upload/v1711327910/afewyfgqi6g3l6lbpvpm.png',
+    },
+  ];
+
+  useEffect(() => {
+    const selectedObject = idObject().find(
+      item => item._id === editPostsItemAccount.idObject._id,
+    );
+    if (selectedObject) {
+      setSelectedId(selectedObject);
+    }
+  }, [editPostsItemAccount]);
 
   const takePhoto = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
       return;
     }
     if (response.assets && response.assets.length > 0) {
+      setLoading(true);
       const selectedImages = response.assets.map(asset => ({
         uri: asset.uri,
         type: asset.type,
@@ -70,28 +104,20 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
-        formData.append('imageStatus', image);
+        formData.append('media', image);
       });
 
       const data = await uploadImageStatus(formData);
       // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
       setImagePath(data.urls);
+      setLoading(false);
       // console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 
-  const openCamera = useCallback(async () => {
-    const options = {
-      mediaType: 'photo',
-      quality: 1,
-      saveToPhotos: true,
-    };
-    await launchCamera(options, takePhoto);
-  }, []);
-
   const openLibrary = useCallback(async () => {
     const options = {
-      mediaType: 'photo',
+      mediaType: 'mixed',
       quality: 5,
       saveToPhotos: true,
       selectionLimit: 5,
@@ -103,24 +129,35 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
 
   const handleUploadMedia = useCallback(async () => {
     try {
-      const idPosts = editPostsItemAccount._id;
-      if (!idPosts) {
-        return;
-      }
-      const media = imagePath.join();
-      const cbMediaType = {
-        url: imagePath?.length > 1 ? imagePath : media,
-        type: 'image',
-      };
+      const mediaArray = imagePath.map(image => {
+        const type =
+          image.endsWith('.jpg') ||
+          image.endsWith('.jpeg') ||
+          image.endsWith('.png')
+            ? 'image'
+            : image.endsWith('.mp4')
+            ? 'video'
+            : 'unknown';
+        return {url: image, type: type};
+      });
 
-      const response = await uploadMedia(idPosts, cbMediaType);
-      // console.log('>>>>>>> response -> handleUploadMedia', response);
+      await Promise.all(
+        mediaArray.map(async media => {
+          const idPosts = editPostsItemAccount._id;
+          const response = await uploadMedia(idPosts, media);
+          // console.log('>>>>>>> response -> handleUploadMedia', response);
+          setUpload(response);
+          navigation.replace('HomeScreen');
+          //console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+        }),
+      );
     } catch (error) {
       console.log('>>>>>>> Lỗi ở HandleUploadMedia nè', error);
     }
   });
+  // console.log('>>>>>>> hình ở imagePath nè', imagePath);
 
-  const handleEditPostsUpload = async () => {
+  const handlePostUpload = async () => {
     try {
       if (!inputText && !imagePath) {
         return Toast.show({
@@ -134,12 +171,17 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
         });
       }
 
+      // console.log(' tagSelectedUser:', tagSelectedUser?.id);
       if (inputText && imagePath) {
-        await Promise.all([handleUploadMedia(), handleUpdatePosts()]);
+        await Promise.all([handleUploadMedia(), handleUploadPost()]);
       } else if (inputText) {
-        await handleUpdatePosts();
+        await handleUploadPost();
+      } else if (inputText === '') {
+        await Promise.all([handleUploadMedia(), handleUploadPost()]);
       } else if (imagePath) {
         await handleUploadMedia();
+      } else {
+        return;
       }
 
       if (!upload) {
@@ -147,7 +189,7 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
         Toast.show({
           type: 'success',
           position: 'top',
-          text1: 'Up tin thành công',
+          text1: 'Chỉnh sửa bài viết thành công !',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -157,7 +199,7 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
         Toast.show({
           type: 'error',
           position: 'top',
-          text1: 'Up tin thất bại',
+          text1: 'Đăng bài viết thất bại',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -178,31 +220,50 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
     }
   };
 
-  const handleUpdatePosts = useCallback(async () => {
-    if (!inputText) {
-      return;
-    }
-
+  const handleUploadPost = useCallback(async () => {
     try {
       let idObjectValue = '65b1fe1be09b1e99f9e8a235';
       if (selectedId && selectedId._id) {
         idObjectValue = selectedId._id;
+        const idPosts = editPostsItemAccount._id;
+        const detailPosts = {
+          content: inputText,
+          idObject: idObjectValue,
+        };
+        const idUsers = user.user._id;
+        const response = await updateEditPosts(idPosts, idUsers, detailPosts);
+        setUpload(response);
+        navigation.replace('HomeScreen');
+        // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
       }
-
-      const idPosts = editPostsItemAccount._id;
-      const detailPosts = {
-        content: inputText,
-        idObject: idObjectValue,
-      };
-      const idUsers = user.user._id;
-      const response = await updateEditPosts(idPosts, idUsers, detailPosts);
-      setUpload(response);
-      navigation.replace('HomeScreen'),
-        console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
     } catch (error) {
       console.log('>>>>> lỗi upload postsss', error);
     }
   }, [inputText, user]);
+
+  const handleDeleteImagePath = useCallback(async () => {
+    const res = await deleteMedia(editPostsItemAccount._id);
+    editPostsItemAccount.media = [];
+    setImagePath(null);
+    setImage([]);
+  }, []);
+
+  const isImage = url => {
+    return /\.(jpeg|jpg|png)$/i.test(url);
+  };
+
+  const isVideo = url => {
+    return /\.(mp4|avi|mov)$/i.test(url);
+  };
+
+  useEffect(() => {
+    const dateString = Date.now();
+    const randomSuffix = Math.floor(Math.random() * 10000000);
+    const dateNumber = new Date(dateString);
+    const _idPosts = dateNumber.getTime().toString() + randomSuffix.toString();
+    setIdPosts(_idPosts);
+    // console.log('useEffectuseEffect _idPosts:', _idPosts);
+  }, []);
 
   useEffect(() => {
     bottomSheetRef.current?.expand();
@@ -218,11 +279,11 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
           </TouchableOpacity>
           <Text style={styles.text_editPosts}>Chỉnh sửa bài viết</Text>
           <TouchableOpacity
-            onPress={handleEditPostsUpload}
+            onPress={handlePostUpload}
             style={[
               styles.save,
               {
-                backgroundColor: inputText ? '#7ec1a5' : '#ebebeb',
+                backgroundColor: inputText || imagePath ? '#7ec1a5' : '#ebebeb',
               },
             ]}>
             <Text style={styles.text_save}>Lưu</Text>
@@ -255,7 +316,9 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
                         style={styles.body_chedo_icon}
                         source={require('../../../../../../assets/upstory_world_icon.png')}
                       />
-                      <Text style={styles.body_chedo_text}> Công khai </Text>
+                      <Text style={styles.body_chedo_text}>
+                        {editPostsItemAccount.idObject.name}
+                      </Text>
                     </>
                   ) : (
                     <>
@@ -288,51 +351,114 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
               onChangeText={handleInputChange}>
               <Text>{editPostsItemAccount.content}</Text>
             </TextInput>
+            <View
+              style={{width: '100%', height: 1, backgroundColor: '#dedede'}}
+            />
             {editPostsItemAccount.media &&
               editPostsItemAccount.media.length > 0 && (
-                <FlatList
-                  style={{marginTop: 10}}
-                  data={editPostsItemAccount.media}
-                  numColumns={numColumns}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item, index}) => (
-                    <TouchableOpacity key={index}>
-                      <Image
-                        source={{uri: item.url.join()}}
-                        style={{
-                          width:
-                            Dimensions.get('window').width / numColumns - 0,
-                          height:
-                            Dimensions.get('window').width / numColumns - 0,
-                          margin: 5,
-                          borderRadius: 5,
-                        }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                />
-              )}
-            {image.length > 0 && (
-              <FlatList
-                style={{marginTop: 10}}
-                data={image}
-                numColumns={numColumns}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item, index}) => (
-                  <TouchableOpacity key={index}>
-                    <Image
-                      source={{uri: item.uri}}
-                      style={{
-                        width: Dimensions.get('window').width / numColumns - 10,
-                        height:
-                          Dimensions.get('window').width / numColumns - 10,
-                        margin: 5,
-                        borderRadius: 5,
-                      }}
+                <>
+                  <TouchableOpacity onPress={handleDeleteImagePath}>
+                    <Feather
+                      name={'x'}
+                      size={20}
+                      color={'#000'}
+                      paddingTop={10}
                     />
                   </TouchableOpacity>
+                  <FlatList
+                    data={editPostsItemAccount.media}
+                    numColumns={numColumns}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item, index}) => (
+                      <TouchableOpacity key={index}>
+                        {isImage(item.url) ? (
+                          <Image
+                            source={{uri: item.url[0]}}
+                            style={{
+                              width:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              height:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              margin: 5,
+                              borderRadius: 5,
+                            }}
+                          />
+                        ) : isVideo(item.url) ? (
+                          <VideoPlayer
+                            key={index}
+                            video={{uri: item.url[0]}}
+                            videoWidth={1600}
+                            videoHeight={900}
+                            thumbnail={require('../../../../../../assets/play_96px.png')}
+                            style={{
+                              width:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              height:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              margin: 5,
+                              borderRadius: 5,
+                            }}
+                          />
+                        ) : null}
+                      </TouchableOpacity>
+                    )}
+                  />
+                </>
+              )}
+            {image.length > 0 && (
+              <>
+                {loading ? (
+                  <ActivityIndicator size="small" color="#22b6c0" />
+                ) : (
+                  <FlatList
+                    style={{marginTop: 10}}
+                    data={image}
+                    numColumns={numColumns}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item, index}) => (
+                      <TouchableOpacity key={index}>
+                        {isImage(item.uri) ? (
+                          <Image
+                            source={{uri: item.uri}}
+                            style={{
+                              width:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              height:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              margin: 5,
+                              borderRadius: 5,
+                            }}
+                          />
+                        ) : isVideo(item.uri) ? (
+                          <VideoPlayer
+                            key={index}
+                            video={{uri: item.uri}}
+                            videoWidth={1600}
+                            videoHeight={900}
+                            thumbnail={require('../../../../../../assets/play_96px.png')}
+                            style={{
+                              width:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              height:
+                                Dimensions.get('window').width / numColumns -
+                                10,
+                              margin: 5,
+                              borderRadius: 5,
+                            }}
+                          />
+                        ) : null}
+                      </TouchableOpacity>
+                    )}
+                  />
                 )}
-              />
+              </>
             )}
           </View>
         </View>
@@ -341,22 +467,8 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
           ref={bottomSheetRef}
           index={initialSnapIndex}
           snapPoints={['10%', '45%', '90%']}>
-          <BottomSheetEditPosts openCamera={() => setModalVisible(true)} />
+          <BottomSheetEditPosts openLibrary={openLibrary} />
         </BottomSheet>
-        {/* modal  */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {}}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalView}>
-              <Text onPress={openCamera}>Chụp ảnh</Text>
-              <Text onPress={openLibrary}>Chọn ảnh</Text>
-              <Text onPress={() => setModalVisible(false)}>Cancel</Text>
-            </View>
-          </View>
-        </Modal>
         <Modal
           animationType="slide"
           transparent={true}
@@ -365,6 +477,7 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
           <ChangeObjectsEditPosts
             cancel={() => setModalObjects(false)}
             navigation={navigation}
+            editPostsItemAccount={editPostsItemAccount}
             onSelectObject={selectedId => {
               setSelectedId(selectedId);
             }}
@@ -460,7 +573,7 @@ const styles = StyleSheet.create({
     color: '#0962c9',
     fontFamily: 'Roboto',
     fontWeight: '700',
-    marginLeft: 2,
+    marginLeft: 4,
   },
   body_chedo_icon_down: {
     width: 10,

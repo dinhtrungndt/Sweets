@@ -1,15 +1,20 @@
 /* eslint-disable prettier/prettier */
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {updateEditPostsObjects} from '../../../../../../services/home/homeService';
 
-const ChangeObjectsEditPosts = ({cancel, navigation, onSelectObject}) => {
+const ChangeObjectsEditPosts = ({
+  cancel,
+  navigation,
+  onSelectObject,
+  editPostsItemAccount,
+}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [objectsID, setObjectsID] = useState('');
-  // console.log('>>>>>>... itemPostsitemPosts', itemPosts);
+  // console.log('>>>>>>... editPostsItemAccount', editPostsItemAccount);
 
   const idObject = () => [
     {
@@ -36,14 +41,16 @@ const ChangeObjectsEditPosts = ({cancel, navigation, onSelectObject}) => {
       const selectedId = selectedObject;
       setObjectsID(selectedId);
       onSelectObject(selectedId);
-      setTimeout(() => {
-        cancel();
-      }, 1000);
+      cancel();
       // console.log('>>>.. Selected Id:', selectedId);
     } else {
       console.log('Không tìm thấy đối tượng tương ứng với tùy chọn được chọn');
     }
   };
+
+  useEffect(() => {
+    setSelectedOption(editPostsItemAccount.idObject.name);
+  }, [editPostsItemAccount]);
 
   return (
     <View style={styles.T}>
