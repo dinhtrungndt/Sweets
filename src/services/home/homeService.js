@@ -462,3 +462,17 @@ export const addBackgroundColor = async (idUsers, idPosts, color) => {
     throw error;
   }
 };
+
+// Xóa media theo idPosts
+export const deleteMedia = async idPosts => {
+  try {
+    const response = await AxiosInstance().delete(
+      `/media/delete-media/${idPosts}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi deleteMedia : 11 s', error.response);
+    throw error;
+  }
+};

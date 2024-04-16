@@ -4,12 +4,12 @@ import React from 'react';
 
 import Entypo from 'react-native-vector-icons/Entypo';
 
-const BottomSheetEditPosts = ({openCamera}) => {
+const BottomSheetEditPosts = ({openLibrary}) => {
   return (
     <View style={styles.T}>
       {/* 10% */}
       <View style={styles.size10Container}>
-        <TouchableOpacity onPress={openCamera}>
+        <TouchableOpacity onPress={openLibrary}>
           <Image
             style={styles.imageSize10}
             source={require('../../../../../../assets/icon_image.png')}
@@ -42,7 +42,9 @@ const BottomSheetEditPosts = ({openCamera}) => {
       {/* 45% */}
       <View style={styles.size45Container}>
         <View style={styles.bottomSheet}>
-          <TouchableOpacity style={styles.bottomSheetItem} onPress={openCamera}>
+          <TouchableOpacity
+            style={styles.bottomSheetItem}
+            onPress={openLibrary}>
             <Image
               style={styles.bottomSheetIcon}
               source={require('../../../../../../assets/icon_image.png')}
