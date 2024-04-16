@@ -233,31 +233,9 @@ const CommentsScreen = ({navigation, route}) => {
 
   const reloadPosts = async () => {
     try {
-      const res = await getPosts(user.user._id);
-      const postsWithMedia = await Promise.all(
-        res.map(async post => {
-          const mediaResponse = await getMedia(post._id);
-          const media = mediaResponse;
-
-          const reactionResponse = await getReaction(post._id);
-          const reaction = reactionResponse;
-
-          const commentResponse = await getComments(post._id);
-          const comment = commentResponse;
-
-          const shareResponse = await getShare(post._id);
-          const share = shareResponse;
-
-          return {
-            ...post,
-            media,
-            reaction,
-            comment,
-            share,
-          };
-        }),
-      );
-      setPosts(postsWithMedia);
+      const res = await getPostsDetail(postId._id);
+      setPosts([res]);
+      // console.log('reloadPosts', res.reaction);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
