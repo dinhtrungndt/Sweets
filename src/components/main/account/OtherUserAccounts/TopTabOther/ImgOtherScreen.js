@@ -12,12 +12,12 @@ const ImgOtherScreen = ({ navigation, route }) => {
   const { account } = route.params;
   const [posts, setPosts] = useState([]);
   const { t } = useTranslation();
+  console.log('>>>>>>>>> accountttt', posts);
 
   useEffect(() => {
     const onGetPosts = async () => {
       try {
         const res = await getPostByUserId(account.idUsers._id);
-        console.log('>>>>>>>>> res', res);
         const postsWithMedia = await Promise.all(
           res.map(async post => {
             const mediaResponse = await getMedia(post._id);
