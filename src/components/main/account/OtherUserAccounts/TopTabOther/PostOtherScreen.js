@@ -208,14 +208,18 @@ const PostOtherScreen = ({navigation, route}) => {
         <Image style={styles.imgIcon} source={require('../../../../../assets/icon_more.png')} />
         <Text style={styles.text2}>Xem thông tin giới thiệu bản thân</Text>
       </View>
-      <TouchableOpacity style={styles.BtnEditDetail}>
+      {/* <TouchableOpacity style={styles.BtnEditDetail}>
         <Text style={styles.text4}>Chỉnh sửa chi tiết công khai</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <View style={styles.detailContainer2}>
+        <Text style={styles.txt1}>Bài viết của {account.idUsers.name}</Text>
+      </View>
     </View>
   );
 
   return (
     <FlatList
+      style={styles.body}
       data={['header', ...posts]} // Dữ liệu bao gồm cả header và danh sách bài viết
       keyExtractor={(item, index) => index.toString()} // Khóa mỗi item là index của nó
       renderItem={({ item }) => item === 'header' ? header : renderPostItem({ item })} // Render header hoặc item bài viết

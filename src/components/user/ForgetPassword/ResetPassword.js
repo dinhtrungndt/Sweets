@@ -31,13 +31,13 @@ const ResetPassword = ({ navigation, route }) => {
     setLoading(true);
     try {
         const res = await resetPassword(email, otp, password);
-        if (res.status === 1) {
-            Alert.alert('Error');
-        } else {
+        if (res.success) {
             Alert.alert('Success', res.message);
             setPassword('');
             setConfirmPassword('');
             navigation.navigate('LoginScreen');
+        } else {
+            Alert.alert('Error');
         }
     } catch (error) {
         console.log('ResetPassword error: ', error);

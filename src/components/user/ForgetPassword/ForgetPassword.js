@@ -21,7 +21,7 @@ const ForgetPassword = ({ navigation }) => {
         try {
             const res = await forgetPassword(email);
             if (res.status === 1) {
-                Alert.alert('Success');
+                Alert.alert('Success', 'OTP code sent to email');
                 setEmail('');
                 navigation.navigate('CheckOTP', { email: email });
             } else {
