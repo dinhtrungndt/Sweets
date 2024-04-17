@@ -17,7 +17,8 @@ import {styles} from '../style/otherUserA';
 import {UserContext} from '../../../../contexts/user/userContext';
 import PostOtherScreen2 from './TopTabOther2/PostOtherScreen2';
 import ImgOtherScreen2 from './TopTabOther2/ImgOtherScreen2';
-
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 const Tab = createMaterialTopTabNavigator();
 
 const OtherUserA2 = ({navigation, route}) => {
@@ -84,16 +85,15 @@ const OtherUserA2 = ({navigation, route}) => {
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.btnBack}>
-              <Image
+              <Ionicons
+                name="chevron-back"
                 style={styles.imgBack}
-                source={require('../../../../assets/back_50px.png')}
+                size={30}
+                color="#fff"
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnMore}>
-              <Image
-                style={styles.imgMore}
-                source={require('../../../../assets/icon_more_story.png')}
-              />
+              <Fontisto name="share-a" style={styles.imgMore} size={20} />
             </TouchableOpacity>
           </View>
         </View>
