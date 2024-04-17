@@ -1310,50 +1310,54 @@ const CommentsScreen = ({navigation, route}) => {
                                 </Text>
                               </TouchableOpacity>
                             )}
-                            <View style={{flexDirection: 'row'}}>
-                              {item?.parentUserName?._id === user.user._id ? (
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    navigation.navigate('Profile', {
-                                      account: item,
-                                    });
-                                  }}>
-                                  <Text
-                                    style={{
-                                      color: '#1b9e9a',
-                                      paddingRight: 5,
+                            {item.content !== '' ? (
+                              <View style={{flexDirection: 'row'}}>
+                                {item?.parentUserName?._id === user.user._id ? (
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      navigation.navigate('Profile', {
+                                        account: item,
+                                      });
                                     }}>
-                                    {item?.parentUserName?.name}
-                                  </Text>
-                                </TouchableOpacity>
-                              ) : (
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    navigation.navigate('OtherUserA2', {
-                                      accountzzz: item?.parentUserName,
-                                    });
-                                  }}>
-                                  <Text
-                                    style={{
-                                      color: '#1b9e9a',
-                                      paddingRight: 5,
+                                    <Text
+                                      style={{
+                                        color: '#1b9e9a',
+                                        paddingRight: 5,
+                                      }}>
+                                      {item?.parentUserName?.name}
+                                    </Text>
+                                  </TouchableOpacity>
+                                ) : (
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      navigation.navigate('OtherUserA2', {
+                                        accountzzz: item?.parentUserName,
+                                      });
                                     }}>
-                                    {item?.parentUserName?.name}
-                                  </Text>
-                                </TouchableOpacity>
-                              )}
-                              {item?.content && (
-                                <View style={{flexDirection: 'row'}}>
-                                  <Text
-                                    style={{
-                                      color: '#000',
-                                      width: '70%',
-                                    }}>
-                                    {item.content}
-                                  </Text>
-                                </View>
-                              )}
-                            </View>
+                                    <Text
+                                      style={{
+                                        color: '#1b9e9a',
+                                        paddingRight: 5,
+                                      }}>
+                                      {item?.parentUserName?.name}
+                                    </Text>
+                                  </TouchableOpacity>
+                                )}
+                                {item?.content && (
+                                  <View style={{flexDirection: 'row'}}>
+                                    <Text
+                                      style={{
+                                        color: '#000',
+                                        width: '70%',
+                                      }}>
+                                      {item.content}
+                                    </Text>
+                                  </View>
+                                )}
+                              </View>
+                            ) : (
+                              <></>
+                            )}
                           </View>
 
                           {item?.image && item?.image.length > 0 && (
