@@ -31,6 +31,8 @@ import SearchPosts from '../../../components/main/home/posts/search';
 import AllTopTabSearch from '../../../components/main/home/posts/search/allTop';
 import PostOtherScreen from '../../../components/main/account/OtherUserAccounts/TopTabOther/PostOtherScreen';
 import OtherUserA2 from '../../../components/main/account/OtherUserAccounts/OtherUserA2';
+import NotificationsScreen from '../../../components/main/home/posts/notifications';
+import HeaderScreen from '../../../components/main/layout/header';
 const Stack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
@@ -83,6 +85,11 @@ export function HomeStackScreen() {
         name="ZegoUIKitPrebuiltCallInCallScreen"
         component={ZegoUIKitPrebuiltCallInCallScreen}
       />
+      <Stack.Screen
+        name="NotificationsScreen"
+        component={NotificationsScreen}
+      />
+      <Stack.Screen name="HeaderScreen" component={HeaderScreen} />
     </Stack.Navigator>
   );
 }

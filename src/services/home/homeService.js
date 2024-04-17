@@ -476,3 +476,43 @@ export const deleteMedia = async idPosts => {
     throw error;
   }
 };
+
+// Lấy thông báo người nhận
+export const getNotificationRecipient = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/notifications/recipient/${idUsers}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi getNotification : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Xóa thông báo dựa theo id
+export const deleteNotification = async id => {
+  try {
+    const response = await AxiosInstance().delete(
+      `/notifications/delete/${id}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi deleteNotification : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Cập nhật trạng thái đã đọc của thông báo
+export const updateNotification = async id => {
+  try {
+    const response = await AxiosInstance().put(`/notifications/update/${id}`);
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi updateNotification : 11 s', error.response);
+    throw error;
+  }
+};
