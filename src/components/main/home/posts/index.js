@@ -401,39 +401,77 @@ const PostsScreen = ({posts, navigation}) => {
                         {item.taggedFriends === null ? (
                           <View />
                         ) : (
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              width: '50%',
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                              }}>
-                              {' '}
-                              cùng với
-                            </Text>
-                            <TouchableOpacity
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}
-                              onPress={() =>
-                                navigation.navigate('OtherUserA', {
-                                  accountzzz: item.taggedFriends,
-                                })
-                              }>
-                              <Text
-                                style={[
-                                  styles.name,
-                                  {color: '#ff0000', marginLeft: 5},
-                                ]}>
-                                {item.taggedFriends.name}
-                              </Text>
-                              <Text style={{color: '#000'}}>🎉🎁🎂</Text>
-                            </TouchableOpacity>
-                          </View>
+                          <>
+                            {item.taggedFriends._id === user.user._id ? (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  width: '50%',
+                                }}>
+                                <Text
+                                  style={{
+                                    fontSize: 14,
+                                  }}>
+                                  {' '}
+                                  cùng với
+                                </Text>
+                                <TouchableOpacity
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() =>
+                                    navigation.navigate('Profile', {
+                                      accountzzz: item.taggedFriends,
+                                    })
+                                  }>
+                                  <Text
+                                    style={[
+                                      styles.name,
+                                      {color: '#ff0000', marginLeft: 5},
+                                    ]}>
+                                    {item.taggedFriends.name}
+                                  </Text>
+                                  <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                                </TouchableOpacity>
+                              </View>
+                            ) : (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  width: '50%',
+                                }}>
+                                <Text
+                                  style={{
+                                    fontSize: 14,
+                                  }}>
+                                  {' '}
+                                  cùng với
+                                </Text>
+                                <TouchableOpacity
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() =>
+                                    navigation.navigate('OtherUserA2', {
+                                      accountzzz: item.taggedFriends,
+                                    })
+                                  }>
+                                  <Text
+                                    style={[
+                                      styles.name,
+                                      {color: '#ff0000', marginLeft: 5},
+                                    ]}>
+                                    {item.taggedFriends.name}
+                                  </Text>
+                                  <Text style={{color: '#000'}}>🎉🎁🎂</Text>
+                                </TouchableOpacity>
+                              </View>
+                            )}
+                          </>
                         )}
                       </View>
                       {item.location === null ? (
