@@ -237,7 +237,7 @@ const CommentsScreen = ({navigation, route}) => {
     try {
       const res = await getPostsDetail(postId._id);
       setPosts([res]);
-      // console.log('reloadPosts', res.reaction);
+      // console.log('reloadPosts', res);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -428,7 +428,7 @@ const CommentsScreen = ({navigation, route}) => {
 
       setIsLoadingCamera(true);
       const data = await uploadImageStatus(formData);
-      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
       setImagePath(data.urls);
       // console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
       setIsLoadingCamera(false);
@@ -467,6 +467,7 @@ const CommentsScreen = ({navigation, route}) => {
         }),
       );
       setComments(postComments);
+      await reloadPosts();
       // setIsLoading(false);
     } catch (error) {
       console.error('Lỗi khi tải danh sách bình luận:', error);
@@ -522,10 +523,6 @@ const CommentsScreen = ({navigation, route}) => {
       }
 
       if (parentId && parentUserName !== null) {
-        console.log(
-          'Tải danh sách bình parentUserName parentUserName:',
-          parentUserName,
-        );
         const response = await submitCommentsC(
           user.user._id,
           postId._id,
@@ -534,7 +531,7 @@ const CommentsScreen = ({navigation, route}) => {
           imagePath,
           parentUserName,
         );
-        console.log('Tải danh sách bình luận con:', response);
+        // console.log('Tải danh sách bình luận con:', response);
       } else {
         const response = await submitComments(
           user.user._id,
@@ -2050,8 +2047,6 @@ const CommentsScreen = ({navigation, route}) => {
                           style={{
                             alignItems: 'center',
                           }}>
-                          {/* cho clone ảnh và cho item.uri = null */}
-                          {console.log('>>> item', item)}
                           <TouchableOpacity
                             style={styles.container_image_camera}
                             onPress={() => {
@@ -2077,7 +2072,6 @@ const CommentsScreen = ({navigation, route}) => {
                               borderRadius: 5,
                             }}
                           />
-                          {console.log('>>> item.uri', item.uri)}
                         </View>
                       ) : isVideo(item.uri) ? (
                         <View
