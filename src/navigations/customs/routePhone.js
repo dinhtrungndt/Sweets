@@ -11,5 +11,20 @@ export const GetRouteNamePhone = route => {
   if (routeName?.includes('ThoiTiet2')) {
     return 'none';
   }
+  if (routeName?.includes('ThoiTiet')) {
+    return 'none';
+  }
+  if (routeName?.includes('ScanQR')) {
+    return 'none';
+  }
+  if (routeName?.includes('SinhNhat')) {
+    return 'none';
+  }
+  if (routeName?.includes('QuetQR')) {
+    return 'none';
+  }
+  if (routeName?.includes('QRCODE')) {
+    return 'none';
+  }
   return 'flex';
 };

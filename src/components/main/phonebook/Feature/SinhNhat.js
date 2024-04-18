@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Image, ScrollView, TouchableOpacity,TextInput } from 'react-native';
+import { Text, View, Image, ScrollView, TouchableOpacity, TextInput, Modal, Alert } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
@@ -13,23 +13,30 @@ LocaleConfig.locales['en'] = {
   today: 'Hôm nay'
 };
 
-const SinhNhat = () => {
+const SinhNhat = (props) => {
+  const { navigation } = props;
   const [upcomingBirthdays, setUpcomingBirthdays] = useState([]);
   const [showAllBirthdays, setShowAllBirthdays] = useState(false);
   const [birthdaysByMonth, setBirthdaysByMonth] = useState({});
-  
+  const [allBirthdays, setallBirthdays] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBirthdayName, setSelectedBirthdayName] = useState('');
+  const [modalData, setModalData] = useState(null);
+  //const allBirthdays = [];
   const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
   useEffect(() => {
     const fetchUpcomingBirthdays = async () => {
       try {
         const currentFriendsBirthdays = await AsyncStorage.getItem('currentFriendsBirthdays');
-        const allBirthdays = [];
+        console.log('currentFriendsBirthdaysss', currentFriendsBirthdays)
+
         if (currentFriendsBirthdays) {
           const parsedBirthdays = JSON.parse(currentFriendsBirthdays);
           const today = moment().startOf('day');
 
           const birthdaysGroupedByMonth = parsedBirthdays.reduce((acc, birthdayData) => {
-            const { name, birthday, avatar } = birthdayData;
+            const { name, birthday, avatar,id } = birthdayData;
 
             if (birthday && typeof birthday === 'string') {
               const [day, month] = birthday.split('/');
@@ -40,8 +47,8 @@ const SinhNhat = () => {
 
               if (!isNaN(birthdayDate)) {
                 if (birthdayDate.isSame(today, 'year')) {
-                  allBirthdays.push(birthdayDate);
-                 
+                  setallBirthdays([...allBirthdays, birthdayDate]);
+
                   const daysUntilBirthday = birthdayDate.diff(today, 'days');
                   const monthKey = birthdayDate.format('MM');
                   acc[monthKey] = acc[monthKey] || [];
@@ -50,17 +57,19 @@ const SinhNhat = () => {
                     // Nếu trùng, thêm vào mảng upcomingBirthdays
                     setUpcomingBirthdays(prevState => [
                       ...prevState,
-                      { name, daysUntilBirthday, avatar }
+                      { name, daysUntilBirthday, avatar,id }
+
                     ]);
+                    //console.log('uupcomingBirthdays5', name, daysUntilBirthday, avatarmingBirthdays)
                   }
-                  acc[monthKey].push({ name, daysUntilBirthday, avatar });
+                  acc[monthKey].push({ name, daysUntilBirthday, avatar,id });
                 }
               }
 
 
             }
-            console.log('uupcomingBirthdays', upcomingBirthdays)
-            console.log('allBirthdays',allBirthdays)
+
+            console.log('allBirthdays', allBirthdays)
             return acc;
           }, {});
 
@@ -80,32 +89,71 @@ const SinhNhat = () => {
     fetchUpcomingBirthdays();
   }, []);
 
+  const getFormattedDate = (isoDateString) => {
+    const dateObject = new Date(isoDateString);
+    const year = dateObject.getUTCFullYear();
+    const month = (dateObject.getUTCMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
+    const day = dateObject.getUTCDate().toString().padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
+
   const getMarkedDates = () => {
     const markedDates = {};
-    upcomingBirthdays.forEach(birthdayData => {
-      const { daysUntilBirthday } = birthdayData;
-      const birthday = moment().add(daysUntilBirthday, 'days');
-      const formattedBirthday = birthday.format('YYYY-MM-DD');
-      markedDates[formattedBirthday] = { dotColor: 'red', marked: true }; // Đánh dấu tất cả các sinh nhật
+    console.log('allBirthdays',allBirthdays)
+    allBirthdays.forEach(birthdayData => {
+      const formattedBirthday = moment(birthdayData).format('YYYY-MM-DD');
+      markedDates[formattedBirthday] = { dotColor: 'red', marked: true, birthdayName: birthdayData.name };
     });
-  
+
     const today = moment().format('YYYY-MM-DD');
-    markedDates[today] = { selected: true, selectedColor: '#e74c3c', marked: true }; // Đánh dấu ngày hôm nay
-  
+    markedDates[today] = { selected: true, selectedColor: '#e74c3c', marked: true };
+
     return markedDates;
   };
+  const handleDayPress = async (day) => {
+    const currentFriendsBirthdays = await AsyncStorage.getItem('currentFriendsBirthdays');
+    const parsedBirthdays = JSON.parse(currentFriendsBirthdays);
+    console.log('currentFriendsBirthdaysssssssd2',parsedBirthdays)
+    console.log('ffff')
+    
+    if (parsedBirthdays) {
+      console.log('ffff2')
+      let isBirthdayFound = false; // Biến để kiểm tra xem có sinh nhật nào trong ngày được chọn không
+      
+      parsedBirthdays.forEach((item) => {
+        const formattedBirthday = moment(item.birthday, 'DD/MM/YYYY').format('MM-DD');
+        if (formattedBirthday === moment(day.dateString).format('MM-DD')) {
+          setSelectedBirthdayName(item.name); // Cập nhật tên của người được chọn
+          setIsModalOpen(true); // Mở modal
+          setModalData(item); // Thiết lập modalData với dữ liệu của sinh nhật cụ thể được chọn
+          console.log('mod222', modalData);
+          isBirthdayFound = true;
+        }
+      });
+      
+      if (!isBirthdayFound) {
+        // Nếu không tìm thấy sinh nhật nào trong ngày được chọn, hiển thị thông báo
+        console.log('mod',modalData)
+        Alert.alert('Không có sinh nhật trong ngày này');
+      }
+    }
+  };
   
-const handleWishChange = () =>{
-
-}
+  const handleGiftNavigation = (birthdayData) => {
+    console.log('.......',birthdayData)
+    // Chuyển đến màn hình "Gift" và truyền thông tin của item được nhấn
+    navigation.navigate('Gift', { birthdayData: birthdayData });
+  };
+  
   return (
     <View style={styles.container}>
       <View style={styles.wrapContent}>
-        <TouchableOpacity style={styles.friendItem}>
+        <TouchableOpacity style={styles.friendItem} onPress={() => navigation.navigate('PhoneBookScreen')}>
           <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
         </TouchableOpacity>
         <Text style={styles.txtContent1}>Sinh nhật</Text>
-        <TouchableOpacity style={styles.friendItem}>
+        <TouchableOpacity style={styles.friendItem} onPress={() => navigation.navigate('ListSinhNhat')}>
           <Image source={require('../../../../assets/option.png')} style={styles.avatar} />
         </TouchableOpacity>
       </View>
@@ -126,6 +174,7 @@ const handleWishChange = () =>{
             style={styles.Calendar}
             hideDayNames={false}
             showWeekNumbers={true}
+            onDayPress={handleDayPress}
             markedDates={getMarkedDates()}
             theme={{
               textSectionTitleColor: '#2ecc71',
@@ -142,46 +191,49 @@ const handleWishChange = () =>{
             }}
           />
 
+
+
           <View style={styles.wrapInfoUser}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={styles.txtTitle}>Sinh nhật hôm nay</Text>
               <Text style={styles.txtTitle1}>Tổng {upcomingBirthdays.length} (Ngày sinh nhật)</Text>
             </View>
-           
-          
-            {upcomingBirthdays.length > 0 ? (
-  <View>
-    {upcomingBirthdays.map((birthdayData, index) => (
-      <View key={index} style={{ flexDirection: 'row', margin: 7, alignItems: 'center' }}>
-        <Image source={{ uri: birthdayData.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />
-        <View style={{ marginLeft: 10 }}>
-          <Text style={styles.txtContentInfoUser3}>
-            {birthdayData.name}
-          </Text>
-          <TextInput
-            style={styles.inputWish}
-            placeholder="Nhập lời chúc..."
-            placeholderTextColor="#a8a8a8"
-            multiline={true}
-            numberOfLines={2}
-            onChangeText={(text) => handleWishChange(text, index)}
-          />
-        </View>
-        <View style={{marginLeft:8}}>
-        <TouchableOpacity style={{alignSelf:'center'}}>
-        <Image source={require('../../../../assets/icon_chat_click.png')} style={{ width:30, height: 30, borderRadius: 15 }} />
-        </TouchableOpacity>
-        <TouchableOpacity style={{width:75,height:35,backgroundColor:'#22b6c0',borderRadius:10}}>
-       <Text style={{color:'white',alignSelf:'center',fontWeight:'bold',marginVertical:5}}>Đăng</Text>
-        </TouchableOpacity>
 
-        </View>
-      </View>
-    ))}
-  </View>
-) : (
-  <Text style={{ alignSelf: 'center' }}>Không có bạn bè sinh nhật hôm nay</Text>
-)}
+
+            {upcomingBirthdays.length > 0 ? (
+              <View>
+                {upcomingBirthdays.map((birthdayData, index) => (
+                  <View key={index} style={{ flexDirection: 'row', margin: 7, alignItems: 'center' }}>
+                    <Image source={{ uri: birthdayData.avatar }} style={{ width: 60, height: 60, borderRadius: 30 }} />
+                    <View style={{ marginLeft: 10 }}>
+                      <Text style={styles.txtContentInfoUser3}>
+                        {birthdayData.name}
+                      </Text>
+                      <TextInput
+                        style={styles.inputWish}
+                        placeholder="Nhập lời chúc..."
+                        placeholderTextColor="#a8a8a8"
+                        multiline={true}
+                        numberOfLines={2}
+                        onChangeText={(text) => handleWishChange(text, index)}
+                      />
+                    </View>
+                    <View style={{ marginLeft: 8 }}>
+                  
+                      <TouchableOpacity style={{ alignSelf: 'center' }}  onPress={() => handleGiftNavigation(birthdayData)}>
+                        <Image source={require('../../../../assets/icon_edit.png')} style={{ width: 30, height: 30, borderRadius: 15 }} />
+                      </TouchableOpacity>
+                     
+                      <TouchableOpacity style={{ width: 75, height: 35, backgroundColor: '#22b6c0', borderRadius: 10 }}>
+                        <Text style={{ color: 'white', alignSelf: 'center', fontWeight: 'bold', marginVertical: 5 }}>Đăng</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <Text style={{ alignSelf: 'center' }}>Không có bạn bè sinh nhật hôm nay</Text>
+            )}
 
           </View>
         </View>
@@ -237,6 +289,28 @@ const handleWishChange = () =>{
           )}
         </View>
       </ScrollView>
+      <Modal
+  visible={isModalOpen}
+  onRequestClose={() => setIsModalOpen(false)}
+  transparent={true}
+  animationType="slide"
+  onBackdropPress={() => setIsModalOpen(false)} // Đóng modal khi click ra ngoài
+>
+  <View style={styles.modalContainer}>
+    <View style={styles.modalContent}>
+      {modalData && (
+        <>
+          <Image source={{ uri: modalData.avatar }} style={styles.avatars} />
+          <Text style={styles.modalText}>Sinh nhật của {modalData.name}</Text>
+          <TouchableOpacity onPress={() => setIsModalOpen(false)} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Đóng</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
+  </View>
+</Modal>
+
     </View>
   );
 };
