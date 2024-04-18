@@ -6,8 +6,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 7,
-        backgroundColor: '#22b6c0',
-
+       
+ backgroundColor: '#22b6c0',
 
 
         elevation: 65,
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     txtContent1: {
         fontSize: 18,
         fontWeight: 'bold',
-
+        color:'black'
     },
     container: {
         flex: 1,
@@ -80,13 +80,14 @@ const styles = StyleSheet.create({
         fontSize:15,
         marginHorizontal:15,
         marginVertical:17,
-      
+        color:'black'
     },
     
     txtContentInfoUser3: {
         fontWeight:'bold',
         fontSize:16,
         marginHorizontal:15,
+        color:'black'
        
     },
     imvCheck:{
@@ -153,6 +154,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10,
+        color:'black'
       },
       closeButton: {
         backgroundColor: '#3498db',

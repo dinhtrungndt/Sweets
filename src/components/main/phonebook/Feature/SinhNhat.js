@@ -36,7 +36,7 @@ const SinhNhat = (props) => {
           const today = moment().startOf('day');
 
           const birthdaysGroupedByMonth = parsedBirthdays.reduce((acc, birthdayData) => {
-            const { name, birthday, avatar } = birthdayData;
+            const { name, birthday, avatar,id } = birthdayData;
 
             if (birthday && typeof birthday === 'string') {
               const [day, month] = birthday.split('/');
@@ -57,12 +57,12 @@ const SinhNhat = (props) => {
                     // Nếu trùng, thêm vào mảng upcomingBirthdays
                     setUpcomingBirthdays(prevState => [
                       ...prevState,
-                      { name, daysUntilBirthday, avatar }
+                      { name, daysUntilBirthday, avatar,id }
 
                     ]);
                     //console.log('uupcomingBirthdays5', name, daysUntilBirthday, avatarmingBirthdays)
                   }
-                  acc[monthKey].push({ name, daysUntilBirthday, avatar });
+                  acc[monthKey].push({ name, daysUntilBirthday, avatar,id });
                 }
               }
 
@@ -140,7 +140,11 @@ const SinhNhat = (props) => {
     }
   };
   
-  
+  const handleGiftNavigation = (birthdayData) => {
+    console.log('.......',birthdayData)
+    // Chuyển đến màn hình "Gift" và truyền thông tin của item được nhấn
+    navigation.navigate('Gift', { birthdayData: birthdayData });
+  };
   
   return (
     <View style={styles.container}>
@@ -149,7 +153,7 @@ const SinhNhat = (props) => {
           <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
         </TouchableOpacity>
         <Text style={styles.txtContent1}>Sinh nhật</Text>
-        <TouchableOpacity style={styles.friendItem}>
+        <TouchableOpacity style={styles.friendItem} onPress={() => navigation.navigate('ListSinhNhat')}>
           <Image source={require('../../../../assets/option.png')} style={styles.avatar} />
         </TouchableOpacity>
       </View>
@@ -215,13 +219,14 @@ const SinhNhat = (props) => {
                       />
                     </View>
                     <View style={{ marginLeft: 8 }}>
-                      <TouchableOpacity style={{ alignSelf: 'center' }}>
-                        <Image source={require('../../../../assets/icon_chat_click.png')} style={{ width: 30, height: 30, borderRadius: 15 }} />
+                  
+                      <TouchableOpacity style={{ alignSelf: 'center' }}  onPress={() => handleGiftNavigation(birthdayData)}>
+                        <Image source={require('../../../../assets/icon_edit.png')} style={{ width: 30, height: 30, borderRadius: 15 }} />
                       </TouchableOpacity>
+                     
                       <TouchableOpacity style={{ width: 75, height: 35, backgroundColor: '#22b6c0', borderRadius: 10 }}>
                         <Text style={{ color: 'white', alignSelf: 'center', fontWeight: 'bold', marginVertical: 5 }}>Đăng</Text>
                       </TouchableOpacity>
-
                     </View>
                   </View>
                 ))}
