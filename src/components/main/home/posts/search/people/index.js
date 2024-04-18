@@ -9,8 +9,9 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 
-const PeopleSearch = ({listUserSearch}) => {
+const PeopleSearch = ({listUserSearch, showListHistorySearch}) => {
   const [refreshing, setRefreshing] = useState(false);
+  // console.log('>>>>>>>>>>>>> showListHistorySearch', showListHistorySearch);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -26,7 +27,7 @@ const PeopleSearch = ({listUserSearch}) => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-      {listUserSearch === undefined ? (
+      {showListHistorySearch === undefined ? (
         <Text style={stylesIn.textBoldPeople}>Không có người dùng</Text>
       ) : (
         <>
