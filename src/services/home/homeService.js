@@ -516,3 +516,59 @@ export const updateNotification = async id => {
     throw error;
   }
 };
+
+// Lấy danh sách các bài viết đã lưu dựa trên idUsers
+export const getSavedPosts = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/savePosts/get-saved/${idUsers}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi getSavedPosts : 11 s', error.response);
+    throw error;
+  }
+};
+
+//  Lưu bài viết dựa theo idUsers và idPosts
+export const savePosts = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/savePosts/saved-post/${idUsers}/${idPosts}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi savePosts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Xóa bài viết đã lưu dựa trên idUsers và idPosts
+export const deleteSavedPosts = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().delete(
+      `/savePosts/delete-saved/${idUsers}/${idPosts}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi deleteSavedPosts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Lấy bài viết đã lưu dựa trên idUsers và lấy theo idPosts
+export const getSavedIdUserTPosts = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/savePosts/get-saved-media/${idUsers}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi getSavedPostsId : 11 s', error.response);
+    throw error;
+  }
+};

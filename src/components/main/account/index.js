@@ -89,10 +89,12 @@ const AccountScreen = props => {
           />
           <Text style={styles.text0}>{t('memories')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnIcon}>
+        <TouchableOpacity
+          style={styles.btnIcon}
+          onPress={() => navigation.navigate('SavePostsScreen')}>
           <Image
             style={styles.imgIcon}
-            source={require('../../../assets/icon_image.png')}
+            source={require('../../../assets/ablum_account.png')}
           />
           <Text style={styles.text0}>{t('saved')}</Text>
         </TouchableOpacity>
