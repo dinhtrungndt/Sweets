@@ -59,6 +59,13 @@ export const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#000',
   },
+
+  textContentNo: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000',
+    padding: 20,
+  },
   textFooter: {
     fontSize: 16,
     fontWeight: '500',
