@@ -1,11 +1,72 @@
 /* eslint-disable prettier/prettier */
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {UserContext} from '../../../../../../contexts/user/userContext';
+import {
+  deleteSavedPosts,
+  getSavedPosts,
+  savePosts,
+} from '../../../../../../services/home/homeService';
+import Toast from 'react-native-toast-message';
 
 const ModalEditPostsGuest = ({editPostsItemGuest}) => {
-  // console.log('>>>>>>>> bên khách', editPostsItemGuest.idUsers.name);
+  // console.log('>>>>>>>> bên khách', user.user._id);
+  const {user} = useContext(UserContext);
+  const [savedPosts, setSavedPosts] = useState([]);
+
+  const handleSavePosts = async id => {
+    try {
+      const res = await savePosts(user.user._id, id);
+      // console.log('res handleSavePosts', res);
+      Toast.show({
+        type: 'success',
+        position: 'top',
+        text1: 'Lưu bài viết thành công !',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+      onGetSavedPosts();
+    } catch (error) {
+      console.log('error handleSavePosts', error);
+    }
+  };
+
+  const handleDeleteSavedPosts = async id => {
+    try {
+      const res = await deleteSavedPosts(user.user._id, id);
+      // console.log('res handleDeleteSavedPosts', res);
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Hủy lưu bài viết thành công !',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
+      onGetSavedPosts();
+    } catch (error) {
+      console.log('error handleDeleteSavedPosts', error);
+    }
+  };
+
+  const onGetSavedPosts = async () => {
+    try {
+      const res = await getSavedPosts(user.user._id);
+      // console.log('res onGetSavedPosts', res.userSavedPosts.length === 0);
+      setSavedPosts(res);
+    } catch (error) {
+      console.log('error onGetSavedPosts', error);
+    }
+  };
+
+  useEffect(() => {
+    onGetSavedPosts();
+  }, []);
 
   return (
     <View style={styles.T}>
@@ -13,15 +74,33 @@ const ModalEditPostsGuest = ({editPostsItemGuest}) => {
       <View style={styles.list_1_Container}>
         {/* save posts */}
         <View>
-          <TouchableOpacity style={styles.savePosts}>
-            <Ionicons name={'duplicate'} size={30} color={'#000'} />
-            <View style={{paddingLeft: 15, width: '93%'}}>
-              <Text style={{fontSize: 16, color: '#000', fontWeight: 'bold'}}>
-                Lưu bài viết
-              </Text>
-              <Text>Thêm vào danh sách các mục đã lưu.</Text>
-            </View>
-          </TouchableOpacity>
+          {!savedPosts?.userSavedPosts
+            ?.map(item => item._id)
+            .includes(editPostsItemGuest._id) ? (
+            <TouchableOpacity
+              style={styles.savePosts}
+              onPress={() => handleSavePosts(editPostsItemGuest._id)}>
+              <Ionicons name={'duplicate'} size={30} color={'#000'} />
+              <View style={{paddingLeft: 15, width: '93%'}}>
+                <Text style={{fontSize: 16, color: '#000', fontWeight: 'bold'}}>
+                  Lưu bài viết
+                </Text>
+                <Text>Thêm vào danh sách các mục đã lưu.</Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.savePosts}
+              onPress={() => handleDeleteSavedPosts(editPostsItemGuest._id)}>
+              <Ionicons name={'duplicate'} size={30} color={'#000'} />
+              <View style={{paddingLeft: 15, width: '93%'}}>
+                <Text style={{fontSize: 16, color: '#000', fontWeight: 'bold'}}>
+                  Hủy lưu bài viết
+                </Text>
+                <Text>Thêm vào danh sách các mục đã lưu.</Text>
+              </View>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={[styles.savePosts, {paddingTop: 20}]}>
             <Ionicons name={'close-circle-sharp'} size={30} color={'#000'} />
             <View style={{paddingLeft: 15, width: '93%'}}>

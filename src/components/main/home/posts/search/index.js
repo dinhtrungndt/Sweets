@@ -31,37 +31,6 @@ const SearchPosts = props => {
   const [listUserSearch, setListUserSearch] = useState([]);
   const {user} = useContext(UserContext);
 
-  const onGetPosts = async () => {
-    setIsLoading(true);
-    const res = await getPostsAll();
-    const postsWithMedia = await Promise.all(
-      res.map(async post => {
-        const mediaResponse = await getMedia(post._id);
-        const media = mediaResponse;
-
-        const reactionResponse = await getReaction(post._id);
-        const reaction = reactionResponse;
-
-        const commentResponse = await getComments(post._id);
-        const comment = commentResponse;
-
-        const shareResponse = await getShare(post._id);
-        const share = shareResponse;
-
-        // console.log('>>>>>>>>>>>>>>> likedByCurrentUser', likedByCurrentUser);
-        return {
-          ...post,
-          media,
-          reaction,
-          comment,
-          share,
-        };
-      }),
-    );
-    setPosts(postsWithMedia);
-    setIsLoading(false);
-  };
-
   const onPostHistorySearch = async () => {
     const idUsers = user.user._id;
     const res = await addHistorySearch(idUsers, searchText);
@@ -95,7 +64,6 @@ const SearchPosts = props => {
   };
 
   useEffect(() => {
-    onGetPosts();
     onGetHistorySearch();
   }, []);
 
@@ -177,7 +145,7 @@ const SearchPosts = props => {
                     key={index}
                     style={[styles.itemContent, {padding: 16}]}
                     onPress={() => {
-                      navigation.navigate('OtherUserA', {accountzzz: user});
+                      navigation.navigate('OtherUserA2', {accountzzz: user});
                     }}>
                     <Image
                       source={{uri: user.avatar}}

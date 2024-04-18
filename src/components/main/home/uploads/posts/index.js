@@ -189,7 +189,7 @@ export function AddsScreen({route, navigation}) {
         });
       }
 
-      console.log(' tagSelectedUser:', tagSelectedUser?.id);
+      // console.log(' tagSelectedUser:', tagSelectedUser?.id);
       if (inputText && imagePath) {
         await Promise.all([
           handleUploadMedia(idPostsUp),
@@ -253,7 +253,7 @@ export function AddsScreen({route, navigation}) {
       // }
 
       try {
-        console.log('tagSelectedUser in tagSelectedUser:', tagSelectedUser?.id);
+        // console.log('tagSelectedUser in tagSelectedUser:', tagSelectedUser?.id);
         const tab = tagSelectedUser?.id;
         const postDetails = {
           _id: _idPosts === null ? idPostsUp : _idPosts,
@@ -265,7 +265,7 @@ export function AddsScreen({route, navigation}) {
           location: locationData || null,
         };
 
-        console.log(' >>>>>>>>>>>>>>>> postDetails:', postDetails);
+        // console.log(' >>>>>>>>>>>>>>>> postDetails:', postDetails);
 
         const response = await uploadPost(user.user._id, postDetails);
         setUpload(response);
@@ -349,7 +349,7 @@ export function AddsScreen({route, navigation}) {
         `weather?lat=${lat}&lon=${lon}&appid=b0e86008293e7c25b2deb2caa5a36b0c`,
       );
 
-      console.log('Locationnnnn Data:', response.name);
+      // console.log('Locationnnnn Data:', response.name);
       setLocationData(response.name);
       setLoading(false);
     } catch (error) {
@@ -388,7 +388,7 @@ export function AddsScreen({route, navigation}) {
     const dateNumber = new Date(dateString);
     const _idPosts = dateNumber.getTime().toString() + randomSuffix.toString();
     setIdPosts(_idPosts);
-    console.log('useEffectuseEffect _idPosts:', _idPosts);
+    // console.log('useEffectuseEffect _idPosts:', _idPosts);
   }, []);
   // console.log('_idPosts ở ngoài:', _idPosts);
 
@@ -458,11 +458,10 @@ export function AddsScreen({route, navigation}) {
                   <Text
                     style={[
                       styles.body_name,
-                      {color: '#ff0000', marginLeft: 5},
+                      {color: '#22b6c0', marginLeft: 5},
                     ]}>
                     {tagSelectedUser?.name}
                   </Text>
-                  <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                 </TouchableOpacity>
               </View>
             )}

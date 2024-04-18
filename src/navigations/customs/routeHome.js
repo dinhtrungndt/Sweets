@@ -27,6 +27,12 @@ export const GetRouteNameHome = route => {
     return 'none';
   } else if (routeName?.includes('AllTopTabSearch')) {
     return 'none';
+  } else if (routeName?.includes('OtherUserA')) {
+    return 'none';
+  } else if (routeName?.includes('Profile')) {
+    return 'none';
+  } else if (routeName?.includes('NotificationsScreen')) {
+    return 'none';
   }
   return 'flex';
 };

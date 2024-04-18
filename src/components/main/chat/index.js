@@ -22,13 +22,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {GetListUser} from '../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {updateStatus} from '../../../services/user/userService';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const ChatScreen = props => {
   const {navigation} = props;
   const [user, setUser] = useState('');
   const [user1, setUser1] = useState('');
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
 
   const socket = useRef(null);
 
@@ -118,12 +118,6 @@ const ChatScreen = props => {
     <View style={styles.T}>
       {/* header */}
       <View style={styles.header}>
-        <TouchableOpacity>
-          <Image
-            style={styles.image_menu}
-            source={require('../../../assets/Menu_50px.png')}
-          />
-        </TouchableOpacity>
         <Text style={styles.chat}>{t('messages')}</Text>
         <TouchableOpacity onPress={() => navigation.navigate('SearchScreens')}>
           <Image

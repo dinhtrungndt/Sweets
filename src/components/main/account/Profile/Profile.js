@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Modal,
   ActivityIndicator,
+  Alert
 } from 'react-native';
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import { UserContext } from '../../../../contexts/user/userContext';
@@ -41,45 +42,6 @@ const Profile = props => {
 
   const { user, setUser } = useContext(UserContext);
   // console.log('>>>>>>>>>>>>>> user', user);
-
-  useEffect(() => {
-    const fetchFriendsCount = async () => {
-      try {
-        const axiosInstance = AxiosInstance(); // Tạo một instance của Axios
-        // Lấy userId từ AsyncStorage
-        const userId = await AsyncStorage.getItem('userId');
-        // Kiểm tra xem userId có tồn tại không
-        if (userId) {
-          const response = await axiosInstance.get(`/friend/friends/${userId}`);
-          const { friendsList } = response;
-          // Tạo một mảng chứa số lượng bạn bè
-          const friendsCountPromises = friendsList.map(async friendId => {
-            try {
-              const friendCountResponse = await axiosInstance.get(
-                `/users/get-user/${friendId}`,
-              );
-              return friendCountResponse.user; // Lấy thông tin user từ response
-            } catch (error) {
-              console.error(
-                `Lỗi khi lấy số lượng của bạn bè có id: ${friendId}`,
-                error,
-              );
-              return null; // Trả về null nếu có lỗi để xử lý sau
-            }
-          });
-          // Lấy số lượng tất cả bạn bè của người dùng
-          const friendsCount = await Promise.all(friendsCountPromises);
-          // Lọc bỏ các giá trị null (nếu có) và lưu số lượng bạn bè vào state
-          setFriendsCount(friendsCount.filter(friend => friend !== null));
-        } else {
-          console.log('Không tìm thấy userId trong AsyncStorage');
-        }
-      } catch (error) {
-        console.error('Lỗi khi lấy danh sách bạn bè:', error);
-      }
-    };
-    fetchFriendsCount();
-  }, []);
 
   const takePhotoAvatar = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
@@ -118,12 +80,13 @@ const Profile = props => {
 
       selectedImages.forEach((image, index) => {
         formData.append('imageStatus', image);
+        console.log('>>>>>>>>>>>>>> image', formData);
       });
 
       const data = await uploadImageStatus(formData);
-      // console.log('5955 995959 >>>>>>>>>> Data 59 data', data);
+      console.log('5955 995959 >>>>>>>>>> Data 59 data', data);
       setImageCoverPath(data.urls);
-      // console.log('6226262626 >>>>>>>>>>>>>> 62 dataImage', data.urls);
+      console.log('6226262626 >>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 
@@ -177,10 +140,12 @@ const Profile = props => {
           avatar: JSON.stringify(imageAvatarPath),
         });
         setLoading(false);
+        Alert.alert('Thông báo', 'Cập nhật ảnh đại diện thành công');
       }
     } catch (error) {
       setLoading(false);
       console.error('Error updating avatar:', error);
+      Alert.alert('Thông báo', 'Cập nhật ảnh đại diện thất bại');
     }
   }, [user.user._id, imageAvatarPath]);
 
@@ -192,10 +157,12 @@ const Profile = props => {
           coverImage: JSON.stringify(imageCoverPath),
         });
         setLoading(false);
+        Alert.alert('Thông báo', 'Cập nhật ảnh bìa thành công');
       }
     } catch (error) {
       setLoading(false);
       console.error('Error updating cover:', error);
+      Alert.alert('Thông báo', 'Cập nhật ảnh bìa thất bại');
     }
   }, [user.user._id, imageCoverPath]);
 

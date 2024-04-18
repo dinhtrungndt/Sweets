@@ -23,15 +23,15 @@ import {useTranslation} from 'react-i18next';
 // styles
 import {styles} from '../style/postOtherScreen';
 
-const PostOtherScreen = ({navigation, route}) => {
+const PostOtherScreen2 = ({navigation, route}) => {
   const {account, accountzzz} = route?.params;
-  // console.log('>>>>>>>>> accountttt', account);
+  // console.log('>>>>>>>>> accountttt PostOtherScreen2', account);
   const [posts, setPosts] = useState([]);
   const {t} = useTranslation();
 
   const onGetPosts = async () => {
     try {
-      const res = await getPostByUserId(account.idUsers._id);
+      const res = await getPostByUserId(account._id);
       // console.log('>>>>>>>>> res', res);
       const postsWithMedia = await Promise.all(
         res.map(async post => {
@@ -125,8 +125,8 @@ const PostOtherScreen = ({navigation, route}) => {
     <View key={index} style={styles.postContainer}>
       <View style={styles.container_avatar_name}>
         <TouchableOpacity style={styles.container_avatar_name2}>
-          <Image style={styles.avatar} source={{uri: account.idUsers.avatar}} />
-          <Text style={styles.name}>{item.idUsers.name}</Text>
+          <Image style={styles.avatar} source={{uri: account.avatar}} />
+          <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.time}>{getTimeDifference(item.createAt)}</Text>
         </TouchableOpacity>
       </View>
@@ -179,7 +179,7 @@ const PostOtherScreen = ({navigation, route}) => {
           onPress={() => handleLike(item._id)}>
           {item.reaction.find(
             reactionItem =>
-              reactionItem.idUsers._id === account.idUsers._id &&
+              reactionItem.idUsers._id === account._id &&
               reactionItem.type === 'Thích',
           ) ? (
             <>
@@ -244,7 +244,7 @@ const PostOtherScreen = ({navigation, route}) => {
         <Text style={styles.text4}>Chỉnh sửa chi tiết công khai</Text>
       </TouchableOpacity> */}
       <View style={styles.detailContainer2}>
-        <Text style={styles.txt1}>Bài viết của {account?.idUsers?.name}</Text>
+        <Text style={styles.txt1}>Bài viết của {account?.name}</Text>
       </View>
     </View>
   );
@@ -261,4 +261,4 @@ const PostOtherScreen = ({navigation, route}) => {
   );
 };
 
-export default PostOtherScreen;
+export default PostOtherScreen2;

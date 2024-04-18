@@ -19,6 +19,9 @@ import {
 import OtherUserA from '../../../components/main/account/OtherUserAccounts/OtherUserA';
 import Profile from '../../../components/main/account/Profile/Profile';
 import CommentsScreen from '../../../components/main/home/posts/comments';
+import OtherUserA2 from '../../../components/main/account/OtherUserAccounts/OtherUserA2';
+import PostOtherScreen2 from '../../../components/main/account/OtherUserAccounts/TopTabOther2/PostOtherScreen2';
+import ImgOtherScreen2 from '../../../components/main/account/OtherUserAccounts/TopTabOther2/ImgOtherScreen2';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,7 +36,9 @@ export function ChatScreenStack() {
       <Stack.Screen name="ChatScreenIn" component={ChatScreenIn} />
       <Stack.Screen name="VideoCallPage" component={VideoCallPage} />
       <Stack.Screen name="HomeTest" component={HomeTest} />
-      <Stack.Screen name="OtherUserA" component={OtherUserA} />
+      <Stack.Screen name="OtherUserA2" component={OtherUserA2} />
+      <Stack.Screen name="PostOtherScreen2" component={PostOtherScreen2} />
+      <Stack.Screen name="ImgOtherScreen2" component={ImgOtherScreen2} />
       <Stack.Screen name="CommentsScreen" component={CommentsScreen} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen

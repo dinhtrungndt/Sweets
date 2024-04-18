@@ -21,7 +21,7 @@ export default function LiveStreamHost({route, navigation}) {
     user.user.avatar,
   );
   const onAddLiveStream = async () => {
-    if(!isStream) return;
+    if (!isStream) return;
     const response = await addLiveStream(
       user.id,
       user.user.name,
