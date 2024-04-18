@@ -429,11 +429,10 @@ const PostsScreen = ({posts, navigation}) => {
                                   <Text
                                     style={[
                                       styles.name,
-                                      {color: '#ff0000', marginLeft: 5},
+                                      {color: '#22b6c0', marginLeft: 5},
                                     ]}>
                                     {item.taggedFriends.name}
                                   </Text>
-                                  <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                                 </TouchableOpacity>
                               </View>
                             ) : (
@@ -463,11 +462,10 @@ const PostsScreen = ({posts, navigation}) => {
                                   <Text
                                     style={[
                                       styles.name,
-                                      {color: '#ff0000', marginLeft: 5},
+                                      {color: '#22b6c0', marginLeft: 5},
                                     ]}>
                                     {item.taggedFriends.name}
                                   </Text>
-                                  <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                                 </TouchableOpacity>
                               </View>
                             )}
@@ -540,18 +538,17 @@ const PostsScreen = ({posts, navigation}) => {
                                 alignItems: 'center',
                               }}
                               onPress={() =>
-                                navigation.navigate('OtherUserA', {
+                                navigation.navigate('OtherUserA2', {
                                   accountzzz: item.taggedFriends,
                                 })
                               }>
                               <Text
                                 style={[
                                   styles.name,
-                                  {color: '#ff0000', marginLeft: 5},
+                                  {color: '#22b6c0', marginLeft: 5},
                                 ]}>
                                 {item.taggedFriends.name}
                               </Text>
-                              <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                             </TouchableOpacity>
                           </View>
                         )}

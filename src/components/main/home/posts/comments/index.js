@@ -690,11 +690,10 @@ const CommentsScreen = ({navigation, route}) => {
                               <Text
                                 style={[
                                   styles.baiVietName,
-                                  {color: '#ff0000', marginLeft: 5},
+                                  {color: '#22b6c0', marginLeft: 5},
                                 ]}>
                                 {post.taggedFriends?.name}
                               </Text>
-                              <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                             </TouchableOpacity>
                           </View>
                         )}
@@ -796,11 +795,10 @@ const CommentsScreen = ({navigation, route}) => {
                             <Text
                               style={[
                                 styles.baiVietName,
-                                {color: '#ff0000', marginLeft: 5},
+                                {color: '#22b6c0', marginLeft: 5},
                               ]}>
                               {detailPosts.taggedFriends?.name}
                             </Text>
-                            <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                           </TouchableOpacity>
                         </View>
                       )}

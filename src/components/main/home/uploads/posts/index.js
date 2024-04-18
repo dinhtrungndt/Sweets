@@ -458,11 +458,10 @@ export function AddsScreen({route, navigation}) {
                   <Text
                     style={[
                       styles.body_name,
-                      {color: '#ff0000', marginLeft: 5},
+                      {color: '#22b6c0', marginLeft: 5},
                     ]}>
                     {tagSelectedUser?.name}
                   </Text>
-                  <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                 </TouchableOpacity>
               </View>
             )}
