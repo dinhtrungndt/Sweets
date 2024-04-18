@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   TextInput,
@@ -11,37 +11,37 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { login } from '../../../services/user/userService';
+import {login} from '../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Style';
-import { UserContext } from '../../../contexts/user/userContext';
-import { onUserLogin } from '../../call/HomeTest';
-import { getUser } from '../../../services/user/userService';
-import { useTranslation } from 'react-i18next';
+import {UserContext} from '../../../contexts/user/userContext';
+import {onUserLogin} from '../../call/HomeTest';
+import {getUser} from '../../../services/user/userService';
+import {useTranslation} from 'react-i18next';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { onLogin } = useContext(UserContext);
+  const {onLogin} = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const {user} = useContext(UserContext);
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
 
   const handleLogin = async () => {
     setLoading(true);
     const response = await onLogin(email, password);
     if (response) {
       setLoading(false);
-      console.log("kiểm tra user",user);
+      console.log('kiểm tra user', user);
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home' }],
+        routes: [{name: 'Home'}],
       });
       // await onUserLogin();
       ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT);
       await AsyncStorage.setItem('userEmail', email);
       await AsyncStorage.setItem('userPassword', password);
-      console.log(response.status)
+      console.log(response.status);
     } else {
       setLoading(false);
       ToastAndroid.show(
@@ -87,7 +87,7 @@ const LoginScreen = ({ navigation }) => {
           value={password}
           onChangeText={setPassword}
           style={styles.input}
-          placeholder="Password"
+          placeholder="Mật khẩu"
           placeholderTextColor="grey"
           secureTextEntry={!passwordVisible}
         />
@@ -100,7 +100,9 @@ const LoginScreen = ({ navigation }) => {
           />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword')} style={styles.forgot}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('ForgetPassword')}
+        style={styles.forgot}>
         <Text style={styles.txt1}> {t('forgotPassword')}?</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleLogin}>

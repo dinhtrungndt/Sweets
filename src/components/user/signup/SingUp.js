@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   TextInput,
@@ -11,14 +11,14 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { register } from '../../../services/user/userService';
-import { UserContext } from '../../../contexts/user/userContext';
+import {register} from '../../../services/user/userService';
+import {UserContext} from '../../../contexts/user/userContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 import styles from './Style';
-const SingUpScreen = ({ navigation }) => {
-  const { onLogin } = useContext(UserContext);
+const SingUpScreen = ({navigation}) => {
+  const {onLogin} = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -32,13 +32,13 @@ const SingUpScreen = ({ navigation }) => {
   );
   const [coverImage, setAnhbia] = useState('null');
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
 
   const handleRegister = async () => {
     setLoading(true);
     // chuyển email thành chữ thường
-   const email1 = email.toLowerCase();
-   console.log(email);
+    const email1 = email.toLowerCase();
+    console.log(email);
     try {
       const data = {
         name,
@@ -90,7 +90,7 @@ const SingUpScreen = ({ navigation }) => {
           setLoading(false);
           navigation.reset({
             index: 0,
-            routes: [{ name: 'Home' }],
+            routes: [{name: 'Home'}],
           });
           ToastAndroid.show(
             'Đăng nhập thành công vui lòng chờ 1 chút để đăng nhập',
@@ -141,7 +141,7 @@ const SingUpScreen = ({ navigation }) => {
           value={name}
           onChangeText={setName}
           style={styles.input}
-          placeholder="Full Name"
+          placeholder="Họ và tên"
           placeholderTextColor="grey"
         />
       </View>
@@ -150,7 +150,7 @@ const SingUpScreen = ({ navigation }) => {
           value={email}
           onChangeText={setEmail}
           style={styles.input}
-          placeholder="Enter Email"
+          placeholder="Nhập Email"
           placeholderTextColor="grey"
         />
       </View>
@@ -159,7 +159,7 @@ const SingUpScreen = ({ navigation }) => {
           value={password}
           onChangeText={setPassword}
           style={styles.input}
-          placeholder="Password"
+          placeholder="Nhập mật khẩu"
           placeholderTextColor="grey"
           secureTextEntry={!passwordVisible}
         />
@@ -177,7 +177,7 @@ const SingUpScreen = ({ navigation }) => {
           value={conformpassword}
           onChangeText={setConformpassword}
           style={styles.input}
-          placeholder="Confirm Password"
+          placeholder="Nhập lại mật khẩu"
           placeholderTextColor="grey"
           secureTextEntry={!passwordVisible1}
         />
