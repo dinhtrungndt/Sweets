@@ -22,11 +22,12 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 const Tab = createMaterialTopTabNavigator();
 
 const OtherUserA2 = ({navigation, route}) => {
+
   const {accountzzz} = route?.params;
   const {user} = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
-  console.log('>>>>>>>>> accountzzz', accountzzz);
+  console.log('>>>>>>>>> accountzz2z', accountzzz);
 
   return (
     <>
