@@ -68,9 +68,9 @@ export const getMedia = async idPosts => {
 // Lấy số lượng share
 export const getShare = async idPosts => {
   try {
-    const response = await AxiosInstance().get(`/posts/get-share/${idPosts}`);
+    const response = await AxiosInstance().get(`/share/get-share/${idPosts}`);
     // console.log('get post >>>>>>>>>>>>>>> Service getShare 8 ', response);
-    return response;
+    return response.shares;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi get: 35555555 getShares', error);
     throw error;
@@ -569,6 +569,21 @@ export const getSavedIdUserTPosts = async idUsers => {
     return response;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi getSavedPostsId : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Chia sẻ bài viết
+export const sharePost = async detailShare => {
+  try {
+    const response = await AxiosInstance().post(
+      `/share/share-post`,
+      detailShare,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response.share;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi sharePost : 11 s', error.response);
     throw error;
   }
 };
