@@ -18,16 +18,18 @@ const ImgOtherScreen2 = ({navigation, route}) => {
     const onGetPosts = async () => {
       try {
         const res = await getPostByUserId(account._id);
-        const postsWithMedia = await Promise.all(
-          res.map(async post => {
-            const mediaResponse = await getMedia(post._id);
-            const media = mediaResponse;
-            return {
-              ...post,
-              media,
-            };
-          }),
-        );
+        const postsWithMedia = (
+          await Promise.all(
+            res.map(async post => {
+              const mediaResponse = await getMedia(post._id);
+              const media = mediaResponse;
+              return {
+                ...post,
+                media,
+              };
+            }),
+          )
+        ).filter(post => post.idTypePosts.name === 'Bài viết');
         setPosts(postsWithMedia);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -39,22 +41,22 @@ const ImgOtherScreen2 = ({navigation, route}) => {
   const renderItem = ({item}) => {
     return (
       <View style={styles.containner}>
-      {item.media.map((media, index) => (
-        <View key={index}>
-          {media.type === 'image' ? (
-            <Image source={{ uri: media.url[0] }} style={styles.posts} />
-          ) : (
-            <VideoPlayer
-              video={{ uri: media.url[0] }}
-              videoWidth={Dimensions.get('window').width / 3}
-              videoHeight={(Dimensions.get('window').width / 3) * (9 / 16)}
-              thumbnail={{ uri: media.url[0] }}
-              style={styles.posts}
-            />
-          )}
-        </View>
-      ))}
-    </View>
+        {item.media.map((media, index) => (
+          <View key={index}>
+            {media.type === 'image' ? (
+              <Image source={{uri: media.url[0]}} style={styles.posts} />
+            ) : (
+              <VideoPlayer
+                video={{uri: media.url[0]}}
+                videoWidth={Dimensions.get('window').width / 3}
+                videoHeight={(Dimensions.get('window').width / 3) * (9 / 16)}
+                thumbnail={{uri: media.url[0]}}
+                style={styles.posts}
+              />
+            )}
+          </View>
+        ))}
+      </View>
     );
   };
 
