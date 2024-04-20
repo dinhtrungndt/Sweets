@@ -32,6 +32,26 @@ export const styles = StyleSheet.create({
     color: '#000000',
     textAlign: 'center',
   },
+  containerFriends: {
+    width: '100%',
+    height: 'auto',
+    flexDirection: 'row',
+    marginTop: 10,
+},
+txtFriendsNumber: {
+    fontFamily: 'Poppins',
+    fontStyle: 'normal',
+    fontSize: 18,
+    color: '#000000',
+    marginLeft: '5%',
+},
+txtFriends: {
+    fontFamily: 'Poppins',
+    fontStyle: 'normal',
+    fontSize: 14,
+    alignSelf: 'center',
+    marginLeft: 5,
+},
   containerAdd: {
     width: '100%',
     height: 'auto',
@@ -89,14 +109,16 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     padding: 16,
+    marginTop: 6,
   },
   btnBack: {
     position: 'absolute',
     padding: 10,
   },
   imgBack: {
-    width: 24,
-    height: 24,
+    // width: 24,
+    // height: 24,
+    color: '#000000',
   },
   btnMore: {
     position: 'absolute',
@@ -104,9 +126,9 @@ export const styles = StyleSheet.create({
     left: 330,
   },
   imgMore: {
-    width: 24,
-    height: 24,
-    color: '#fff',
+    // width: 24,
+    // height: 24,
+    color: '#000000',
     paddingTop: 5,
   },
   bodyLoading: {

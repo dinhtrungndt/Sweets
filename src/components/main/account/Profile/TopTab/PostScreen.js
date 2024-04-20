@@ -1,4 +1,4 @@
-import { Text, View, Image, ScrollView, FlatList, TouchableOpacity } from 'react-native'
+import { Text, View, Image, FlatList, TouchableOpacity } from 'react-native'
 import React, { useState, useContext, useEffect } from 'react'
 import { UserContext } from '../../../../../contexts/user/userContext'
 import { getPostByUserId } from '../../../../../services/user/userService'

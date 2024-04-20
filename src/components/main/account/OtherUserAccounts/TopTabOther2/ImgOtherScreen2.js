@@ -39,43 +39,33 @@ const ImgOtherScreen2 = ({navigation, route}) => {
   const renderItem = ({item}) => {
     return (
       <View style={styles.containner}>
-        {item.media.length > 0 ? (
-          <Swiper
-            showsButtons={false}
-            loop={false}
-            paginationStyle={{bottom: 10}}
-            activeDotColor="#22b6c0">
-            {item.media.map((media, index) => (
-              <View key={index}>
-                {media.type === 'image' ? (
-                  <Image source={{uri: media.url[0]}} style={styles.posts} />
-                ) : (
-                  <VideoPlayer
-                    video={{uri: media.url[0]}}
-                    videoWidth={1600}
-                    videoHeight={900}
-                    thumbnail={{uri: media.url[0]}}
-                    style={styles.posts}
-                  />
-                )}
-              </View>
-            ))}
-          </Swiper>
-        ) : (
-          <View style={{height: 0}} />
-        )}
-      </View>
+      {item.media.map((media, index) => (
+        <View key={index}>
+          {media.type === 'image' ? (
+            <Image source={{ uri: media.url[0] }} style={styles.posts} />
+          ) : (
+            <VideoPlayer
+              video={{ uri: media.url[0] }}
+              videoWidth={Dimensions.get('window').width / 3}
+              videoHeight={(Dimensions.get('window').width / 3) * (9 / 16)}
+              thumbnail={{ uri: media.url[0] }}
+              style={styles.posts}
+            />
+          )}
+        </View>
+      ))}
+    </View>
     );
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.body}>
       <Text style={styles.txt1}>{t('myPhotosAndVideos')}</Text>
       <FlatList
         data={posts}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        horizontal={true}
+        numColumns={4}
       />
     </View>
   );

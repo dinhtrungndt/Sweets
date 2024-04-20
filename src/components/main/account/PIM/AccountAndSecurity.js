@@ -27,7 +27,7 @@ const AccountAndSecurity = props => {
       </TouchableOpacity>
       <View style={styles.bodyAccount}>
         <Text style={styles.txtAccount}>{t('account')}</Text>
-        <TouchableOpacity style={styles.userFrame}>
+        <TouchableOpacity style={styles.userFrame} onPress={() => navigation.navigate('EditProfile')}>
           <Image
             style={styles.imgAvatar}
             source={
@@ -55,7 +55,7 @@ const AccountAndSecurity = props => {
             source={require('../../../../assets/icon_next.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.qrFrame}>
+        <TouchableOpacity style={styles.qrFrame} onPress={() => navigation.navigate('MyQRcode')}>
           <Image
             style={styles.imgEmail}
             source={require('../../../../assets/qr-scan2.png')}

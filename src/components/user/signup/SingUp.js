@@ -150,7 +150,7 @@ const SingUpScreen = ({ navigation }) => {
           value={email}
           onChangeText={setEmail}
           style={styles.input}
-          placeholder="Enter Email"
+          placeholder="Email"
           placeholderTextColor="grey"
         />
       </View>

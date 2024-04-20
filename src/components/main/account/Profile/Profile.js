@@ -37,8 +37,8 @@ const Profile = props => {
   const [imageCover, setImageCover] = useState([]);
   const [imageCoverPath, setImageCoverPath] = useState(null);
   const [modalVisibleCover, setModalVisibleCover] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [friendsCount, setFriendsCount] = useState(0);
+  const [friendsList, setFriendsList] = useState([]);
 
   const { user, setUser } = useContext(UserContext);
   // console.log('>>>>>>>>>>>>>> user', user);
@@ -57,7 +57,7 @@ const Profile = props => {
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
-        formData.append('imageStatus', image);
+        formData.append('media', image);
       });
 
       const data = await uploadImageStatus(formData);
@@ -79,14 +79,11 @@ const Profile = props => {
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
-        formData.append('imageStatus', image);
-        console.log('>>>>>>>>>>>>>> image', formData);
+        formData.append('media', image);
       });
 
       const data = await uploadImageStatus(formData);
-      console.log('5955 995959 >>>>>>>>>> Data 59 data', data);
       setImageCoverPath(data.urls);
-      console.log('6226262626 >>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 
@@ -177,32 +174,18 @@ const Profile = props => {
   useEffect(() => {
     const fetchFriendsCount = async () => {
       try {
-        const axiosInstance = AxiosInstance(); // Tạo một instance của Axios
-        // Lấy userId từ AsyncStorage
+        const axiosInstance = AxiosInstance();
         const userId = await AsyncStorage.getItem('userId');
-        // Kiểm tra xem userId có tồn tại không
         if (userId) {
           const response = await axiosInstance.get(`/friend/friends/${userId}`);
-          const { friendsList } = response;
-          // Tạo một mảng chứa số lượng bạn bè
-          const friendsCountPromises = friendsList.map(async friendId => {
-            try {
-              const friendCountResponse = await axiosInstance.get(
-                `/users/get-user/${friendId}`,
-              );
-              return friendCountResponse.user; // Lấy thông tin user từ response
-            } catch (error) {
-              console.error(
-                `Lỗi khi lấy số lượng của bạn bè có id: ${friendId}`,
-                error,
-              );
-              return null; // Trả về null nếu có lỗi để xử lý sau
-            }
-          });
-          // Lấy số lượng tất cả bạn bè của người dùng
-          const friendsCount = await Promise.all(friendsCountPromises);
-          // Lọc bỏ các giá trị null (nếu có) và lưu số lượng bạn bè vào state
-          setFriendsCount(friendsCount.filter(friend => friend !== null));
+          // console.log('Danh sách bạn bè:', response);
+          if (response.friendsList) {
+            const { friendsList } = response; // Truy cập trực tiếp vào 'friendsList'
+            setFriendsList(friendsList);
+            setFriendsCount(friendsList.length);
+          } else {
+            console.log('Không tìm thấy danh sách bạn bè trong phản hồi từ server');
+          }
         } else {
           console.log('Không tìm thấy userId trong AsyncStorage');
         }
@@ -268,7 +251,7 @@ const Profile = props => {
         </TouchableOpacity>
         <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
         <View style={styles.containerFriends}>
-          <Text style={styles.txtFriendsNumber}>{friendsCount.length}</Text>
+          <Text style={styles.txtFriendsNumber}>{friendsCount}</Text>
           <Text style={styles.txtFriends}>{t('friends')}</Text>
         </View>
         <TouchableOpacity style={styles.btnIntroduce}>
@@ -296,9 +279,6 @@ const Profile = props => {
               style={styles.imgBack}
             />
           </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.btnMore}>
-            <Image style={styles.imgMore} source={require('../../../../assets/icon_more_story.png')} />
-          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -379,28 +359,6 @@ const Profile = props => {
             />
             <Text style={styles.txtCancel}>Hủy</Text>
           </TouchableOpacity>
-        </View>
-      </Modal>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.modalContainerYourself}>
-          <View style={styles.modalView}>
-            <TouchableOpacity
-              style={styles.btnBackyourself}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Image
-                style={styles.imgAvt}
-                source={require('../../../../assets/icon_back.png')}
-              />
-              <Text style={styles.textStyle}>Chỉnh sửa lời giới thiệu</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </Modal>
 

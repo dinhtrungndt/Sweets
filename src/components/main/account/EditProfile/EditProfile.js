@@ -54,6 +54,12 @@ const EditProfile = props => {
     setIsGender(selectedGender);
   };
 
+   useEffect(() => {
+    setEditedName(user ? user.user.name : '');
+    setIsGender(user ? user.user.gender : '');
+    setEditedNgaysinh(user && user.user && user.user.date !== 'null' ? user.user.date : 'Chưa cập nhật');
+  }, [user]);
+
   const handleSave = useCallback(async () => {
     setLoading(true);
     try {
@@ -64,7 +70,8 @@ const EditProfile = props => {
         editedNgaysinh,
       );
       if (response.status === 1) {
-        console.log('updateProfile susccess: ', response.data);
+        console.log('updateProfile susccess: ', response);
+        // setUser(response);
         setModalVisibleEdit(false);
       }
     } catch (error) {
@@ -108,15 +115,15 @@ const EditProfile = props => {
           <Text style={styles.txt1}>Thông tin cá nhân</Text>
           <View style={styles.Frame}>
             <Text style={styles.txtTtcn}>Họ & Tên: </Text>
-            <Text style={styles.txtTtcn1}>{user ? user.user.name : ''}</Text>
+            <Text style={styles.txtTtcn1}>{editedName}</Text>
           </View>
           <View style={styles.Frame}>
             <Text style={styles.txtTtcn}>Giới tính: </Text>
-            <Text style={styles.txtTtcn1}>{user && user.user && user.user.gender !== 'null' ? user.user.gender : 'Chưa cập nhật'}</Text>
+            <Text style={styles.txtTtcn1}>{isGender}</Text>
           </View>
           <View style={styles.Frame}>
             <Text style={styles.txtTtcn}>Ngày sinh: </Text>
-            <Text style={styles.txtTtcn1}>{user && user.user && user.user.date !== 'null' ? user.user.date : 'Chưa cập nhật'}</Text>
+            <Text style={styles.txtTtcn1}>{editedNgaysinh}</Text>
           </View>
           <TouchableOpacity onPress={handleEdit} style={styles.btnEdit}>
             <Text style={styles.txtEdit}>Chỉnh sửa</Text>
