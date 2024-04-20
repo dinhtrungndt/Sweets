@@ -25,7 +25,7 @@ import {styles} from '../style/postOtherScreen';
 
 const PostOtherScreen2 = ({navigation, route}) => {
   const {account, accountzzz} = route?.params;
-   console.log('>>>>>>>>> accountttt PostOtherScreen2', account);
+   //console.log('>>>>>>>>> accountttt PostOtherScreen2', account);
   const [posts, setPosts] = useState([]);
   const {t} = useTranslation();
 

@@ -16,15 +16,13 @@ console.log('user',user)
     // Kiểm tra nếu ID quét trùng với ID đăng nhập
     if (scannedDataObject._id === user.id) {
       Alert.alert('Không thể quét mã QR của chính bạn');
-      // Dừng xử lý tiếp theo
-    }else{
- // Nếu không trùng, chuyển sang màn hình OtherUserA và truyền dữ liệu đã quét được
- navigation.navigate('OtherUserA2', { accountzzz: scannedDataObject });
- // Dừng quét
- setScanning(false);
+      return; // Dừng xử lý tiếp theo
     }
   
-   
+    // Nếu không trùng, chuyển sang màn hình OtherUserA và truyền dữ liệu đã quét được
+    navigation.navigate('OtherUserA2', { accountzzz: scannedDataObject });
+    // Dừng quét
+    setScanning(false);
   };
   
 

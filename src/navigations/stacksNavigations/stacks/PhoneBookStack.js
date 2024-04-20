@@ -27,6 +27,7 @@ import AcpectGift from '../../../components/main/phonebook/Feature/Gift/AcpectGi
 import TabBar1 from '../../../components/main/phonebook/Feature/Gift/ListHistoryNhan';
 import ReviewSeen from '../../../components/main/phonebook/Feature/Gift/ReviewSeen';
 import ReviewSeenHis from '../../../components/main/phonebook/Feature/Gift/ReviewSeenHis';
+import AllFriend from '../../../components/main/phonebook/TopTab/AllFriend';
 import {useNavigation} from '@react-navigation/native';
 import OtherUserA2 from '../../../components/main/account/OtherUserAccounts/OtherUserA2';
 const Stack = createNativeStackNavigator();
@@ -38,9 +39,9 @@ export function PhoneBookStack() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="PhoneBookScreen" component={PhoneBookScreen} />
+      <Stack.Screen name="PhoneBookScreen" component={PhoneBookScreen}  />
       <Stack.Screen name="BothRes" component={BothRes} />
-    
+      <Stack.Screen name="AllFriend" component={AllFriend} />
       <Stack.Screen name="SinhNhat" component={SinhNhat} />
       <Stack.Screen name="LoiMoiKetBan" component={LoiMoiKetBan} />
       <Stack.Screen name="LoiMoiDaGui" component={LoiMoiDaGui} />
@@ -55,6 +56,7 @@ export function PhoneBookStack() {
       <Stack.Screen name="ListSinhNhat" component={ListSinhNhat} />
       <Stack.Screen name="ThoiTiet" component={ThoiTiet} />
       <Stack.Screen name="ThoiTiet2" component={ThoiTiet2} />
+      <Stack.Screen name="OtherUserA2" component={OtherUserA2} />
    
     </Stack.Navigator>
   );
