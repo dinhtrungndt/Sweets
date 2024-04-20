@@ -68,33 +68,35 @@ const PostsScreen = ({posts, navigation}) => {
   const reloadPosts = async () => {
     try {
       const res = await getPosts(user.user._id);
-      const postsWithMedia = await Promise.all(
-        res.map(async post => {
-          const mediaResponse = await getMedia(post._id);
-          const media = mediaResponse;
+      const postsWithMedia = (
+        await Promise.all(
+          res.map(async post => {
+            const mediaResponse = await getMedia(post._id);
+            const media = mediaResponse;
 
-          const reactionResponse = await getReaction(post._id);
-          const reaction = reactionResponse;
+            const reactionResponse = await getReaction(post._id);
+            const reaction = reactionResponse;
 
-          const commentResponse = await getComments(post._id);
-          const comment = commentResponse;
+            const commentResponse = await getComments(post._id);
+            const comment = commentResponse;
 
-          const shareResponse = await getShare(post._id);
-          const share = shareResponse;
+            const shareResponse = await getShare(post._id);
+            const share = shareResponse;
 
-          const birthdayResponse = await getPostsBirthday(user.user._id);
-          const birthday = birthdayResponse;
+            const birthdayResponse = await getPostsBirthday(user.user._id);
+            const birthday = birthdayResponse;
 
-          return {
-            ...post,
-            media,
-            reaction,
-            comment,
-            share,
-            birthday,
-          };
-        }),
-      );
+            return {
+              ...post,
+              media,
+              reaction,
+              comment,
+              share,
+              birthday,
+            };
+          }),
+        )
+      ).filter(post => post.idTypePosts.name === 'Bài viết');
       setPost(postsWithMedia);
     } catch (error) {
       console.error('Error fetching data:', error);
