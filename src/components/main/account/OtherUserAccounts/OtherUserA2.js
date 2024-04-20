@@ -17,13 +17,11 @@ import {styles} from '../style/otherUserA';
 import {UserContext} from '../../../../contexts/user/userContext';
 import PostOtherScreen2 from './TopTabOther2/PostOtherScreen2';
 import ImgOtherScreen2 from './TopTabOther2/ImgOtherScreen2';
-// styles
-import {styles} from '../style/otherUserA';
-import {UserContext} from '../../../../contexts/user/userContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosInstance from '../../../../helper/Axiosinstance';
+import {useTranslation} from 'react-i18next';
 const Tab = createMaterialTopTabNavigator();
 
 const OtherUserA2 = ({navigation, route}) => {
@@ -34,6 +32,9 @@ const OtherUserA2 = ({navigation, route}) => {
   const [checkNhan, setcheckNhan] = useState(false);
   const [friendActionCounter, setFriendActionCounter] = useState(0);
   const [friendRequestsSent, setFriendRequestsSent] = useState([]);
+  const [friendsCount, setFriendsCount] = useState([]);
+  const {t} = useTranslation();
+
   useEffect(() => {
     fetchFriendInvitations();
     fetchFriendSentInvitations();
