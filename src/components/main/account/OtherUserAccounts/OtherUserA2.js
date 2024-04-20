@@ -6,30 +6,118 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import React, { useContext, useState, useCallback, useEffect } from 'react';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import AxiosInstance from '../../../../helper/Axiosinstance';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useContext, useState, useCallback, useEffect} from 'react';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {GetListUserById} from '../../../../services/user/userService';
 // screens
-import PostOtherScreen2 from './TopTabOther2/PostOtherScreen2';
-import ImgOtherScreen2 from './TopTabOther2/ImgOtherScreen2'
+import PostOtherScreen from './TopTabOther/PostOtherScreen';
+import ImgOtherScreen from './TopTabOther/ImgOtherScreen';
 // styles
-import { styles } from '../style/otherUserA';
-import { UserContext } from '../../../../contexts/user/userContext';;
+import {styles} from '../style/otherUserA';
+import {UserContext} from '../../../../contexts/user/userContext';
+import PostOtherScreen2 from './TopTabOther2/PostOtherScreen2';
+import ImgOtherScreen2 from './TopTabOther2/ImgOtherScreen2';
+// styles
+import {styles} from '../style/otherUserA';
+import {UserContext} from '../../../../contexts/user/userContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import { useTranslation } from 'react-i18next';
-import { GetFriendById } from '../../../../services/home/friendService';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AxiosInstance from '../../../../helper/Axiosinstance';
 const Tab = createMaterialTopTabNavigator();
 
-const OtherUserA2 = ({ navigation, route }) => {
-  const { accountzzz } = route?.params;
-  const { t } = useTranslation();
+const OtherUserA2 = ({navigation, route}) => {
+  const {accountzzz} = route?.params;
+  const {user} = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const [friendsCount, setFriendsCount] = useState(0);
+  const [checkGui, setcheckGui] = useState(false);
+  const [checkNhan, setcheckNhan] = useState(false);
+  const [friendActionCounter, setFriendActionCounter] = useState(0);
+  const [friendRequestsSent, setFriendRequestsSent] = useState([]);
+  useEffect(() => {
+    fetchFriendInvitations();
+    fetchFriendSentInvitations();
+  }, []);
 
-  console.log('>>>>>>>>> accountzzz', accountzzz);
+  useEffect(() => {
+    if (friendActionCounter > 0) {
+      fetchFriendInvitations();
+    }
+  }, [friendActionCounter]);
+
+  //console.log('>>>>>>>>> accountzz2z', accountzzz);
+
+  const handleFriendAction = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+
+      const response = await AxiosInstance().post(
+        '/friend/send-friend-request',
+        {
+          idFriendSender: userId,
+          idFriendReceiver: accountzzz._id,
+        },
+      );
+
+      if (response && response.success) {
+        // Cập nhật lại thuộc tính checkGui của user sau khi gửi yêu cầu kết bạn thành công
+
+        setFriendActionCounter(prevCounter => prevCounter + 1);
+        setcheckGui(true);
+      } else if (response && !response.success) {
+        console.error('Lỗi khi gửi yêu cầu kết bạn:', response.message);
+        c;
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
+    }
+  };
+
+  const fetchFriendInvitations = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await AxiosInstance().get(
+        `/friend/friend-requests-sent/${userId}`,
+      );
+
+      if (response.success) {
+        console.log('Kết quả lời mời đã gửi', response.friendRequestsSent);
+        const isFriendRequestSent = response.friendRequestsSent.some(
+          request => request.idFriendReceiver === accountzzz._id.toString(),
+        );
+
+        console.log('checkGui', isFriendRequestSent);
+        setcheckGui(isFriendRequestSent);
+      } else {
+        console.log('No friend invitations found.');
+      }
+    } catch (error) {
+      console.error('Error fetching friend invitations:', error);
+    }
+  };
+
+  const fetchFriendSentInvitations = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await AxiosInstance().get(
+        `/friend/friend-requests/${userId}`,
+      );
+
+      if (response.success) {
+        console.log('Kết quả lời mời đã nhận', response.friendRequests);
+        const isFriendRequestSent = response.friendRequests.some(
+          request => request.idFriendSender === accountzzz._id.toString(),
+        );
+
+        console.log('checkNhạn', isFriendRequestSent);
+        setcheckNhan(isFriendRequestSent);
+      } else {
+        console.log('No friend invitations found.');
+      }
+    } catch (error) {
+      console.error('Error fetching friend invitations:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchFriendsCount = async () => {
@@ -49,7 +137,7 @@ const OtherUserA2 = ({ navigation, route }) => {
       <View style={styles.body}>
         <View style={styles.profileFrame}>
           {accountzzz?.coverImage === 'null' ||
-            accountzzz?.coverImage === 'default' ? (
+          accountzzz?.coverImage === 'default' ? (
             <TouchableOpacity>
               <Image
                 style={styles.imgCover}
@@ -60,7 +148,7 @@ const OtherUserA2 = ({ navigation, route }) => {
             <TouchableOpacity>
               <Image
                 style={styles.imgCover}
-                source={{ uri: accountzzz?.coverImage }}
+                source={{uri: accountzzz?.coverImage}}
               />
             </TouchableOpacity>
           )}
@@ -75,7 +163,7 @@ const OtherUserA2 = ({ navigation, route }) => {
             <TouchableOpacity>
               <Image
                 style={styles.imgAvatar}
-                source={{ uri: accountzzz?.avatar }}
+                source={{uri: accountzzz?.avatar}}
               />
             </TouchableOpacity>
           )}
@@ -86,13 +174,49 @@ const OtherUserA2 = ({ navigation, route }) => {
             <Text style={styles.txtFriends}>{t('friends')}</Text>
           </View>
           <View style={styles.containerAdd}>
-            <TouchableOpacity style={styles.btnAddFriend}>
-              <Image
-                style={styles.imgAddFriend}
-                source={require('../../../../assets/icon_add_friends.png')}
-              />
-              <Text style={styles.textIntroduce}>Thêm bạn bè</Text>
-            </TouchableOpacity>
+            {console.log('checkGuiReturn', checkGui)}
+            {console.log('checNhaniReturn', checkNhan)}
+            {!checkGui && !checkNhan ? (
+              <TouchableOpacity
+                style={styles.btnAddFriend}
+                onPress={handleFriendAction}>
+                <Image
+                  style={styles.imgAddFriend}
+                  source={require('../../../../assets/icon_add_friends.png')}
+                />
+                <Text style={styles.textIntroduce}>Thêm bạn bè</Text>
+              </TouchableOpacity>
+            ) : checkGui ? (
+              <TouchableOpacity
+                style={styles.btnAddFriend}
+                onPress={handleFriendAction}>
+                <Image
+                  style={styles.imgAddFriend}
+                  source={require('../../../../assets/icon_add_friends.png')}
+                />
+                <Text style={styles.textIntroduce}>Thu hồi</Text>
+              </TouchableOpacity>
+            ) : checkNhan ? (
+              <TouchableOpacity
+                style={styles.btnAddFriend}
+                onPress={handleFriendAction}>
+                <Image
+                  style={styles.imgAddFriend}
+                  source={require('../../../../assets/icon_add_friends.png')}
+                />
+                <Text style={styles.textIntroduce}>Đòng ý</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.btnAddFriend}
+                onPress={handleFriendAction}>
+                <Image
+                  style={styles.imgAddFriend}
+                  source={require('../../../../assets/icon_add_friends.png')}
+                />
+                <Text style={styles.textIntroduce}>Thêm bạn bè</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity style={styles.btnMess}>
               <Image
                 style={styles.imgEdit}
@@ -140,12 +264,12 @@ const OtherUserA2 = ({ navigation, route }) => {
           }}>
           <Tab.Screen
             name="Bài viết"
-            initialParams={{ account: accountzzz }}
+            initialParams={{account: accountzzz}}
             component={PostOtherScreen2}
           />
           <Tab.Screen
             name="Ảnh"
-            initialParams={{ account: accountzzz }}
+            initialParams={{account: accountzzz}}
             component={ImgOtherScreen2}
           />
         </Tab.Navigator>

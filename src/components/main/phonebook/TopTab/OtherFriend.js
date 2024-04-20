@@ -110,7 +110,7 @@ const OtherFriend = (props) => {
       const response = await AxiosInstance().post('/friend/send-friend-request', {
         idFriendSender: userId,
         idFriendReceiver: selectedUserId,
-        time: 10
+       
       });
 
       if (response && response.success) {

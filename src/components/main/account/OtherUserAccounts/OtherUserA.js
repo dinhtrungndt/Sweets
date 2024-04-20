@@ -93,7 +93,7 @@ const OtherUserA = ({ navigation, route }) => {
                   style={styles.imgAddFriend}
                   source={require('../../../../assets/icon_add_friends.png')}
                 />
-                <Text style={styles.textIntroduce}>Thêm bạn bè</Text>
+                <Text style={styles.textIntroduce}>Thêm bạn bèe</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnMess}>
                 <Image

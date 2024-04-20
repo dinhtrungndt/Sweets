@@ -1,17 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import styles from '../styles/NearFriendStyles'
-const NearFriend = () => {
+import React from 'react';
+import { View, Text } from 'react-native';
+
+const NearFriend = ({ route }) => {
+  const newFriendInfo = route.params?.newFriendInfo;
+console.log('newFriendInfo',newFriendInfo)
   return (
     <View>
-   
-   <View style={{flexDirection:'row',justifyContent:'space-between',margin:10}}>
-   <Text>Bạn bè mới gần đây</Text>
-   <Text>Quản lí</Text>
-   </View>
+      <Text>Thông tin của người dùng mới kết bạn:</Text>
+      <Text>{newFriendInfo ? 'DD' : 'Không có thông tin'}</Text>
     </View>
-  )
-}
+  );
+};
 
-export default NearFriend
-
+export default NearFriend;

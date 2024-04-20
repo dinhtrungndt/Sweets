@@ -42,7 +42,8 @@ import Share from 'react-native-share';
 import CustomReaction from '../../../../../customs/reaction/customreaction';
 import linking from '../../../../../../utils/linking';
 import {LoadingScreen} from '../../../../../../utils/loading';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AxiosInstance from '../../../../../../helper/Axiosinstance';
 const AllPostsSearch = ({
   navigation,
   posts,
@@ -61,6 +62,119 @@ const AllPostsSearch = ({
   const [editPostsItemAccount, setEditPostsItemAccount] = useState(null);
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+
+
+  const [checkGui, setcheckGui] = useState(false);
+  const [checkNhan, setcheckNhan] = useState(false);
+  const [friendActionCounter, setFriendActionCounter] = useState(0);
+  const [friendRequestsSent, setFriendRequestsSent] = useState([]);
+
+  const [updatedListUserSearch, setUpdatedListUserSearch] = useState([]);
+
+console.log('listUserSearch',listUserSearch)
+  useEffect(() => {
+    fetchFriendInvitations();
+    // fetchFriendSentInvitations();
+  }, []);
+
+  useEffect(() => {
+    if (friendActionCounter > 0) {
+
+      fetchFriendInvitations();
+     
+    }
+  }, [friendActionCounter]);
+
+  const handleFriendAction = async (item) => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+
+      const response = await AxiosInstance().post('/friend/send-friend-request', {
+        idFriendSender: userId,
+        idFriendReceiver: item._id
+
+      });
+
+      if (response && response.success) {
+        // Cập nhật lại thuộc tính checkGui của user sau khi gửi yêu cầu kết bạn thành công
+      
+        setFriendActionCounter(prevCounter => prevCounter + 1);
+        setcheckGui(true)
+      } else if (response && !response.success) {
+        console.error('Lỗi khi gửi yêu cầu kết bạn:', response.message); c
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
+    }
+  };
+
+  const fetchFriendInvitations = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await AxiosInstance().get(`/friend/friend-requests-sent/${userId}`);
+      const response2 = await AxiosInstance().get(`/friend/friend-requests/${userId}`);
+      if (response.success) {
+
+        console.log('Kết quả lời mời đã gửi', response.friendRequestsSent)
+        const invitations = response.friendRequestsSent;//mảng đã gửi
+        const updatedList = listUserSearch.map(user => {
+          const isInvited = invitations.some(invitation => invitation.idFriendReceiver === user._id);
+          return {
+            ...user,
+            CheckGui: isInvited, // Kiểm tra xem user có trong danh sách lời mời gửi không
+            CheckNhan: false // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        });
+        const invitations2 = response2.friendRequests;
+        const updatedList2 = updatedList.map(user => {
+          const isInvited = invitations2.some(invitation => invitation.idFriendSender === user._id);
+          return {
+            ...user,
+           
+            CheckNhan: isInvited // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        })
+        setUpdatedListUserSearch(updatedList2);
+        console.log('mảng 3',updatedList2)
+      } else {
+        console.log('No friend invitations found.');
+      }
+
+    } catch (error) {
+      console.error('Error fetching friend invitations:', error);
+    }
+  };
+
+  const fetchFriendSentInvitations = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await AxiosInstance().get(`/friend/friend-requests/${userId}`);
+
+      if (response.success) {
+
+        console.log('Kết quả lời mời đã nhận', response.friendRequests)
+        const invitationsNhan = response.friendRequests;//mảng đã nhận
+        const updatedList = updatedListUserSearch.map(user => {
+          const isInvited = invitationsNhan.some(invitation => invitation.idFriendSender === user._id);
+          return {
+            ...user,
+            
+            CheckNhan: isInvited // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        });
+        setUpdatedListUserSearch(updatedList);
+        console.log('mảng 3',updatedList)
+
+
+
+      } else {
+        console.log('No friend invitations found.');
+      }
+    } catch (error) {
+      console.error('Error fetching friend invitations:', error);
+    }
+  };
+
 
   const handleLike = async idPosts => {
     try {
@@ -318,7 +432,7 @@ const AllPostsSearch = ({
         {showListHistorySearch !== undefined ? (
           <>
             <Text style={stylesIn.textBoldPeople}>Mọi người</Text>
-            {listUserSearch.map((user, index) => (
+            {updatedListUserSearch.map((user, index) => (
               <View key={index} style={stylesIn.container_avatar_name}>
                 <TouchableOpacity
                   onPress={() =>
@@ -345,13 +459,50 @@ const AllPostsSearch = ({
                     </View>
                   </View>
                   {/* Nút thêm bạn bè */}
-                  <TouchableOpacity style={stylesIn.btnAddFriend}>
+                  {
+              (!user.CheckGui && !user.CheckNhan) ? 
+                (
+                  <TouchableOpacity style={stylesIn.btnAddFriend} onPress={handleFriendAction}>
                     <Image
-                      style={stylesIn.imgAddFriend}
-                      source={require('../../../../../../assets/icon_add_friends.png')}
+                       style={stylesIn.imgAddFriend}
+                       source={require('../../../../../../assets/icon_add_friends.png')}
                     />
-                    <Text style={stylesIn.textIntroduce}>Thêm bạn bè</Text>
+                    <Text style={styles.textIntroduce}>
+                    Thêm bạn bè
+                    </Text>
                   </TouchableOpacity>
+                ) :user.CheckGui  ? (
+                  <TouchableOpacity style={stylesIn.btnAddFriend} onPress={handleFriendAction}>
+                    <Image
+                       style={stylesIn.imgAddFriend}
+                       source={require('../../../../../../assets/icon_add_friends.png')}
+                    />
+                    <Text style={styles.textIntroduce}>
+                    Thu hồi
+                    </Text>
+                  </TouchableOpacity>
+                ) : user.CheckNhan ? (
+                  <TouchableOpacity style={stylesIn.btnAddFriend} onPress={handleFriendAction}>
+                  <Image
+                     style={stylesIn.imgAddFriend}
+                     source={require('../../../../../../assets/icon_add_friends.png')}
+                    />
+                    <Text style={styles.textIntroduce}>
+                    Đòng ý
+                    </Text>
+                  </TouchableOpacity>
+                ): (
+                  <TouchableOpacity style={stylesIn.btnAddFriend} onPress={handleFriendAction}>
+                  <Image
+                     style={stylesIn.imgAddFriend}
+                     source={require('../../../../../../assets/icon_add_friends.png')}
+                    />
+                    <Text style={styles.textIntroduce}>
+                   Thêm bạn bè
+                    </Text>
+                  </TouchableOpacity>
+                )
+            }
                 </View>
               </View>
             ))}
