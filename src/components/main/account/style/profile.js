@@ -14,7 +14,6 @@ export const styles = StyleSheet.create({
     body: {
         flex: 1,
         backgroundColor: '#E5E5E5',
-        // backgroundColor: '#FFFFFF'
     },
     modalContainerCoverImg: {
         position: 'absolute',
@@ -92,7 +91,7 @@ export const styles = StyleSheet.create({
     },
     profileFrame: {
         width: '100%',
-        height: 459,
+        height: 'auto',
         backgroundColor: '#FFFFFF',
     },
     imgCover: {
@@ -192,8 +191,8 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         marginTop: 15,
-        flexDirection: 'row'
-
+        flexDirection: 'row',
+        marginBottom: 10,
     },
     imgEdit: {
         width: 21,

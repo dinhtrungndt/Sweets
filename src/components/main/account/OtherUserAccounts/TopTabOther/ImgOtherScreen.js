@@ -1,17 +1,17 @@
-import {Text, View, Image, ScrollView, FlatList} from 'react-native';
-import React, {useState, useContext, useEffect} from 'react';
-import {getPostByUserId} from '../../../../../services/user/userService';
-import {getMedia} from '../../../../../services/home/homeService';
+import { Text, View, Image, ScrollView, FlatList } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { getPostByUserId } from '../../../../../services/user/userService';
+import { getMedia } from '../../../../../services/home/homeService';
 import Swiper from 'react-native-swiper';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import VideoPlayer from 'react-native-video-player';
 // styles
-import {styles} from '../style/imgOtherScreen';
+import { styles } from '../style/imgOtherScreen';
 
-const ImgOtherScreen = ({navigation, route}) => {
-  const {account} = route.params;
+const ImgOtherScreen = ({ navigation, route }) => {
+  const { account } = route.params;
   const [posts, setPosts] = useState([]);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   // console.log('>>>>>>>>> accountttt', posts);
 
   useEffect(() => {
@@ -36,46 +36,36 @@ const ImgOtherScreen = ({navigation, route}) => {
     onGetPosts();
   }, [account?.idUsers._id]);
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <View style={styles.containner}>
-        {item.media.length > 0 ? (
-          <Swiper
-            showsButtons={false}
-            loop={false}
-            paginationStyle={{bottom: 10}}
-            activeDotColor="#22b6c0">
-            {item.media.map((media, index) => (
-              <View key={index}>
-                {media.type === 'image' ? (
-                  <Image source={{uri: media.url[0]}} style={styles.posts} />
-                ) : (
-                  <VideoPlayer
-                    video={{uri: media.url[0]}}
-                    videoWidth={1600}
-                    videoHeight={900}
-                    thumbnail={{uri: media.url[0]}}
-                    style={styles.posts}
-                  />
-                )}
-              </View>
-            ))}
-          </Swiper>
-        ) : (
-          <View style={{height: 0}} />
-        )}
+        {item.media.map((media, index) => (
+          <View key={index}>
+            {media.type === 'image' ? (
+              <Image source={{ uri: media.url[0] }} style={styles.posts} />
+            ) : (
+              <VideoPlayer
+                video={{ uri: media.url[0] }}
+                videoWidth={Dimensions.get('window').width / 3}
+                videoHeight={(Dimensions.get('window').width / 3) * (9 / 16)}
+                thumbnail={{ uri: media.url[0] }}
+                style={styles.posts}
+              />
+            )}
+          </View>
+        ))}
       </View>
     );
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.body}>
       <Text style={styles.txt1}>{t('myPhotosAndVideos')}</Text>
       <FlatList
         data={posts}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        horizontal={true}
+        numColumns={4}
       />
     </View>
   );

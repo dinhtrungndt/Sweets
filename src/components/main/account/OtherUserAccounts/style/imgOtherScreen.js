@@ -14,14 +14,13 @@ export const styles = StyleSheet.create({
         marginTop: 16,
     },
     containner: {
-        width: 150,
-        height: 150,
-        marginTop: 10,
-        marginLeft: 16,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginTop: 6,
     },
     posts: {
-        width: 150,
-        height: 150,
-        borderRadius: 10,
+        width: 123,
+        height: 123,
+        marginLeft: 6,
       },
 });
