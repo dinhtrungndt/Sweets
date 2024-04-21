@@ -20,14 +20,15 @@ import {Image} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {UserContext} from '../../../../../contexts/user/userContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AxiosInstance from '../../../../../helper/Axiosinstance';
 
 const SearchPosts = props => {
   const {navigation} = props;
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [showListUserSearch, setShowListUserSearch] = useState(false);
   const [showListHistorySearch, setShowListHistorySearch] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [listUserSearch, setListUserSearch] = useState([]);
   const {user} = useContext(UserContext);
 
@@ -48,12 +49,6 @@ const SearchPosts = props => {
   };
   // console.log('>>>>>>>>>>>>>>> listUserSearch', listUserSearch);
 
-  const filteredPostsData = posts.filter(
-    post =>
-      post.content.toLowerCase().includes(searchText.toLowerCase()) ||
-      post.idUsers.name.toLowerCase().includes(searchText.toLowerCase()),
-  );
-
   const handleSearch = async text => {
     setSearchText(text);
     if (text !== '') {
@@ -68,9 +63,7 @@ const SearchPosts = props => {
     onGetHistorySearch();
   }, []);
 
-  return isLoading ? (
-    <LoadingScreen />
-  ) : (
+  return (
     <View style={styles.T}>
       {/* header */}
       <View style={styles.header}>
@@ -86,7 +79,6 @@ const SearchPosts = props => {
             navigation.navigate('AllTopTabSearch', {
               searchText: searchText,
               listUserSearch: listUserSearch,
-              posts: filteredPostsData,
               showListHistorySearch: showListHistorySearch,
             });
           }}
@@ -122,7 +114,6 @@ const SearchPosts = props => {
                       navigation.navigate('AllTopTabSearch', {
                         searchText: history.name,
                         listUserSearch: listUserSearch,
-                        posts: filteredPostsData,
                         showListHistorySearch: showListHistorySearch,
                       });
                     }}>
@@ -172,7 +163,6 @@ const SearchPosts = props => {
                     navigation.navigate('AllTopTabSearch', {
                       searchText: searchText,
                       listUserSearch: listUserSearch,
-                      posts: filteredPostsData,
                       showListHistorySearch: showListHistorySearch,
                     });
                   }}>

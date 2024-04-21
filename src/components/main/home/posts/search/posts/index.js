@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Modal,
@@ -300,7 +301,7 @@ const PostsSearch = ({navigation, posts, listUserSearch}) => {
   }, []);
 
   return isLoading ? (
-    <LoadingScreen />
+    <ActivityIndicator size="small" color="#22b6c0" />
   ) : (
     <>
       {listUserSearch === undefined ? (

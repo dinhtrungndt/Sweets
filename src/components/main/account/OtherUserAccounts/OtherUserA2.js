@@ -22,6 +22,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import {useTranslation} from 'react-i18next';
+import { GetFriendById } from '../../../../services/home/friendService';
 const Tab = createMaterialTopTabNavigator();
 
 const OtherUserA2 = ({navigation, route}) => {
