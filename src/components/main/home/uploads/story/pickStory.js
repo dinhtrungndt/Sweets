@@ -21,6 +21,7 @@ import DialogDeletePosts from 'react-native-dialog';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {UserContext} from '../../../../../contexts/user/userContext';
 import Video from 'react-native-video';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const {height, width} = Dimensions.get('window');
 
@@ -35,8 +36,18 @@ const PickStory = ({route}) => {
   const [isPaused, setIsPaused] = useState(false);
   const [visibleDiaLogDeletePosts, setVisibleDiaLogDeletePosts] =
     useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [message, setMessage] = useState('');
 
   // console.log('>>>>> storysstorys', storys);
+
+  const handleFocus = () => {
+    setIsTyping(true);
+  };
+
+  const handleBlur = () => {
+    setIsTyping(false);
+  };
 
   const handleVideoPress = () => {
     setIsPaused(!isPaused);
@@ -48,18 +59,25 @@ const PickStory = ({route}) => {
 
   const progress = useRef(new Animated.Value(0)).current;
   const start = () => {
+    if (isTyping) {
+      return;
+    }
+
     Animated.timing(progress, {
       toValue: 1,
       duration: 5000,
       useNativeDriver: false,
     }).start(({finished}) => {
       if (finished) {
-        next();
+        // next();
       }
     });
   };
 
   const next = () => {
+    if (isTyping) {
+      return;
+    }
     if (current != storys.length - 1) {
       let tempData = storys;
       tempData[current].finished = 1;
@@ -72,6 +90,9 @@ const PickStory = ({route}) => {
   };
 
   const previous = () => {
+    if (isTyping) {
+      return;
+    }
     if (current - 1 >= 0) {
       let tempData = storys;
       tempData[current].finished = 0;
@@ -84,6 +105,9 @@ const PickStory = ({route}) => {
   };
 
   const close = () => {
+    if (isTyping) {
+      return;
+    }
     progress.setValue(0);
     navigation.goBack();
   };
@@ -143,6 +167,25 @@ const PickStory = ({route}) => {
     } catch (error) {
       console.log('>>>. Lỗi delete Posts', error);
     }
+  };
+
+  const handleSendMess = (item, message) => {
+    setIsTyping(false);
+    const itemWithReceiver = {
+      ...item,
+      receiverv2: item._id,
+    };
+    // thông báo thành công và gửi 2 tham số qua ChatScreenIn không chuyển màn hình
+    navigation.navigate('ChatScreenIn', {
+      receiver: itemWithReceiver,
+      message: message,
+    });
+    Toast.show({
+      type: 'success',
+      text1: 'Gửi tin nhắn thành công',
+      visibilityTime: 3000,
+    });
+    setMessage('');
   };
 
   useEffect(() => {
@@ -453,7 +496,7 @@ const PickStory = ({route}) => {
       </View>
       {/* rep story */}
       {hashIdStory.map(user => user._id)[0] !== user.user._id ? (
-        <View
+        <TouchableOpacity
           style={{
             height: 50,
             backgroundColor: '#fff',
@@ -466,6 +509,7 @@ const PickStory = ({route}) => {
             marginLeft: 33,
             borderRadius: 20,
           }}>
+          {/* {console.log('>>>>>> sososo ', hashIdStory)} */}
           <Image
             source={require('../../../../../assets/icon_comment.png')}
             style={{
@@ -483,14 +527,36 @@ const PickStory = ({route}) => {
               backgroundColor: '#fff',
               paddingLeft: 10,
             }}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onChangeText={text => setMessage(text)}
+            value={message}
+            onSubmitEditing={
+              message !== ''
+                ? () => {
+                    handleSendMess(hashIdStory[0], message);
+                  }
+                : null
+            }
           />
-          <TouchableOpacity>
-            <Image
+          <TouchableOpacity
+            onPress={
+              message !== ''
+                ? () => {
+                    handleSendMess(hashIdStory[0], message);
+                  }
+                : null
+            }>
+            <Ionicons
               style={styles.icon_mess_send}
-              source={require('../../../../../assets/send_comment_icon.png')}
+              name="send"
+              size={23}
+              color="#22b6c0"
+              top={5}
+              left={5}
             />
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       ) : null}
 
       <DialogDeletePosts.Container visible={visibleDiaLogDeletePosts}>

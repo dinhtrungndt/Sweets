@@ -14,6 +14,8 @@ import {searchuser} from '../../../../../../services/search/Search';
 import styles from '../../Styles/User/User';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 const User = ({navigation}) => {
   const route = useRoute();
 
@@ -117,10 +119,7 @@ const User = ({navigation}) => {
       <View style={styles.container1}>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBackPress} style={styles.backview}>
-            <Image
-              style={styles.back}
-              source={require('../../../../../../assets/back_50px.png')}
-            />
+            <Ionicons name="chevron-back" size={26} color="black" />
           </TouchableOpacity>
           <Text style={styles.moinguoi1}>Tìm kiếm</Text>
           <Text></Text>

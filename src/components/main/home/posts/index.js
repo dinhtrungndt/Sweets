@@ -1057,7 +1057,7 @@ const PostsScreen = ({posts, navigation}) => {
                       )}
 
                       {/* media in share */}
-                      {item.idPosts.media.length > 0 ? (
+                      {item?.idPosts?.media?.length > 0 ? (
                         <View style={styles.container_media}>
                           <Swiper
                             style={styles.swiper}
@@ -1066,7 +1066,7 @@ const PostsScreen = ({posts, navigation}) => {
                             paginationStyle={{bottom: 10}}
                             activeDotColor="#22b6c0"
                             onIndexChanged={index => setActiveSlide(index)}>
-                            {item.idPosts.media?.map((media, index) => (
+                            {item?.idPosts.media?.map((media, index) => (
                               <View key={media._id}>
                                 {media.type === 'image' ? (
                                   <>
@@ -1088,7 +1088,7 @@ const PostsScreen = ({posts, navigation}) => {
                                 {showLengthMedia ? (
                                   <View style={styles.imageCountContainer}>
                                     <Text style={styles.imageCountText}>
-                                      {index + 1}/{item.idPosts.media.length}
+                                      {index + 1}/{item?.idPosts.media.length}
                                     </Text>
                                   </View>
                                 ) : null}

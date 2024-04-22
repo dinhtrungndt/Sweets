@@ -49,9 +49,9 @@ export default function LiveStreamHost({route, navigation}) {
   return (
     <View style={styles.container}>
       <ZegoUIKitPrebuiltLiveStreaming
-        appID={50895724}
+        appID={482844564}
         appSign={
-          '0542a8137123457d8afdda9cbb16efb3819186858cc5b50c8c4c8e958d0fa8ea'
+          '86af7af9feb8befec46902f0da69a4f8437948aa1a4dde283b6e55e2cab60b50'
         }
         userID={user.id}
         userName={user.user.name}

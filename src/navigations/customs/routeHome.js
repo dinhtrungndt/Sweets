@@ -33,6 +33,14 @@ export const GetRouteNameHome = route => {
     return 'none';
   } else if (routeName?.includes('NotificationsScreen')) {
     return 'none';
+  } else if (routeName?.includes('ChatScreenIn')) {
+    return 'none';
+  } else if (routeName?.includes('VideoCallPage')) {
+    return 'none';
+  } else if (routeName?.includes('ZegoUIKitPrebuiltCallWaitingScreen')) {
+    return 'none';
+  } else if (routeName?.includes('ZegoUIKitPrebuiltCallInCallScreen')) {
+    return 'none';
   }
   return 'flex';
 };

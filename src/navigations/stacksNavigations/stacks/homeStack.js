@@ -33,6 +33,7 @@ import PostOtherScreen from '../../../components/main/account/OtherUserAccounts/
 import OtherUserA2 from '../../../components/main/account/OtherUserAccounts/OtherUserA2';
 import NotificationsScreen from '../../../components/main/home/posts/notifications';
 import HeaderScreen from '../../../components/main/layout/header';
+import ChatScreenIn from '../../../components/main/chat/inChat';
 const Stack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
@@ -90,6 +91,7 @@ export function HomeStackScreen() {
         component={NotificationsScreen}
       />
       <Stack.Screen name="HeaderScreen" component={HeaderScreen} />
+      <Stack.Screen name="ChatScreenIn" component={ChatScreenIn} />
     </Stack.Navigator>
   );
 }
