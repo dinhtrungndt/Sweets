@@ -14,14 +14,65 @@ import GroupSearch from '../group';
 import PageSearch from '../page';
 import ReelsSearch from '../reels';
 import {TouchableOpacity} from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import {
+  getComments,
+  getMedia,
+  getPostsAll,
+  getReaction,
+  getShare,
+} from '../../../../../../services/home/homeService';
+import {LoadingScreen} from '../../../../../../utils/loading';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
 export default function AllTopTabSearch({navigation, route}) {
-  const {searchText, listUserSearch, posts} = route?.params;
-  // console.log('>>>>>>>>>>>>> searchText', searchText);
-  // console.log('>>>>>>>>>>>>> listUserSearch', listUserSearch);
+  const {searchText, listUserSearch, posts, showListHistorySearch} =
+    route?.params;
+  // console.log('>>>>>>>>>>>>> posts', posts);
+  const [post, setPost] = useState(posts);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onGetPosts = async () => {
+    setIsLoading(true);
+    const res = await getPostsAll();
+    const postsWithMedia = await Promise.all(
+      res.map(async post => {
+        const mediaResponse = await getMedia(post._id);
+        const media = mediaResponse;
+
+        const reactionResponse = await getReaction(post._id);
+        const reaction = reactionResponse;
+
+        const commentResponse = await getComments(post._id);
+        const comment = commentResponse;
+
+        const shareResponse = await getShare(post._id);
+        const share = shareResponse;
+
+        // console.log('>>>>>>>>>>>>>>> likedByCurrentUser', likedByCurrentUser);
+        return {
+          ...post,
+          media,
+          reaction,
+          comment,
+          share,
+        };
+      }),
+    );
+    setPost(postsWithMedia);
+    setIsLoading(false);
+  };
+
+  const filteredPostsData = post.filter(
+    post =>
+      post.content.toLowerCase().includes(searchText.toLowerCase()) ||
+      post.idUsers.name.toLowerCase().includes(searchText.toLowerCase()),
+  );
+
+  useEffect(() => {
+    onGetPosts();
+  }, []);
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -37,20 +88,56 @@ export default function AllTopTabSearch({navigation, route}) {
     AllPostsSearch: () => (
       <AllPostsSearch
         listUserSearch={listUserSearch}
-        posts={posts}
+        posts={filteredPostsData}
         navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
       />
     ),
-    PostsSearch: () => <PostsSearch posts={posts} navigation={navigation} />,
-    PeopleSearch: () => (
-      <PeopleSearch listUserSearch={listUserSearch} navigation={navigation} />
+    PostsSearch: () => (
+      <PostsSearch
+        listUserSearch={listUserSearch}
+        posts={filteredPostsData}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+      />
     ),
-    ReelsSearch: () => <ReelsSearch posts={posts} navigation={navigation} />,
-    GroupSearch: () => <GroupSearch posts={posts} navigation={navigation} />,
-    PageSearch: () => <PageSearch posts={posts} navigation={navigation} />,
+    PeopleSearch: () => (
+      <PeopleSearch
+        listUserSearch={listUserSearch}
+        posts={filteredPostsData}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+      />
+    ),
+    ReelsSearch: () => (
+      <ReelsSearch
+        listUserSearch={listUserSearch}
+        posts={filteredPostsData}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+      />
+    ),
+    GroupSearch: () => (
+      <GroupSearch
+        listUserSearch={listUserSearch}
+        posts={filteredPostsData}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+      />
+    ),
+    PageSearch: () => (
+      <PageSearch
+        listUserSearch={listUserSearch}
+        posts={filteredPostsData}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+      />
+    ),
   });
 
-  return (
+  return isLoading ? (
+    <LoadingScreen />
+  ) : (
     <>
       <TouchableOpacity
         style={styles.inputSearch}

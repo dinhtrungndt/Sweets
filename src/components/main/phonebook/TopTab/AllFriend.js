@@ -58,10 +58,11 @@ const AllFriend = () => {
 
           // Lấy thông tin chi tiết của tất cả bạn bè
           const friendsDetails = await Promise.all(friendsDetailsPromises);
-         // console.log('friendsDetails', friendsDetails);
+          console.log('friendsDetails', friendsDetails);
           
           // Tạo một mảng mới chứa thông tin đầy đủ về bạn bè (tên, avatar, ngày sinh nhật)
           const birthdaysWithDetails = friendsDetails.map(friend => ({
+            id:friend._id,
             name: friend.name,
             avatar: friend.avatar,
             birthday: friend.date // Giả sử 'date' là ngày sinh nhật của bạn bè
@@ -129,7 +130,7 @@ const AllFriend = () => {
   // Hàm này được gọi khi người dùng kéo xuống để làm mới
   const onRefresh = async () => {
     setRefreshing(true); // Đặt trạng thái là đang làm mới
-    await friendsDetails(); // Tải dữ liệu mới
+    await fetchFriendsDetails(); // Tải dữ liệu mới
     setRefreshing(false); // Kết thúc làm mới
   };
 

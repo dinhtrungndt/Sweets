@@ -74,6 +74,7 @@ import Share from 'react-native-share';
 import ModalEditPostsAccount from '../editPosts/account';
 import ModalEditPostsGuest from '../editPosts/guest';
 import DialogDeletePosts from 'react-native-dialog';
+import ModalShare from '../share';
 
 const CommentsScreen = ({navigation, route}) => {
   const {postId} = route.params;
@@ -114,6 +115,8 @@ const CommentsScreen = ({navigation, route}) => {
   const [idComments, setIdComments] = useState(null);
   const [detailPosts, setDetailPosts] = useState(null);
   const numColumns = 4;
+  const [showModalShare, setShowModalShare] = useState(false);
+  const [itemModalShare, setItemModalShare] = useState(null);
 
   // console.log('>>>>>>>>> parentUserName parentUserName', parentUserName);
   // console.log('>>>>>>>>> comments comments', comments);
@@ -180,6 +183,11 @@ const CommentsScreen = ({navigation, route}) => {
   //   }
   // };
 
+  const handleShareModal = item => {
+    setItemModalShare(item);
+    setShowModalShare(true);
+  };
+
   const handleLikeComments = async idComments => {
     try {
       const idUsers = user.user._id;
@@ -237,7 +245,7 @@ const CommentsScreen = ({navigation, route}) => {
     try {
       const res = await getPostsDetail(postId._id);
       setPosts([res]);
-      // console.log('reloadPosts', res.reaction);
+      // console.log('reloadPosts', res);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -428,7 +436,7 @@ const CommentsScreen = ({navigation, route}) => {
 
       setIsLoadingCamera(true);
       const data = await uploadImageStatus(formData);
-      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
       setImagePath(data.urls);
       // console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
       setIsLoadingCamera(false);
@@ -467,6 +475,7 @@ const CommentsScreen = ({navigation, route}) => {
         }),
       );
       setComments(postComments);
+      await reloadPosts();
       // setIsLoading(false);
     } catch (error) {
       console.error('Lỗi khi tải danh sách bình luận:', error);
@@ -522,10 +531,6 @@ const CommentsScreen = ({navigation, route}) => {
       }
 
       if (parentId && parentUserName !== null) {
-        console.log(
-          'Tải danh sách bình parentUserName parentUserName:',
-          parentUserName,
-        );
         const response = await submitCommentsC(
           user.user._id,
           postId._id,
@@ -534,7 +539,7 @@ const CommentsScreen = ({navigation, route}) => {
           imagePath,
           parentUserName,
         );
-        console.log('Tải danh sách bình luận con:', response);
+        // console.log('Tải danh sách bình luận con:', response);
       } else {
         const response = await submitComments(
           user.user._id,
@@ -589,20 +594,6 @@ const CommentsScreen = ({navigation, route}) => {
   const handleShowMoreImageList = image => {
     setImageImageShowMore(image);
     setShowMoreImage(true);
-  };
-
-  const handleShare = async item => {
-    try {
-      const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
-      const shareOptions = {
-        title: 'Share',
-        message: 'Chia sẻ bài viết này!',
-        url: deepLink,
-      };
-      await Share.open(shareOptions);
-    } catch (error) {
-      console.log('Lỗi chia sẻ nè:', error);
-    }
   };
 
   useEffect(() => {
@@ -693,11 +684,10 @@ const CommentsScreen = ({navigation, route}) => {
                               <Text
                                 style={[
                                   styles.baiVietName,
-                                  {color: '#ff0000', marginLeft: 5},
+                                  {color: '#22b6c0', marginLeft: 5},
                                 ]}>
                                 {post.taggedFriends?.name}
                               </Text>
-                              <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                             </TouchableOpacity>
                           </View>
                         )}
@@ -799,11 +789,10 @@ const CommentsScreen = ({navigation, route}) => {
                             <Text
                               style={[
                                 styles.baiVietName,
-                                {color: '#ff0000', marginLeft: 5},
+                                {color: '#22b6c0', marginLeft: 5},
                               ]}>
                               {detailPosts.taggedFriends?.name}
                             </Text>
-                            <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                           </TouchableOpacity>
                         </View>
                       )}
@@ -1145,7 +1134,7 @@ const CommentsScreen = ({navigation, route}) => {
                 {/* share */}
                 <TouchableOpacity
                   style={styles.like_post}
-                  onPress={() => handleShare(item)}>
+                  onPress={() => handleShareModal(item)}>
                   <MaterialCommunityIcons
                     name="share-outline"
                     size={23}
@@ -1313,50 +1302,54 @@ const CommentsScreen = ({navigation, route}) => {
                                 </Text>
                               </TouchableOpacity>
                             )}
-                            <View style={{flexDirection: 'row'}}>
-                              {item?.parentUserName?._id === user.user._id ? (
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    navigation.navigate('Profile', {
-                                      account: item,
-                                    });
-                                  }}>
-                                  <Text
-                                    style={{
-                                      color: '#1b9e9a',
-                                      paddingRight: 5,
+                            {item.content !== '' ? (
+                              <View style={{flexDirection: 'row'}}>
+                                {item?.parentUserName?._id === user.user._id ? (
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      navigation.navigate('Profile', {
+                                        account: item,
+                                      });
                                     }}>
-                                    {item?.parentUserName?.name}
-                                  </Text>
-                                </TouchableOpacity>
-                              ) : (
-                                <TouchableOpacity
-                                  onPress={() => {
-                                    navigation.navigate('OtherUserA2', {
-                                      accountzzz: item?.parentUserName,
-                                    });
-                                  }}>
-                                  <Text
-                                    style={{
-                                      color: '#1b9e9a',
-                                      paddingRight: 5,
+                                    <Text
+                                      style={{
+                                        color: '#1b9e9a',
+                                        paddingRight: 5,
+                                      }}>
+                                      {item?.parentUserName?.name}
+                                    </Text>
+                                  </TouchableOpacity>
+                                ) : (
+                                  <TouchableOpacity
+                                    onPress={() => {
+                                      navigation.navigate('OtherUserA2', {
+                                        accountzzz: item?.parentUserName,
+                                      });
                                     }}>
-                                    {item?.parentUserName?.name}
-                                  </Text>
-                                </TouchableOpacity>
-                              )}
-                              {item?.content && (
-                                <View style={{flexDirection: 'row'}}>
-                                  <Text
-                                    style={{
-                                      color: '#000',
-                                      width: '70%',
-                                    }}>
-                                    {item.content}
-                                  </Text>
-                                </View>
-                              )}
-                            </View>
+                                    <Text
+                                      style={{
+                                        color: '#1b9e9a',
+                                        paddingRight: 5,
+                                      }}>
+                                      {item?.parentUserName?.name}
+                                    </Text>
+                                  </TouchableOpacity>
+                                )}
+                                {item?.content && (
+                                  <View style={{flexDirection: 'row'}}>
+                                    <Text
+                                      style={{
+                                        color: '#000',
+                                        width: '70%',
+                                      }}>
+                                      {item.content}
+                                    </Text>
+                                  </View>
+                                )}
+                              </View>
+                            ) : (
+                              <></>
+                            )}
                           </View>
 
                           {item?.image && item?.image.length > 0 && (
@@ -2050,8 +2043,6 @@ const CommentsScreen = ({navigation, route}) => {
                           style={{
                             alignItems: 'center',
                           }}>
-                          {/* cho clone ảnh và cho item.uri = null */}
-                          {console.log('>>> item', item)}
                           <TouchableOpacity
                             style={styles.container_image_camera}
                             onPress={() => {
@@ -2077,7 +2068,6 @@ const CommentsScreen = ({navigation, route}) => {
                               borderRadius: 5,
                             }}
                           />
-                          {console.log('>>> item.uri', item.uri)}
                         </View>
                       ) : isVideo(item.uri) ? (
                         <View
@@ -2337,6 +2327,23 @@ const CommentsScreen = ({navigation, route}) => {
             activeOpacity={1}
             onPressOut={() => setModalEditPostsGuest(false)}>
             <ModalEditPostsGuest editPostsItemGuest={editPostsItemGuest} />
+          </TouchableOpacity>
+        </Modal>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showModalShare}
+          onRequestClose={() => {}}>
+          <TouchableOpacity
+            style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+            activeOpacity={1}
+            onPressOut={() => setShowModalShare(false)}>
+            <ModalShare
+              itemModalShare={itemModalShare}
+              cancel={() => setShowModalShare(false)}
+              navigation={navigation}
+              reloadPosts={reloadPosts}
+            />
           </TouchableOpacity>
         </Modal>
 

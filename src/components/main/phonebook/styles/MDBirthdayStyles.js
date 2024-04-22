@@ -6,8 +6,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 7,
-        backgroundColor: '#22b6c0',
-
+       
+ backgroundColor: '#22b6c0',
 
 
         elevation: 65,
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     txtContent1: {
         fontSize: 18,
         fontWeight: 'bold',
-
+        color:'black'
     },
     container: {
         flex: 1,
@@ -80,13 +80,14 @@ const styles = StyleSheet.create({
         fontSize:15,
         marginHorizontal:15,
         marginVertical:17,
-      
+        color:'black'
     },
     
     txtContentInfoUser3: {
         fontWeight:'bold',
         fontSize:16,
         marginHorizontal:15,
+        color:'black'
        
     },
     imvCheck:{
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         padding:6,
-        backgroundColor:'#DCDCDC',
+        backgroundColor:'#22b6c0',
         borderColor: '#22b6c0',
        
         shadowColor: '#000',
@@ -122,7 +123,51 @@ const styles = StyleSheet.create({
         borderRadius: 8,
        
         width: 200, 
-      }
+      },
+      modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      },
+      modalContent: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      avatars: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: 20,
+      },
+      modalText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color:'black'
+      },
+      closeButton: {
+        backgroundColor: '#3498db',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop: 20,
+      },
+      closeButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+      },
       
 
 });

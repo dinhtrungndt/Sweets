@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
       
     },
     input: {
-      height: 40,
+      height: 37,
       width: 270,
       backgroundColor: '#375353',
       borderColor: '#ccc',
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
       paddingHorizontal: 15,
       color: 'black',
       marginTop:'4%',
-      marginLeft:'10%'
+      marginLeft:'15%'
     },
     item: {
       paddingVertical: 15,
@@ -80,14 +80,27 @@ const styles = StyleSheet.create({
     zIndex:10,
    position:'absolute',
    top:15,
-   left:15,
-   width:40,
-   height:40,
+   left:45,
+   width:34,
+   height:34,
    borderRadius:20,
    justifyContent:'center',
    alignItems:'center',
    backgroundColor:'lightgray'
     },
+    toggleButtonExit:{
+      alignSelf:'flex-start',
+      zIndex:10,
+     position:'absolute',
+     top:15,
+     left:5,
+     width:34,
+     height:34,
+     borderRadius:20,
+     justifyContent:'center',
+     alignItems:'center',
+     backgroundColor:'lightgray'
+      },
     txtInfo:{
         color:'white'
     }

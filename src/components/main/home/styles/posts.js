@@ -19,6 +19,13 @@ export const styles = StyleSheet.create({
     margin: 16,
     marginBottom: 10,
   },
+  textBoldPeople: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+    marginLeft: 16,
+    marginTop: 10,
+  },
   avatar_name: {
     flexDirection: 'row',
     alignItems: 'center',

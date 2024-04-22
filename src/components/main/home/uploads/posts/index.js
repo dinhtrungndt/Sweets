@@ -34,6 +34,7 @@ import Geolocation from 'react-native-geolocation-service';
 import TabFriendUpLoad from './tags';
 import ModelBackground from './background';
 import AxiosInstance from '../../../../../helper/AxiosWeather';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
@@ -303,24 +304,27 @@ export function AddsScreen({route, navigation}) {
 
   const requestLocationPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Ứng dụng cần quyền truy cập vị trí của bạn',
-          message: 'Chúng tôi cần biết vị trí của bạn để check in',
-          buttonNeutral: 'Hỏi sau',
-          buttonNegative: 'Hủy',
-          buttonPositive: 'Đồng ý',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Quyền truy cập vị trí đã được cấp');
+      const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+      if (result === RESULTS.GRANTED) {
+        // Quyền đã được cấp, lấy vị trí
         getLocation();
       } else {
-        console.log('Quyền truy cập vị trí bị từ chối');
+        // Quyền chưa được cấp, yêu cầu quyền
+        const permissionResult = await request(
+          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        );
+        if (permissionResult === RESULTS.GRANTED) {
+          getLocation();
+        } else {
+          console.warn('Quyền truy cập vị trí bị từ chối.');
+          Alert.alert('Lỗi', 'Có lỗi xảy ra khi truy cập định vị của bạn.');
+          setLoading(false);
+        }
       }
     } catch (error) {
-      console.error('Lỗi khi yêu cầu quyền truy cập vị trí:', error);
+      console.error('Lỗi khi kiểm tra quyền truy cập vị trí:', error);
+      Alert.alert('Lỗi', 'Có lỗi xảy ra khi truy cập định vị của bạn.');
+      setLoading(false);
     }
   };
 
@@ -458,11 +462,10 @@ export function AddsScreen({route, navigation}) {
                   <Text
                     style={[
                       styles.body_name,
-                      {color: '#ff0000', marginLeft: 5},
+                      {color: '#22b6c0', marginLeft: 5},
                     ]}>
                     {tagSelectedUser?.name}
                   </Text>
-                  <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                 </TouchableOpacity>
               </View>
             )}

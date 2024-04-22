@@ -68,9 +68,9 @@ export const getMedia = async idPosts => {
 // Lấy số lượng share
 export const getShare = async idPosts => {
   try {
-    const response = await AxiosInstance().get(`/posts/get-share/${idPosts}`);
+    const response = await AxiosInstance().get(`/share/get-share/${idPosts}`);
     // console.log('get post >>>>>>>>>>>>>>> Service getShare 8 ', response);
-    return response;
+    return response.shares;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi get: 35555555 getShares', error);
     throw error;
@@ -473,6 +473,117 @@ export const deleteMedia = async idPosts => {
     return response;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi deleteMedia : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Lấy thông báo người nhận
+export const getNotificationRecipient = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/notifications/recipient/${idUsers}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi getNotification : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Xóa thông báo dựa theo id
+export const deleteNotification = async id => {
+  try {
+    const response = await AxiosInstance().delete(
+      `/notifications/delete/${id}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi deleteNotification : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Cập nhật trạng thái đã đọc của thông báo
+export const updateNotification = async id => {
+  try {
+    const response = await AxiosInstance().put(`/notifications/update/${id}`);
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi updateNotification : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Lấy danh sách các bài viết đã lưu dựa trên idUsers
+export const getSavedPosts = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/savePosts/get-saved/${idUsers}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi getSavedPosts : 11 s', error.response);
+    throw error;
+  }
+};
+
+//  Lưu bài viết dựa theo idUsers và idPosts
+export const savePosts = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().post(
+      `/savePosts/saved-post/${idUsers}/${idPosts}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi savePosts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Xóa bài viết đã lưu dựa trên idUsers và idPosts
+export const deleteSavedPosts = async (idUsers, idPosts) => {
+  try {
+    const response = await AxiosInstance().delete(
+      `/savePosts/delete-saved/${idUsers}/${idPosts}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi deleteSavedPosts : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Lấy bài viết đã lưu dựa trên idUsers và lấy theo idPosts
+export const getSavedIdUserTPosts = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(
+      `/savePosts/get-saved-media/${idUsers}`,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi getSavedPostsId : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Chia sẻ bài viết
+export const sharePost = async detailShare => {
+  try {
+    const response = await AxiosInstance().post(
+      `/share/share-post`,
+      detailShare,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response.share;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi sharePost : 11 s', error.response);
     throw error;
   }
 };

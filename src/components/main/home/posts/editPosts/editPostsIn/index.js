@@ -40,7 +40,13 @@ import {CommonActions} from '@react-navigation/native';
 import ChangeObjectsEditPosts from './objects';
 import {UserContext} from '../../../../../../contexts/user/userContext';
 
-const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
+const EditPostsIn = ({
+  cancel,
+  editPostsItemAccount,
+  route,
+  navigation,
+  reloadPosts,
+}) => {
   // console.log('>???>>>>>>>>> item EditPosstsIn', editPostsItemAccount);
 
   const numColumns = 4;
@@ -147,7 +153,8 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
           const response = await uploadMedia(idPosts, media);
           // console.log('>>>>>>> response -> handleUploadMedia', response);
           setUpload(response);
-          navigation.replace('HomeScreen');
+          reloadPosts();
+          cancel();
           //console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
         }),
       );
@@ -185,7 +192,8 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
       }
 
       if (!upload) {
-        navigation.navigate('HomeScreen');
+        reloadPosts();
+        cancel();
         Toast.show({
           type: 'success',
           position: 'top',
@@ -233,7 +241,8 @@ const EditPostsIn = ({cancel, editPostsItemAccount, route, navigation}) => {
         const idUsers = user.user._id;
         const response = await updateEditPosts(idPosts, idUsers, detailPosts);
         setUpload(response);
-        navigation.replace('HomeScreen');
+        reloadPosts();
+        cancel();
         // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
       }
     } catch (error) {

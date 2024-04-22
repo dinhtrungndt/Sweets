@@ -46,6 +46,7 @@ const SearchPosts = props => {
     // hiển thị tối đa 5 người dùng
     setShowListHistorySearch(res.slice(0, 5));
   };
+  // console.log('>>>>>>>>>>>>>>> listUserSearch', listUserSearch);
 
   const filteredPostsData = posts.filter(
     post =>
@@ -86,6 +87,7 @@ const SearchPosts = props => {
               searchText: searchText,
               listUserSearch: listUserSearch,
               posts: filteredPostsData,
+              showListHistorySearch: showListHistorySearch,
             });
           }}
         />
@@ -121,6 +123,7 @@ const SearchPosts = props => {
                         searchText: history.name,
                         listUserSearch: listUserSearch,
                         posts: filteredPostsData,
+                        showListHistorySearch: showListHistorySearch,
                       });
                     }}>
                     <MaterialCommunityIcons
@@ -138,7 +141,7 @@ const SearchPosts = props => {
           </>
         ) : (
           <>
-            {listUserSearch !== undefined ? (
+            {showListHistorySearch && listUserSearch ? (
               <>
                 {listUserSearch.map((user, index) => (
                   <TouchableOpacity
@@ -170,13 +173,16 @@ const SearchPosts = props => {
                       searchText: searchText,
                       listUserSearch: listUserSearch,
                       posts: filteredPostsData,
+                      showListHistorySearch: showListHistorySearch,
                     });
                   }}>
                   <Text style={styles.textFooter}>Hiển thị thêm {'->'}</Text>
                 </TouchableOpacity>
               </>
             ) : (
-              <Text style={styles.textContent}>Không có kết quả tìm kiếm</Text>
+              <Text style={styles.textContentNo}>
+                Không có kết quả tìm kiếm
+              </Text>
             )}
           </>
         )}

@@ -17,8 +17,10 @@ const OtherFriend = (props) => {
   const loadFilteredUsers = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      const storedData = await AsyncStorage.getItem('friendData');
-      console.log('Mảng đã lấy từ AsyncStorageFrinedđ:', storedData);
+      const storedData1 = await AsyncStorage.getItem('friendData');
+      const storedDataArray1 = JSON.parse(storedData1);
+      console.log('Mảng đã lấy từ AsyncStorageFrinedđ22:', storedData1);
+      
       const ListDaGui = await AsyncStorage.getItem('ListDaGui');
       const parsedListDaGui = JSON.parse(ListDaGui);
       console.log('Mảng đã lấy từ AsyncStorage:', parsedListDaGui);
@@ -26,6 +28,7 @@ const OtherFriend = (props) => {
       const parsedListDaNhan = JSON.parse(ListDaNhan);
       console.log('Mảng đã lấy từ AsyncStorage:222222', parsedListDaNhan);
       const friendsFromStorage = await AxiosInstance().get(`/friend/friends/${userId}`);
+      console.log('friendsFromStoragessssssx',friendsFromStorage)
       const friendsResponse = await AxiosInstance().get('users/get-users');
       const friends = friendsResponse.users;
 
@@ -40,33 +43,21 @@ const OtherFriend = (props) => {
         }
         return user;
       });
+
       const filteredUsers = usersWithCommonFriends.filter(
         user => user._id !== userId && !friendsFromStorage.friendsList.includes(user._id),
       );
-
+        console.log('filteredUsersfilteredUsers',filteredUsers)
       // Tính toán số lượng bạn chung và lưu vào mảng filteredUsers
       await Promise.all(filteredUsers.map(async (item) => {
         try {
           const response = await AxiosInstance().get(`/friend/friends/${item._id}`);
           const listFriendOther = response.friendsList;
-          const matchingFriends = listFriendOther.filter(friend => storedData.includes(friend));
-          item.matchingFriends = matchingFriends;
+          const matchingFriends = listFriendOther.filter(friend => storedDataArray1.some(storedFriend => storedFriend.id === friend.id));
 
-          // Gửi yêu cầu API để lấy thông tin về bạn chung
-          const matchingFriendsInfo = await Promise.all(matchingFriends.map(async (friendId) => {
-            try {
-              const friendInfoResponse = await AxiosInstance().get(`/users/get-user/${friendId}`);
-              // console.log('friendInfoResponse', friendInfoResponse.user)
-              const { avatar, name } = friendInfoResponse.user;
-              return { avatar, name }; // Trả về thông tin của bạn bè chung
-            } catch (error) {
-              console.error('Lỗi khi lấy thông tin bạn bè:', error);
-              return null;
-            }
-          }));
-          // Gán matchingFriendsInfo vào item
-          item.matchingFriendsInfo = matchingFriendsInfo;
-          // console.log('Thông tin bạn chunggggg:', matchingFriendsInfo);
+          item.matchingFriends = matchingFriends;
+          console.log('ress',item.matchingFriends)
+
         } catch (error) {
           console.error('Lỗi khi xem danh sách bạn bè:', error);
         }
@@ -94,9 +85,19 @@ const OtherFriend = (props) => {
           user.checkNhan = true;
         }
       });
+      const storedData = await AsyncStorage.getItem('friendData');
+      console.log('Mảng đã lấy từ AsyncStorageFrinedđ22:', storedData);
+      const storedDataArray = JSON.parse(storedData);
 
-      console.log('filteredUsers22222', updatedUsers)
-      setFilteredUsers(updatedUsers);
+      const updatedUsersWithoutDuplicates = updatedUsers.filter(user => {
+        // Kiểm tra xem user._id có tồn tại trong storedData hay không
+        const isDuplicate = storedDataArray.some(data => data.id === user._id);
+        // Trả về true nếu không trùng khớp, false nếu trùng khớp
+        return !isDuplicate;
+      });
+
+      console.log('filteredUsers22222', updatedUsersWithoutDuplicates)
+      setFilteredUsers(updatedUsersWithoutDuplicates);
     } catch (error) {
       console.log('Lỗi khi tải danh sách bạn bè', error);
     }
@@ -172,9 +173,9 @@ const OtherFriend = (props) => {
                       {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 0 && (
                         item.matchingFriendsInfo.slice(0, 1).map((friendInfo, index) => (
                           <View key={index} style={{ flexDirection: 'row' }}>
-                            <Image source={{ uri: friendInfo.avatar }} style={{ width: 25, height: 25, borderRadius: 12 }} />
+                            
                            <View>
-                           <Text style={{ color: 'black', fontSize: 12,fontWeight:'400' ,marginTop:3}}>{friendInfo.name}</Text>
+                        
                            {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 1 && (
                         <Text style={{ color: 'black', fontSize: 12,fontWeight:'400' }}> và {item.matchingFriendsInfo.length - 1} bạn khác...</Text>
                       )}

@@ -6,7 +6,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {updateEditPostsObjects} from '../../../../../../services/home/homeService';
 
-const ChangeObjects = ({cancel, itemPosts, navigation}) => {
+const ChangeObjects = ({cancel, itemPosts, navigation, reloadPosts}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [objectsID, setObjectsID] = useState('');
   // console.log('>>>>>>... idObject của itemPostsitemPosts', idObjects);
@@ -47,7 +47,8 @@ const ChangeObjects = ({cancel, itemPosts, navigation}) => {
     try {
       const idPosts = itemPosts._id;
       const res = await updateEditPostsObjects(idPosts, objectsID);
-      navigation.replace('HomeScreen');
+      reloadPosts();
+      cancel();
       // console.log('>>>>>>>>>>. resresres res', res);
     } catch (error) {
       console.log('>>>>>>>>>>. Lỗi handleChangeObjects', error);

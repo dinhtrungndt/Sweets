@@ -93,3 +93,53 @@ export const optionsTabsTop = ({route}) => ({
     borderWidth: 0,
   },
 });
+
+export const optionsTabsTopNotifi = ({route}) => ({
+  tabBarLabel: ({focused, color, size}) => {
+    const label = route.name === 'PostsTabs' ? 'Bài viết' : 'Bình luận';
+    const opacity = focused ? 1 : 0.5;
+
+    return (
+      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          {focused && (
+            <View
+              style={{
+                width: 2,
+                height: '80%',
+                backgroundColor: '#000',
+                marginHorizontal: 5,
+              }}
+            />
+          )}
+          <Text
+            style={{
+              color: focused ? '#000' : '#000',
+              textAlign: 'center',
+              opacity,
+            }}>
+            {label}
+          </Text>
+        </View>
+      </View>
+    );
+  },
+  tabBarIndicatorStyle: {
+    height: 0,
+  },
+  tabBarStyle: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    width: '44%',
+    height: 45,
+    padding: 0,
+    alignSelf: 'center',
+    borderColor: '#fff',
+    borderWidth: 0,
+  },
+});

@@ -39,6 +39,7 @@ import ModalEditPostsGuest from './editPosts/guest';
 import Share from 'react-native-share';
 import {useLinkTo} from '@react-navigation/native';
 import linking from '../../../../utils/linking';
+import ModalShare from './share';
 
 const PostsScreen = ({posts, navigation}) => {
   const [showMore, setShowMore] = useState(false);
@@ -52,6 +53,8 @@ const PostsScreen = ({posts, navigation}) => {
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
   const [post, setPost] = useState(posts);
   const [showLengthMedia, setShowLengthMedia] = useState(true);
+  const [showModalShare, setShowModalShare] = useState(false);
+  const [itemModalShare, setItemModalShare] = useState(null);
 
   // console.log(
   //   'posts:',
@@ -65,33 +68,35 @@ const PostsScreen = ({posts, navigation}) => {
   const reloadPosts = async () => {
     try {
       const res = await getPosts(user.user._id);
-      const postsWithMedia = await Promise.all(
-        res.map(async post => {
-          const mediaResponse = await getMedia(post._id);
-          const media = mediaResponse;
+      const postsWithMedia = (
+        await Promise.all(
+          res.map(async post => {
+            const mediaResponse = await getMedia(post._id);
+            const media = mediaResponse;
 
-          const reactionResponse = await getReaction(post._id);
-          const reaction = reactionResponse;
+            const reactionResponse = await getReaction(post._id);
+            const reaction = reactionResponse;
 
-          const commentResponse = await getComments(post._id);
-          const comment = commentResponse;
+            const commentResponse = await getComments(post._id);
+            const comment = commentResponse;
 
-          const shareResponse = await getShare(post._id);
-          const share = shareResponse;
+            const shareResponse = await getShare(post._id);
+            const share = shareResponse;
 
-          const birthdayResponse = await getPostsBirthday(user.user._id);
-          const birthday = birthdayResponse;
+            const birthdayResponse = await getPostsBirthday(user.user._id);
+            const birthday = birthdayResponse;
 
-          return {
-            ...post,
-            media,
-            reaction,
-            comment,
-            share,
-            birthday,
-          };
-        }),
-      );
+            return {
+              ...post,
+              media,
+              reaction,
+              comment,
+              share,
+              birthday,
+            };
+          }),
+        )
+      ).filter(post => post.idTypePosts.name === 'Bài viết');
       setPost(postsWithMedia);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -285,6 +290,11 @@ const PostsScreen = ({posts, navigation}) => {
     setModalEditPostsAccount(true);
   };
 
+  const handleShareModal = item => {
+    setItemModalShare(item);
+    setShowModalShare(true);
+  };
+
   const handleModalEditPostsGuest = item => {
     setEditPostsItemGuest(item);
     setModalEditPostsGuest(true);
@@ -301,24 +311,6 @@ const PostsScreen = ({posts, navigation}) => {
       // console.log('>>>. Xóa thành công', res);
     } catch (error) {
       console.log('>>>. Lỗi delete Posts', error);
-    }
-  };
-
-  const handleShare = async item => {
-    try {
-      if (item && item._id) {
-        const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
-        const shareOptions = {
-          title: 'Share',
-          message: 'Chia sẻ bài viết này!',
-          url: deepLink,
-        };
-        await Share.open(shareOptions);
-      } else {
-        console.log('Bài viết không hợp lệ để chia sẻ');
-      }
-    } catch (error) {
-      console.log('Lỗi chia sẻ nè:', error);
     }
   };
 
@@ -401,39 +393,75 @@ const PostsScreen = ({posts, navigation}) => {
                         {item.taggedFriends === null ? (
                           <View />
                         ) : (
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              width: '50%',
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                              }}>
-                              {' '}
-                              cùng với
-                            </Text>
-                            <TouchableOpacity
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}
-                              onPress={() =>
-                                navigation.navigate('OtherUserA', {
-                                  accountzzz: item.taggedFriends,
-                                })
-                              }>
-                              <Text
-                                style={[
-                                  styles.name,
-                                  {color: '#ff0000', marginLeft: 5},
-                                ]}>
-                                {item.taggedFriends.name}
-                              </Text>
-                              <Text style={{color: '#000'}}>🎉🎁🎂</Text>
-                            </TouchableOpacity>
-                          </View>
+                          <>
+                            {item.taggedFriends._id === user.user._id ? (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  width: '50%',
+                                }}>
+                                <Text
+                                  style={{
+                                    fontSize: 14,
+                                  }}>
+                                  {' '}
+                                  cùng với
+                                </Text>
+                                <TouchableOpacity
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() =>
+                                    navigation.navigate('Profile', {
+                                      accountzzz: item.taggedFriends,
+                                    })
+                                  }>
+                                  <Text
+                                    style={[
+                                      styles.name,
+                                      {color: '#22b6c0', marginLeft: 5},
+                                    ]}>
+                                    {item.taggedFriends.name}
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            ) : (
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                  width: '50%',
+                                }}>
+                                <Text
+                                  style={{
+                                    fontSize: 14,
+                                  }}>
+                                  {' '}
+                                  cùng với
+                                </Text>
+                                <TouchableOpacity
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                  }}
+                                  onPress={() =>
+                                    navigation.navigate('OtherUserA2', {
+                                      accountzzz: item.taggedFriends,
+                                    })
+                                  }>
+                                  <Text
+                                    style={[
+                                      styles.name,
+                                      {color: '#22b6c0', marginLeft: 5},
+                                    ]}>
+                                    {item.taggedFriends.name}
+                                  </Text>
+                                </TouchableOpacity>
+                              </View>
+                            )}
+                          </>
                         )}
                       </View>
                       {item.location === null ? (
@@ -502,18 +530,17 @@ const PostsScreen = ({posts, navigation}) => {
                                 alignItems: 'center',
                               }}
                               onPress={() =>
-                                navigation.navigate('OtherUserA', {
+                                navigation.navigate('OtherUserA2', {
                                   accountzzz: item.taggedFriends,
                                 })
                               }>
                               <Text
                                 style={[
                                   styles.name,
-                                  {color: '#ff0000', marginLeft: 5},
+                                  {color: '#22b6c0', marginLeft: 5},
                                 ]}>
                                 {item.taggedFriends.name}
                               </Text>
-                              <Text style={{color: '#000'}}>🎉🎁🎂</Text>
                             </TouchableOpacity>
                           </View>
                         )}
@@ -878,7 +905,7 @@ const PostsScreen = ({posts, navigation}) => {
               {/* share */}
               <TouchableOpacity
                 style={styles.like_post}
-                onPress={() => handleShare(item)}>
+                onPress={() => handleShareModal(item)}>
                 <MaterialCommunityIcons
                   name="share-outline"
                   size={23}
@@ -900,6 +927,23 @@ const PostsScreen = ({posts, navigation}) => {
       <Modal
         animationType="slide"
         transparent={true}
+        visible={showModalShare}
+        onRequestClose={() => {}}>
+        <TouchableOpacity
+          style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+          activeOpacity={1}
+          onPressOut={() => setShowModalShare(false)}>
+          <ModalShare
+            itemModalShare={itemModalShare}
+            cancel={() => setShowModalShare(false)}
+            navigation={navigation}
+            reloadPosts={reloadPosts}
+          />
+        </TouchableOpacity>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
         visible={modalEditPostsAccount}
         onRequestClose={() => {}}>
         <TouchableOpacity
@@ -910,6 +954,7 @@ const PostsScreen = ({posts, navigation}) => {
             editPostsItemAccount={editPostsItemAccount}
             handleDeletePosts={handleDeletePosts}
             navigation={navigation}
+            reloadPosts={reloadPosts}
           />
         </TouchableOpacity>
       </Modal>
@@ -922,7 +967,10 @@ const PostsScreen = ({posts, navigation}) => {
           style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
           activeOpacity={1}
           onPressOut={() => setModalEditPostsGuest(false)}>
-          <ModalEditPostsGuest editPostsItemGuest={editPostsItemGuest} />
+          <ModalEditPostsGuest
+            editPostsItemGuest={editPostsItemGuest}
+            reloadPosts={reloadPosts}
+          />
         </TouchableOpacity>
       </Modal>
     </View>
