@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import styles from '../../Styles/User/User';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {UserContext} from '../../../../../../contexts/user/userContext';
 
 const User = ({navigation}) => {
   const route = useRoute();
@@ -22,6 +23,7 @@ const User = ({navigation}) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [name, setname] = useState('');
+  const {user} = useContext(UserContext);
   const searchUser = async () => {
     const userid = await AsyncStorage.getItem('userId');
     if (name === '') {
@@ -38,16 +40,16 @@ const User = ({navigation}) => {
         const modifiedUsers2 = modifiedUsers.filter(
           user => user._id !== userid,
         );
-        console.log('userDun', modifiedUsers2);
+        // console.log('userDun', modifiedUsers2);
 
         const modifiedUsers2WithCheckBanBe = modifiedUsers2.map(user => ({
           ...user,
           checkBanBe: false,
         }));
 
-        console.log('userDun22', modifiedUsers2WithCheckBanBe);
+        // console.log('userDun22', modifiedUsers2WithCheckBanBe);
         const storedData = await AsyncStorage.getItem('friendData');
-        console.log('Mảng đã lấy từ AsyncStorageFrinedđ:', storedData);
+        // console.log('Mảng đã lấy từ AsyncStorageFrinedđ:', storedData);
 
         modifiedUsers2WithCheckBanBe.forEach(user => {
           if (storedData.includes(user._id)) {
@@ -55,7 +57,7 @@ const User = ({navigation}) => {
           }
         });
 
-        console.log('userDun4442', modifiedUsers2WithCheckBanBe);
+        // console.log('userDun4442', modifiedUsers2WithCheckBanBe);
 
         setUsers(modifiedUsers2WithCheckBanBe);
       } else {
@@ -101,9 +103,32 @@ const User = ({navigation}) => {
                   }>
                   Nhắn tin
                 </Text>
-                <Text style={styles.txtprofile2} onPress={handleprofile}>
-                  Profile
-                </Text>
+                {console.log('item._id', item)}
+                {user.user._id !== item._id ? (
+                  <TouchableOpacity
+                    style={styles.txtprofile2}
+                    onPress={() =>
+                      navigation.navigate('OtherUserA2', {
+                        accountzzz: item,
+                      })
+                    }>
+                    <Text style={{color: '#000'}} onPress={handleprofile}>
+                      Profile
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.txtprofile2}
+                    onPress={() =>
+                      navigation.navigate('Profile', {
+                        account: item,
+                      })
+                    }>
+                    <Text style={{color: '#000'}} onPress={handleprofile}>
+                      Profile
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           </View>
