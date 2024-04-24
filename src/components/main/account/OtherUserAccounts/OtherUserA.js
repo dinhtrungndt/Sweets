@@ -28,10 +28,9 @@ const OtherUserA = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [friendsCount, setFriendsCount] = useState(0);
+  const [updatedListUserSearch, setUpdatedListUserSearch] = useState([]);
 
-  // console.log('>>>>>>>>> accountzzz', accountzzz);
-  // console.log('>>>>>>>>> accountzzz', account.idUsers._id);
-
+console.log('updatedListUserSearch',updatedListUserSearch)
   useEffect(() => {
     const fetchFriendsCount = async () => {
       try {
@@ -43,11 +42,141 @@ const OtherUserA = ({ navigation, route }) => {
       }
     };
     fetchFriendsCount();
+    fetchFriendInvitations();
   }, [account]);
+
+
+  const fetchFriendInvitations = async () => {
+    try {
+
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await AxiosInstance().get(
+        `/friend/friend-requests-sent/${userId}`,
+      );
+      const response2 = await AxiosInstance().get(
+        `/friend/friend-requests/${userId}`,
+      );
+      const response3 = await AxiosInstance().get(`/friend/friends/${userId}`);
+      console.log('re', response3)
+      if (response.success) {
+        // console.log('Kết quả lời mời đã gửi', response.friendRequestsSent);
+        const invitations = response.friendRequestsSent; //mảng đã gửi
+        const listUserSearch = [account]
+        console.log()
+        const updatedList = listUserSearch.map(user => {
+          const isInvited = invitations.some(
+            invitation => invitation.idFriendReceiver === user.idUsers._id,
+          );
+          return {
+            ...user,
+            CheckGui: isInvited, // Kiểm tra xem user có trong danh sách lời mời gửi không
+            CheckNhan: false, // Ban đầu, chưa có lời mời nào được chấp nhận
+            CheckALL: false
+          };
+        });
+        const invitations2 = response2.friendRequests;
+        const updatedList2 = updatedList.map(user => {
+          const isInvited = invitations2.some(
+            invitation => invitation.idFriendSender === user.idUsers._id,
+          );
+          return {
+            ...user,
+
+            CheckNhan: isInvited, // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        });
+
+        const invitationsAll = response3.friendsList;
+        const updatedListAll = updatedList2.map(user => {
+          const isInvited = invitationsAll.some(
+            invitation => invitation.id === user.idUsers._id,
+          );
+          return {
+            ...user,
+
+            CheckALL: isInvited, // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        });
+        console.log('updatedListAll', updatedListAll)
+        console.log('mảng 33333', updatedListAll);
+        setUpdatedListUserSearch(updatedListAll)
+
+      } else {
+        console.log('No friend invitations found.');
+      }
+    } catch (error) {
+      console.error('Error fetching friend invitations:', error);
+    }
+  };
+
+  const handleButtonPress = (account, actionType) => {
+    return () => {
+      handleFriendAction(account, actionType);
+    };
+  };
+
+  const handleFriendAction = async (account, actionType) => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      let endpoint = '';
+      let requestData = {}; // Object chứa dữ liệu cần truyền vào endpoint
+
+      switch (actionType) {
+        case 'addFriend':
+          endpoint = '/friend/send-friend-request';
+          requestData = {
+            idFriendSender: userId,
+            idFriendReceiver: account.idUsers._id,
+
+          };
+          break;
+        case 'backRequest':
+          endpoint = 'friend/reject-friend-request';
+          requestData = {
+            idFriendSender: userId,
+            idFriendReceiver: account.idUsers._id,
+
+          };
+          break;
+        // Các case khác tương tự
+        case 'acceptRequest':
+          endpoint = 'friend/accept-friend-request';
+          requestData = {
+            idFriendSender: account.idUsers._id,
+            idFriendReceiver: userId
+
+          };
+          break;
+        case 'unfriend':
+          endpoint = 'friend/cancel-friend-request';
+          requestData = {
+            idFriendSender: userId,
+            idFriendReceiver: account.idUsers._id,
+
+          };
+          break;
+        default:
+          // Mặc định là 'addFriend' nếu không có hành động nào được xác định
+          endpoint = '/friend/send-friend-request';
+          requestData = {
+            idFriendSender: userId,
+            idFriendReceiver: account.idUsers._id,
+            // Các thuộc tính khác cho mặc định nếu cần
+          };
+      }
+
+      const response = await AxiosInstance().post(endpoint, requestData);
+      console.log('responesss', response)
+      fetchFriendInvitations()
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
+    }
+  };
+
 
   return (
     <>
-      {account === undefined ? (
+      {updatedListUserSearch === undefined ? (
         <View style={styles.body}>
           <View style={styles.profileFrame}>
             {accountzzz?.coverImage === 'null' ||
@@ -93,14 +222,14 @@ const OtherUserA = ({ navigation, route }) => {
                   style={styles.imgAddFriend}
                   source={require('../../../../assets/icon_add_friends.png')}
                 />
-                <Text style={styles.textIntroduce}>Thêm bạn bèe</Text>
+                <Text style={styles.textIntroduce}>Thêmm bạn bèe</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnMess}>
                 <Image
                   style={styles.imgEdit}
                   source={require('../../../../assets/icon_chat.png')}
                 />
-                <Text style={styles.txtEdit}>Nhắn tin</Text>
+                <Text style={styles.txtEdit}>Nhắn tinnnnnnn</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.editFrame}>
@@ -167,7 +296,7 @@ const OtherUserA = ({ navigation, route }) => {
                 />
               </TouchableOpacity>
             )}
-            {account.idUsers?.avatar === 'null' ? (
+            {updatedListUserSearch.idUsers?.avatar === 'null' ? (
               <TouchableOpacity>
                 <Image
                   style={styles.imgAvatar}
@@ -189,13 +318,67 @@ const OtherUserA = ({ navigation, route }) => {
               <Text style={styles.txtFriends}>{t('friends')}</Text>
             </View>
             <View style={styles.containerAdd}>
-              <TouchableOpacity style={styles.btnAddFriend}>
-                <Image
-                  style={styles.imgAddFriend}
-                  source={require('../../../../assets/icon_add_friends.png')}
-                />
-                <Text style={styles.textIntroduce}>Thêm bạn bè</Text>
-              </TouchableOpacity>
+              {!updatedListUserSearch.CheckGui && !updatedListUserSearch.CheckNhan && !updatedListUserSearch.CheckALL ? (
+                <TouchableOpacity
+                  style={styles.btnAddFriend}
+                  onPress={handleButtonPress(account, 'addFriend')}>
+                  <Image
+                    style={styles.imgAddFriend}
+                    source={require('../../../../assets/icon_add_friends.png')}
+                  />
+                  <Text style={styles.textIntroduce}>
+                    Thêm bạn bè
+                  </Text>
+                </TouchableOpacity>
+              ) : updatedListUserSearch.CheckGui ? (
+                <>
+                {console.log('updatedListUserSearchupdatedListUserSearch',updatedListUserSearch.CheckGui)}
+                 <TouchableOpacity
+                  style={styles.btnAddFriend}
+                  onPress={handleButtonPress(account, 'backRequest')}>
+                  <Image
+                    style={stylesIn.imgAddFriend}
+                    source={require('../../../../assets/icon_add_friends.png')}
+                  />
+                  <Text style={styles.textIntroduce}>Thu hồi</Text>
+                </TouchableOpacity>
+                </>
+               
+              ) : updatedListUserSearch.CheckNhan ? (
+                <TouchableOpacity
+                  style={styles.btnAddFriend}
+                  onPress={handleButtonPress(account, 'acceptRequest')}>
+                  <Image
+                    style={stylesIn.imgAddFriend}
+                    source={require('../../../../assets/icon_add_friends.png')}
+                  />
+                  <Text style={styles.textIntroduce}>Đòng ý</Text>
+                </TouchableOpacity>
+              ) :
+                updatedListUserSearch.CheckALL ? (
+                  <TouchableOpacity
+                    style={styles.btnAddFriend}
+                    onPress={handleButtonPress(account, 'unfriend')}>
+                    <Image
+                      style={stylesIn.imgAddFriend}
+                      source={require('../../../../assets/icon_add_friends.png')}
+                    />
+                    <Text style={styles.textIntroduce}>Bạn bè</Text>
+                  </TouchableOpacity>
+                ) :
+                  (
+                    <TouchableOpacity
+                      style={styles.btnAddFriend}
+                    >
+                      <Image
+                        style={styles.imgAddFriend}
+                        source={require('../../../../assets/icon_add_friends.png')}
+                      />
+                      <Text style={styles.textIntroduce}>
+                        xxx
+                      </Text>
+                    </TouchableOpacity>
+                  )}
               <TouchableOpacity style={styles.btnMess}>
                 <Image
                   style={styles.imgEdit}

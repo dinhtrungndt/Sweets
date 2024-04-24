@@ -75,7 +75,7 @@ export default function AllTopTabSearch({navigation, route}) {
 
   const fetchFriendInvitations = async () => {
     try {
-      setIsLoading(true);
+     
       const userId = await AsyncStorage.getItem('userId');
       const response = await AxiosInstance().get(
         `/friend/friend-requests-sent/${userId}`,
@@ -83,6 +83,8 @@ export default function AllTopTabSearch({navigation, route}) {
       const response2 = await AxiosInstance().get(
         `/friend/friend-requests/${userId}`,
       );
+      const response3 = await AxiosInstance().get(`/friend/friends/${userId}`);
+      console.log('re',response3)
       if (response.success) {
         // console.log('Kết quả lời mời đã gửi', response.friendRequestsSent);
         const invitations = response.friendRequestsSent; //mảng đã gửi
@@ -94,6 +96,7 @@ export default function AllTopTabSearch({navigation, route}) {
             ...user,
             CheckGui: isInvited, // Kiểm tra xem user có trong danh sách lời mời gửi không
             CheckNhan: false, // Ban đầu, chưa có lời mời nào được chấp nhận
+            CheckALL:false
           };
         });
         const invitations2 = response2.friendRequests;
@@ -107,9 +110,21 @@ export default function AllTopTabSearch({navigation, route}) {
             CheckNhan: isInvited, // Ban đầu, chưa có lời mời nào được chấp nhận
           };
         });
-        setUpdatedListUserSearch(updatedList2);
-        // console.log('mảng 3', updatedList2);
-        setIsLoading(false);
+
+        const invitationsAll = response3.friendsList;
+        const updatedListAll = updatedList2.map(user => {
+          const isInvited = invitationsAll.some(
+            invitation => invitation.id === user._id,
+          );
+          return {
+            ...user,
+
+            CheckALL: isInvited, // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        });
+        setUpdatedListUserSearch(updatedListAll);
+         console.log('mảng 3', updatedListAll);
+        
       } else {
         console.log('No friend invitations found.');
       }
@@ -143,6 +158,7 @@ export default function AllTopTabSearch({navigation, route}) {
         showListHistorySearch={showListHistorySearch}
         updatedListUserSearch={updatedListUserSearch}
         isLoading={isLoading}
+        fetchFriendInvitations={fetchFriendInvitations}
       />
     ),
     PostsSearch: () => (

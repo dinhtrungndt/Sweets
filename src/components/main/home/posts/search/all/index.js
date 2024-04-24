@@ -52,6 +52,7 @@ const AllPostsSearch = ({
   showListHistorySearch,
   updatedListUserSearch,
   isLoading,
+  fetchFriendInvitations
 }) => {
   const [post, setPost] = useState(posts);
   const {user} = useContext(UserContext);
@@ -72,37 +73,77 @@ const AllPostsSearch = ({
   // console.log('listUserSearch', listUserSearch);
 
   useEffect(() => {
-    if (friendActionCounter > 0) {
-      fetchFriendInvitations();
-    }
-  }, [friendActionCounter]);
+   
+  }, []);
 
-  const handleFriendAction = async item => {
+
+  const handleButtonPress = (user, actionType) => {
+    return () => {
+      handleFriendAction(user, actionType);
+    };
+  };
+
+  const handleFriendAction = async (user, actionType) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-
-      const response = await AxiosInstance().post(
-        '/friend/send-friend-request',
-        {
-          idFriendSender: userId,
-          idFriendReceiver: item._id,
-        },
-      );
-
-      if (response && response.success) {
-        // Cập nhật lại thuộc tính checkGui của user sau khi gửi yêu cầu kết bạn thành công
-
-        setFriendActionCounter(prevCounter => prevCounter + 1);
-        setcheckGui(true);
-      } else if (response && !response.success) {
-        console.error('Lỗi khi gửi yêu cầu kết bạn:', response.message);
-        c;
+      let endpoint = '';
+      let requestData = {}; // Object chứa dữ liệu cần truyền vào endpoint
+  
+      switch (actionType) {
+        case 'addFriend':
+          endpoint = '/friend/send-friend-request';
+          requestData = {
+            idFriendSender: userId,
+            idFriendReceiver: user._id,
+           
+          };
+          break;
+        case 'backRequest':
+          endpoint = 'friend/reject-friend-request';
+          requestData = {
+            idFriendSender: userId,
+            idFriendReceiver: user._id,
+           
+          };
+          break;
+        // Các case khác tương tự
+        case 'acceptRequest':
+          endpoint = 'friend/accept-friend-request';
+          requestData = {
+            idFriendSender: user._id,
+        idFriendReceiver: userId
+          
+          };
+          break;
+          case 'unfriend':
+          endpoint = 'friend/cancel-friend-request';
+          requestData = {
+            idFriendSender: userId,
+            idFriendReceiver: user._id,
+           
+          };
+          break;
+        default:
+          // Mặc định là 'addFriend' nếu không có hành động nào được xác định
+          endpoint = '/friend/send-friend-request';
+          requestData = {
+            idFriendSender: userId,
+            idFriendReceiver: user._id,
+            // Các thuộc tính khác cho mặc định nếu cần
+          };
       }
+  
+      const response = await AxiosInstance().post(endpoint, requestData);
+      console.log('responesss',response)
+      fetchFriendInvitations()
     } catch (error) {
       console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
     }
   };
+  
 
+
+  
   const handleLike = async idPosts => {
     try {
       const idUsers = user.user._id;
@@ -396,10 +437,10 @@ const AllPostsSearch = ({
                           </View>
                         </View>
                         {/* Nút thêm bạn bè */}
-                        {!user.CheckGui && !user.CheckNhan ? (
+                        {!user.CheckGui && !user.CheckNhan && !user.CheckALL ? (
                           <TouchableOpacity
                             style={stylesIn.btnAddFriend}
-                            onPress={handleFriendAction}>
+                            onPress={handleButtonPress(user, 'addFriend')}>
                             <Image
                               style={stylesIn.imgAddFriend}
                               source={require('../../../../../../assets/icon_add_friends.png')}
@@ -411,7 +452,7 @@ const AllPostsSearch = ({
                         ) : user.CheckGui ? (
                           <TouchableOpacity
                             style={stylesIn.btnAddFriend}
-                            onPress={handleFriendAction}>
+                            onPress={handleButtonPress(user, 'backRequest')}>
                             <Image
                               style={stylesIn.imgAddFriend}
                               source={require('../../../../../../assets/icon_add_friends.png')}
@@ -421,23 +462,35 @@ const AllPostsSearch = ({
                         ) : user.CheckNhan ? (
                           <TouchableOpacity
                             style={stylesIn.btnAddFriend}
-                            onPress={handleFriendAction}>
+                            onPress={handleButtonPress(user, 'acceptRequest')}>
                             <Image
                               style={stylesIn.imgAddFriend}
                               source={require('../../../../../../assets/icon_add_friends.png')}
                             />
                             <Text style={styles.textIntroduce}>Đòng ý</Text>
                           </TouchableOpacity>
-                        ) : (
+                        ) : 
+                         user.CheckALL ? (
                           <TouchableOpacity
                             style={stylesIn.btnAddFriend}
-                            onPress={handleFriendAction}>
+                            onPress={handleButtonPress(user, 'unfriend')}>
+                            <Image
+                              style={stylesIn.imgAddFriend}
+                              source={require('../../../../../../assets/icon_add_friends.png')}
+                            />
+                            <Text style={styles.textIntroduce}>Bạn bè</Text>
+                          </TouchableOpacity>
+                        ):
+                        (
+                          <TouchableOpacity
+                            style={stylesIn.btnAddFriend}
+                           >
                             <Image
                               style={stylesIn.imgAddFriend}
                               source={require('../../../../../../assets/icon_add_friends.png')}
                             />
                             <Text style={styles.textIntroduce}>
-                              Thêm bạn bè
+                             xxx
                             </Text>
                           </TouchableOpacity>
                         )}
