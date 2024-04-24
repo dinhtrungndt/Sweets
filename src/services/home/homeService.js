@@ -627,3 +627,15 @@ export const getSharedPosts = async idUsers => {
     throw error;
   }
 };
+
+// Xóa chia sẻ dựa vào id
+export const deleteSharedPosts = async id => {
+  try {
+    const response = await AxiosInstance().delete(`/share/delete/${id}`);
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi deleteSharedPosts : 11 s', error.response);
+    throw error;
+  }
+};

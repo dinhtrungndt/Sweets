@@ -246,7 +246,7 @@ const CommentsScreen = ({navigation, route}) => {
 
   const reloadPosts = async () => {
     try {
-      const res = await getPostsDetail(postId._id);
+      const res = await getPostsDetail(postId._id || postId);
       const resA = [res];
       const postsWithMedia = (
         await Promise.all(
@@ -679,7 +679,9 @@ const CommentsScreen = ({navigation, route}) => {
               {detailPosts === null ? (
                 <>
                   {posts.map(post => (
-                    <View key={post._id} style={styles.baiVietHeaderLeft}>
+                    <View
+                      key={post._id || postId}
+                      style={styles.baiVietHeaderLeft}>
                       <TouchableOpacity>
                         <Image
                           style={styles.baiVietAvatar}
@@ -874,7 +876,7 @@ const CommentsScreen = ({navigation, route}) => {
         {/* body */}
         <ScrollView showsVerticalScrollIndicator={false} style={styles.body}>
           {posts.map(item => (
-            <View key={item._id}>
+            <View key={item._id || postId}>
               {/* content */}
               {detailPosts === null ? (
                 <>

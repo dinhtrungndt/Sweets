@@ -66,7 +66,8 @@ export default function AllTopTabSearch({navigation, route}) {
     ).filter(
       post =>
         post.content.toLowerCase().includes(searchText.toLowerCase()) ||
-        post.idUsers.name.toLowerCase().includes(searchText.toLowerCase()),
+        (post.idUsers.name.toLowerCase().includes(searchText.toLowerCase()) &&
+          post.idTypePosts.name === 'Bài viết'),
     );
     setPost(postsWithMedia);
     setIsLoading(false);

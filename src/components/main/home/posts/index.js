@@ -26,6 +26,7 @@ import VideoPlayer from 'react-native-video-player';
 import {UserContext} from '../../../../contexts/user/userContext';
 import {
   deletePostsAccount,
+  deleteSharedPosts,
   getBackgroundColor,
   getComments,
   getMedia,
@@ -43,6 +44,8 @@ import {useLinkTo} from '@react-navigation/native';
 import linking from '../../../../utils/linking';
 import ModalShare from './share';
 import CreateAtPosts from './createAtPosts';
+import DialogDeletePosts from 'react-native-dialog';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const PostsScreen = ({posts, navigation}) => {
   const [showMore, setShowMore] = useState(false);
@@ -59,6 +62,21 @@ const PostsScreen = ({posts, navigation}) => {
   const [showModalShare, setShowModalShare] = useState(false);
   const [itemModalShare, setItemModalShare] = useState(null);
   const [reactionComments, setReactionComments] = useState('');
+  const [visibleDiaLogDeletePostsShare, setVisibleDiaLogDeletePostsShare] =
+    useState(false);
+
+  const showDialogDS = () => {
+    setVisibleDiaLogDeletePostsShare(true);
+  };
+
+  const handleCancelDS = () => {
+    setVisibleDiaLogDeletePostsShare(false);
+  };
+
+  const handleDeleteDS = async () => {
+    await handleDeletePostShare();
+    setVisibleDiaLogDeletePostsShare(false);
+  };
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -313,6 +331,18 @@ const PostsScreen = ({posts, navigation}) => {
       const updatedPosts = posts.filter(post => post._id !== _idDelete);
       setPost(updatedPosts);
       setModalEditPostsAccount(false);
+      await reloadPosts();
+      // console.log('>>>. Xóa thành công', res);
+    } catch (error) {
+      console.log('>>>. Lỗi delete Posts', error);
+    }
+  };
+
+  const handleDeletePostShare = async idPosts => {
+    try {
+      const res = await deleteSharedPosts(idPosts);
+      const updatedPosts = posts.filter(post => post._id !== idPosts);
+      setPost(updatedPosts);
       await reloadPosts();
       // console.log('>>>. Xóa thành công', res);
     } catch (error) {
@@ -628,22 +658,10 @@ const PostsScreen = ({posts, navigation}) => {
                         </View>
                       </View>
                       {item.idUsers._id !== user.user._id ? (
-                        <TouchableOpacity
-                          onPress={() => handleModalEditPostsGuest(item)}>
-                          <Entypo
-                            name="dots-three-horizontal"
-                            size={18}
-                            color="#666666"
-                          />
-                        </TouchableOpacity>
+                        <></>
                       ) : (
-                        <TouchableOpacity
-                          onPress={() => handleModalEditPostsAccount(item)}>
-                          <Entypo
-                            name="dots-three-horizontal"
-                            size={18}
-                            color="#666666"
-                          />
+                        <TouchableOpacity onPress={showDialogDS}>
+                          <FontAwesome6 name="x" size={12} color="#666666" />
                         </TouchableOpacity>
                       )}
                     </View>
@@ -1057,9 +1075,9 @@ const PostsScreen = ({posts, navigation}) => {
                             )}
                         </View>
                       )}
-
+                      {console.log('item?.idPosts?.media?', item?.media)}
                       {/* media in share */}
-                      {item?.idPosts?.media?.length > 0 ? (
+                      {item?.media?.length > 0 ? (
                         <View style={styles.container_media}>
                           <Swiper
                             style={styles.swiper}
@@ -1068,7 +1086,7 @@ const PostsScreen = ({posts, navigation}) => {
                             paginationStyle={{bottom: 10}}
                             activeDotColor="#22b6c0"
                             onIndexChanged={index => setActiveSlide(index)}>
-                            {item?.idPosts.media?.map((media, index) => (
+                            {item?.media?.map((media, index) => (
                               <View key={media._id}>
                                 {media.type === 'image' ? (
                                   <>
@@ -1090,7 +1108,7 @@ const PostsScreen = ({posts, navigation}) => {
                                 {showLengthMedia ? (
                                   <View style={styles.imageCountContainer}>
                                     <Text style={styles.imageCountText}>
-                                      {index + 1}/{item?.idPosts.media.length}
+                                      {index + 1}/{item?.media.length}
                                     </Text>
                                   </View>
                                 ) : null}
@@ -1737,6 +1755,14 @@ const PostsScreen = ({posts, navigation}) => {
           />
         </TouchableOpacity>
       </Modal>
+      <DialogDeletePosts.Container visible={visibleDiaLogDeletePostsShare}>
+        <DialogDeletePosts.Title>Xóa bài chia sẻ này ?</DialogDeletePosts.Title>
+        <DialogDeletePosts.Description>
+          Sau khi xóa chia sẻ này bạn không thể khôi phục.
+        </DialogDeletePosts.Description>
+        <DialogDeletePosts.Button label="Hủy" onPress={handleCancelDS} />
+        <DialogDeletePosts.Button label="Chấp nhận" onPress={handleDeleteDS} />
+      </DialogDeletePosts.Container>
     </View>
   );
 };
