@@ -484,9 +484,11 @@ const CommentsScreen = ({navigation, route}) => {
 
   const handleLike = async idPosts => {
     try {
+      // console.log('postsposts:', postId._id);
       const idUsers = user.user._id;
+      const idPostsA = postId._id || idPosts;
       const type = 'Thích';
-      const response = await likeByPost(idUsers, idPosts, type);
+      const response = await likeByPost(idUsers, idPostsA, type);
 
       if (response.status === 1) {
         const updatedPosts = posts.map(post => {

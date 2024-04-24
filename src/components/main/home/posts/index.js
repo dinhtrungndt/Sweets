@@ -42,6 +42,7 @@ import Share from 'react-native-share';
 import {useLinkTo} from '@react-navigation/native';
 import linking from '../../../../utils/linking';
 import ModalShare from './share';
+import CreateAtPosts from './createAtPosts';
 
 const PostsScreen = ({posts, navigation}) => {
   const [showMore, setShowMore] = useState(false);

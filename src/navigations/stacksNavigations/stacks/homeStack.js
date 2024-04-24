@@ -34,6 +34,8 @@ import OtherUserA2 from '../../../components/main/account/OtherUserAccounts/Othe
 import NotificationsScreen from '../../../components/main/home/posts/notifications';
 import HeaderScreen from '../../../components/main/layout/header';
 import ChatScreenIn from '../../../components/main/chat/inChat';
+import CreateAtPosts from '../../../components/main/home/posts/createAtPosts';
+import IShare from '../../../components/main/home/posts/share/Ishare';
 const Stack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
@@ -92,6 +94,8 @@ export function HomeStackScreen() {
       />
       <Stack.Screen name="HeaderScreen" component={HeaderScreen} />
       <Stack.Screen name="ChatScreenIn" component={ChatScreenIn} />
+      <Stack.Screen name="CreateAtPosts" component={CreateAtPosts} />
+      <Stack.Screen name="IShare" component={IShare} />
     </Stack.Navigator>
   );
 }
