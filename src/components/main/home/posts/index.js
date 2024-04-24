@@ -64,8 +64,10 @@ const PostsScreen = ({posts, navigation}) => {
   const [reactionComments, setReactionComments] = useState('');
   const [visibleDiaLogDeletePostsShare, setVisibleDiaLogDeletePostsShare] =
     useState(false);
+  const [idShare, setIdShare] = useState(null);
 
-  const showDialogDS = () => {
+  const showDialogDS = idPosts => {
+    setIdShare(idPosts);
     setVisibleDiaLogDeletePostsShare(true);
   };
 
@@ -74,7 +76,8 @@ const PostsScreen = ({posts, navigation}) => {
   };
 
   const handleDeleteDS = async () => {
-    await handleDeletePostShare();
+    const idPosts = idShare;
+    await handleDeletePostShare(idPosts);
     setVisibleDiaLogDeletePostsShare(false);
   };
 
@@ -340,8 +343,9 @@ const PostsScreen = ({posts, navigation}) => {
 
   const handleDeletePostShare = async idPosts => {
     try {
-      const res = await deleteSharedPosts(idPosts);
       const updatedPosts = posts.filter(post => post._id !== idPosts);
+      setVisibleDiaLogDeletePostsShare(false);
+      const res = await deleteSharedPosts(idPosts);
       setPost(updatedPosts);
       await reloadPosts();
       // console.log('>>>. Xóa thành công', res);
@@ -660,7 +664,8 @@ const PostsScreen = ({posts, navigation}) => {
                       {item.idUsers._id !== user.user._id ? (
                         <></>
                       ) : (
-                        <TouchableOpacity onPress={showDialogDS}>
+                        <TouchableOpacity
+                          onPress={() => showDialogDS(item._id)}>
                           <FontAwesome6 name="x" size={12} color="#666666" />
                         </TouchableOpacity>
                       )}

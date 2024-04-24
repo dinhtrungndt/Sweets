@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   ActivityIndicator,
+  Alert,
   Button,
   Image,
   Modal,
@@ -10,6 +11,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -332,6 +334,10 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         console.log('Quyền truy cập đã được cấp.');
       } else {
         console.log('Quyền truy cập bị từ chối.');
+        ToastAndroid.show(
+          'Ứng dụng cần quyền truy cập camera và bộ nhớ để hoạt động.',
+          ToastAndroid.LONG,
+        );
       }
     } catch (err) {
       console.warn(err);
@@ -344,6 +350,39 @@ const SelectFeeingStory = ({cancel, navigation}) => {
 
   const isVideo = url => {
     return /\.(mp4|avi|mov)$/i.test(url);
+  };
+
+  const handleSaveImage = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Quyền truy cập lưu trữ',
+          message:
+            'Ứng dụng cần quyền truy cập để lưu ảnh vào bộ nhớ thiết bị.',
+          buttonPositive: 'Đồng ý',
+          buttonNegative: 'Từ chối',
+        },
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const response = await ImagePicker.openCropper({
+          path: imageCloud,
+          width: 300,
+          height: 400,
+          cropping: true,
+        });
+
+        const destPath = RNFS.DocumentDirectoryPath + '/savedImage.jpg';
+        await RNFS.copyFile(response.path, destPath);
+
+        console.log('Ảnh đã được lưu tại:', destPath);
+      } else {
+        console.log('Người dùng đã từ chối quyền truy cập lưu trữ.');
+      }
+    } catch (error) {
+      console.log('Lỗi khi lưu ảnh:', error);
+    }
   };
 
   // console.log('>>>>>selectedImageURI', selectedImageURI);
@@ -567,7 +606,9 @@ const SelectFeeingStory = ({cancel, navigation}) => {
                 />
                 <Text style={styles.seetingtext}>Quyền riêng tư</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.seetingSave}>
+              <TouchableOpacity
+                style={styles.seetingSave}
+                onPress={handleSaveImage}>
                 <MaterialIcons name={'save-alt'} color={'#6D6C6C'} size={25} />
                 <Text style={[styles.seetingtext, {color: '#6D6C6C'}]}>
                   Lưu

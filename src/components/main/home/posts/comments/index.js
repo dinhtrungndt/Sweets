@@ -593,7 +593,11 @@ const CommentsScreen = ({navigation, route}) => {
       setImage('');
       setParentUserName(null);
       await reloadComments();
-      commentInputRef.current.clear();
+      if (commentInputRef.current.clear === null) {
+        return;
+      } else {
+        commentInputRef.current.clear();
+      }
     } catch (error) {
       console.error('Lỗi khi gửi comment:', error);
       setIsLoading(false);
@@ -685,7 +689,7 @@ const CommentsScreen = ({navigation, route}) => {
                       <TouchableOpacity>
                         <Image
                           style={styles.baiVietAvatar}
-                          source={{uri: post.idUsers?.avatar}}
+                          source={{uri: post?.idUsers?.avatar}}
                         />
                       </TouchableOpacity>
                       <View style={styles.baiVietNameTime}>
