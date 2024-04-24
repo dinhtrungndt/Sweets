@@ -60,7 +60,7 @@ const LoiMoiKetBan = (props) => {
         console.log('response',item._id)
 
         setNewFriendInfo(item._id); // Truyền thông tin của người dùng mới kết bạn đến màn hình gần đây
-        navigation.navigate('PhoneBookScreen', { screen: 'NearFriend', params: { newFriendInfo } });
+       
        
       }  else if (response && response.message) {
         console.error('Error accepting friend request:', response.data.message);
