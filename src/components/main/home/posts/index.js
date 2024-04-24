@@ -1075,7 +1075,6 @@ const PostsScreen = ({posts, navigation}) => {
                             )}
                         </View>
                       )}
-                      {console.log('item?.idPosts?.media?', item?.media)}
                       {/* media in share */}
                       {item?.media?.length > 0 ? (
                         <View style={styles.container_media}>
