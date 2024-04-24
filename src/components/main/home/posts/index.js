@@ -58,6 +58,7 @@ const PostsScreen = ({posts, navigation}) => {
   const [showLengthMedia, setShowLengthMedia] = useState(true);
   const [showModalShare, setShowModalShare] = useState(false);
   const [itemModalShare, setItemModalShare] = useState(null);
+  const [reactionComments, setReactionComments] = useState('');
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);

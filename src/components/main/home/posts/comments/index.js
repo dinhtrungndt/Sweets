@@ -51,14 +51,17 @@ import {
   deleteComments,
   deleteCommentsC,
   deletePostsAccount,
+  getBackgroundColor,
   getComments,
   getListUser,
   getMedia,
   getPosts,
+  getPostsBirthday,
   getPostsDetail,
   getReaction,
   getReactionComments,
   getShare,
+  getShareDetailObject,
   likeByComments,
   likeByPost,
   submitComments,
@@ -125,15 +128,15 @@ const CommentsScreen = ({navigation, route}) => {
   const handleOnpenBottomSheet = () => bottomSheetRef.current?.expand();
   const handleOnpenBottomSheetFit = () => bottomSheetRefFit.current?.expand();
 
-  const onGetDetailPosts = async () => {
-    try {
-      const res = await getPostsDetail(postId._id || postId);
-      // console.log('>>>>>>>> handleGetDetailPosts res', res);
-      setDetailPosts(res);
-    } catch (error) {
-      console.log('Lỗi khi lấy danh sách handleGetDetailPosts', error);
-    }
-  };
+  // const onGetDetailPosts = async () => {
+  //   try {
+  //     const res = await getPostsDetail(postId._id || postId);
+  //     // console.log('>>>>>>>> handleGetDetailPosts res', res);
+  //     setDetailPosts(res);
+  //   } catch (error) {
+  //     console.log('Lỗi khi lấy danh sách handleGetDetailPosts', error);
+  //   }
+  // };
 
   const handleSearch = text => {
     const filteredUsers = listUser.filter(user =>
@@ -244,8 +247,41 @@ const CommentsScreen = ({navigation, route}) => {
   const reloadPosts = async () => {
     try {
       const res = await getPostsDetail(postId._id);
-      setPosts([res]);
-      // console.log('reloadPosts', res);
+      const resA = [res];
+      const postsWithMedia = (
+        await Promise.all(
+          resA.map(async post => {
+            const mediaResponse = await getMedia(post._id);
+            const media = mediaResponse;
+
+            const reactionResponse = await getReaction(post._id);
+            const reaction = reactionResponse;
+
+            const shareResponse = await getShareDetailObject(
+              post._id,
+              user.user._id,
+            );
+            const share = shareResponse;
+
+            const birthdayResponse = await getPostsBirthday(user.user._id);
+            const birthday = birthdayResponse;
+
+            const colorResponse = await getBackgroundColor(post._id);
+            const color = colorResponse;
+
+            return {
+              ...post,
+              media,
+              reaction,
+              share,
+              birthday,
+              color,
+            };
+          }),
+        )
+      ).filter(post => post.idTypePosts.name === 'Bài viết');
+      setPosts(postsWithMedia);
+      // console.log('postsWithMedia', postsWithMedia);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -620,7 +656,7 @@ const CommentsScreen = ({navigation, route}) => {
 
   useEffect(() => {
     onGetListUser();
-    onGetDetailPosts();
+    // onGetDetailPosts();
   }, []);
 
   // useEffect(() => {
