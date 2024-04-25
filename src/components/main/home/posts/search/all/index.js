@@ -42,12 +42,19 @@ import Share from 'react-native-share';
 import CustomReaction from '../../../../../customs/reaction/customreaction';
 import linking from '../../../../../../utils/linking';
 import {LoadingScreen} from '../../../../../../utils/loading';
-
-const AllPostsSearch = ({navigation, posts, listUserSearch}) => {
-  // console.log('>>>>>>>>>>>>> listUserSearch', listUserSearch);
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AxiosInstance from '../../../../../../helper/Axiosinstance';
+import {ActivityIndicator} from 'react-native';
+const AllPostsSearch = ({
+  navigation,
+  posts,
+  listUserSearch,
+  showListHistorySearch,
+  updatedListUserSearch,
+  isLoading,
+}) => {
   const [post, setPost] = useState(posts);
   const {user} = useContext(UserContext);
-  const [isLoading, setIsLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [reaction, setReaction] = useState(false);
@@ -57,6 +64,44 @@ const AllPostsSearch = ({navigation, posts, listUserSearch}) => {
   const [editPostsItemAccount, setEditPostsItemAccount] = useState(null);
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(isLoading);
+  const [checkGui, setcheckGui] = useState(false);
+  const [checkNhan, setcheckNhan] = useState(false);
+  const [friendActionCounter, setFriendActionCounter] = useState(0);
+
+  // console.log('listUserSearch', listUserSearch);
+
+  useEffect(() => {
+    if (friendActionCounter > 0) {
+      fetchFriendInvitations();
+    }
+  }, [friendActionCounter]);
+
+  const handleFriendAction = async item => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+
+      const response = await AxiosInstance().post(
+        '/friend/send-friend-request',
+        {
+          idFriendSender: userId,
+          idFriendReceiver: item._id,
+        },
+      );
+
+      if (response && response.success) {
+        // Cập nhật lại thuộc tính checkGui của user sau khi gửi yêu cầu kết bạn thành công
+
+        setFriendActionCounter(prevCounter => prevCounter + 1);
+        setcheckGui(true);
+      } else if (response && !response.success) {
+        console.error('Lỗi khi gửi yêu cầu kết bạn:', response.message);
+        c;
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
+    }
+  };
 
   const handleLike = async idPosts => {
     try {
@@ -91,9 +136,9 @@ const AllPostsSearch = ({navigation, posts, listUserSearch}) => {
   };
 
   const onRefresh = useCallback(async () => {
-    setIsLoading(true);
+    setLoading(true);
     await getPostsAll();
-    setIsLoading(false);
+    setLoading(false);
   }, []);
 
   const isUserReacted = (reactions, userId) => {
@@ -300,8 +345,8 @@ const AllPostsSearch = ({navigation, posts, listUserSearch}) => {
     };
   }, []);
 
-  return isLoading ? (
-    <LoadingScreen />
+  return loading ? (
+    <ActivityIndicator size="small" color="#22b6c0" />
   ) : (
     <ScrollView
       style={styles.T}
@@ -309,417 +354,492 @@ const AllPostsSearch = ({navigation, posts, listUserSearch}) => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
-      {/* Mọi người */}
-      <View style={stylesIn.people_container}>
-        {listUserSearch !== undefined ? (
-          <>
-            <Text style={stylesIn.textBoldPeople}>Mọi người</Text>
-            {listUserSearch.map((user, index) => (
-              <View key={index} style={stylesIn.container_avatar_name}>
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('OtherUserA', {
-                      accountzzz: user,
-                    })
-                  }>
-                  <Image source={{uri: user.avatar}} style={stylesIn.avatar} />
-                </TouchableOpacity>
-                <View style={{width: '80%'}}>
-                  <View style={stylesIn.avatar_name}>
-                    <View>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="#22b6c0" />
+      ) : (
+        <>
+          {/* Mọi người */}
+          <View style={stylesIn.people_container}>
+            {showListHistorySearch !== undefined ? (
+              <>
+                <Text style={stylesIn.textBoldPeople}>Mọi người</Text>
+                <>
+                  {updatedListUserSearch.map((user, index) => (
+                    <View key={index} style={stylesIn.container_avatar_name}>
                       <TouchableOpacity
                         onPress={() =>
-                          navigation.navigate('OtherUserA', {
+                          navigation.navigate('OtherUserA2', {
                             accountzzz: user,
                           })
                         }>
-                        <Text style={stylesIn.name}>{user.name}</Text>
+                        <Image
+                          source={{uri: user.avatar}}
+                          style={stylesIn.avatar}
+                        />
                       </TouchableOpacity>
-                      <View style={styles.container_object}>
-                        <Text style={stylesIn.lengthChung}>2 bạn chung</Text>
-                      </View>
-                    </View>
-                  </View>
-                  {/* Nút thêm bạn bè */}
-                  <TouchableOpacity style={stylesIn.btnAddFriend}>
-                    <Image
-                      style={stylesIn.imgAddFriend}
-                      source={require('../../../../../../assets/icon_add_friends.png')}
-                    />
-                    <Text style={stylesIn.textIntroduce}>Thêm bạn bè</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))}
-          </>
-        ) : null}
-      </View>
-      {/* Bài viết */}
-      <Text style={[stylesIn.textBoldPeople, {paddingTop: 10}]}>Bài viết</Text>
-      <FlatList
-        data={post}
-        scrollEnabled={false}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={item => item._id}
-        renderItem={({item}) => (
-          <View>
-            {/* header */}
-            <View style={styles.container_avatar_name}>
-              <View style={styles.avatar_name}>
-                {item.idUsers._id !== user.user._id ? (
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('OtherUserA', {
-                        account: item,
-                      })
-                    }>
-                    <Image
-                      source={{uri: item.idUsers?.avatar}}
-                      style={styles.avatar}
-                    />
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('Profile', {
-                        account: item,
-                      })
-                    }>
-                    <Image
-                      source={{uri: item.idUsers?.avatar}}
-                      style={styles.avatar}
-                    />
-                  </TouchableOpacity>
-                )}
-                <View>
-                  {item.idUsers._id !== user.user._id ? (
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate('OtherUserA', {
-                          account: item,
-                        })
-                      }>
-                      <Text style={styles.name}>{item.idUsers?.name}</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate('Profile', {
-                          account: item,
-                        })
-                      }>
-                      <Text style={styles.name}>{item.idUsers?.name}</Text>
-                    </TouchableOpacity>
-                  )}
-                  <View style={styles.container_object}>
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate('CommentsScreen', {
-                          postId: item,
-                        })
-                      }>
-                      <Text style={styles.time}>
-                        {formatTime(item.createAt)}
-                      </Text>
-                    </TouchableOpacity>
-                    <Text style={{paddingLeft: 5, fontSize: 6}}>●</Text>
-                    <TouchableOpacity>
-                      {item.idObject ? changeIdObject(item.idObject) : null}
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              {item.idUsers._id !== user.user._id ? (
-                <TouchableOpacity
-                  onPress={() => handleModalEditPostsGuest(item)}>
-                  <Entypo
-                    name="dots-three-horizontal"
-                    size={18}
-                    color="#666666"
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => handleModalEditPostsAccount(item)}>
-                  <Entypo
-                    name="dots-three-horizontal"
-                    size={18}
-                    color="#666666"
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
-            {/* content */}
-            {item.content === '' ? (
-              <></>
-            ) : (
-              <View style={styles.baiVietContent}>
-                {showMore ? (
-                  <Text style={styles.content}>{item.content}</Text>
-                ) : (
-                  <Text style={styles.content}>
-                    {item.content?.slice(0, 100)}
-                  </Text>
-                )}
-                {/* Toggle button */}
-                {item.content && item.content.length > 100 && (
-                  <TouchableOpacity
-                    style={styles.showMore}
-                    onPress={handleShowMore}>
-                    <Text style={{color: 'blue'}}>
-                      {showMore ? 'Ẩn' : 'Xem thêm'}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            )}
-
-            {/* media */}
-            {item.media.length > 0 ? (
-              <View style={styles.container_media}>
-                <Swiper
-                  style={styles.swiper}
-                  showsButtons={false}
-                  loop={false}
-                  paginationStyle={{bottom: 10}}
-                  activeDotColor="#22b6c0"
-                  onIndexChanged={index => setActiveSlide(index)}>
-                  {item.media?.map((media, index) => (
-                    <View key={media._id}>
-                      {media.type === 'image' ? (
-                        <>
-                          <Image
-                            source={{uri: media.url.join()}}
-                            style={styles.posts}
-                          />
-                        </>
-                      ) : (
-                        <VideoPlayer
-                          video={{uri: media.url[0]}}
-                          videoWidth={1600}
-                          videoHeight={900}
-                          thumbnail={require('../../../../../../assets/play_96px.png')}
-                          // autoplay={true}
-                          style={styles.posts}
-                        />
-                      )}
-                      <View style={styles.imageCountContainer}>
-                        <Text style={styles.imageCountText}>
-                          {index + 1}/{item.media.length}
-                        </Text>
+                      <View style={{width: '80%'}}>
+                        <View style={stylesIn.avatar_name}>
+                          <View>
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate('OtherUserA2', {
+                                  accountzzz: user,
+                                })
+                              }>
+                              <Text style={stylesIn.name}>{user.name}</Text>
+                            </TouchableOpacity>
+                            <View style={styles.container_object}>
+                              <Text style={stylesIn.lengthChung}>
+                                2 bạn chung
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                        {/* Nút thêm bạn bè */}
+                        {!user.CheckGui && !user.CheckNhan ? (
+                          <TouchableOpacity
+                            style={stylesIn.btnAddFriend}
+                            onPress={handleFriendAction}>
+                            <Image
+                              style={stylesIn.imgAddFriend}
+                              source={require('../../../../../../assets/icon_add_friends.png')}
+                            />
+                            <Text style={styles.textIntroduce}>
+                              Thêm bạn bè
+                            </Text>
+                          </TouchableOpacity>
+                        ) : user.CheckGui ? (
+                          <TouchableOpacity
+                            style={stylesIn.btnAddFriend}
+                            onPress={handleFriendAction}>
+                            <Image
+                              style={stylesIn.imgAddFriend}
+                              source={require('../../../../../../assets/icon_add_friends.png')}
+                            />
+                            <Text style={styles.textIntroduce}>Thu hồi</Text>
+                          </TouchableOpacity>
+                        ) : user.CheckNhan ? (
+                          <TouchableOpacity
+                            style={stylesIn.btnAddFriend}
+                            onPress={handleFriendAction}>
+                            <Image
+                              style={stylesIn.imgAddFriend}
+                              source={require('../../../../../../assets/icon_add_friends.png')}
+                            />
+                            <Text style={styles.textIntroduce}>Đòng ý</Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            style={stylesIn.btnAddFriend}
+                            onPress={handleFriendAction}>
+                            <Image
+                              style={stylesIn.imgAddFriend}
+                              source={require('../../../../../../assets/icon_add_friends.png')}
+                            />
+                            <Text style={styles.textIntroduce}>
+                              Thêm bạn bè
+                            </Text>
+                          </TouchableOpacity>
+                        )}
                       </View>
                     </View>
                   ))}
-                </Swiper>
-              </View>
+                </>
+              </>
             ) : (
-              <View style={{height: 0}} />
+              <Text style={stylesIn.textBoldPeople}>Không có người dùng</Text>
             )}
-
-            {/* feeling */}
-            {item.reaction.length > 0 ||
-            item.comment.length > 0 ||
-            item.share.length > 0 ? (
-              <View style={styles.container_feeling_commnet_share}>
-                {/* feeling */}
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('CommentsScreen', {
-                      postId: item,
-                    })
-                  }
-                  style={styles.container_feeling}>
-                  {getUniqueReactions(item.reaction).map((reaction, index) => (
-                    <View
-                      key={index}
-                      style={[
-                        styles.feeling,
-                        {
-                          marginLeft: index === 0,
-                        },
-                      ]}>
-                      {index < 2 && (
-                        <Image
-                          style={[
-                            reaction.type === 'Haha' ||
-                            reaction.type === 'Wow' ||
-                            reaction.type === 'Buồn' ||
-                            reaction.type === 'Tức giận'
-                              ? {width: 22, height: 22}
-                              : styles.icon_Like_Feeling,
-                            ,
-                          ]}
-                          source={getFeelingIcon(reaction.type)}
-                        />
-                      )}
-                    </View>
-                  ))}
-
-                  {item.reaction.length === 0 ? (
-                    <Text />
-                  ) : (
-                    <>
-                      {item.reaction.length <= 2 ? (
-                        <Text style={styles.text_feeling}>
-                          {item.reaction.length}
-                        </Text>
-                      ) : (
-                        <Text style={styles.text_feeling2}>
-                          {item.reaction.length}
-                        </Text>
-                      )}
-                    </>
-                  )}
-                </TouchableOpacity>
-
-                {/* comment vs share */}
-                <View style={styles.comment_share}>
-                  {/* comment */}
-                  {item.comment.length > 0 ? (
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate('CommentsScreen', {
-                          postId: item,
-                        })
-                      }
-                      style={styles.container_comment}>
-                      <Text style={styles.text_comment}>
-                        {item.comment.length}
-                      </Text>
-                      <Text style={[styles.text_comment, {paddingLeft: 5}]}>
-                        Bình luận
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <View style={{height: 0}} />
-                  )}
-                  {/* share */}
-                  {item.share.length > 0 ? (
-                    <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate('CommentsScreen', {
-                          postId: item,
-                        })
-                      }
-                      style={styles.container_share}>
-                      <Text style={styles.text_share}>{item.share.length}</Text>
-                      <Text style={[styles.text_share, {paddingLeft: 5}]}>
-                        Chia sẻ
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <View style={{height: 0}} />
-                  )}
-                </View>
-              </View>
-            ) : (
-              <View style={{height: 0}} />
-            )}
-
-            {/* line */}
-            <Text style={styles.linePosts} />
-            {/* like comment share 2 */}
-            <View style={styles.container_like_comment_share}>
-              {/* like */}
-              <TouchableOpacity
-                style={styles.like_post}
-                onPress={() => handleLike(item._id)}
-                onLongPress={() =>
-                  handleReaction.current.handleLongPress(item._id)
-                }>
-                {console.log(
-                  '>>>>>>>>>>>. item.isUserReacted',
-                  isUserReacted(item.reaction, user.user._id),
-                )}
-                {isUserReacted(item.reaction, user.user._id) ? (
-                  <>
-                    {item.reaction
-                      .filter(
-                        reaction => reaction.idUsers._id === user.user._id,
-                      )
-                      .map(reaction => (
-                        <Image
-                          key={reaction.type}
-                          source={getFeelingIcon(reaction.type)}
-                          style={styles.feelingIcon}
-                        />
-                      ))}
-                    <Text
-                      style={[
-                        styles.text_like_post,
-                        {
-                          color: ColorTextLikePost(
-                            item.reaction.find(
-                              reaction =>
-                                reaction.idUsers._id === user.user._id,
-                            ).type,
-                          ),
-                        },
-                      ]}>
-                      {item.reaction
-                        .filter(
-                          reaction => reaction.idUsers._id === user.user._id,
-                        )
-                        .map(reaction => reaction.type)}
-                    </Text>
-                  </>
-                ) : (
-                  <>
-                    <AntDesign name="like2" size={20} color="#666666" />
-                    <Text style={[styles.text_like_post, {color: '#666666'}]}>
-                      Thích
-                    </Text>
-                  </>
-                )}
-              </TouchableOpacity>
-
-              {selectedPostId === item._id && reaction && (
-                <View style={styles.container_reaction}>
-                  <CustomReaction
-                    reactions={reactions}
-                    clone={handleReaction.current.handlePressOut}
-                    posts={item}
-                  />
-                </View>
-              )}
-
-              {/* comment */}
-              <TouchableOpacity
-                style={styles.like_post}
-                onPress={() =>
-                  navigation.navigate('CommentsScreen', {
-                    postId: item,
-                  })
-                }>
-                <MaterialCommunityIcons
-                  name="comment-outline"
-                  size={20}
-                  color="#666666"
-                />
-                <Text style={styles.text_like_post}>Bình luận</Text>
-              </TouchableOpacity>
-              {/* share */}
-              <TouchableOpacity
-                style={styles.like_post}
-                onPress={() => handleShare(item)}>
-                <MaterialCommunityIcons
-                  name="share-outline"
-                  size={23}
-                  color="#666"
-                />
-                <Text style={styles.text_like_post}>Chia sẻ</Text>
-              </TouchableOpacity>
-            </View>
-            {/* line */}
-            <Text style={styles.linePostsEnd} />
           </View>
-        )}
-        initialNumToRender={5}
-        maxToRenderPerBatch={5}
-        updateCellsBatchingPeriod={3000}
-        removeClippedSubviews={true}
-        onEndReachedThreshold={0.5}
-      />
+          {listUserSearch !== undefined ? (
+            <>
+              {/* Bài viết */}
+              <Text style={[stylesIn.textBoldPeople, {paddingTop: 10}]}>
+                Bài viết
+              </Text>
+              <FlatList
+                data={posts}
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={item => item._id}
+                renderItem={({item}) => (
+                  <View>
+                    {/* header */}
+                    <View style={styles.container_avatar_name}>
+                      <View style={styles.avatar_name}>
+                        {item.idUsers._id !== user.user._id ? (
+                          <TouchableOpacity
+                            onPress={() =>
+                              navigation.navigate('OtherUserA', {
+                                account: item,
+                              })
+                            }>
+                            <Image
+                              source={{uri: item.idUsers?.avatar}}
+                              style={styles.avatar}
+                            />
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() =>
+                              navigation.navigate('Profile', {
+                                account: item,
+                              })
+                            }>
+                            <Image
+                              source={{uri: item.idUsers?.avatar}}
+                              style={styles.avatar}
+                            />
+                          </TouchableOpacity>
+                        )}
+                        <View>
+                          {item.idUsers._id !== user.user._id ? (
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate('OtherUserA', {
+                                  account: item,
+                                })
+                              }>
+                              <Text style={styles.name}>
+                                {item.idUsers?.name}
+                              </Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate('Profile', {
+                                  account: item,
+                                })
+                              }>
+                              <Text style={styles.name}>
+                                {item.idUsers?.name}
+                              </Text>
+                            </TouchableOpacity>
+                          )}
+                          <View style={styles.container_object}>
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate('CommentsScreen', {
+                                  postId: item,
+                                })
+                              }>
+                              <Text style={styles.time}>
+                                {formatTime(item.createAt)}
+                              </Text>
+                            </TouchableOpacity>
+                            <Text style={{paddingLeft: 5, fontSize: 6}}>●</Text>
+                            <TouchableOpacity>
+                              {item.idObject
+                                ? changeIdObject(item.idObject)
+                                : null}
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </View>
+                      {item.idUsers._id !== user.user._id ? (
+                        <TouchableOpacity
+                          onPress={() => handleModalEditPostsGuest(item)}>
+                          <Entypo
+                            name="dots-three-horizontal"
+                            size={18}
+                            color="#666666"
+                          />
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity
+                          onPress={() => handleModalEditPostsAccount(item)}>
+                          <Entypo
+                            name="dots-three-horizontal"
+                            size={18}
+                            color="#666666"
+                          />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                    {/* content */}
+                    {item.content === '' ? (
+                      <></>
+                    ) : (
+                      <View style={styles.baiVietContent}>
+                        {showMore ? (
+                          <Text style={styles.content}>{item.content}</Text>
+                        ) : (
+                          <Text style={styles.content}>
+                            {item.content?.slice(0, 100)}
+                          </Text>
+                        )}
+                        {/* Toggle button */}
+                        {item.content && item.content.length > 100 && (
+                          <TouchableOpacity
+                            style={styles.showMore}
+                            onPress={handleShowMore}>
+                            <Text style={{color: 'blue'}}>
+                              {showMore ? 'Ẩn' : 'Xem thêm'}
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    )}
+
+                    {/* media */}
+                    {item.media.length > 0 ? (
+                      <View style={styles.container_media}>
+                        <Swiper
+                          style={styles.swiper}
+                          showsButtons={false}
+                          loop={false}
+                          paginationStyle={{bottom: 10}}
+                          activeDotColor="#22b6c0"
+                          onIndexChanged={index => setActiveSlide(index)}>
+                          {item.media?.map((media, index) => (
+                            <View key={media._id}>
+                              {media.type === 'image' ? (
+                                <>
+                                  <Image
+                                    source={{uri: media.url.join()}}
+                                    style={styles.posts}
+                                  />
+                                </>
+                              ) : (
+                                <VideoPlayer
+                                  video={{uri: media.url[0]}}
+                                  videoWidth={1600}
+                                  videoHeight={900}
+                                  thumbnail={require('../../../../../../assets/play_96px.png')}
+                                  // autoplay={true}
+                                  style={styles.posts}
+                                />
+                              )}
+                              <View style={styles.imageCountContainer}>
+                                <Text style={styles.imageCountText}>
+                                  {index + 1}/{item.media.length}
+                                </Text>
+                              </View>
+                            </View>
+                          ))}
+                        </Swiper>
+                      </View>
+                    ) : (
+                      <View style={{height: 0}} />
+                    )}
+
+                    {/* feeling */}
+                    {item.reaction.length > 0 ||
+                    item.comment.length > 0 ||
+                    item.share.length > 0 ? (
+                      <View style={styles.container_feeling_commnet_share}>
+                        {/* feeling */}
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate('CommentsScreen', {
+                              postId: item,
+                            })
+                          }
+                          style={styles.container_feeling}>
+                          {getUniqueReactions(item.reaction).map(
+                            (reaction, index) => (
+                              <View
+                                key={index}
+                                style={[
+                                  styles.feeling,
+                                  {
+                                    marginLeft: index === 0,
+                                  },
+                                ]}>
+                                {index < 2 && (
+                                  <Image
+                                    style={[
+                                      reaction.type === 'Haha' ||
+                                      reaction.type === 'Wow' ||
+                                      reaction.type === 'Buồn' ||
+                                      reaction.type === 'Tức giận'
+                                        ? {width: 22, height: 22}
+                                        : styles.icon_Like_Feeling,
+                                      ,
+                                    ]}
+                                    source={getFeelingIcon(reaction.type)}
+                                  />
+                                )}
+                              </View>
+                            ),
+                          )}
+
+                          {item.reaction.length === 0 ? (
+                            <Text />
+                          ) : (
+                            <>
+                              {item.reaction.length <= 2 ? (
+                                <Text style={styles.text_feeling}>
+                                  {item.reaction.length}
+                                </Text>
+                              ) : (
+                                <Text style={styles.text_feeling2}>
+                                  {item.reaction.length}
+                                </Text>
+                              )}
+                            </>
+                          )}
+                        </TouchableOpacity>
+
+                        {/* comment vs share */}
+                        <View style={styles.comment_share}>
+                          {/* comment */}
+                          {item.comment.length > 0 ? (
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate('CommentsScreen', {
+                                  postId: item,
+                                })
+                              }
+                              style={styles.container_comment}>
+                              <Text style={styles.text_comment}>
+                                {item.comment.length}
+                              </Text>
+                              <Text
+                                style={[styles.text_comment, {paddingLeft: 5}]}>
+                                Bình luận
+                              </Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <View style={{height: 0}} />
+                          )}
+                          {/* share */}
+                          {item.share.length > 0 ? (
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate('CommentsScreen', {
+                                  postId: item,
+                                })
+                              }
+                              style={styles.container_share}>
+                              <Text style={styles.text_share}>
+                                {item.share.length}
+                              </Text>
+                              <Text
+                                style={[styles.text_share, {paddingLeft: 5}]}>
+                                Chia sẻ
+                              </Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <View style={{height: 0}} />
+                          )}
+                        </View>
+                      </View>
+                    ) : (
+                      <View style={{height: 0}} />
+                    )}
+
+                    {/* line */}
+                    <Text style={styles.linePosts} />
+                    {/* like comment share 2 */}
+                    <View style={styles.container_like_comment_share}>
+                      {/* like */}
+                      <TouchableOpacity
+                        style={styles.like_post}
+                        onPress={() => handleLike(item._id)}
+                        onLongPress={() =>
+                          handleReaction.current.handleLongPress(item._id)
+                        }>
+                        {isUserReacted(item.reaction, user.user._id) ? (
+                          <>
+                            {item.reaction
+                              .filter(
+                                reaction =>
+                                  reaction.idUsers._id === user.user._id,
+                              )
+                              .map(reaction => (
+                                <Image
+                                  key={reaction.type}
+                                  source={getFeelingIcon(reaction.type)}
+                                  style={styles.feelingIcon}
+                                />
+                              ))}
+                            <Text
+                              style={[
+                                styles.text_like_post,
+                                {
+                                  color: ColorTextLikePost(
+                                    item.reaction.find(
+                                      reaction =>
+                                        reaction.idUsers._id === user.user._id,
+                                    ).type,
+                                  ),
+                                },
+                              ]}>
+                              {item.reaction
+                                .filter(
+                                  reaction =>
+                                    reaction.idUsers._id === user.user._id,
+                                )
+                                .map(reaction => reaction.type)}
+                            </Text>
+                          </>
+                        ) : (
+                          <>
+                            <AntDesign name="like2" size={20} color="#666666" />
+                            <Text
+                              style={[
+                                styles.text_like_post,
+                                {color: '#666666'},
+                              ]}>
+                              Thích
+                            </Text>
+                          </>
+                        )}
+                      </TouchableOpacity>
+
+                      {selectedPostId === item._id && reaction && (
+                        <View style={styles.container_reaction}>
+                          <CustomReaction
+                            reactions={reactions}
+                            clone={handleReaction.current.handlePressOut}
+                            posts={item}
+                          />
+                        </View>
+                      )}
+
+                      {/* comment */}
+                      <TouchableOpacity
+                        style={styles.like_post}
+                        onPress={() =>
+                          navigation.navigate('CommentsScreen', {
+                            postId: item,
+                          })
+                        }>
+                        <MaterialCommunityIcons
+                          name="comment-outline"
+                          size={20}
+                          color="#666666"
+                        />
+                        <Text style={styles.text_like_post}>Bình luận</Text>
+                      </TouchableOpacity>
+                      {/* share */}
+                      <TouchableOpacity
+                        style={styles.like_post}
+                        onPress={() => handleShare(item)}>
+                        <MaterialCommunityIcons
+                          name="share-outline"
+                          size={23}
+                          color="#666"
+                        />
+                        <Text style={styles.text_like_post}>Chia sẻ</Text>
+                      </TouchableOpacity>
+                    </View>
+                    {/* line */}
+                    <Text style={styles.linePostsEnd} />
+                  </View>
+                )}
+                initialNumToRender={5}
+                maxToRenderPerBatch={5}
+                updateCellsBatchingPeriod={3000}
+                removeClippedSubviews={true}
+                onEndReachedThreshold={0.5}
+              />
+            </>
+          ) : (
+            <Text style={stylesIn.textBoldPeople}>Không có bài viết</Text>
+          )}
+        </>
+      )}
       <Modal
         animationType="slide"
         transparent={true}

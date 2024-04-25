@@ -26,6 +26,20 @@ export const getPosts = async idUsers => {
   }
 };
 
+// loading lại bài viết theo idPosts
+export const getPostsReload = async idPosts => {
+  try {
+    const response = await AxiosInstance().get(
+      `/posts/reload-posts/${idPosts}`,
+    );
+    // console.log('get post >>>>>>>>>>>>>>> Service GetPosts 8 ', response);
+    return response;
+  } catch (error) {
+    console.error(' >>>>>>>>> Error fetching posts: 11 s', error);
+    throw error;
+  }
+};
+
 // Lấy chi tiết bài viết theo idPosts
 export const getPostsDetail = async idPosts => {
   try {
@@ -68,9 +82,23 @@ export const getMedia = async idPosts => {
 // Lấy số lượng share
 export const getShare = async idPosts => {
   try {
-    const response = await AxiosInstance().get(`/posts/get-share/${idPosts}`);
+    const response = await AxiosInstance().get(`/share/get-share/${idPosts}`);
     // console.log('get post >>>>>>>>>>>>>>> Service getShare 8 ', response);
-    return response;
+    return response.shares;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi get: 35555555 getShares', error);
+    throw error;
+  }
+};
+
+// Lấy số lượng chia sẻ của bài viết dựa trên idPosts và idUsers
+export const getShareDetailObject = async (idPosts, idUsers) => {
+  try {
+    const response = await AxiosInstance().get(
+      `/share/get-share-object/${idPosts}/${idUsers}`,
+    );
+    // console.log('get post >>>>>>>>>>>>>>> Service getShare 8 ', response);
+    return response.shares;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi get: 35555555 getShares', error);
     throw error;
@@ -569,6 +597,33 @@ export const getSavedIdUserTPosts = async idUsers => {
     return response;
   } catch (error) {
     console.error(' >>>>>>>>> Lỗi getSavedPostsId : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Chia sẻ bài viết
+export const sharePost = async detailShare => {
+  try {
+    const response = await AxiosInstance().post(
+      `/share/share-post`,
+      detailShare,
+    );
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response);
+    return response.share;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi sharePost : 11 s', error.response);
+    throw error;
+  }
+};
+
+// Lấy danh sách các bài viết đã chia sẻ dựa trên idUsers
+export const getSharedPosts = async idUsers => {
+  try {
+    const response = await AxiosInstance().get(`/share/get-shared/${idUsers}`);
+    // console.log('like post >>>>>>>>>>>>>>> 20 ', response.sharedPosts);
+    return response.sharedPosts;
+  } catch (error) {
+    console.error(' >>>>>>>>> Lỗi getSharedPosts : 11 s', error.response);
     throw error;
   }
 };

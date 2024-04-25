@@ -2,12 +2,11 @@ import { View, Text, Image, TouchableOpacity, Alert, TextInput, ActivityIndicato
 import React, { useState, useContext, useEffect } from 'react'
 import { styles } from './StyleFgPw'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import AxiosInstance from '../../../helper/Axiosinstance'
+
 import { forgetPassword } from '../../../services/user/userService'
 import { useTranslation } from 'react-i18next';
 
 const ForgetPassword = ({ navigation }) => {
-    // const { navigation } = props;
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const { t, i18n } = useTranslation();
@@ -20,19 +19,24 @@ const ForgetPassword = ({ navigation }) => {
         setLoading(true);
         try {
             const res = await forgetPassword(email);
-            if (res.status === 1) {
+            if (res.success) {
                 Alert.alert('Success', 'OTP code sent to email');
                 setEmail('');
                 navigation.navigate('CheckOTP', { email: email });
             } else {
-                Alert.alert('Error', res.message);
+                if (res.message === "Email không tồn tại trong hệ thống") {
+                    Alert.alert('Error', 'Email không tồn tại trong hệ thống');
+                } else {
+                    Alert.alert('Error', 'An error occurred. Please try again later.');
+                }
             }
         } catch (error) {
             console.log('ForgetPassword error: ', error);
             Alert.alert('Error', 'An error occurred. Please try again later.');
+        } finally {
+            setLoading(false);
         }
     };
-
     return (
         <View style={styles.body}>
             <TouchableOpacity>

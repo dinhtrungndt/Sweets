@@ -14,14 +14,114 @@ import GroupSearch from '../group';
 import PageSearch from '../page';
 import ReelsSearch from '../reels';
 import {TouchableOpacity} from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import {
+  getComments,
+  getMedia,
+  getPostsAll,
+  getReaction,
+  getShare,
+} from '../../../../../../services/home/homeService';
+import {LoadingScreen} from '../../../../../../utils/loading';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AxiosInstance from '../../../../../../helper/Axiosinstance';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
 export default function AllTopTabSearch({navigation, route}) {
-  const {searchText, listUserSearch, posts} = route?.params;
-  // console.log('>>>>>>>>>>>>> searchText', searchText);
-  // console.log('>>>>>>>>>>>>> listUserSearch', listUserSearch);
+  const {searchText, listUserSearch, showListHistorySearch} = route?.params;
+  // console.log('>>>>>>>>>>>>> posts', posts);
+  const [post, setPost] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [updatedListUserSearch, setUpdatedListUserSearch] = useState([]);
+
+  const onGetPosts = async () => {
+    setIsLoading(true);
+    const res = await getPostsAll();
+    const postsWithMedia = (
+      await Promise.all(
+        res.map(async post => {
+          const mediaResponse = await getMedia(post._id);
+          const media = mediaResponse;
+
+          const reactionResponse = await getReaction(post._id);
+          const reaction = reactionResponse;
+
+          const commentResponse = await getComments(post._id);
+          const comment = commentResponse;
+
+          const shareResponse = await getShare(post._id);
+          const share = shareResponse;
+
+          // console.log('>>>>>>>>>>>>>>> likedByCurrentUser', likedByCurrentUser);
+          return {
+            ...post,
+            media,
+            reaction,
+            comment,
+            share,
+          };
+        }),
+      )
+    ).filter(
+      post =>
+        post.content.toLowerCase().includes(searchText.toLowerCase()) ||
+        post.idUsers.name.toLowerCase().includes(searchText.toLowerCase()),
+    );
+    setPost(postsWithMedia);
+    setIsLoading(false);
+  };
+
+  const fetchFriendInvitations = async () => {
+    try {
+      setIsLoading(true);
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await AxiosInstance().get(
+        `/friend/friend-requests-sent/${userId}`,
+      );
+      const response2 = await AxiosInstance().get(
+        `/friend/friend-requests/${userId}`,
+      );
+      if (response.success) {
+        // console.log('Kết quả lời mời đã gửi', response.friendRequestsSent);
+        const invitations = response.friendRequestsSent; //mảng đã gửi
+        const updatedList = listUserSearch.map(user => {
+          const isInvited = invitations.some(
+            invitation => invitation.idFriendReceiver === user._id,
+          );
+          return {
+            ...user,
+            CheckGui: isInvited, // Kiểm tra xem user có trong danh sách lời mời gửi không
+            CheckNhan: false, // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        });
+        const invitations2 = response2.friendRequests;
+        const updatedList2 = updatedList.map(user => {
+          const isInvited = invitations2.some(
+            invitation => invitation.idFriendSender === user._id,
+          );
+          return {
+            ...user,
+
+            CheckNhan: isInvited, // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        });
+        setUpdatedListUserSearch(updatedList2);
+        // console.log('mảng 3', updatedList2);
+        setIsLoading(false);
+      } else {
+        console.log('No friend invitations found.');
+      }
+    } catch (error) {
+      console.error('Error fetching friend invitations:', error);
+    }
+  };
+  // console.log('updatedListUserSearch', updatedListUserSearch);
+
+  useEffect(() => {
+    onGetPosts();
+    fetchFriendInvitations();
+  }, []);
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -37,17 +137,54 @@ export default function AllTopTabSearch({navigation, route}) {
     AllPostsSearch: () => (
       <AllPostsSearch
         listUserSearch={listUserSearch}
-        posts={posts}
+        posts={post}
         navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+        updatedListUserSearch={updatedListUserSearch}
+        isLoading={isLoading}
       />
     ),
-    PostsSearch: () => <PostsSearch posts={posts} navigation={navigation} />,
-    PeopleSearch: () => (
-      <PeopleSearch listUserSearch={listUserSearch} navigation={navigation} />
+    PostsSearch: () => (
+      <PostsSearch
+        listUserSearch={listUserSearch}
+        posts={post}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+        isLoading={isLoading}
+      />
     ),
-    ReelsSearch: () => <ReelsSearch posts={posts} navigation={navigation} />,
-    GroupSearch: () => <GroupSearch posts={posts} navigation={navigation} />,
-    PageSearch: () => <PageSearch posts={posts} navigation={navigation} />,
+    PeopleSearch: () => (
+      <PeopleSearch
+        listUserSearch={listUserSearch}
+        posts={post}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+      />
+    ),
+    ReelsSearch: () => (
+      <ReelsSearch
+        listUserSearch={listUserSearch}
+        posts={post}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+      />
+    ),
+    GroupSearch: () => (
+      <GroupSearch
+        listUserSearch={listUserSearch}
+        posts={post}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+      />
+    ),
+    PageSearch: () => (
+      <PageSearch
+        listUserSearch={listUserSearch}
+        posts={post}
+        navigation={navigation}
+        showListHistorySearch={showListHistorySearch}
+      />
+    ),
   });
 
   return (

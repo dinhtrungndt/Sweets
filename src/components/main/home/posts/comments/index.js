@@ -74,6 +74,7 @@ import Share from 'react-native-share';
 import ModalEditPostsAccount from '../editPosts/account';
 import ModalEditPostsGuest from '../editPosts/guest';
 import DialogDeletePosts from 'react-native-dialog';
+import ModalShare from '../share';
 
 const CommentsScreen = ({navigation, route}) => {
   const {postId} = route.params;
@@ -114,6 +115,8 @@ const CommentsScreen = ({navigation, route}) => {
   const [idComments, setIdComments] = useState(null);
   const [detailPosts, setDetailPosts] = useState(null);
   const numColumns = 4;
+  const [showModalShare, setShowModalShare] = useState(false);
+  const [itemModalShare, setItemModalShare] = useState(null);
 
   // console.log('>>>>>>>>> parentUserName parentUserName', parentUserName);
   // console.log('>>>>>>>>> comments comments', comments);
@@ -179,6 +182,11 @@ const CommentsScreen = ({navigation, route}) => {
   //     console.log('Lỗi khi lấy danh sách liked comments', error);
   //   }
   // };
+
+  const handleShareModal = item => {
+    setItemModalShare(item);
+    setShowModalShare(true);
+  };
 
   const handleLikeComments = async idComments => {
     try {
@@ -586,20 +594,6 @@ const CommentsScreen = ({navigation, route}) => {
   const handleShowMoreImageList = image => {
     setImageImageShowMore(image);
     setShowMoreImage(true);
-  };
-
-  const handleShare = async item => {
-    try {
-      const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
-      const shareOptions = {
-        title: 'Share',
-        message: 'Chia sẻ bài viết này!',
-        url: deepLink,
-      };
-      await Share.open(shareOptions);
-    } catch (error) {
-      console.log('Lỗi chia sẻ nè:', error);
-    }
   };
 
   useEffect(() => {
@@ -1140,7 +1134,7 @@ const CommentsScreen = ({navigation, route}) => {
                 {/* share */}
                 <TouchableOpacity
                   style={styles.like_post}
-                  onPress={() => handleShare(item)}>
+                  onPress={() => handleShareModal(item)}>
                   <MaterialCommunityIcons
                     name="share-outline"
                     size={23}
@@ -2333,6 +2327,23 @@ const CommentsScreen = ({navigation, route}) => {
             activeOpacity={1}
             onPressOut={() => setModalEditPostsGuest(false)}>
             <ModalEditPostsGuest editPostsItemGuest={editPostsItemGuest} />
+          </TouchableOpacity>
+        </Modal>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showModalShare}
+          onRequestClose={() => {}}>
+          <TouchableOpacity
+            style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+            activeOpacity={1}
+            onPressOut={() => setShowModalShare(false)}>
+            <ModalShare
+              itemModalShare={itemModalShare}
+              cancel={() => setShowModalShare(false)}
+              navigation={navigation}
+              reloadPosts={reloadPosts}
+            />
           </TouchableOpacity>
         </Modal>
 

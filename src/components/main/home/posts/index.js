@@ -26,12 +26,14 @@ import VideoPlayer from 'react-native-video-player';
 import {UserContext} from '../../../../contexts/user/userContext';
 import {
   deletePostsAccount,
+  getBackgroundColor,
   getComments,
   getMedia,
   getPosts,
   getPostsBirthday,
   getReaction,
   getShare,
+  getShareDetailObject,
   likeByPost,
 } from '../../../../services/home/homeService';
 import ModalEditPostsAccount from './editPosts/account';
@@ -39,6 +41,7 @@ import ModalEditPostsGuest from './editPosts/guest';
 import Share from 'react-native-share';
 import {useLinkTo} from '@react-navigation/native';
 import linking from '../../../../utils/linking';
+import ModalShare from './share';
 
 const PostsScreen = ({posts, navigation}) => {
   const [showMore, setShowMore] = useState(false);
@@ -52,11 +55,8 @@ const PostsScreen = ({posts, navigation}) => {
   const [editPostsItemGuest, setEditPostsItemGuest] = useState(null);
   const [post, setPost] = useState(posts);
   const [showLengthMedia, setShowLengthMedia] = useState(true);
-
-  // console.log(
-  //   'posts:',
-  //   post.map(item => item.location),
-  // );
+  const [showModalShare, setShowModalShare] = useState(false);
+  const [itemModalShare, setItemModalShare] = useState(null);
 
   const isUserReacted = (reactions, userId) => {
     return reactions.some(reaction => reaction.idUsers._id === userId);
@@ -65,33 +65,42 @@ const PostsScreen = ({posts, navigation}) => {
   const reloadPosts = async () => {
     try {
       const res = await getPosts(user.user._id);
-      const postsWithMedia = await Promise.all(
-        res.map(async post => {
-          const mediaResponse = await getMedia(post._id);
-          const media = mediaResponse;
+      const postsWithMedia = (
+        await Promise.all(
+          res.map(async post => {
+            const mediaResponse = await getMedia(post._id);
+            const media = mediaResponse;
 
-          const reactionResponse = await getReaction(post._id);
-          const reaction = reactionResponse;
+            const reactionResponse = await getReaction(post._id);
+            const reaction = reactionResponse;
 
-          const commentResponse = await getComments(post._id);
-          const comment = commentResponse;
+            const commentResponse = await getComments(post._id);
+            const comment = commentResponse;
 
-          const shareResponse = await getShare(post._id);
-          const share = shareResponse;
+            const shareResponse = await getShareDetailObject(
+              post._id,
+              user.user._id,
+            );
+            const share = shareResponse;
 
-          const birthdayResponse = await getPostsBirthday(user.user._id);
-          const birthday = birthdayResponse;
+            const birthdayResponse = await getPostsBirthday(user.user._id);
+            const birthday = birthdayResponse;
 
-          return {
-            ...post,
-            media,
-            reaction,
-            comment,
-            share,
-            birthday,
-          };
-        }),
-      );
+            const colorResponse = await getBackgroundColor(post._id);
+            const color = colorResponse;
+
+            return {
+              ...post,
+              media,
+              reaction,
+              comment,
+              share,
+              birthday,
+              color,
+            };
+          }),
+        )
+      ).filter(post => post.idTypePosts.name === 'Bài viết');
       setPost(postsWithMedia);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -285,6 +294,11 @@ const PostsScreen = ({posts, navigation}) => {
     setModalEditPostsAccount(true);
   };
 
+  const handleShareModal = item => {
+    setItemModalShare(item);
+    setShowModalShare(true);
+  };
+
   const handleModalEditPostsGuest = item => {
     setEditPostsItemGuest(item);
     setModalEditPostsGuest(true);
@@ -301,24 +315,6 @@ const PostsScreen = ({posts, navigation}) => {
       // console.log('>>>. Xóa thành công', res);
     } catch (error) {
       console.log('>>>. Lỗi delete Posts', error);
-    }
-  };
-
-  const handleShare = async item => {
-    try {
-      if (item && item._id) {
-        const deepLink = linking.prefixes[0] + '/' + `posts/${item._id}`;
-        const shareOptions = {
-          title: 'Share',
-          message: 'Chia sẻ bài viết này!',
-          url: deepLink,
-        };
-        await Share.open(shareOptions);
-      } else {
-        console.log('Bài viết không hợp lệ để chia sẻ');
-      }
-    } catch (error) {
-      console.log('Lỗi chia sẻ nè:', error);
     }
   };
 
@@ -357,6 +353,764 @@ const PostsScreen = ({posts, navigation}) => {
         keyExtractor={item => item._id}
         renderItem={({item}) => (
           <View>
+            {item.share.length > 0 && (
+              <FlatList
+                data={item.share}
+                scrollEnabled={false}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={item => item._id}
+                renderItem={({item}) => (
+                  <View key={item._id}>
+                    {/* header */}
+                    <View style={styles.container_avatar_name}>
+                      <View style={styles.avatar_name}>
+                        {item.idUsers._id !== user.user._id ? (
+                          <TouchableOpacity
+                            onPress={() =>
+                              navigation.navigate('OtherUserA', {
+                                account: item,
+                              })
+                            }>
+                            <Image
+                              source={{uri: item.idUsers?.avatar}}
+                              style={styles.avatar}
+                            />
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() =>
+                              navigation.navigate('Profile', {
+                                account: item,
+                              })
+                            }>
+                            <Image
+                              source={{uri: item.idUsers?.avatar}}
+                              style={styles.avatar}
+                            />
+                          </TouchableOpacity>
+                        )}
+                        <View>
+                          {item.idUsers._id !== user.user._id ? (
+                            <>
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <TouchableOpacity
+                                  onPress={() =>
+                                    navigation.navigate('OtherUserA', {
+                                      account: item,
+                                    })
+                                  }>
+                                  <Text style={styles.name}>
+                                    {item.idUsers?.name}
+                                  </Text>
+                                </TouchableOpacity>
+                                {item.taggedFriends === null ||
+                                item.taggedFriends === undefined ? (
+                                  <View />
+                                ) : (
+                                  <>
+                                    {item.taggedFriends._id ===
+                                    user.user._id ? (
+                                      <View
+                                        style={{
+                                          flexDirection: 'row',
+                                          alignItems: 'center',
+                                          width: '50%',
+                                        }}>
+                                        <Text
+                                          style={{
+                                            fontSize: 14,
+                                          }}>
+                                          {' '}
+                                          cùng với
+                                        </Text>
+                                        <TouchableOpacity
+                                          style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                          }}
+                                          onPress={() =>
+                                            navigation.navigate('Profile', {
+                                              accountzzz: item.taggedFriends,
+                                            })
+                                          }>
+                                          <Text
+                                            style={[
+                                              styles.name,
+                                              {color: '#22b6c0', marginLeft: 5},
+                                            ]}>
+                                            {item.taggedFriends.name}
+                                          </Text>
+                                        </TouchableOpacity>
+                                      </View>
+                                    ) : (
+                                      <View
+                                        style={{
+                                          flexDirection: 'row',
+                                          alignItems: 'center',
+                                          width: '50%',
+                                        }}>
+                                        <Text
+                                          style={{
+                                            fontSize: 14,
+                                          }}>
+                                          {' '}
+                                          cùng với
+                                        </Text>
+                                        <TouchableOpacity
+                                          style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                          }}
+                                          onPress={() =>
+                                            navigation.navigate('OtherUserA2', {
+                                              accountzzz: item.taggedFriends,
+                                            })
+                                          }>
+                                          <Text
+                                            style={[
+                                              styles.name,
+                                              {color: '#22b6c0', marginLeft: 5},
+                                            ]}>
+                                            {item.taggedFriends.name}
+                                          </Text>
+                                        </TouchableOpacity>
+                                      </View>
+                                    )}
+                                  </>
+                                )}
+                              </View>
+                              {item.location === null ||
+                              item.location === undefined ? (
+                                <View />
+                              ) : (
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    paddingLeft: 6,
+                                  }}>
+                                  <Text
+                                    style={{
+                                      fontSize: 14,
+                                    }}>
+                                    {' '}
+                                    đang ở tại
+                                  </Text>
+                                  <TouchableOpacity
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                    }}>
+                                    <Text
+                                      style={[
+                                        styles.name,
+                                        {color: '#22b6c0', marginLeft: 5},
+                                      ]}>
+                                      {item.location}
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <TouchableOpacity
+                                  onPress={() =>
+                                    navigation.navigate('Profile', {
+                                      account: item,
+                                    })
+                                  }>
+                                  <Text style={styles.name}>
+                                    {item.idUsers?.name}
+                                  </Text>
+                                </TouchableOpacity>
+                                {item.taggedFriends === null ||
+                                item.taggedFriends === undefined ? (
+                                  <View />
+                                ) : (
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                      width: '50%',
+                                    }}>
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                      }}>
+                                      {' '}
+                                      cùng với
+                                    </Text>
+                                    <TouchableOpacity
+                                      style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                      }}
+                                      onPress={() =>
+                                        navigation.navigate('OtherUserA2', {
+                                          accountzzz: item.taggedFriends,
+                                        })
+                                      }>
+                                      <Text
+                                        style={[
+                                          styles.name,
+                                          {color: '#22b6c0', marginLeft: 5},
+                                        ]}>
+                                        {item.taggedFriends.name}
+                                      </Text>
+                                    </TouchableOpacity>
+                                  </View>
+                                )}
+                              </View>
+                              {item.location === null ||
+                              item.taggedFriends === undefined ? (
+                                <View />
+                              ) : (
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    paddingLeft: 6,
+                                  }}>
+                                  <Text
+                                    style={{
+                                      fontSize: 14,
+                                    }}>
+                                    {' '}
+                                    đang ở tại
+                                  </Text>
+                                  <TouchableOpacity
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                    }}>
+                                    <Text
+                                      style={[
+                                        styles.name,
+                                        {color: '#22b6c0', marginLeft: 5},
+                                      ]}>
+                                      {item.location}
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              )}
+                            </>
+                          )}
+                          <View style={styles.container_object}>
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate('CommentsScreen', {
+                                  postId: item,
+                                })
+                              }>
+                              <Text style={styles.time}>
+                                {formatTime(item.createAt)}
+                              </Text>
+                            </TouchableOpacity>
+                            <Text style={{paddingLeft: 5, fontSize: 6}}>●</Text>
+                            <TouchableOpacity>
+                              {item.idObject
+                                ? changeIdObject(item.idObject)
+                                : null}
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </View>
+                      {item.idUsers._id !== user.user._id ? (
+                        <TouchableOpacity
+                          onPress={() => handleModalEditPostsGuest(item)}>
+                          <Entypo
+                            name="dots-three-horizontal"
+                            size={18}
+                            color="#666666"
+                          />
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity
+                          onPress={() => handleModalEditPostsAccount(item)}>
+                          <Entypo
+                            name="dots-three-horizontal"
+                            size={18}
+                            color="#666666"
+                          />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                    {/* content */}
+                    {item.content === '' ? (
+                      <></>
+                    ) : (
+                      <View style={styles.baiVietContent}>
+                        {showMore ? (
+                          <>
+                            {item?.color?.map(color => color.colors)[0] !==
+                            undefined ? (
+                              <Text
+                                style={[
+                                  styles.content,
+                                  {
+                                    backgroundColor: item.color.map(
+                                      color => color.colors,
+                                    )[0],
+                                    borderRadius: 16,
+                                    padding: 16,
+                                  },
+                                ]}>
+                                {item.content}
+                              </Text>
+                            ) : (
+                              <Text style={styles.content}>{item.content}</Text>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            {item?.color?.map(color => color.colors)[0] !==
+                            undefined ? (
+                              <Text
+                                style={[
+                                  styles.content,
+                                  {
+                                    backgroundColor: item.color.map(
+                                      color => color.colors,
+                                    )[0],
+                                    borderRadius: 16,
+                                    padding: 16,
+                                  },
+                                ]}>
+                                {item.content?.slice(0, 100)}
+                              </Text>
+                            ) : (
+                              <Text style={styles.content}>
+                                {item.content?.slice(0, 100)}
+                              </Text>
+                            )}
+                          </>
+                        )}
+                        {/* Toggle button */}
+                        {item.content && item.content.length > 100 && (
+                          <TouchableOpacity
+                            style={styles.showMore}
+                            onPress={handleShowMore}>
+                            <Text style={{color: 'blue'}}>
+                              {showMore ? 'Ẩn' : 'Xem thêm'}
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    )}
+                    {/* share */}
+                    <View style={styles.share_container}>
+                      {/* header in share */}
+                      <View style={styles.container_avatar_name}>
+                        <View style={styles.avatar_name}>
+                          {item.idPosts.idUsers._id !== user.user._id ? (
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate('OtherUserA', {
+                                  account: item,
+                                })
+                              }>
+                              <Image
+                                source={{uri: item.idPosts.idUsers?.avatar}}
+                                style={styles.avatar}
+                              />
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate('Profile', {
+                                  account: item,
+                                })
+                              }>
+                              <Image
+                                source={{uri: item.idPosts.idUsers?.avatar}}
+                                style={styles.avatar}
+                              />
+                            </TouchableOpacity>
+                          )}
+                          <View>
+                            {item.idPosts.idUsers._id !== user.user._id ? (
+                              <>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                  }}>
+                                  <TouchableOpacity
+                                    onPress={() =>
+                                      navigation.navigate('OtherUserA', {
+                                        account: item,
+                                      })
+                                    }>
+                                    <Text style={styles.name}>
+                                      {item.idPosts.idUsers?.name}
+                                    </Text>
+                                  </TouchableOpacity>
+                                  {item.idPosts.taggedFriends === null ||
+                                  item.idPosts.taggedFriends === undefined ? (
+                                    <View />
+                                  ) : (
+                                    <>
+                                      {item.idPosts.taggedFriends._id ===
+                                      user.user._id ? (
+                                        <View
+                                          style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            width: '50%',
+                                          }}>
+                                          <Text
+                                            style={{
+                                              fontSize: 14,
+                                            }}>
+                                            {' '}
+                                            cùng với
+                                          </Text>
+                                          <TouchableOpacity
+                                            style={{
+                                              flexDirection: 'row',
+                                              alignItems: 'center',
+                                            }}
+                                            onPress={() =>
+                                              navigation.navigate('Profile', {
+                                                accountzzz:
+                                                  item.idPosts.taggedFriends,
+                                              })
+                                            }>
+                                            <Text
+                                              style={[
+                                                styles.name,
+                                                {
+                                                  color: '#22b6c0',
+                                                  marginLeft: 5,
+                                                },
+                                              ]}>
+                                              {item.idPosts.taggedFriends.name}
+                                            </Text>
+                                          </TouchableOpacity>
+                                        </View>
+                                      ) : (
+                                        <View
+                                          style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            width: '50%',
+                                          }}>
+                                          <Text
+                                            style={{
+                                              fontSize: 14,
+                                            }}>
+                                            {' '}
+                                            cùng với
+                                          </Text>
+                                          <TouchableOpacity
+                                            style={{
+                                              flexDirection: 'row',
+                                              alignItems: 'center',
+                                            }}
+                                            onPress={() =>
+                                              navigation.navigate(
+                                                'OtherUserA2',
+                                                {
+                                                  accountzzz:
+                                                    item.idPosts.taggedFriends,
+                                                },
+                                              )
+                                            }>
+                                            <Text
+                                              style={[
+                                                styles.name,
+                                                {
+                                                  color: '#22b6c0',
+                                                  marginLeft: 5,
+                                                },
+                                              ]}>
+                                              {item.idPosts.taggedFriends.name}
+                                            </Text>
+                                          </TouchableOpacity>
+                                        </View>
+                                      )}
+                                    </>
+                                  )}
+                                </View>
+                                {item.location === null ||
+                                item.location === undefined ? (
+                                  <View />
+                                ) : (
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                      paddingLeft: 6,
+                                    }}>
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                      }}>
+                                      {' '}
+                                      đang ở tại
+                                    </Text>
+                                    <TouchableOpacity
+                                      style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                      }}>
+                                      <Text
+                                        style={[
+                                          styles.name,
+                                          {color: '#22b6c0', marginLeft: 5},
+                                        ]}>
+                                        {item.idPosts.location}
+                                      </Text>
+                                    </TouchableOpacity>
+                                  </View>
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                  }}>
+                                  <TouchableOpacity
+                                    onPress={() =>
+                                      navigation.navigate('Profile', {
+                                        account: item,
+                                      })
+                                    }>
+                                    <Text style={styles.name}>
+                                      {item.idPosts.idUsers?.name}
+                                    </Text>
+                                  </TouchableOpacity>
+                                  {item.idPosts.taggedFriends === null ||
+                                  item.idPosts.taggedFriends === undefined ? (
+                                    <View />
+                                  ) : (
+                                    <View
+                                      style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        width: '50%',
+                                      }}>
+                                      <Text
+                                        style={{
+                                          fontSize: 14,
+                                        }}>
+                                        {' '}
+                                        cùng với
+                                      </Text>
+                                      <TouchableOpacity
+                                        style={{
+                                          flexDirection: 'row',
+                                          alignItems: 'center',
+                                        }}
+                                        onPress={() =>
+                                          navigation.navigate('OtherUserA2', {
+                                            accountzzz:
+                                              item.idPosts.taggedFriends,
+                                          })
+                                        }>
+                                        <Text
+                                          style={[
+                                            styles.name,
+                                            {color: '#22b6c0', marginLeft: 5},
+                                          ]}>
+                                          {item.idPosts.taggedFriends.name}
+                                        </Text>
+                                      </TouchableOpacity>
+                                    </View>
+                                  )}
+                                </View>
+                                {item.location === null ||
+                                item.taggedFriends === undefined ? (
+                                  <View />
+                                ) : (
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                      paddingLeft: 6,
+                                    }}>
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                      }}>
+                                      {' '}
+                                      đang ở tại
+                                    </Text>
+                                    <TouchableOpacity
+                                      style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                      }}>
+                                      <Text
+                                        style={[
+                                          styles.name,
+                                          {color: '#22b6c0', marginLeft: 5},
+                                        ]}>
+                                        {item.idPosts.location}
+                                      </Text>
+                                    </TouchableOpacity>
+                                  </View>
+                                )}
+                              </>
+                            )}
+                            <View style={styles.container_object}>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  navigation.navigate('CommentsScreen', {
+                                    postId: item,
+                                  })
+                                }>
+                                <Text style={styles.time}>
+                                  {formatTime(item.idPosts.createAt)}
+                                </Text>
+                              </TouchableOpacity>
+                              <Text style={{paddingLeft: 5, fontSize: 6}}>
+                                ●
+                              </Text>
+                              <TouchableOpacity>
+                                {item.idPosts.idObject
+                                  ? changeIdObject(item.idPosts.idObject)
+                                  : null}
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                      {/* content in share */}
+                      {item.idPosts.content === '' ? (
+                        <></>
+                      ) : (
+                        <View style={styles.baiVietContent}>
+                          {showMore ? (
+                            <>
+                              {item.idPosts?.color?.map(
+                                color => color.colors,
+                              )[0] !== undefined ? (
+                                <Text
+                                  style={[
+                                    styles.content,
+                                    {
+                                      backgroundColor: item.color.map(
+                                        color => color.colors,
+                                      )[0],
+                                      borderRadius: 16,
+                                      padding: 16,
+                                    },
+                                  ]}>
+                                  {item.idPosts.content}
+                                </Text>
+                              ) : (
+                                <Text style={styles.content}>
+                                  {item.idPosts.content}
+                                </Text>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {item.idPosts?.color?.map(
+                                color => color.colors,
+                              )[0] !== undefined ? (
+                                <Text
+                                  style={[
+                                    styles.content,
+                                    {
+                                      backgroundColor: item.color.map(
+                                        color => color.colors,
+                                      )[0],
+                                      borderRadius: 16,
+                                      padding: 16,
+                                    },
+                                  ]}>
+                                  {item.idPosts.content?.slice(0, 100)}
+                                </Text>
+                              ) : (
+                                <Text style={styles.content}>
+                                  {item.idPosts.content?.slice(0, 100)}
+                                </Text>
+                              )}
+                            </>
+                          )}
+                          {/* Toggle button */}
+                          {item.idPosts.content &&
+                            item.idPosts.content.length > 100 && (
+                              <TouchableOpacity
+                                style={styles.showMore}
+                                onPress={handleShowMore}>
+                                <Text style={{color: 'blue'}}>
+                                  {showMore ? 'Ẩn' : 'Xem thêm'}
+                                </Text>
+                              </TouchableOpacity>
+                            )}
+                        </View>
+                      )}
+
+                      {/* media in share */}
+                      {item?.idPosts?.media?.length > 0 ? (
+                        <View style={styles.container_media}>
+                          <Swiper
+                            style={styles.swiper}
+                            showsButtons={false}
+                            loop={false}
+                            paginationStyle={{bottom: 10}}
+                            activeDotColor="#22b6c0"
+                            onIndexChanged={index => setActiveSlide(index)}>
+                            {item?.idPosts.media?.map((media, index) => (
+                              <View key={media._id}>
+                                {media.type === 'image' ? (
+                                  <>
+                                    <Image
+                                      source={{uri: media.url.join()}}
+                                      style={styles.posts}
+                                    />
+                                  </>
+                                ) : (
+                                  <VideoPlayer
+                                    video={{uri: media.url[0]}}
+                                    videoWidth={1600}
+                                    videoHeight={900}
+                                    thumbnail={require('../../../../assets/play_96px.png')}
+                                    // autoplay={true}
+                                    style={styles.posts}
+                                  />
+                                )}
+                                {showLengthMedia ? (
+                                  <View style={styles.imageCountContainer}>
+                                    <Text style={styles.imageCountText}>
+                                      {index + 1}/{item?.idPosts.media.length}
+                                    </Text>
+                                  </View>
+                                ) : null}
+                              </View>
+                            ))}
+                          </Swiper>
+                        </View>
+                      ) : (
+                        <View style={{height: 0}} />
+                      )}
+                    </View>
+                    {/* line */}
+                    <Text style={[styles.linePostsEnd, {marginTop: 10}]} />
+                  </View>
+                )}
+                initialNumToRender={5}
+                maxToRenderPerBatch={5}
+                updateCellsBatchingPeriod={3000}
+                removeClippedSubviews={true}
+                onEndReachedThreshold={0.5}
+              />
+            )}
             {/* header */}
             <View style={styles.container_avatar_name}>
               <View style={styles.avatar_name}>
@@ -913,7 +1667,7 @@ const PostsScreen = ({posts, navigation}) => {
               {/* share */}
               <TouchableOpacity
                 style={styles.like_post}
-                onPress={() => handleShare(item)}>
+                onPress={() => handleShareModal(item)}>
                 <MaterialCommunityIcons
                   name="share-outline"
                   size={23}
@@ -935,6 +1689,23 @@ const PostsScreen = ({posts, navigation}) => {
       <Modal
         animationType="slide"
         transparent={true}
+        visible={showModalShare}
+        onRequestClose={() => {}}>
+        <TouchableOpacity
+          style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+          activeOpacity={1}
+          onPressOut={() => setShowModalShare(false)}>
+          <ModalShare
+            itemModalShare={itemModalShare}
+            cancel={() => setShowModalShare(false)}
+            navigation={navigation}
+            reloadPosts={reloadPosts}
+          />
+        </TouchableOpacity>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
         visible={modalEditPostsAccount}
         onRequestClose={() => {}}>
         <TouchableOpacity
@@ -945,6 +1716,7 @@ const PostsScreen = ({posts, navigation}) => {
             editPostsItemAccount={editPostsItemAccount}
             handleDeletePosts={handleDeletePosts}
             navigation={navigation}
+            reloadPosts={reloadPosts}
           />
         </TouchableOpacity>
       </Modal>
@@ -957,7 +1729,10 @@ const PostsScreen = ({posts, navigation}) => {
           style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
           activeOpacity={1}
           onPressOut={() => setModalEditPostsGuest(false)}>
-          <ModalEditPostsGuest editPostsItemGuest={editPostsItemGuest} />
+          <ModalEditPostsGuest
+            editPostsItemGuest={editPostsItemGuest}
+            reloadPosts={reloadPosts}
+          />
         </TouchableOpacity>
       </Modal>
     </View>

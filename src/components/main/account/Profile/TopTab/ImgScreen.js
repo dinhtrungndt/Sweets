@@ -1,5 +1,12 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {Text, View, Image, ScrollView, FlatList} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import {UserContext} from '../../../../../contexts/user/userContext';
 import {getPostByUserId} from '../../../../../services/user/userService';
 import {getMedia} from '../../../../../services/home/homeService';
@@ -17,16 +24,19 @@ const ImgScreen = () => {
     const onGetPosts = async () => {
       try {
         const res = await getPostByUserId(user.user._id);
-        const postsWithMedia = await Promise.all(
-          res.map(async post => {
-            const mediaResponse = await getMedia(post._id);
-            const media = mediaResponse;
-            return {
-              ...post,
-              media,
-            };
-          }),
-        );
+        // console.log('res', res);
+        const postsWithMedia = (
+          await Promise.all(
+            res.map(async post => {
+              const mediaResponse = await getMedia(post._id);
+              const media = mediaResponse;
+              return {
+                ...post,
+                media,
+              };
+            }),
+          )
+        ).filter(post => post.idTypePosts.name === 'Bài viết');
         setPosts(postsWithMedia);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -35,42 +45,36 @@ const ImgScreen = () => {
     onGetPosts();
   }, [user.user._id]);
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <View style={styles.containner}>
-        <Swiper
-          showsButtons={false}
-          loop={false}
-          paginationStyle={{ bottom: 10 }}
-          activeDotColor="#22b6c0">
-          {item.media.map((media, index) => (
-            <View key={index}>
-              {media.type === 'image' ? (
-                <Image source={{ uri: media.url[0] }} style={styles.posts} />
-              ) : (
-                <VideoPlayer
-                  video={{ uri: media.url[0] }}
-                  videoWidth={1600}
-                  videoHeight={900}
-                  thumbnail={{ uri: media.url[0] }}
-                  style={styles.posts}
-                />
-              )}
-            </View>
-          ))}
-        </Swiper>
+        {item.media.map((media, index) => (
+          <View key={index}>
+            {media.type === 'image' ? (
+              <Image source={{uri: media.url[0]}} style={styles.posts} />
+            ) : (
+              <VideoPlayer
+                video={{uri: media.url[0]}}
+                videoWidth={Dimensions.get('window').width / 3}
+                videoHeight={(Dimensions.get('window').width / 3) * (9 / 16)}
+                thumbnail={{uri: media.url[0]}}
+                style={styles.posts}
+              />
+            )}
+          </View>
+        ))}
       </View>
-    )
+    );
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.body}>
       <Text style={styles.txt1}>{t('myPhotosAndVideos')}</Text>
       <FlatList
         data={posts}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
-        horizontal={true}
+        numColumns={4}
       />
     </View>
   );

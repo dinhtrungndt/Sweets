@@ -33,29 +33,31 @@ const PostOtherScreen = ({navigation, route}) => {
     try {
       const res = await getPostByUserId(account.idUsers._id);
       // console.log('>>>>>>>>> res', res);
-      const postsWithMedia = await Promise.all(
-        res.map(async post => {
-          const mediaResponse = await getMedia(post._id);
-          const media = mediaResponse;
+      const postsWithMedia = (
+        await Promise.all(
+          res.map(async post => {
+            const mediaResponse = await getMedia(post._id);
+            const media = mediaResponse;
 
-          const reactionResponse = await getReaction(post._id);
-          const reaction = reactionResponse;
+            const reactionResponse = await getReaction(post._id);
+            const reaction = reactionResponse;
 
-          const commentResponse = await getComments(post._id);
-          const comment = commentResponse;
+            const commentResponse = await getComments(post._id);
+            const comment = commentResponse;
 
-          const shareResponse = await getShare(post._id);
-          const share = shareResponse;
+            const shareResponse = await getShare(post._id);
+            const share = shareResponse;
 
-          return {
-            ...post,
-            media,
-            reaction,
-            comment,
-            share,
-          };
-        }),
-      );
+            return {
+              ...post,
+              media,
+              reaction,
+              comment,
+              share,
+            };
+          }),
+        )
+      ).filter(post => post.idTypePosts.name === 'Bài viết');
       setPosts(postsWithMedia);
     } catch (error) {
       console.error('Error fetching data:', error);

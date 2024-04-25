@@ -3,7 +3,8 @@ import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity, Image, I
 import AxiosInstance from '../../../../helper/AxiosinstanceText';
 import styles from '../styles/ThoiTiet2Styles';
 import WeatherImages from './WeatherImage';
-const ThoiTiet2 = () => {
+const ThoiTiet2 = props => {
+    const { navigation } = props;
     const [searchQuery, setSearchQuery] = useState('');
     const [cities, setCities] = useState([]);
     const [weatherData, setWeatherData] = useState(null);
@@ -111,7 +112,7 @@ const ThoiTiet2 = () => {
         <View style={styles.container}>
             <ImageBackground source={require('../../../../assets/bg1.png')} style={styles.background}>
 
-
+         
                 <TouchableOpacity style={styles.toggleButton} onPress={toggleTextInputVisibility}>
                     {isTextInputVisible ? (
                         <Image source={require('../../../../assets/hint.png')} style={styles.imageStyle} />
@@ -119,11 +120,15 @@ const ThoiTiet2 = () => {
                         <Image source={require('../../../../assets/seen.png')} style={styles.imageStyle} />
                     )}
                 </TouchableOpacity>
+
+                <TouchableOpacity style={styles.toggleButtonExit}  onPress={() => navigation.navigate('ThoiTiet')}>
+            <Image source={require('../../../../assets/icon_back.png')} style={styles.avatar} />
+          </TouchableOpacity>
                 <Animated.View style={{ transform: [{ translateX }] }}>
                     {isTextInputVisible && (
                         <TextInput
                             style={styles.input}
-                            placeholder="Nhập tên thành phố..."
+                            placeholder="Nhập tên quốc gia..."
                             placeholderTextColor="gray"
                             onChangeText={(text) => setSearchQuery(text)}
                             value={searchQuery}

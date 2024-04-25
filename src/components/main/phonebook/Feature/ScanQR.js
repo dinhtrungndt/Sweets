@@ -5,13 +5,22 @@ import { UserContext } from '../../../../contexts/user/userContext';
 const ScanQR = (props) => {
   const { navigation } = props;
   const [scanning, setScanning] = useState(true); // Trạng thái của việc quét
-  const { updateUserInfo } = useContext(UserContext);
+  const { updateUserInfo,user } = useContext(UserContext);
+console.log('user',user)
+
   const handleBarcodeScan = (event) => {
     const scannedData = event.nativeEvent.codeStringValue; // Dữ liệu đã quét được
-    Alert.alert('QR code found', scannedData.name);
-    console.log('scannedData',scannedData)
-    // Chuyển sang màn hình OtherUserA và truyền dữ liệu đã quét được
-    navigation.navigate('OtherUserA', { userData: scannedData });
+    const scannedDataObject = JSON.parse(scannedData);
+    console.log('scannedData', scannedDataObject.name);
+   
+    // Kiểm tra nếu ID quét trùng với ID đăng nhập
+    if (scannedDataObject._id === user.id) {
+      Alert.alert('Không thể quét mã QR của chính bạn');
+      return; // Dừng xử lý tiếp theo
+    }
+  
+    // Nếu không trùng, chuyển sang màn hình OtherUserA và truyền dữ liệu đã quét được
+    navigation.navigate('OtherUserA2', { accountzzz: scannedDataObject });
     // Dừng quét
     setScanning(false);
   };

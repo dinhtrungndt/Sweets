@@ -23,6 +23,7 @@ const ModalEditPostsAccount = ({
   editPostsItemAccount,
   handleDeletePosts,
   navigation,
+  reloadPosts,
 }) => {
   // console.log('>>>>>>>> bên user', editPostsItemAccount._id);
   const [visibleDiaLogDeletePosts, setVisibleDiaLogDeletePosts] =
@@ -201,6 +202,7 @@ const ModalEditPostsAccount = ({
           cancel={() => setModalEditPostsIn(false)}
           editPostsItemAccount={editPostsItemAccount}
           navigation={navigation}
+          reloadPosts={reloadPosts}
         />
       </Modal>
 
@@ -213,6 +215,7 @@ const ModalEditPostsAccount = ({
           cancel={() => setModalEditObjects(false)}
           itemPosts={editPostsItemAccount}
           navigation={navigation}
+          reloadPosts={reloadPosts}
         />
       </Modal>
     </View>

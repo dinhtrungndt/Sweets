@@ -2,8 +2,7 @@ const { StyleSheet } = require('react-native');
 
 export const styles = StyleSheet.create({
     body: {
-        width: '100%',
-        height: '100%',
+        flex: 1,
         backgroundColor: '#FFFFFF',
     },
     txt1: {
@@ -14,15 +13,13 @@ export const styles = StyleSheet.create({
         marginTop: 16,
     },
     containner: {
-        width: 150,
-        height: 150,
-        marginTop: 10,
-        marginLeft: 16,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginTop: 6,
     },
     posts: {
-        width: 150,
-        height: 150,
-        borderRadius: 10,
+        width: 123,
+        height: 123,
+        marginLeft: 6,
       },
-    
 })

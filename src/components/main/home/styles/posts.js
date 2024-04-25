@@ -19,6 +19,13 @@ export const styles = StyleSheet.create({
     margin: 16,
     marginBottom: 10,
   },
+  textBoldPeople: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+    marginLeft: 16,
+    marginTop: 10,
+  },
   avatar_name: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -211,5 +218,13 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 5,
     elevation: 5,
+  },
+  share_container: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 5,
+    margin: 10,
+    marginTop: 0,
+    padding: 0,
   },
 });

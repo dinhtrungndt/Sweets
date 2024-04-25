@@ -24,7 +24,7 @@ import ZegoUIKitPrebuiltCallService, {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ChatScreenIn = ({route, navigation}) => {
-  const {receiver} = route.params;
+  const {receiver, message} = route.params;
   const {user} = useContext(UserContext);
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState([]);
@@ -34,9 +34,35 @@ const ChatScreenIn = ({route, navigation}) => {
   const socket = useRef(null);
 
   useEffect(() => {
+    if (message) {
+      // Gửi tin nhắn tới người nhận
+      sendMessage(message);
+    }
+
     // Khởi tạo socket khi component được mount
     socket.current = io('https://sweets-nodejs.onrender.com/');
     // 11.189.180.53
+
+    let isConnected = false;
+
+    const handleConnect = () => {
+      isConnected = true;
+      console.log('Socket đã kết nối');
+
+      // Kiểm tra nếu có message từ PickStory
+      if (message) {
+        // Gửi tin nhắn tới người nhận
+        sendMessage(message);
+      }
+    };
+
+    const handleDisconnect = () => {
+      isConnected = false;
+      console.log('Socket đã ngắt kết nối');
+    };
+
+    socket.current.on('connect', handleConnect);
+    socket.current.on('disconnect', handleDisconnect);
 
     // Lắng nghe sự kiện new_message từ socket
     socket.current.on('new_message', newMessage => {
@@ -55,9 +81,11 @@ const ChatScreenIn = ({route, navigation}) => {
 
     return () => {
       // Clear up khi component unmount
+      socket.current.off('connect', handleConnect);
+      socket.current.off('disconnect', handleDisconnect);
       socket.current.disconnect();
     };
-  }, []);
+  }, [message]);
 
   const fetchData = async () => {
     try {
@@ -70,19 +98,24 @@ const ChatScreenIn = ({route, navigation}) => {
     }
   };
 
-  const sendMessage = () => {
-    if (messageInput === '' || !messageInput.trim()) {
+  const sendMessage = content => {
+    if (content === '' || !content.trim()) {
       return;
     }
-    const newMessage = {
-      idSender: user.user._id,
-      idReceiver: receiver.receiverv2,
-      content: messageInput,
-      time: new Date().toISOString(),
-    };
-    socket.current.emit('new_message', newMessage);
-    setMessageInput('');
+    if (socket.current && socket.current.connected) {
+      const newMessage = {
+        idSender: user.user._id,
+        idReceiver: receiver.receiverv2,
+        content: content,
+        time: new Date().toISOString(),
+      };
+      socket.current.emit('new_message', newMessage);
+      setMessageInput('');
+    } else {
+      console.error('Socket chưa kết nối');
+    }
   };
+
   const renderItem = ({item}) => {
     return (
       <View style={styles.chat}>
@@ -162,8 +195,13 @@ const ChatScreenIn = ({route, navigation}) => {
           placeholderTextColor="#000"
           value={messageInput}
           onChangeText={text => setMessageInput(text)}
+          onSubmitEditing={
+            messageInput ? () => sendMessage(messageInput) : () => {}
+          }
         />
-        <TouchableOpacity style={styles.send} onPress={sendMessage}>
+        <TouchableOpacity
+          style={styles.send}
+          onPress={() => sendMessage(messageInput)}>
           <Image
             style={styles.back}
             source={require('../../../../assets/email_send_50px.png')}

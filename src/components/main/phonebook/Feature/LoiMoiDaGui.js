@@ -18,7 +18,7 @@ const LoiMoiDaGui = (props) => {
 
   useEffect(() => {
     setInvitationCount(friendInvitations.length);
-  }, [friendInvitations]);
+  }, [friendInvitations.length]);
 
   const fetchFriendInvitations = async () => {
     try {
@@ -45,11 +45,12 @@ const LoiMoiDaGui = (props) => {
   };
 
   const handleSort = () => {
-    const sortedList = friendInvitations.reverse(); // Đảo ngược danh sách
-    setFriendInvitations([...sortedList]);
+    const sortedList = [...userInfo]; // Tạo một bản sao của danh sách mời bạn
+    sortedList.reverse(); // Đảo ngược danh sách
+    setUserInfo(sortedList);
     setSortBy(sortBy === 'asc' ? 'desc' : 'asc'); // Đảo chiều trạng thái sắp xếp
   };
-
+  
   const handleDeleteFriendRequest = async (item) => {
     try {
       const userId = await AsyncStorage.getItem('userId');
