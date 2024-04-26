@@ -84,7 +84,7 @@ export const styles = StyleSheet.create({
     columnGap: 5,
   },
   imageItem: {
-    width: 125.5,
+    width: 110,
     height: 155,
     margin: 6,
     marginRight: 0,

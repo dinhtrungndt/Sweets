@@ -102,9 +102,10 @@ const SelectFeeingStory = ({cancel, navigation}) => {
     try {
       const options = {
         mediaType: 'mixed',
-        quality: 1,
-        includeBase64: false,
-        selectionLimit: 10,
+        quality: 5,
+        saveToPhotos: true,
+        selectionLimit: 0,
+        multiple: true,
       };
 
       launchImageLibrary(options, async response => {
