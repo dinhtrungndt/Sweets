@@ -30,40 +30,48 @@ const QuetQR = (props) => {
 
   const captureAndSave = async () => {
     try {
-      const uri = await viewShotRef.current.capture();
-      console.log('URI của ảnh:', uri);
+        const uri = await viewShotRef.current.capture();
+        console.log('URI của ảnh:', uri);
 
-      const savePath = `${RNFS.DocumentDirectoryPath}/qr_code_image.jpg`;
+        const savePath = `${RNFS.DocumentDirectoryPath}/qr_code_image.jpg`;
 
-      const permissionStatus = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-      
-      if (permissionStatus === RESULTS.GRANTED) {
-        await RNFS.moveFile(uri, savePath);
-        ToastAndroid.show('Ảnh đã được lưu thành công', ToastAndroid.SHORT);
-        console.log('Ảnh đã được lưu thành công vào:', savePath);
-      } else if (permissionStatus === RESULTS.DENIED) {
-        Alert.alert(
-          "Quyền truy cập bộ nhớ",
-          "Ứng dụng cần quyền truy cập vào bộ nhớ để lưu trữ ảnh. Vui lòng cấp quyền truy cập trong cài đặt của ứng dụng.",
-          [
-            {
-              text: "Để sau",
-              onPress: () => console.log("Đã chọn Để sau"),
-              style: "cancel"
-            },
-            { 
-              text: "Cài đặt", 
-              onPress: () => Linking.openSettings() 
-            }
-          ]
-        );
-      } else {
-        console.log('Quyền truy cập bị từ chối');
-      }
+        // Kiểm tra xem file có tồn tại không
+        const fileExists = await RNFS.exists(uri);
+        if (!fileExists) {
+            console.log('File không tồn tại');
+            return;
+        }
+
+        const permissionStatus = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+
+        if (permissionStatus === RESULTS.GRANTED) {
+            await RNFS.moveFile(uri, savePath);
+            ToastAndroid.show('Ảnh đã được lưu thành công', ToastAndroid.SHORT);
+            console.log('Ảnh đã được lưu thành công vào:', savePath);
+        } else if (permissionStatus === RESULTS.DENIED) {
+            Alert.alert(
+                "Quyền truy cập bộ nhớ",
+                "Ứng dụng cần quyền truy cập vào bộ nhớ để lưu trữ ảnh. Vui lòng cấp quyền truy cập trong cài đặt của ứng dụng.",
+                [
+                    {
+                        text: "Để sau",
+                        onPress: () => console.log("Đã chọn Để sau"),
+                        style: "cancel"
+                    },
+                    {
+                        text: "Cài đặt",
+                        onPress: () => Linking.openSettings()
+                    }
+                ]
+            );
+        } else {
+            console.log('Quyền truy cập bị từ chối');
+        }
     } catch (error) {
-      console.error('Lỗi khi chụp ảnh:', error);
+        console.error('Lỗi khi chụp ảnh:', error);
     }
-  };
+};
+
 
   if (!userData) {
     return (
