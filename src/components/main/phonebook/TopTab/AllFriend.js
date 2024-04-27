@@ -12,7 +12,8 @@ import AxiosInstance from '../../../../helper/Axiosinstance'; // Thay đường 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/AllFriendStyles'; // Đảm bảo import styles từ file của bạn
 
-const AllFriend = () => {
+const AllFriend = ( props) => {
+  const { navigation } = props;
   const [friendsDetails, setFriendsDetails] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [filteredFriends, setFilteredFriends] = useState([]); 

@@ -23,55 +23,120 @@ import {
   getShare,
 } from '../../../../../../services/home/homeService';
 import {LoadingScreen} from '../../../../../../utils/loading';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AxiosInstance from '../../../../../../helper/Axiosinstance';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
 export default function AllTopTabSearch({navigation, route}) {
-  const {searchText, listUserSearch, posts, showListHistorySearch} =
-    route?.params;
+  const {searchText, listUserSearch, showListHistorySearch} = route?.params;
   // console.log('>>>>>>>>>>>>> posts', posts);
-  const [post, setPost] = useState(posts);
+  const [post, setPost] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [updatedListUserSearch, setUpdatedListUserSearch] = useState([]);
 
   const onGetPosts = async () => {
     setIsLoading(true);
     const res = await getPostsAll();
-    const postsWithMedia = await Promise.all(
-      res.map(async post => {
-        const mediaResponse = await getMedia(post._id);
-        const media = mediaResponse;
+    const postsWithMedia = (
+      await Promise.all(
+        res.map(async post => {
+          const mediaResponse = await getMedia(post._id);
+          const media = mediaResponse;
 
-        const reactionResponse = await getReaction(post._id);
-        const reaction = reactionResponse;
+          const reactionResponse = await getReaction(post._id);
+          const reaction = reactionResponse;
 
-        const commentResponse = await getComments(post._id);
-        const comment = commentResponse;
+          const commentResponse = await getComments(post._id);
+          const comment = commentResponse;
 
-        const shareResponse = await getShare(post._id);
-        const share = shareResponse;
+          const shareResponse = await getShare(post._id);
+          const share = shareResponse;
 
-        // console.log('>>>>>>>>>>>>>>> likedByCurrentUser', likedByCurrentUser);
-        return {
-          ...post,
-          media,
-          reaction,
-          comment,
-          share,
-        };
-      }),
+          // console.log('>>>>>>>>>>>>>>> likedByCurrentUser', likedByCurrentUser);
+          return {
+            ...post,
+            media,
+            reaction,
+            comment,
+            share,
+          };
+        }),
+      )
+    ).filter(
+      post =>
+        post.content.toLowerCase().includes(searchText.toLowerCase()) ||
+        (post.idUsers.name.toLowerCase().includes(searchText.toLowerCase()) &&
+          post.idTypePosts.name === 'Bài viết'),
     );
     setPost(postsWithMedia);
     setIsLoading(false);
   };
 
-  const filteredPostsData = post.filter(
-    post =>
-      post.content.toLowerCase().includes(searchText.toLowerCase()) ||
-      post.idUsers.name.toLowerCase().includes(searchText.toLowerCase()),
-  );
+  const fetchFriendInvitations = async () => {
+    try {
+     
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await AxiosInstance().get(
+        `/friend/friend-requests-sent/${userId}`,
+      );
+      const response2 = await AxiosInstance().get(
+        `/friend/friend-requests/${userId}`,
+      );
+      const response3 = await AxiosInstance().get(`/friend/friends/${userId}`);
+      console.log('re',response3)
+      if (response.success) {
+        // console.log('Kết quả lời mời đã gửi', response.friendRequestsSent);
+        const invitations = response.friendRequestsSent; //mảng đã gửi
+        const updatedList = listUserSearch.map(user => {
+          const isInvited = invitations.some(
+            invitation => invitation.idFriendReceiver === user._id,
+          );
+          return {
+            ...user,
+            CheckGui: isInvited, // Kiểm tra xem user có trong danh sách lời mời gửi không
+            CheckNhan: false, // Ban đầu, chưa có lời mời nào được chấp nhận
+            CheckALL:false
+          };
+        });
+        const invitations2 = response2.friendRequests;
+        const updatedList2 = updatedList.map(user => {
+          const isInvited = invitations2.some(
+            invitation => invitation.idFriendSender === user._id,
+          );
+          return {
+            ...user,
+
+            CheckNhan: isInvited, // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        });
+
+        const invitationsAll = response3.friendsList;
+        const updatedListAll = updatedList2.map(user => {
+          const isInvited = invitationsAll.some(
+            invitation => invitation.id === user._id,
+          );
+          return {
+            ...user,
+
+            CheckALL: isInvited, // Ban đầu, chưa có lời mời nào được chấp nhận
+          };
+        });
+        setUpdatedListUserSearch(updatedListAll);
+         console.log('mảng 3', updatedListAll);
+        
+      } else {
+        console.log('No friend invitations found.');
+      }
+    } catch (error) {
+      console.error('Error fetching friend invitations:', error);
+    }
+  };
+  // console.log('updatedListUserSearch', updatedListUserSearch);
 
   useEffect(() => {
     onGetPosts();
+    fetchFriendInvitations();
   }, []);
 
   const [index, setIndex] = useState(0);
@@ -88,23 +153,27 @@ export default function AllTopTabSearch({navigation, route}) {
     AllPostsSearch: () => (
       <AllPostsSearch
         listUserSearch={listUserSearch}
-        posts={filteredPostsData}
+        posts={post}
         navigation={navigation}
         showListHistorySearch={showListHistorySearch}
+        updatedListUserSearch={updatedListUserSearch}
+        isLoading={isLoading}
+        fetchFriendInvitations={fetchFriendInvitations}
       />
     ),
     PostsSearch: () => (
       <PostsSearch
         listUserSearch={listUserSearch}
-        posts={filteredPostsData}
+        posts={post}
         navigation={navigation}
         showListHistorySearch={showListHistorySearch}
+        isLoading={isLoading}
       />
     ),
     PeopleSearch: () => (
       <PeopleSearch
         listUserSearch={listUserSearch}
-        posts={filteredPostsData}
+        posts={post}
         navigation={navigation}
         showListHistorySearch={showListHistorySearch}
       />
@@ -112,7 +181,7 @@ export default function AllTopTabSearch({navigation, route}) {
     ReelsSearch: () => (
       <ReelsSearch
         listUserSearch={listUserSearch}
-        posts={filteredPostsData}
+        posts={post}
         navigation={navigation}
         showListHistorySearch={showListHistorySearch}
       />
@@ -120,7 +189,7 @@ export default function AllTopTabSearch({navigation, route}) {
     GroupSearch: () => (
       <GroupSearch
         listUserSearch={listUserSearch}
-        posts={filteredPostsData}
+        posts={post}
         navigation={navigation}
         showListHistorySearch={showListHistorySearch}
       />
@@ -128,16 +197,14 @@ export default function AllTopTabSearch({navigation, route}) {
     PageSearch: () => (
       <PageSearch
         listUserSearch={listUserSearch}
-        posts={filteredPostsData}
+        posts={post}
         navigation={navigation}
         showListHistorySearch={showListHistorySearch}
       />
     ),
   });
 
-  return isLoading ? (
-    <LoadingScreen />
-  ) : (
+  return (
     <>
       <TouchableOpacity
         style={styles.inputSearch}

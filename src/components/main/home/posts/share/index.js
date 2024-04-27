@@ -22,6 +22,10 @@ const ModalShare = ({cancel, navigation, itemModalShare, reloadPosts}) => {
   //   console.log('reloadPosts', reloadPosts);
   const {user} = useContext(UserContext);
   const [content, setContent] = useState('');
+  const dateString = Date.now();
+  const randomSuffix = Math.floor(Math.random() * 10000000);
+  const dateNumber = new Date(dateString);
+  const _idPosts = dateNumber.getTime().toString() + randomSuffix.toString();
 
   const onChangeContext = text => {
     setContent(text);
@@ -30,12 +34,15 @@ const ModalShare = ({cancel, navigation, itemModalShare, reloadPosts}) => {
   const handleShareContext = async () => {
     try {
       const detailShare = {
+        _id: _idPosts,
         idUsers: user?.user?._id,
         idPosts: itemModalShare._id,
         content: content,
-        idObject: '65b20030261511b0721a9913',
+        idObject: '65b1fe6dab07bc8ddd7de469',
+        idTypePosts: '65b20030261511b0721a9913',
       };
       const res = await sharePost(detailShare);
+      // console.log('handleShareContext', res);
       cancel();
       Toast.show({
         type: 'info',

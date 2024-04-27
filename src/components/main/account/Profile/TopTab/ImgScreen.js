@@ -4,12 +4,12 @@ import { UserContext } from '../../../../../contexts/user/userContext';
 import { getPostByUserId } from '../../../../../services/user/userService';
 import { getMedia } from '../../../../../services/home/homeService';
 import Swiper from 'react-native-swiper';
-import { styles } from '../style/imgScreen';
-import { useTranslation } from 'react-i18next';
+import {styles} from '../style/imgScreen';
+import {useTranslation} from 'react-i18next';
 import VideoPlayer from 'react-native-video-player';
 
 const ImgScreen = () => {
-  const { user } = useContext(UserContext);
+  const {user} = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const { t } = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
@@ -20,16 +20,18 @@ const ImgScreen = () => {
       try {
         const res = await getPostByUserId(user.user._id);
         // console.log('res', res);
-        const postsWithMedia = await Promise.all(
-          res.map(async post => {
-            const mediaResponse = await getMedia(post._id);
-            const media = mediaResponse;
-            return {
-              ...post,
-              media,
-            };
-          }),
-        );
+        const postsWithMedia = (
+          await Promise.all(
+            res.map(async post => {
+              const mediaResponse = await getMedia(post._id);
+              const media = mediaResponse;
+              return {
+                ...post,
+                media,
+              };
+            }),
+          )
+        ).filter(post => post.idTypePosts.name === 'Bài viết');
         setPosts(postsWithMedia);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -38,26 +40,26 @@ const ImgScreen = () => {
     onGetPosts();
   }, [user.user._id]);
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <View style={styles.containner}>
         {item.media.map((media, index) => (
           <TouchableOpacity key={index} onPress={() => { setSelectedImage(media.url[0]); setModalVisible(true); }}>
             {media.type === 'image' ? (
-              <Image source={{ uri: media.url[0] }} style={styles.posts} />
+              <Image source={{uri: media.url[0]}} style={styles.posts} />
             ) : (
               <VideoPlayer
-                video={{ uri: media.url[0] }}
+                video={{uri: media.url[0]}}
                 videoWidth={Dimensions.get('window').width / 3}
                 videoHeight={(Dimensions.get('window').width / 3) * (9 / 16)}
-                thumbnail={{ uri: media.url[0] }}
+                thumbnail={{uri: media.url[0]}}
                 style={styles.posts}
               />
             )}
           </TouchableOpacity>
         ))}
       </View>
-    )
+    );
   };
 
   return (

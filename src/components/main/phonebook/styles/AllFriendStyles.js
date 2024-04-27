@@ -55,6 +55,12 @@ const styles = StyleSheet.create({
         marginHorizontal:10,
         color:'#22b6c0'
       },
+      txtName1:{
+        fontWeight:'bold',
+        fontSize:15,
+        marginHorizontal:10,
+        color:'lightgray'
+      },
       imgOption:{
         borderWidth:0.7,
         width:70,height:35,

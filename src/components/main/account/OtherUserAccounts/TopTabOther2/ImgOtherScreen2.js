@@ -20,16 +20,18 @@ const ImgOtherScreen2 = ({navigation, route}) => {
     const onGetPosts = async () => {
       try {
         const res = await getPostByUserId(account._id);
-        const postsWithMedia = await Promise.all(
-          res.map(async post => {
-            const mediaResponse = await getMedia(post._id);
-            const media = mediaResponse;
-            return {
-              ...post,
-              media,
-            };
-          }),
-        );
+        const postsWithMedia = (
+          await Promise.all(
+            res.map(async post => {
+              const mediaResponse = await getMedia(post._id);
+              const media = mediaResponse;
+              return {
+                ...post,
+                media,
+              };
+            }),
+          )
+        ).filter(post => post.idTypePosts.name === 'Bài viết');
         setPosts(postsWithMedia);
       } catch (error) {
         console.error('Error fetching data:', error);

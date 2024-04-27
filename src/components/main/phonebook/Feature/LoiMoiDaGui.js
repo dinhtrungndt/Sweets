@@ -32,15 +32,17 @@ const LoiMoiDaGui = (props) => {
           return userResponse.user;
         });
         const users = await Promise.all(usersPromises);
+        console.log('usersYY',users)
         setUserInfo(users);
         const ListDaGui = users.map(obj => obj._id);
         await AsyncStorage.setItem('ListDaGui', JSON.stringify(ListDaGui));
+        console.log('Mảng đã được lưu vào AsyncStorage32');
         setInvitationCount(users.length);
       } else {
         console.log('No friend invitations found.');
       }
     } catch (error) {
-      console.error('Error fetching friend invitations:', error);
+      console.error('Error fetching friend invitationsxs:', error);
     }
   };
 

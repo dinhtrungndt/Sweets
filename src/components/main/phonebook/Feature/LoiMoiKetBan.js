@@ -10,7 +10,7 @@ const LoiMoiKetBan = (props) => {
   const [friendInvitations, setFriendInvitations] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
-
+  const [newFriendInfo, setNewFriendInfo] = useState(null);
  
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -57,6 +57,11 @@ const LoiMoiKetBan = (props) => {
       if (response && response.success) {
        await setFriendInvitations(prevInvitations => prevInvitations.filter(invitation => invitation._id !== item._id));
        await setUserInfo(prevUsers => prevUsers.filter(user => user._id !== item._id));
+        console.log('response',item._id)
+
+        setNewFriendInfo(item._id); // Truyền thông tin của người dùng mới kết bạn đến màn hình gần đây
+       
+       
       }  else if (response && response.message) {
         console.error('Error accepting friend request:', response.data.message);
       }

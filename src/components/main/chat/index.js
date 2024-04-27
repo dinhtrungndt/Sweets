@@ -48,6 +48,7 @@ const ChatScreen = props => {
     };
   }, []);
 
+  // getList
   const getListUser = async () => {
     try {
       const _id = await AsyncStorage.getItem('userId');

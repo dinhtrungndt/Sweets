@@ -9,6 +9,7 @@ import {
 import React, {useState, useEffect, useContext} from 'react';
 import {getAllLiveStream} from '../../../../services/livestream/LiveStreamService';
 import {UserContext} from '../../../../contexts/user/userContext';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const LiveStreamScreen = ({navigation, route}) => {
   const {user} = useContext(UserContext);
@@ -60,16 +61,13 @@ const LiveStreamScreen = ({navigation, route}) => {
     <View>
       <View style={styles.viewheader}>
         <TouchableOpacity style={styles.viewlive} onPress={handleback}>
-          <Image
-            style={styles.back}
-            source={require('../../../../assets/back_50px.png')}
-          />
+          <Ionicons name="chevron-back" size={26} color="black" left={20} />
         </TouchableOpacity>
         <View>
           <Text style={styles.txtlive}>Live Stream</Text>
         </View>
         <TouchableOpacity
-          style={{ flex: 1, alignItems: 'flex-end'}}
+          style={{flex: 1, alignItems: 'flex-end'}}
           onPress={() => handleLiveStream(true, user.id)}>
           <Image
             style={{marginRight: 20}}
@@ -171,7 +169,8 @@ const styles = StyleSheet.create({
     marginLeft: '5%',
   },
   viewlive: {
-    flex: 1, alignItems: 'flex-start'
+    flex: 1,
+    alignItems: 'flex-start',
   },
   viewheader: {
     flexDirection: 'row',
@@ -191,6 +190,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     color: 'black',
-    flex: 2, alignItems: 'center'
+    flex: 2,
+    alignItems: 'center',
   },
 });

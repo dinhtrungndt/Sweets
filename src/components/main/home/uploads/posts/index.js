@@ -36,6 +36,7 @@ import ModelBackground from './background';
 import AxiosInstance from '../../../../../helper/AxiosWeather';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import { useTranslation } from 'react-i18next';
+import EmojiPicker from 'react-native-emoji-picker';
 
 export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
@@ -59,6 +60,8 @@ export function AddsScreen({route, navigation}) {
   const [location, setLocation] = useState(null);
   const [locationData, setLocationData] = useState(null);
   const { t } = useTranslation();
+  const [selectedEmoji, setSelectedEmoji] = useState('');
+  const [emojiVisible, setEmojiVisible] = useState(false);
 
   // console.log('>>>>> idObjectValue: ' + idObjectValue);
   // console.log('>>>>> location: ' + JSON.stringify(location));
@@ -388,6 +391,11 @@ export function AddsScreen({route, navigation}) {
     navigation.navigate('LiveStreamHost', {isStream, liveID});
   };
 
+  const handleEmojiSelect = emoji => {
+    setSelectedEmoji(emoji);
+    setInputText(prevText => prevText + emoji);
+  };
+
   useEffect(() => {
     const dateString = Date.now();
     const randomSuffix = Math.floor(Math.random() * 10000000);
@@ -550,6 +558,7 @@ export function AddsScreen({route, navigation}) {
             placeholder="Bạn đang nghĩ gì?"
             multiline={true}
             onChangeText={handleInputChange}
+            value={inputText}
           />
           {image.length > 0 && (
             <>
@@ -619,7 +628,11 @@ export function AddsScreen({route, navigation}) {
             />
             <Text style={{fontSize: 12, paddingLeft: 10}}>Gắn thẻ</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.boder_image}>
+          <TouchableOpacity
+            style={styles.boder_image}
+            onPress={() => {
+              setEmojiVisible(true);
+            }}>
             <Image
               style={styles.avatar_icon_image}
               source={require('../../../../../assets/icon_feeling.png')}
@@ -661,7 +674,12 @@ export function AddsScreen({route, navigation}) {
               />
               <Text style={styles.bottomSheetText}>{t('tagOthers')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottomSheetItem}>
+            <TouchableOpacity
+              style={styles.bottomSheetItem}
+              onPress={() => {
+                setEmojiVisible(true);
+                hideBottomSheet();
+              }}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_feeling.png')}
@@ -716,6 +734,32 @@ export function AddsScreen({route, navigation}) {
           </View>
         )}
       </View>
+      {emojiVisible && (
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <EmojiPicker
+            onEmojiSelected={emoji => handleEmojiSelect(emoji)}
+            showSearchBar={false}
+            showSectionTitles={false}
+            showTabs={false}
+            style={{
+              height: 300,
+              position: 'absolute',
+              bottom: 0,
+              width: '100%',
+            }}
+          />
+          <TouchableOpacity onPress={() => setEmojiVisible(false)}>
+            <Image
+              style={styles.headerIcon}
+              source={require('../../../../../assets/icon_delete.png')}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
       {/* modal  */}
       <Modal
         animationType="fade"

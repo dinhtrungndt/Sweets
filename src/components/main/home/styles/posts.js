@@ -219,4 +219,12 @@ export const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
+  share_container: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 5,
+    margin: 10,
+    marginTop: 0,
+    padding: 0,
+  },
 });
