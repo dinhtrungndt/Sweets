@@ -163,7 +163,7 @@ const ChatScreenIn = ({route, navigation}) => {
                 <Image source={{uri: receiver.avatar}} style={styles.avatar} />
                 <Text style={styles.name_user}>{receiver.name}</Text>
               </TouchableOpacity>
-              {console.log('>>>>>>>>>>>. iteiitemmm ', receiver)}
+              {/* {console.log('>>>>>>>>>>>. iteiitemmm ', receiver)} */}
             </>
           )}
         </View>

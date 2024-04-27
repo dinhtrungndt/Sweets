@@ -12,7 +12,7 @@ const RenderComment = ({
   setCommentContent,
   setParentId,
 }) => {
-  console.log('RenderComment', comment);
+  // console.log('RenderComment', comment);
   const renderChildComments = childComments => {
     return childComments.map((childComment, index) => (
       <View

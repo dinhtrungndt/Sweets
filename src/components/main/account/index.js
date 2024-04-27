@@ -109,7 +109,7 @@ const AccountScreen = props => {
         <TouchableOpacity
           style={styles.btnIcon}
           onPress={() => {
-            console.log('>>>>>>>>> video call');
+            // console.log('>>>>>>>>> video call');
           }}>
           <Image
             style={styles.imgIcon}

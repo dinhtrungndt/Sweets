@@ -52,7 +52,7 @@ const AllPostsSearch = ({
   showListHistorySearch,
   updatedListUserSearch,
   isLoading,
-  fetchFriendInvitations
+  fetchFriendInvitations,
 }) => {
   const [post, setPost] = useState(posts);
   const {user} = useContext(UserContext);
@@ -72,10 +72,7 @@ const AllPostsSearch = ({
 
   // console.log('listUserSearch', listUserSearch);
 
-  useEffect(() => {
-   
-  }, []);
-
+  useEffect(() => {}, []);
 
   const handleButtonPress = (user, actionType) => {
     return () => {
@@ -88,14 +85,13 @@ const AllPostsSearch = ({
       const userId = await AsyncStorage.getItem('userId');
       let endpoint = '';
       let requestData = {}; // Object chứa dữ liệu cần truyền vào endpoint
-  
+
       switch (actionType) {
         case 'addFriend':
           endpoint = '/friend/send-friend-request';
           requestData = {
             idFriendSender: userId,
             idFriendReceiver: user._id,
-           
           };
           break;
         case 'backRequest':
@@ -103,7 +99,6 @@ const AllPostsSearch = ({
           requestData = {
             idFriendSender: userId,
             idFriendReceiver: user._id,
-           
           };
           break;
         // Các case khác tương tự
@@ -111,16 +106,14 @@ const AllPostsSearch = ({
           endpoint = 'friend/accept-friend-request';
           requestData = {
             idFriendSender: user._id,
-        idFriendReceiver: userId
-          
+            idFriendReceiver: userId,
           };
           break;
-          case 'unfriend':
+        case 'unfriend':
           endpoint = 'friend/cancel-friend-request';
           requestData = {
             idFriendSender: userId,
             idFriendReceiver: user._id,
-           
           };
           break;
         default:
@@ -132,18 +125,15 @@ const AllPostsSearch = ({
             // Các thuộc tính khác cho mặc định nếu cần
           };
       }
-  
+
       const response = await AxiosInstance().post(endpoint, requestData);
-      console.log('responesss',response)
-      fetchFriendInvitations()
+      // console.log('responesss',response)
+      fetchFriendInvitations();
     } catch (error) {
       console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
     }
   };
-  
 
-
-  
   const handleLike = async idPosts => {
     try {
       const idUsers = user.user._id;
@@ -469,8 +459,7 @@ const AllPostsSearch = ({
                             />
                             <Text style={styles.textIntroduce}>Đòng ý</Text>
                           </TouchableOpacity>
-                        ) : 
-                         user.CheckALL ? (
+                        ) : user.CheckALL ? (
                           <TouchableOpacity
                             style={stylesIn.btnAddFriend}
                             onPress={handleButtonPress(user, 'unfriend')}>
@@ -480,18 +469,13 @@ const AllPostsSearch = ({
                             />
                             <Text style={styles.textIntroduce}>Bạn bè</Text>
                           </TouchableOpacity>
-                        ):
-                        (
-                          <TouchableOpacity
-                            style={stylesIn.btnAddFriend}
-                           >
+                        ) : (
+                          <TouchableOpacity style={stylesIn.btnAddFriend}>
                             <Image
                               style={stylesIn.imgAddFriend}
                               source={require('../../../../../../assets/icon_add_friends.png')}
                             />
-                            <Text style={styles.textIntroduce}>
-                             xxx
-                            </Text>
+                            <Text style={styles.textIntroduce}>xxx</Text>
                           </TouchableOpacity>
                         )}
                       </View>
