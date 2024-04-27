@@ -31,7 +31,7 @@ const OtherUserA = ({navigation, route}) => {
   const [friendsCount, setFriendsCount] = useState(0);
   const [updatedListUserSearch, setUpdatedListUserSearch] = useState([]);
 
-  // console.log('updatedListUserSearch',updatedListUserSearch)
+  // console.log('updatedListUserSearch', updatedListUserSearch);
   useEffect(() => {
     const fetchFriendsCount = async () => {
       try {
@@ -307,10 +307,14 @@ const OtherUserA = ({navigation, route}) => {
               <Text style={styles.txtFriendsNumber}>{friendsCount}</Text>
               <Text style={styles.txtFriends}>{t('friends')}</Text>
             </View>
+            {/* {console.log(
+              'updatedListUserSearchupdatedListUserSearch',
+              updatedListUserSearch[0]?.CheckGui,
+            )} */}
             <View style={styles.containerAdd}>
-              {!updatedListUserSearch.CheckGui &&
-              !updatedListUserSearch.CheckNhan &&
-              !updatedListUserSearch.CheckALL ? (
+              {!updatedListUserSearch[0]?.CheckGui &&
+              !updatedListUserSearch[0]?.CheckNhan &&
+              !updatedListUserSearch[0]?.CheckALL ? (
                 <TouchableOpacity
                   style={styles.btnAddFriend}
                   onPress={handleButtonPress(account, 'addFriend')}>
@@ -320,38 +324,34 @@ const OtherUserA = ({navigation, route}) => {
                   />
                   <Text style={styles.textIntroduce}>Thêm bạn bè</Text>
                 </TouchableOpacity>
-              ) : updatedListUserSearch.CheckGui ? (
+              ) : updatedListUserSearch[0]?.CheckGui ? (
                 <>
-                  {/* {console.log(
-                    'updatedListUserSearchupdatedListUserSearch',
-                    updatedListUserSearch.CheckGui,
-                  )} */}
                   <TouchableOpacity
                     style={styles.btnAddFriend}
                     onPress={handleButtonPress(account, 'backRequest')}>
                     <Image
-                      style={stylesIn.imgAddFriend}
+                      style={styles.imgAddFriend}
                       source={require('../../../../assets/icon_add_friends.png')}
                     />
                     <Text style={styles.textIntroduce}>Thu hồi</Text>
                   </TouchableOpacity>
                 </>
-              ) : updatedListUserSearch.CheckNhan ? (
+              ) : updatedListUserSearch[0]?.CheckNhan ? (
                 <TouchableOpacity
                   style={styles.btnAddFriend}
                   onPress={handleButtonPress(account, 'acceptRequest')}>
                   <Image
-                    style={stylesIn.imgAddFriend}
+                    style={styles.imgAddFriend}
                     source={require('../../../../assets/icon_add_friends.png')}
                   />
                   <Text style={styles.textIntroduce}>Đòng ý</Text>
                 </TouchableOpacity>
-              ) : updatedListUserSearch.CheckALL ? (
+              ) : updatedListUserSearch[0]?.CheckALL ? (
                 <TouchableOpacity
                   style={styles.btnAddFriend}
                   onPress={handleButtonPress(account, 'unfriend')}>
                   <Image
-                    style={stylesIn.imgAddFriend}
+                    style={styles.imgAddFriend}
                     source={require('../../../../assets/icon_add_friends.png')}
                   />
                   <Text style={styles.textIntroduce}>Bạn bè</Text>

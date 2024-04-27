@@ -58,7 +58,7 @@ const OtherFriend = props => {
           user._id !== userId &&
           !friendsFromStorage.friendsList.includes(user._id),
       );
-      console.log('filteredUsersfilteredUsers', filteredUsers);
+      // console.log('filteredUsersfilteredUsers', filteredUsers);
       // Tính toán số lượng bạn chung và lưu vào mảng filteredUsers
       await Promise.all(
         filteredUsers.map(async item => {
@@ -74,7 +74,7 @@ const OtherFriend = props => {
             );
 
             item.matchingFriends = matchingFriends;
-            console.log('ress', item.matchingFriends);
+            // console.log('ress', item.matchingFriends);
           } catch (error) {
             console.error('Lỗi khi xem danh sách bạn bè:', error);
           }
