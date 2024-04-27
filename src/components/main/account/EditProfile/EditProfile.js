@@ -8,32 +8,33 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import React, { useCallback, useContext, useState, useEffect } from 'react';
-import { UserContext } from '../../../../contexts/user/userContext';
-import { updateProfile } from '../../../../services/user/userService';
+import React, {useCallback, useContext, useState, useEffect} from 'react';
+import {UserContext} from '../../../../contexts/user/userContext';
+import {updateProfile} from '../../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { useTranslation } from 'react-i18next';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useTranslation} from 'react-i18next';
 // styles
-import { styles } from '../style/editprofile';
+import {styles} from '../style/editprofile';
 
 // library
 import CheckBox from '@react-native-community/checkbox';
 import DatePicker from 'react-native-date-picker';
-import { set } from 'date-fns';
+import {set} from 'date-fns';
 
-const EditProfile = props => {
-  const { navigation } = props;
-  const { user, setUser } = useContext(UserContext);
-
+const EditProfile = ({navigation, route}) => {
+  // const {user, setUser} = useContext(UserContext);
+  const {user} = route?.params;
   const [loading, setLoading] = useState(false);
   const [modalVisibleEdit, setModalVisibleEdit] = useState(false);
   const [modalVisibleDate, setModalVisibleDate] = useState(false);
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [isGender, setIsGender] = useState(user ? user.user.gender : '');
   const [editedName, setEditedName] = useState(user ? user.user.name : '');
   const [editedNgaysinh, setEditedNgaysinh] = useState(
-    user && user.user && user.user.date !== 'null' ? user.user.date : 'Chưa cập nhật',
+    user && user.user && user.user.date !== 'null'
+      ? user.user.date
+      : 'Chưa cập nhật',
   );
 
   const handleEdit = () => {
@@ -56,10 +57,14 @@ const EditProfile = props => {
     setIsGender(selectedGender);
   };
 
-   useEffect(() => {
+  useEffect(() => {
     setEditedName(user ? user.user.name : '');
     setIsGender(user ? user.user.gender : '');
-    setEditedNgaysinh(user && user.user && user.user.date !== 'null' ? user.user.date : 'Chưa cập nhật');
+    setEditedNgaysinh(
+      user && user.user && user.user.date !== 'null'
+        ? user.user.date
+        : 'Chưa cập nhật',
+    );
   }, [user]);
 
   const handleSave = useCallback(async () => {
@@ -90,7 +95,7 @@ const EditProfile = props => {
             style={styles.imgCover}
             source={
               user && user.user.coverImage
-                ? { uri: user.user.coverImage }
+                ? {uri: user.user.coverImage}
                 : require('../../../../assets/diana.jpg')
             }
           />
@@ -100,7 +105,7 @@ const EditProfile = props => {
             style={styles.imgAvatar}
             source={
               user && user.user.avatar
-                ? { uri: user.user.avatar }
+                ? {uri: user.user.avatar}
                 : require('../../../../assets/diana.jpg')
             }
           />
@@ -108,10 +113,7 @@ const EditProfile = props => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.btnBack}>
-          <MaterialIcons
-            name='arrow-back'
-            color={'#000000'}
-            size={30} />
+          <MaterialIcons name="arrow-back" color={'#000000'} size={30} />
         </TouchableOpacity>
         <View style={styles.editFrame}>
           <Text style={styles.txt1}>{t('personalInformation')}</Text>
@@ -147,12 +149,14 @@ const EditProfile = props => {
               onPress={() => setModalVisibleEdit(!modalVisibleEdit)}
               style={styles.btnCancelEdit}>
               <MaterialIcons
-                name='arrow-back'
+                name="arrow-back"
                 size={30}
                 color={'#FFFFFF'}
                 style={styles.imgAvt}
               />
-              <Text style={styles.txtCancelEdit}>{t('editPersonalInformation')}</Text>
+              <Text style={styles.txtCancelEdit}>
+                {t('editPersonalInformation')}
+              </Text>
             </TouchableOpacity>
             <View>
               <TextInput
@@ -184,7 +188,7 @@ const EditProfile = props => {
                 modal
                 mode="date"
                 open={modalVisibleDate}
-                date={set(new Date(), { year: 2000 }, editedNgaysinh)}
+                date={set(new Date(), {year: 2000}, editedNgaysinh)}
                 onConfirm={onConfirmDate}
                 onCancel={() => {
                   setModalVisibleDate(false);
@@ -196,21 +200,21 @@ const EditProfile = props => {
                 style={styles.CheckBox}
                 value={isGender === 'Nữ'}
                 onValueChange={() => handleCheckboxChange('Nữ')}
-                tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
+                tintColors={{true: '#22b6c0', false: '#b0b4ba'}}
               />
               <Text style={styles.txtCheckbox}>{t('female')}</Text>
               <CheckBox
                 style={styles.CheckBox}
                 value={isGender === 'Nam'}
                 onValueChange={() => handleCheckboxChange('Nam')}
-                tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
+                tintColors={{true: '#22b6c0', false: '#b0b4ba'}}
               />
               <Text style={styles.txtCheckbox}>{t('male')}</Text>
               <CheckBox
                 style={styles.CheckBox}
                 value={isGender === 'Khác'}
                 onValueChange={() => handleCheckboxChange('Khác')}
-                tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
+                tintColors={{true: '#22b6c0', false: '#b0b4ba'}}
               />
               <Text style={styles.txtCheckbox}>{t('other')}</Text>
             </View>

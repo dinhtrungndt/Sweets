@@ -1,17 +1,33 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {UserContext} from '../../../../contexts/user/userContext';
-import Fontisto from 'react-native-vector-icons/Fontisto'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { useTranslation } from 'react-i18next';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useTranslation} from 'react-i18next';
 // styles
 import {styles} from '../style/AccountAndSecurity';
+import {getUser} from '../../../../services/user/userService';
 
 const AccountAndSecurity = props => {
   const {navigation} = props;
   const {user} = useContext(UserContext);
-  const { t, i18n } = useTranslation();
+  const [userA, setUserA] = useState(user);
+  const {t, i18n} = useTranslation();
 
+  const onGetUserId = async () => {
+    try {
+      const res = await getUser(user.user._id);
+      setUserA(res);
+    } catch (error) {
+      console.log('getUser error', error);
+    }
+  };
+
+  useEffect(() => {
+    onGetUserId();
+  }, []);
+
+  // console.log('user:', userA.user.gender);
   return (
     <View>
       <TouchableOpacity
@@ -19,7 +35,7 @@ const AccountAndSecurity = props => {
         style={styles.btnBack}>
         <MaterialIcons
           style={styles.imgBack}
-          name='arrow-back'
+          name="arrow-back"
           color={'#FFFFFF'}
           size={30}
         />
@@ -27,7 +43,9 @@ const AccountAndSecurity = props => {
       </TouchableOpacity>
       <View style={styles.bodyAccount}>
         <Text style={styles.txtAccount}>{t('account')}</Text>
-        <TouchableOpacity style={styles.userFrame} onPress={() => navigation.navigate('EditProfile')}>
+        <TouchableOpacity
+          style={styles.userFrame}
+          onPress={() => navigation.navigate('EditProfile', {user: userA})}>
           <Image
             style={styles.imgAvatar}
             source={
@@ -55,7 +73,9 @@ const AccountAndSecurity = props => {
             source={require('../../../../assets/icon_next.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.qrFrame} onPress={() => navigation.navigate('MyQRcode')}>
+        <TouchableOpacity
+          style={styles.qrFrame}
+          onPress={() => navigation.navigate('MyQRcode')}>
           <Image
             style={styles.imgEmail}
             source={require('../../../../assets/qr-scan2.png')}
@@ -92,7 +112,9 @@ const AccountAndSecurity = props => {
             source={require('../../../../assets/icon_next.png')}
           />
         </TouchableOpacity> */}
-        <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')} style={styles.qrFrame}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ChangePassword')}
+          style={styles.qrFrame}>
           <Image
             style={styles.imgEmail}
             source={require('../../../../assets/icon_lock.png')}
