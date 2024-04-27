@@ -31,7 +31,7 @@ const OtherUserA = ({navigation, route}) => {
   const [friendsCount, setFriendsCount] = useState(0);
   const [updatedListUserSearch, setUpdatedListUserSearch] = useState([]);
 
-  // console.log('updatedListUserSearch',updatedListUserSearch)
+   console.log('updatedListUserSearch',updatedListUserSearch)
   useEffect(() => {
     const fetchFriendsCount = async () => {
       try {
@@ -308,6 +308,10 @@ const OtherUserA = ({navigation, route}) => {
               <Text style={styles.txtFriends}>{t('friends')}</Text>
             </View>
             <View style={styles.containerAdd}>
+            {console.log(
+                    'updatedListUserSearchupdatedListUserSearch',
+                    updatedListUserSearch.CheckGui,
+                  )}
               {!updatedListUserSearch.CheckGui &&
               !updatedListUserSearch.CheckNhan &&
               !updatedListUserSearch.CheckALL ? (
@@ -322,10 +326,7 @@ const OtherUserA = ({navigation, route}) => {
                 </TouchableOpacity>
               ) : updatedListUserSearch.CheckGui ? (
                 <>
-                  {/* {console.log(
-                    'updatedListUserSearchupdatedListUserSearch',
-                    updatedListUserSearch.CheckGui,
-                  )} */}
+                 
                   <TouchableOpacity
                     style={styles.btnAddFriend}
                     onPress={handleButtonPress(account, 'backRequest')}>
