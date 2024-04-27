@@ -1,16 +1,6 @@
 const { StyleSheet } = require('react-native');
 
 export const styles = StyleSheet.create({
-    modalContainerYourself: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#FFFFFF',
-    },
-    btnBackyourself: {
-        flexDirection: 'row',
-        width: '100%',
-        height: 60,
-    },
     body: {
         flex: 1,
         backgroundColor: '#E5E5E5',
@@ -173,7 +163,7 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         alignSelf: 'center',
-        marginTop: 15,
+        marginTop: 10,
         flexDirection: 'row'
     },
     textIntroduce: {
@@ -190,7 +180,7 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         alignSelf: 'center',
-        marginTop: 15,
+        marginTop: 10,
         flexDirection: 'row',
         marginBottom: 10,
     },

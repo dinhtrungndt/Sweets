@@ -21,6 +21,8 @@ export const GetRouteNameAccount = route => {
     return 'none';
   } else if (routeName?.includes('SavePostsScreen')) {
     return 'none';
+  } else if (routeName?.includes('MyQRcode')) {
+    return 'none';
   }
   return 'flex';
 };

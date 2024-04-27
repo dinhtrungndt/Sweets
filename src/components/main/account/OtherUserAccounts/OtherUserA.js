@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // screens
 import PostOtherScreen from './TopTabOther/PostOtherScreen';
 import ImgOtherScreen from './TopTabOther/ImgOtherScreen';
+import OtherStoryScreen from './TopTabOther/OtherStoryScreen';
 // styles
 import { styles } from '../style/otherUserA';
 import { UserContext } from '../../../../contexts/user/userContext';
@@ -81,7 +82,6 @@ const OtherUserA = ({ navigation, route }) => {
                 />
               </TouchableOpacity>
             )}
-            {/* <Text style={styles.textName}>{userData.name}</Text> */}
             <Text style={styles.textName}>{accountzzz?.name}</Text>
             <View style={styles.containerFriends}>
               <Text style={styles.txtFriendsNumber}>{friendsCount}</Text>
@@ -182,7 +182,6 @@ const OtherUserA = ({ navigation, route }) => {
                 />
               </TouchableOpacity>
             )}
-            {/* <Text style={styles.textName}>{userData.name}</Text> */}
             <Text style={styles.textName}>{account.idUsers?.name}</Text>
             <View style={styles.containerFriends}>
               <Text style={styles.txtFriendsNumber}>{friendsCount}</Text>
@@ -250,6 +249,11 @@ const OtherUserA = ({ navigation, route }) => {
               name="Ảnh"
               initialParams={{ account: account }}
               component={ImgOtherScreen}
+            />
+            <Tab.Screen
+              name="Story"
+              initialParams={{ account: account }}
+              component={OtherStoryScreen}
             />
           </Tab.Navigator>
         </View>

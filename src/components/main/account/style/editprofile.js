@@ -138,14 +138,16 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 15,
+        alignSelf: 'center',
     },
     CheckBox: {
         width: 30,
         height: 30,
         margin: 6,
-        marginLeft: 45,
+        marginLeft: 12,
     },
     txtCheckbox: {
+        width: 60,
         fontFamily: 'Poppins',
         fontStyle: 'normal',
         fontSize: 18,

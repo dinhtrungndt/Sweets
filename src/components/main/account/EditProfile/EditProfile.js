@@ -13,6 +13,7 @@ import { UserContext } from '../../../../contexts/user/userContext';
 import { updateProfile } from '../../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { useTranslation } from 'react-i18next';
 // styles
 import { styles } from '../style/editprofile';
 
@@ -28,6 +29,7 @@ const EditProfile = props => {
   const [loading, setLoading] = useState(false);
   const [modalVisibleEdit, setModalVisibleEdit] = useState(false);
   const [modalVisibleDate, setModalVisibleDate] = useState(false);
+  const { t } = useTranslation();
   const [isGender, setIsGender] = useState(user ? user.user.gender : '');
   const [editedName, setEditedName] = useState(user ? user.user.name : '');
   const [editedNgaysinh, setEditedNgaysinh] = useState(
@@ -112,21 +114,21 @@ const EditProfile = props => {
             size={30} />
         </TouchableOpacity>
         <View style={styles.editFrame}>
-          <Text style={styles.txt1}>Thông tin cá nhân</Text>
+          <Text style={styles.txt1}>{t('personalInformation')}</Text>
           <View style={styles.Frame}>
-            <Text style={styles.txtTtcn}>Họ & Tên: </Text>
+            <Text style={styles.txtTtcn}>{t('fullName')}:</Text>
             <Text style={styles.txtTtcn1}>{editedName}</Text>
           </View>
           <View style={styles.Frame}>
-            <Text style={styles.txtTtcn}>Giới tính: </Text>
+            <Text style={styles.txtTtcn}>{t('gender')}:</Text>
             <Text style={styles.txtTtcn1}>{isGender}</Text>
           </View>
           <View style={styles.Frame}>
-            <Text style={styles.txtTtcn}>Ngày sinh: </Text>
+            <Text style={styles.txtTtcn}>{t('dateOfBirth')}:</Text>
             <Text style={styles.txtTtcn1}>{editedNgaysinh}</Text>
           </View>
           <TouchableOpacity onPress={handleEdit} style={styles.btnEdit}>
-            <Text style={styles.txtEdit}>Chỉnh sửa</Text>
+            <Text style={styles.txtEdit}>{t('edit')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -150,7 +152,7 @@ const EditProfile = props => {
                 color={'#FFFFFF'}
                 style={styles.imgAvt}
               />
-              <Text style={styles.txtCancelEdit}>Chỉnh sửa thông tin</Text>
+              <Text style={styles.txtCancelEdit}>{t('editPersonalInformation')}</Text>
             </TouchableOpacity>
             <View>
               <TextInput
@@ -196,27 +198,27 @@ const EditProfile = props => {
                 onValueChange={() => handleCheckboxChange('Nữ')}
                 tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
               />
-              <Text style={styles.txtCheckbox}>Nữ</Text>
+              <Text style={styles.txtCheckbox}>{t('female')}</Text>
               <CheckBox
                 style={styles.CheckBox}
                 value={isGender === 'Nam'}
                 onValueChange={() => handleCheckboxChange('Nam')}
                 tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
               />
-              <Text style={styles.txtCheckbox}>Nam</Text>
+              <Text style={styles.txtCheckbox}>{t('male')}</Text>
               <CheckBox
                 style={styles.CheckBox}
                 value={isGender === 'Khác'}
                 onValueChange={() => handleCheckboxChange('Khác')}
                 tintColors={{ true: '#22b6c0', false: '#b0b4ba' }}
               />
-              <Text style={styles.txtCheckbox}>Khác</Text>
+              <Text style={styles.txtCheckbox}>{t('other')}</Text>
             </View>
             <TouchableOpacity onPress={handleSave} style={styles.btnSave}>
               {loading ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
-                <Text style={styles.txtSave}>Cập nhật</Text>
+                <Text style={styles.txtSave}>{t('update')}</Text>
               )}
             </TouchableOpacity>
           </View>

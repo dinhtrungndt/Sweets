@@ -4,8 +4,8 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  ActivityIndicator,
-  Alert
+  Alert,
+  FlatList,
 } from 'react-native';
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import { UserContext } from '../../../../contexts/user/userContext';
@@ -20,6 +20,7 @@ import { uploadImageStatus } from '../../../../services/home/homeService';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import PostScreen from './TopTab/PostScreen';
 import ImgScreen from './TopTab/ImgScreen';
+import MyStoryScreen from './TopTab/MyStoryScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useTranslation } from 'react-i18next';
@@ -293,14 +294,14 @@ const Profile = props => {
               style={styles.imgAvt}
               source={require('../../../../assets/account.png')}
             />
-            <Text style={styles.txtShowImg}>Xem ảnh bìa</Text>
+            <Text style={styles.txtShowImg}>{t('seeCoverPhoto')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={openCameraCover} style={styles.btnShowImg}>
             <Image
               style={styles.imgAvt}
               source={require('../../../../assets/icon_camera_comment.png')}
             />
-            <Text style={styles.txtShowImg}>Chụp ảnh mới</Text>
+            <Text style={styles.txtShowImg}>{t('takeNewPhoto')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={openLibraryCover}
@@ -309,7 +310,7 @@ const Profile = props => {
               style={styles.imgAvt}
               source={require('../../../../assets/icon_image.png')}
             />
-            <Text style={styles.txtShowImg}>Chọn ảnh trên máy</Text>
+            <Text style={styles.txtShowImg}>{t('chooseFromYourDevice')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnCancel}
@@ -318,7 +319,7 @@ const Profile = props => {
               style={styles.imgAvt}
               source={require('../../../../assets/icon_delete.png')}
             />
-            <Text style={styles.txtCancel}>Hủy</Text>
+            <Text style={styles.txtCancel}>{t('cancel')}</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -334,21 +335,21 @@ const Profile = props => {
               style={styles.imgAvt}
               source={require('../../../../assets/account.png')}
             />
-            <Text style={styles.txtShowImg}>Xem ảnh đại diện</Text>
+            <Text style={styles.txtShowImg}>{t('seeProfilePicture')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={openCamera} style={styles.btnShowImg}>
             <Image
               style={styles.imgAvt}
               source={require('../../../../assets/icon_camera_comment.png')}
             />
-            <Text style={styles.txtShowImg}>Chụp ảnh mới</Text>
+            <Text style={styles.txtShowImg}>{t('takeNewPhoto')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={openLibrary} style={styles.btnShowImg}>
             <Image
               style={styles.imgAvt}
               source={require('../../../../assets/icon_image.png')}
             />
-            <Text style={styles.txtShowImg}>Chọn ảnh trên máy</Text>
+            <Text style={styles.txtShowImg}>{t('chooseFromYourDevice')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.btnCancel}
@@ -357,7 +358,7 @@ const Profile = props => {
               style={styles.imgAvt}
               source={require('../../../../assets/icon_delete.png')}
             />
-            <Text style={styles.txtCancel}>Hủy</Text>
+            <Text style={styles.txtCancel}>{t('cancel')}</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -384,6 +385,7 @@ const Profile = props => {
         }}>
         <Tab.Screen name="Bài viết" component={PostScreen} />
         <Tab.Screen name="Ảnh" component={ImgScreen} />
+        <Tab.Screen name="Story" component={MyStoryScreen} />
       </Tab.Navigator>
     </View>
   );

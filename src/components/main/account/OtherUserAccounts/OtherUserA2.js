@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // screens
 import PostOtherScreen2 from './TopTabOther2/PostOtherScreen2';
 import ImgOtherScreen2 from './TopTabOther2/ImgOtherScreen2'
+import OtherStoryScreen2 from './TopTabOther2/OtherStoryScreen2';
 // styles
 import { styles } from '../style/otherUserA';
 import { UserContext } from '../../../../contexts/user/userContext';;
@@ -29,7 +30,7 @@ const OtherUserA2 = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [friendsCount, setFriendsCount] = useState(0);
 
-  console.log('>>>>>>>>> accountzzz', accountzzz);
+  // console.log('>>>>>>>>> accountzzz', accountzzz);
 
   useEffect(() => {
     const fetchFriendsCount = async () => {
@@ -147,6 +148,11 @@ const OtherUserA2 = ({ navigation, route }) => {
             name="Ảnh"
             initialParams={{ account: accountzzz }}
             component={ImgOtherScreen2}
+          />
+          <Tab.Screen
+            name="Story"
+            initialParams={{ account: accountzzz }}
+            component={OtherStoryScreen2}
           />
         </Tab.Navigator>
       </View>

@@ -14,8 +14,6 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     imgAvt:{
-        width: 24,
-        height: 24,
         marginLeft: 10,
     },
     txtShowImg:{

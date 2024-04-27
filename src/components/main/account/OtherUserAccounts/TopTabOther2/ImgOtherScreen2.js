@@ -1,4 +1,4 @@
-import {Text, View, Image, ScrollView, FlatList} from 'react-native';
+import {Text, View, Image, FlatList, Modal, TouchableOpacity} from 'react-native';
 import React, {useState, useContext, useEffect} from 'react';
 import {getPostByUserId} from '../../../../../services/user/userService';
 import {getMedia} from '../../../../../services/home/homeService';
@@ -12,6 +12,8 @@ const ImgOtherScreen2 = ({navigation, route}) => {
   const {account} = route.params;
   const [posts, setPosts] = useState([]);
   const {t} = useTranslation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   // console.log('>>>>>>>>> accountttt', posts);
 
   useEffect(() => {
@@ -40,7 +42,7 @@ const ImgOtherScreen2 = ({navigation, route}) => {
     return (
       <View style={styles.containner}>
       {item.media.map((media, index) => (
-        <View key={index}>
+        <TouchableOpacity key={index} onPress={() => { setSelectedImage(media.url[0]); setModalVisible(true); }}>
           {media.type === 'image' ? (
             <Image source={{ uri: media.url[0] }} style={styles.posts} />
           ) : (
@@ -52,7 +54,7 @@ const ImgOtherScreen2 = ({navigation, route}) => {
               style={styles.posts}
             />
           )}
-        </View>
+        </TouchableOpacity>
       ))}
     </View>
     );
@@ -67,6 +69,21 @@ const ImgOtherScreen2 = ({navigation, route}) => {
         keyExtractor={(item, index) => index.toString()}
         numColumns={4}
       />
+       <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.containnerModal}>
+          <Image source={{ uri: selectedImage }} style={styles.imgModal} resizeMode="contain" />
+          <TouchableOpacity style={{ position: 'absolute', top: 20, right: 20 }} onPress={() => setModalVisible(false)}>
+            <Text style={styles.txtModal}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };

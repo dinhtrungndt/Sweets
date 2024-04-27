@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 
 const PostScreenAccount = () => {
   const { user } = useContext(UserContext);
+  // console.log('user:', user);
   const [posts, setPosts] = useState([]);
   const { t } = useTranslation();
 

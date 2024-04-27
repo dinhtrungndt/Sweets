@@ -4,12 +4,12 @@ import { changePassword } from '../../../../services/user/userService';
 import { UserContext } from '../../../../contexts/user/userContext';
 import { styles } from '../style/changePassword';
 import { useTranslation } from 'react-i18next';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const ChangePassword = (props) => {
     const { navigation } = props;
-    const { user } = useContext(UserContext);
+    const { user, onLogout } = useContext(UserContext);
     const { t } = useTranslation();
-
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -41,7 +41,12 @@ const ChangePassword = (props) => {
                     setNewPassword('');
                     setConfirmNewPassword('');
                     setLoading(false);
-                    Alert.alert('Thành công', 'Mật khẩu đã được thay đổi thành công !');
+                    Alert.alert('Thành công', 'Mật khẩu đã được thay đổi thành công !', [
+                        {
+                            text: 'OK',
+                            onPress: () => onLogout()
+                        }
+                    ]);
                 }
             } catch (error) {
                 console.log('Lỗi khi đổi mật khẩu:', error);
@@ -56,7 +61,12 @@ const ChangePassword = (props) => {
         <View style={styles.body}>
             <View style={styles.btnBackyourself}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Image source={require('../../../../assets/icon_back.png')} style={styles.imgAvt} />
+                    <MaterialIcons
+                        style={styles.imgAvt}
+                        name='arrow-back'
+                        color={'#FFFFFF'}
+                        size={30}
+                    />
                 </TouchableOpacity>
                 <Text style={styles.txtShowImg}>{t('changepassword')}</Text>
             </View>

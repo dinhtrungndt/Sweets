@@ -1,46 +1,64 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { Text, View, Image, FlatList, TouchableOpacity, Modal } from 'react-native';
-import { UserContext } from '../../../../../contexts/user/userContext';
-import { getPostByUserId } from '../../../../../services/user/userService';
-import { getMedia } from '../../../../../services/home/homeService';
-import Swiper from 'react-native-swiper';
-import { styles } from '../style/imgScreen';
-import { useTranslation } from 'react-i18next';
+import { View, Text, Image, FlatList, TouchableOpacity, Modal } from 'react-native'
+import React, { useState, useContext, useEffect } from 'react'
+import { getPostByUserId } from '../../../../../services/user/userService'
+import moment from 'moment'
 import VideoPlayer from 'react-native-video-player';
+import { getComments, getMedia, getReaction, getShare, likeByPost } from '../../../../../services/home/homeService'
+import { useTranslation } from 'react-i18next'
+// styles
+import { styles } from '../style/otherStoryScreen'
 
-const ImgScreen = () => {
-  const { user } = useContext(UserContext);
-  const [posts, setPosts] = useState([]);
-  const { t } = useTranslation();
+const OtherStoryScreen2 = ({ navigation, route }) => {
+  const { account } = route.params;
+  const [story, setStory] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    const onGetPosts = async () => {
+    const onGetStory = async () => {
       try {
-        const res = await getPostByUserId(user.user._id);
-        // console.log('res', res);
+        const res = await getPostByUserId(account._id);
+        const storyPosts = res.filter(post => post.idTypePosts.name === 'Story');
         const postsWithMedia = await Promise.all(
-          res.map(async post => {
+          storyPosts.map(async post => {
             const mediaResponse = await getMedia(post._id);
             const media = mediaResponse;
+
+            const reactionResponse = await getReaction(post._id);
+            const reaction = reactionResponse;
+
+            const commentResponse = await getComments(post._id);
+            const comment = commentResponse;
+
+            const shareResponse = await getShare(post._id);
+            const share = shareResponse;
+
             return {
               ...post,
               media,
+              reaction,
+              comment,
+              share,
             };
           }),
         );
-        setPosts(postsWithMedia);
+        setStory(postsWithMedia);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-    onGetPosts();
-  }, [user.user._id]);
+    onGetStory();
+  }, [account?._id]);
 
   const renderItem = ({ item }) => {
     return (
       <View style={styles.containner}>
+        {item.media.length === 0 && (
+          <View style={styles.containerText}>
+            <Text style={styles.txtContent}>{item.content}</Text>
+          </View>
+        )}
         {item.media.map((media, index) => (
           <TouchableOpacity key={index} onPress={() => { setSelectedImage(media.url[0]); setModalVisible(true); }}>
             {media.type === 'image' ? (
@@ -54,6 +72,11 @@ const ImgScreen = () => {
                 style={styles.posts}
               />
             )}
+            {item.content !== "upload" && (
+              <View style={styles.containerText}>
+                <Text style={styles.txtContent}>{item.content}</Text>
+              </View>
+            )}
           </TouchableOpacity>
         ))}
       </View>
@@ -62,14 +85,13 @@ const ImgScreen = () => {
 
   return (
     <View style={styles.body}>
-      <Text style={styles.txt1}>{t('myPhotosAndVideos')}</Text>
       <FlatList
-        data={posts}
+        data={story}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         numColumns={4}
       />
-       <Modal
+      <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
@@ -85,7 +107,7 @@ const ImgScreen = () => {
         </View>
       </Modal>
     </View>
-  );
-};
+  )
+}
 
-export default ImgScreen;
+export default OtherStoryScreen2

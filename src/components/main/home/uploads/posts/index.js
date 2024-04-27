@@ -35,6 +35,7 @@ import TabFriendUpLoad from './tags';
 import ModelBackground from './background';
 import AxiosInstance from '../../../../../helper/AxiosWeather';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import { useTranslation } from 'react-i18next';
 
 export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
@@ -57,6 +58,7 @@ export function AddsScreen({route, navigation}) {
   const [selectColor, setSelectColor] = useState(undefined);
   const [location, setLocation] = useState(null);
   const [locationData, setLocationData] = useState(null);
+  const { t } = useTranslation();
 
   // console.log('>>>>> idObjectValue: ' + idObjectValue);
   // console.log('>>>>> location: ' + JSON.stringify(location));
@@ -414,14 +416,14 @@ export function AddsScreen({route, navigation}) {
             source={require('../../../../../assets/icon_delete.png')}
           />
         </TouchableOpacity>
-        <Text style={styles.textHeader}>Tạo bài viết</Text>
+        <Text style={styles.textHeader}>{t('createPost')}</Text>
         <TouchableOpacity
           onPress={handlePostUpload}
           style={[
             styles.upHeaderButton,
             {backgroundColor: inputText || imagePath ? '#7ec1a5' : '#CBCBCB'},
           ]}>
-          <Text style={styles.textHeaderUp}>Đăng</Text>
+          <Text style={styles.textHeaderUp}>{t('post')}</Text>
         </TouchableOpacity>
       </View>
       <Text style={styles.lineHr} />
@@ -512,7 +514,7 @@ export function AddsScreen({route, navigation}) {
                       style={styles.body_chedo_icon}
                       source={require('../../../../../assets/upstory_world_icon.png')}
                     />
-                    <Text style={styles.body_chedo_text}> Công khai </Text>
+                    <Text style={styles.body_chedo_text}> {t('public')} </Text>
                   </>
                 ) : (
                   <>
@@ -605,7 +607,7 @@ export function AddsScreen({route, navigation}) {
               source={require('../../../../../assets/icon_image.png')}
             />
             <Text style={{fontSize: 12, paddingLeft: 10, color: '#000'}}>
-              Ảnh/video
+              {t('photo')}/video
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -645,7 +647,7 @@ export function AddsScreen({route, navigation}) {
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_image.png')}
               />
-              <Text style={styles.bottomSheetText}>Ảnh/video</Text>
+              <Text style={styles.bottomSheetText}>{t('photo')}/video</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomSheetItem}
@@ -657,14 +659,14 @@ export function AddsScreen({route, navigation}) {
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/user_tag_25px.png')}
               />
-              <Text style={styles.bottomSheetText}>Gắn thẻ người khác</Text>
+              <Text style={styles.bottomSheetText}>{t('tagOthers')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.bottomSheetItem}>
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_feeling.png')}
               />
-              <Text style={styles.bottomSheetText}>Cảm xúc/hoạt động</Text>
+              <Text style={styles.bottomSheetText}>{t('emotions/activity')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomSheetItem}
@@ -685,7 +687,7 @@ export function AddsScreen({route, navigation}) {
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_live.png')}
               />
-              <Text style={styles.bottomSheetText}>Video trực tiếp</Text>
+              <Text style={styles.bottomSheetText}>{t('liveVideo')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -697,7 +699,7 @@ export function AddsScreen({route, navigation}) {
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_text.png')}
               />
-              <Text style={styles.bottomSheetText}>Màu nền</Text>
+              <Text style={styles.bottomSheetText}>{t('backgroundColor')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={hideBottomSheet}>
               <Text
