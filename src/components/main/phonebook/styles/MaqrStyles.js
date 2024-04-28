@@ -82,6 +82,12 @@ const styles = StyleSheet.create({
         marginHorizontal:20,
         
       color:'#22b6c0'
+      },
+      imgQR:{
+        borderWidth:1,
+        borderColor:'blue',
+        justifyContent:'center',
+        alignItems:'center'
       }
   });
   
