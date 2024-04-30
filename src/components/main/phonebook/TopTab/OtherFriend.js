@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, FlatList, TouchableOpacity, Image, RefreshControl } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  RefreshControl,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import styles from '../styles/OtherFriendStyles';
-import LoiMoiDaGui, { ListDaGui } from '../Feature/LoiMoiDaGui';
+import LoiMoiDaGui, {ListDaGui} from '../Feature/LoiMoiDaGui';
 
-const OtherFriend = (props) => {
+const OtherFriend = props => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
-
-
     loadFilteredUsers();
   }, []);
 
@@ -20,21 +25,25 @@ const OtherFriend = (props) => {
       const storedData1 = await AsyncStorage.getItem('friendData');
       const storedDataArray1 = JSON.parse(storedData1);
       console.log('Mảng đã lấy từ AsyncStorageFrinedđ22:', storedData1);
-      
+
       const ListDaGui = await AsyncStorage.getItem('ListDaGui');
       const parsedListDaGui = JSON.parse(ListDaGui);
       console.log('Mảng đã lấy từ AsyncStorage:', parsedListDaGui);
       const ListDaNhan = await AsyncStorage.getItem('ListDaNhan');
       const parsedListDaNhan = JSON.parse(ListDaNhan);
       console.log('Mảng đã lấy từ AsyncStorage:222222', parsedListDaNhan);
-      const friendsFromStorage = await AxiosInstance().get(`/friend/friends/${userId}`);
-      console.log('friendsFromStoragessssssx',friendsFromStorage)
+      const friendsFromStorage = await AxiosInstance().get(
+        `/friend/friends/${userId}`,
+      );
+      console.log('friendsFromStoragessssssx', friendsFromStorage);
       const friendsResponse = await AxiosInstance().get('users/get-users');
       const friends = friendsResponse.users;
 
       const usersWithCommonFriends = friends.map(user => {
         if (user._id !== userId && user.friends) {
-          const commonFriends = user.friends.filter(friendId => loggedInUser.friends.includes(friendId));
+          const commonFriends = user.friends.filter(friendId =>
+            loggedInUser.friends.includes(friendId),
+          );
           return {
             ...user,
             commonFriendsCount: commonFriends.length,
@@ -45,27 +54,36 @@ const OtherFriend = (props) => {
       });
 
       const filteredUsers = usersWithCommonFriends.filter(
-        user => user._id !== userId && !friendsFromStorage.friendsList.includes(user._id),
+        user =>
+          user._id !== userId &&
+          !friendsFromStorage.friendsList.includes(user._id),
       );
-        console.log('filteredUsersfilteredUsers',filteredUsers)
+      // console.log('filteredUsersfilteredUsers', filteredUsers);
       // Tính toán số lượng bạn chung và lưu vào mảng filteredUsers
-      await Promise.all(filteredUsers.map(async (item) => {
-        try {
-          const response = await AxiosInstance().get(`/friend/friends/${item._id}`);
-          const listFriendOther = response.friendsList;
-          const matchingFriends = listFriendOther.filter(friend => storedDataArray1.some(storedFriend => storedFriend.id === friend.id));
+      await Promise.all(
+        filteredUsers.map(async item => {
+          try {
+            const response = await AxiosInstance().get(
+              `/friend/friends/${item._id}`,
+            );
+            const listFriendOther = response.friendsList;
+            const matchingFriends = listFriendOther.filter(friend =>
+              storedDataArray1.some(
+                storedFriend => storedFriend.id === friend.id,
+              ),
+            );
 
-          item.matchingFriends = matchingFriends;
-          console.log('ress',item.matchingFriends)
-
-        } catch (error) {
-          console.error('Lỗi khi xem danh sách bạn bè:', error);
-        }
-      }));
+            item.matchingFriends = matchingFriends;
+            // console.log('ress', item.matchingFriends);
+          } catch (error) {
+            console.error('Lỗi khi xem danh sách bạn bè:', error);
+          }
+        }),
+      );
 
       const updatedUsers = filteredUsers.map(obj => {
         // Tạo một bản sao mới của object với thuộc tính mới được thêm vào
-        return { ...obj, checkNhan: false, checkGui: false };
+        return {...obj, checkNhan: false, checkGui: false};
       });
 
       // Vòng lặp qua mảng updatedUsers
@@ -96,28 +114,30 @@ const OtherFriend = (props) => {
         return !isDuplicate;
       });
 
-      console.log('filteredUsers22222', updatedUsersWithoutDuplicates)
+      // console.log('filteredUsers22222', updatedUsersWithoutDuplicates)
       setFilteredUsers(updatedUsersWithoutDuplicates);
     } catch (error) {
       console.log('Lỗi khi tải danh sách bạn bè', error);
     }
   };
 
-  const handleFriendAction = async (selectedUserId) => {
+  const handleFriendAction = async selectedUserId => {
     try {
       const userId = await AsyncStorage.getItem('userId');
 
-      const response = await AxiosInstance().post('/friend/send-friend-request', {
-        idFriendSender: userId,
-        idFriendReceiver: selectedUserId,
-       
-      });
+      const response = await AxiosInstance().post(
+        '/friend/send-friend-request',
+        {
+          idFriendSender: userId,
+          idFriendReceiver: selectedUserId,
+        },
+      );
 
       if (response && response.success) {
         // Cập nhật lại thuộc tính checkGui của user sau khi gửi yêu cầu kết bạn thành công
         const updatedUsers = filteredUsers.map(user => {
           if (user._id === selectedUserId) {
-            return { ...user, checkGui: true }; // Thiết lập checkGui thành true
+            return {...user, checkGui: true}; // Thiết lập checkGui thành true
           }
           return user;
         });
@@ -136,7 +156,6 @@ const OtherFriend = (props) => {
       return str.slice(0, maxLength) + '...';
     }
   };
-  
 
   // Hàm này được gọi khi người dùng kéo xuống để làm mới
   const onRefresh = async () => {
@@ -153,48 +172,79 @@ const OtherFriend = (props) => {
         <FlatList
           data={filteredUsers}
           keyExtractor={item => item._id}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 }}>
-                <View style={{ flexDirection: 'row', marginVertical: 5 }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginVertical: 5,
+                }}>
+                <View style={{flexDirection: 'row', marginVertical: 5}}>
                   <TouchableOpacity style={styles.friendItem}>
                     <Image
                       source={{
-                        uri: item.avatar || 'https://res.cloudinary.com/dztqqxnqr/image/upload/v1704255997/p1vdyjxbnmt8btfuqoab.jpg',
+                        uri:
+                          item.avatar ||
+                          'https://res.cloudinary.com/dztqqxnqr/image/upload/v1704255997/p1vdyjxbnmt8btfuqoab.jpg',
                       }}
                       style={styles.avatar}
                     />
                   </TouchableOpacity>
-                  <View style={{ marginVertical: 10 }}>
-                  <Text style={styles.friendItemText}>{truncateString(item.name, 15)}</Text>
-                    <Text style={styles.friendItemText3}>Bạn chung: {item.matchingFriends ? item.matchingFriends.length : 0}</Text>
+                  <View style={{marginVertical: 10}}>
+                    <Text style={styles.friendItemText}>
+                      {truncateString(item.name, 15)}
+                    </Text>
+                    <Text style={styles.friendItemText3}>
+                      Bạn chung:{' '}
+                      {item.matchingFriends ? item.matchingFriends.length : 0}
+                    </Text>
 
-                    <View style={{ flexDirection: 'row', marginVertical: 3 }}>
-                      {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 0 && (
-                        item.matchingFriendsInfo.slice(0, 1).map((friendInfo, index) => (
-                          <View key={index} style={{ flexDirection: 'row' }}>
-                            
-                           <View>
-                        
-                           {item.matchingFriendsInfo && item.matchingFriendsInfo.length > 1 && (
-                        <Text style={{ color: 'black', fontSize: 12,fontWeight:'400' }}> và {item.matchingFriendsInfo.length - 1} bạn khác...</Text>
-                      )}
-                           </View>
-                          </View>
-                        ))
-                      )}
-                     
+                    <View style={{flexDirection: 'row', marginVertical: 3}}>
+                      {item.matchingFriendsInfo &&
+                        item.matchingFriendsInfo.length > 0 &&
+                        item.matchingFriendsInfo
+                          .slice(0, 1)
+                          .map((friendInfo, index) => (
+                            <View key={index} style={{flexDirection: 'row'}}>
+                              <View>
+                                {item.matchingFriendsInfo &&
+                                  item.matchingFriendsInfo.length > 1 && (
+                                    <Text
+                                      style={{
+                                        color: 'black',
+                                        fontSize: 12,
+                                        fontWeight: '400',
+                                      }}>
+                                      {' '}
+                                      và {item.matchingFriendsInfo.length -
+                                        1}{' '}
+                                      bạn khác...
+                                    </Text>
+                                  )}
+                              </View>
+                            </View>
+                          ))}
                     </View>
-
                   </View>
                 </View>
                 <TouchableOpacity
-                  style={[styles.imgOption, item.checkGui ? styles.touchableDisabled : null]}
+                  style={[
+                    styles.imgOption,
+                    item.checkGui ? styles.touchableDisabled : null,
+                  ]}
                   onPress={() => handleFriendAction(item._id)}
-                  disabled={item.checkGui}
-                >
-                  <Text style={[styles.friendItemText2, item.checkGui ? styles.textDisabled : null]}>
-                    {item.checkGui ? 'Thu hồi' : item.checkNhan ? 'Đồng ý' : 'Kết bạn'}
+                  disabled={item.checkGui}>
+                  <Text
+                    style={[
+                      styles.friendItemText2,
+                      item.checkGui ? styles.textDisabled : null,
+                    ]}>
+                    {item.checkGui
+                      ? 'Thu hồi'
+                      : item.checkNhan
+                      ? 'Đồng ý'
+                      : 'Kết bạn'}
                   </Text>
                 </TouchableOpacity>
               </View>

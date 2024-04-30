@@ -10,7 +10,7 @@ const CustomReaction = ({reactions, clone}) => {
 
   const handlePress = reaction => {
     setSelectedReaction(reaction);
-    console.log('Selected Reaction:', reaction.name);
+    // console.log('Selected Reaction:', reaction.name);
     clone(reaction.name);
   };
 

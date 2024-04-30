@@ -75,7 +75,6 @@ export default function AllTopTabSearch({navigation, route}) {
 
   const fetchFriendInvitations = async () => {
     try {
-     
       const userId = await AsyncStorage.getItem('userId');
       const response = await AxiosInstance().get(
         `/friend/friend-requests-sent/${userId}`,
@@ -84,7 +83,7 @@ export default function AllTopTabSearch({navigation, route}) {
         `/friend/friend-requests/${userId}`,
       );
       const response3 = await AxiosInstance().get(`/friend/friends/${userId}`);
-      console.log('re',response3)
+      // console.log('re',response3)
       if (response.success) {
         // console.log('Kết quả lời mời đã gửi', response.friendRequestsSent);
         const invitations = response.friendRequestsSent; //mảng đã gửi
@@ -96,7 +95,7 @@ export default function AllTopTabSearch({navigation, route}) {
             ...user,
             CheckGui: isInvited, // Kiểm tra xem user có trong danh sách lời mời gửi không
             CheckNhan: false, // Ban đầu, chưa có lời mời nào được chấp nhận
-            CheckALL:false
+            CheckALL: false,
           };
         });
         const invitations2 = response2.friendRequests;
@@ -123,8 +122,7 @@ export default function AllTopTabSearch({navigation, route}) {
           };
         });
         setUpdatedListUserSearch(updatedListAll);
-         console.log('mảng 3', updatedListAll);
-        
+        // console.log('mảng 3', updatedListAll);
       } else {
         console.log('No friend invitations found.');
       }

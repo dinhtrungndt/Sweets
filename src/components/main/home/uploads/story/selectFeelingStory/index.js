@@ -197,7 +197,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
     await launchCamera(options, takePhoto);
   }, []);
 
-  console.log(' -----------------> imageCloud', imageCloud);
+  // console.log(' -----------------> imageCloud', imageCloud);
 
   const handleUploadMedia = useCallback(async imageCloud => {
     try {

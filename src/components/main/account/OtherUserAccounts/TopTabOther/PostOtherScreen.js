@@ -86,7 +86,7 @@ const PostOtherScreen = ({navigation, route}) => {
           }
           return post;
         });
-        console.log('postsposts:', updatedPosts);
+        // console.log('postsposts:', updatedPosts);
 
         setPosts(updatedPosts);
       } else {

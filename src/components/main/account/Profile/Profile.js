@@ -7,29 +7,30 @@ import {
   Alert,
   FlatList,
 } from 'react-native';
-import React, { useContext, useState, useCallback, useEffect } from 'react';
-import { UserContext } from '../../../../contexts/user/userContext';
+import React, {useContext, useState, useCallback, useEffect} from 'react';
+import {UserContext} from '../../../../contexts/user/userContext';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { updateAvatar, updateCover } from '../../../../services/user/userService';
+import {updateAvatar, updateCover} from '../../../../services/user/userService';
 // style
-import { styles } from '../style/profile';
+import {styles} from '../style/profile';
 // library
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { uploadImageStatus } from '../../../../services/home/homeService';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {uploadImageStatus} from '../../../../services/home/homeService';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import PostScreen from './TopTab/PostScreen';
 import ImgScreen from './TopTab/ImgScreen';
 import MyStoryScreen from './TopTab/MyStoryScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import Toast from 'react-native-toast-message';
 
 const Tab = createMaterialTopTabNavigator();
 
 const Profile = props => {
-  const { navigation } = props;
-  const { t } = useTranslation();
+  const {navigation} = props;
+  const {t} = useTranslation();
 
   const [loading, setLoading] = useState(false);
   const [imageAvatar, setImageAvatar] = useState([]);
@@ -41,7 +42,7 @@ const Profile = props => {
   const [friendsCount, setFriendsCount] = useState(0);
   const [friendsList, setFriendsList] = useState([]);
 
-  const { user, setUser } = useContext(UserContext);
+  const {user, setUser} = useContext(UserContext);
   // console.log('>>>>>>>>>>>>>> user', user);
 
   const takePhotoAvatar = useCallback(async response => {
@@ -138,12 +139,28 @@ const Profile = props => {
           avatar: JSON.stringify(imageAvatarPath),
         });
         setLoading(false);
-        Alert.alert('Thông báo', 'Cập nhật ảnh đại diện thành công');
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Cập nhật ảnh đại diện thành công !',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 40,
+        });
       }
     } catch (error) {
       setLoading(false);
       console.error('Error updating avatar:', error);
-      Alert.alert('Thông báo', 'Cập nhật ảnh đại diện thất bại');
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Cập nhật ảnh đại diện thất bại !',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
     }
   }, [user.user._id, imageAvatarPath]);
 
@@ -155,12 +172,28 @@ const Profile = props => {
           coverImage: JSON.stringify(imageCoverPath),
         });
         setLoading(false);
-        Alert.alert('Thông báo', 'Cập nhật ảnh bìa thành công');
+        Toast.show({
+          type: 'success',
+          position: 'top',
+          text1: 'Cập nhật ảnh bìa thành công !',
+          visibilityTime: 2000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 40,
+        });
       }
     } catch (error) {
       setLoading(false);
       console.error('Error updating cover:', error);
-      Alert.alert('Thông báo', 'Cập nhật ảnh bìa thất bại');
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: 'Cập nhật ảnh bìa thất bại !',
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
     }
   }, [user.user._id, imageCoverPath]);
 
@@ -181,11 +214,13 @@ const Profile = props => {
           const response = await axiosInstance.get(`/friend/friends/${userId}`);
           // console.log('Danh sách bạn bè:', response);
           if (response.friendsList) {
-            const { friendsList } = response; // Truy cập trực tiếp vào 'friendsList'
+            const {friendsList} = response; // Truy cập trực tiếp vào 'friendsList'
             setFriendsList(friendsList);
             setFriendsCount(friendsList.length);
           } else {
-            console.log('Không tìm thấy danh sách bạn bè trong phản hồi từ server');
+            console.log(
+              'Không tìm thấy danh sách bạn bè trong phản hồi từ server',
+            );
           }
         } else {
           console.log('Không tìm thấy userId trong AsyncStorage');
@@ -205,7 +240,7 @@ const Profile = props => {
             style={styles.imgCover}
             source={
               user && user.user.coverImage
-                ? { uri: user.user.coverImage }
+                ? {uri: user.user.coverImage}
                 : require('../../../../assets/account.png')
             }
           />
@@ -213,7 +248,7 @@ const Profile = props => {
             <TouchableOpacity
               key={index}
               onPress={() => handleCoverUpdate(coverImage)}>
-              <Image style={styles.imgCover} source={{ uri: coverImage.uri }} />
+              <Image style={styles.imgCover} source={{uri: coverImage.uri}} />
             </TouchableOpacity>
           ))}
           <View style={styles.boderCamera}>
@@ -230,7 +265,7 @@ const Profile = props => {
             style={styles.imgAvatar}
             source={
               user && user.user.avatar
-                ? { uri: user.user.avatar }
+                ? {uri: user.user.avatar}
                 : require('../../../../assets/account.png')
             }
           />
@@ -238,7 +273,7 @@ const Profile = props => {
             <TouchableOpacity
               key={index}
               onPress={() => handleAvatarUpdate(avatar)}>
-              <Image style={styles.imgAvatar} source={{ uri: avatar.uri }} />
+              <Image style={styles.imgAvatar} source={{uri: avatar.uri}} />
             </TouchableOpacity>
           ))}
           <View style={styles.boderCameraAvatar}>
@@ -263,7 +298,7 @@ const Profile = props => {
           <Text style={styles.textIntroduce}>{t('addToNews')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => navigation.navigate('EditProfile', {user: user})}
           style={styles.btnEditProfile}>
           <Image
             style={styles.imgEdit}
@@ -287,7 +322,7 @@ const Profile = props => {
         animationType="slide"
         transparent={true}
         visible={modalVisibleCover}
-        onRequestClose={() => { }}>
+        onRequestClose={() => {}}>
         <View style={styles.modalContainerCoverImg}>
           <TouchableOpacity style={styles.btnShowImg}>
             <Image
@@ -328,7 +363,7 @@ const Profile = props => {
         animationType="slide"
         transparent={true}
         visible={modalVisibleAvatar}
-        onRequestClose={() => { }}>
+        onRequestClose={() => {}}>
         <View style={styles.modalContainerAvatar}>
           <TouchableOpacity style={styles.btnShowImg}>
             <Image
@@ -369,18 +404,19 @@ const Profile = props => {
           tabBarInactiveTintColor: '#bdc3c7',
           tabBarLabelStyle: {
             fontSize: 14,
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            textTransform: 'none',
           },
           tabBarItemStyle: {
-            width: 'auto'
+            width: 'auto',
           },
           tabBarIndicatorStyle: {
-            backgroundColor: '#22b6c0'
+            backgroundColor: '#22b6c0',
           },
           tabBarStyle: {
             backgroundColor: '#FFF',
             elevation: 1,
-            marginTop: 6
+            marginTop: 6,
           },
         }}>
         <Tab.Screen name="Bài viết" component={PostScreen} />

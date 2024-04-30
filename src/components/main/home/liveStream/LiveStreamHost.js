@@ -14,12 +14,12 @@ import {
 export default function LiveStreamHost({route, navigation}) {
   const {isStream, liveID} = route.params;
   const {user} = useContext(UserContext);
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<3333333333 user', user);
-  console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>''''''", isStream);
-  console.log(
-    '############################<<<<<>>>>>>>>>>> user',
-    user.user.avatar,
-  );
+  // console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<3333333333 user', user);
+  // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>''''''", isStream);
+  // console.log(
+  //   '############################<<<<<>>>>>>>>>>> user',
+  //   user.user.avatar,
+  // );
   const onAddLiveStream = async () => {
     if (!isStream) return;
     const response = await addLiveStream(
@@ -27,10 +27,10 @@ export default function LiveStreamHost({route, navigation}) {
       user.user.name,
       user.user.avatar,
     );
-    console.log(
-      '############################<<<<<>>>>>>>>>>> addLiveStream',
-      response,
-    );
+    // console.log(
+    //   '############################<<<<<>>>>>>>>>>> addLiveStream',
+    //   response,
+    // );
   };
   // xoa theo live id cung la xoa theo isuser
   const onDeleteLiveStream = async () => {
@@ -38,10 +38,10 @@ export default function LiveStreamHost({route, navigation}) {
       const response = await deleteLiveStream(user.id);
     }
     navigation.navigate('HomeScreen');
-    console.log(
-      '############################<<<<<>>>>>>>>>>> deleteLiveStream',
-      response,
-    );
+    // console.log(
+    //   '############################<<<<<>>>>>>>>>>> deleteLiveStream',
+    //   response,
+    // );
   };
   useEffect(() => {
     onAddLiveStream();

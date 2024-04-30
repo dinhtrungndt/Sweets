@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import React, { useContext, useState, useCallback, useEffect } from 'react';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import React, {useContext, useState, useCallback, useEffect} from 'react';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // screens
@@ -15,28 +15,28 @@ import PostOtherScreen from './TopTabOther/PostOtherScreen';
 import ImgOtherScreen from './TopTabOther/ImgOtherScreen';
 import OtherStoryScreen from './TopTabOther/OtherStoryScreen';
 // styles
-import { styles } from '../style/otherUserA';
-import { UserContext } from '../../../../contexts/user/userContext';
+import {styles} from '../style/otherUserA';
+import {UserContext} from '../../../../contexts/user/userContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import { useTranslation } from 'react-i18next';
-import { GetFriendById } from '../../../../services/home/friendService';
+import {useTranslation} from 'react-i18next';
+import {GetFriendById} from '../../../../services/home/friendService';
 
 const Tab = createMaterialTopTabNavigator();
 
-const OtherUserA = ({ navigation, route }) => {
-  const { account, accountzzz } = route?.params;
-  const { t } = useTranslation();
+const OtherUserA = ({navigation, route}) => {
+  const {account, accountzzz} = route?.params;
+  const {t} = useTranslation();
   const [loading, setLoading] = useState(false);
   const [friendsCount, setFriendsCount] = useState(0);
   const [updatedListUserSearch, setUpdatedListUserSearch] = useState([]);
 
-console.log('updatedListUserSearch',updatedListUserSearch)
+  // console.log('updatedListUserSearch', updatedListUserSearch);
   useEffect(() => {
     const fetchFriendsCount = async () => {
       try {
         const response = await GetFriendById(account.idUsers._id);
-        console.log('response:', response.friendsList.length);
+        // console.log('response:', response.friendsList.length);
         setFriendsCount(response.friendsList.length);
       } catch (error) {
         console.error('Lỗi khi lấy số lượng bạn bè:', error);
@@ -46,10 +46,8 @@ console.log('updatedListUserSearch',updatedListUserSearch)
     fetchFriendInvitations();
   }, [account]);
 
-
   const fetchFriendInvitations = async () => {
     try {
-
       const userId = await AsyncStorage.getItem('userId');
       const response = await AxiosInstance().get(
         `/friend/friend-requests-sent/${userId}`,
@@ -58,12 +56,11 @@ console.log('updatedListUserSearch',updatedListUserSearch)
         `/friend/friend-requests/${userId}`,
       );
       const response3 = await AxiosInstance().get(`/friend/friends/${userId}`);
-      console.log('re', response3)
+      // console.log('re', response3);
       if (response.success) {
         // console.log('Kết quả lời mời đã gửi', response.friendRequestsSent);
         const invitations = response.friendRequestsSent; //mảng đã gửi
-        const listUserSearch = [account]
-        console.log()
+        const listUserSearch = [account];
         const updatedList = listUserSearch.map(user => {
           const isInvited = invitations.some(
             invitation => invitation.idFriendReceiver === user.idUsers._id,
@@ -72,7 +69,7 @@ console.log('updatedListUserSearch',updatedListUserSearch)
             ...user,
             CheckGui: isInvited, // Kiểm tra xem user có trong danh sách lời mời gửi không
             CheckNhan: false, // Ban đầu, chưa có lời mời nào được chấp nhận
-            CheckALL: false
+            CheckALL: false,
           };
         });
         const invitations2 = response2.friendRequests;
@@ -98,10 +95,9 @@ console.log('updatedListUserSearch',updatedListUserSearch)
             CheckALL: isInvited, // Ban đầu, chưa có lời mời nào được chấp nhận
           };
         });
-        console.log('updatedListAll', updatedListAll)
-        console.log('mảng 33333', updatedListAll);
-        setUpdatedListUserSearch(updatedListAll)
-
+        // console.log('updatedListAll', updatedListAll);
+        // console.log('mảng 33333', updatedListAll);
+        setUpdatedListUserSearch(updatedListAll);
       } else {
         console.log('No friend invitations found.');
       }
@@ -128,7 +124,6 @@ console.log('updatedListUserSearch',updatedListUserSearch)
           requestData = {
             idFriendSender: userId,
             idFriendReceiver: account.idUsers._id,
-
           };
           break;
         case 'backRequest':
@@ -136,7 +131,6 @@ console.log('updatedListUserSearch',updatedListUserSearch)
           requestData = {
             idFriendSender: userId,
             idFriendReceiver: account.idUsers._id,
-
           };
           break;
         // Các case khác tương tự
@@ -144,8 +138,7 @@ console.log('updatedListUserSearch',updatedListUserSearch)
           endpoint = 'friend/accept-friend-request';
           requestData = {
             idFriendSender: account.idUsers._id,
-            idFriendReceiver: userId
-
+            idFriendReceiver: userId,
           };
           break;
         case 'unfriend':
@@ -153,7 +146,6 @@ console.log('updatedListUserSearch',updatedListUserSearch)
           requestData = {
             idFriendSender: userId,
             idFriendReceiver: account.idUsers._id,
-
           };
           break;
         default:
@@ -167,13 +159,12 @@ console.log('updatedListUserSearch',updatedListUserSearch)
       }
 
       const response = await AxiosInstance().post(endpoint, requestData);
-      console.log('responesss', response)
-      fetchFriendInvitations()
+      // console.log('responesss', response);
+      fetchFriendInvitations();
     } catch (error) {
       console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
     }
   };
-
 
   return (
     <>
@@ -181,7 +172,7 @@ console.log('updatedListUserSearch',updatedListUserSearch)
         <View style={styles.body}>
           <View style={styles.profileFrame}>
             {accountzzz?.coverImage === 'null' ||
-              accountzzz?.coverImage === 'default' ? (
+            accountzzz?.coverImage === 'default' ? (
               <TouchableOpacity>
                 <Image
                   style={styles.imgCover}
@@ -192,7 +183,7 @@ console.log('updatedListUserSearch',updatedListUserSearch)
               <TouchableOpacity>
                 <Image
                   style={styles.imgCover}
-                  source={{ uri: accountzzz?.coverImage }}
+                  source={{uri: accountzzz?.coverImage}}
                 />
               </TouchableOpacity>
             )}
@@ -207,7 +198,7 @@ console.log('updatedListUserSearch',updatedListUserSearch)
               <TouchableOpacity>
                 <Image
                   style={styles.imgAvatar}
-                  source={{ uri: accountzzz?.avatar }}
+                  source={{uri: accountzzz?.avatar}}
                 />
               </TouchableOpacity>
             )}
@@ -281,7 +272,7 @@ console.log('updatedListUserSearch',updatedListUserSearch)
         <View style={styles.body}>
           <View style={styles.profileFrame}>
             {account.idUsers?.coverImage === 'null' ||
-              account.idUsers?.coverImage === 'default' ? (
+            account.idUsers?.coverImage === 'default' ? (
               <TouchableOpacity>
                 <Image
                   style={styles.imgCover}
@@ -292,7 +283,7 @@ console.log('updatedListUserSearch',updatedListUserSearch)
               <TouchableOpacity>
                 <Image
                   style={styles.imgCover}
-                  source={{ uri: account.idUsers?.coverImage }}
+                  source={{uri: account.idUsers?.coverImage}}
                 />
               </TouchableOpacity>
             )}
@@ -307,7 +298,7 @@ console.log('updatedListUserSearch',updatedListUserSearch)
               <TouchableOpacity>
                 <Image
                   style={styles.imgAvatar}
-                  source={{ uri: account.idUsers?.avatar }}
+                  source={{uri: account.idUsers?.avatar}}
                 />
               </TouchableOpacity>
             )}
@@ -316,8 +307,14 @@ console.log('updatedListUserSearch',updatedListUserSearch)
               <Text style={styles.txtFriendsNumber}>{friendsCount}</Text>
               <Text style={styles.txtFriends}>{t('friends')}</Text>
             </View>
+            {/* {console.log(
+              'updatedListUserSearchupdatedListUserSearch',
+              updatedListUserSearch[0]?.CheckGui,
+            )} */}
             <View style={styles.containerAdd}>
-              {!updatedListUserSearch.CheckGui && !updatedListUserSearch.CheckNhan && !updatedListUserSearch.CheckALL ? (
+              {!updatedListUserSearch[0]?.CheckGui &&
+              !updatedListUserSearch[0]?.CheckNhan &&
+              !updatedListUserSearch[0]?.CheckALL ? (
                 <TouchableOpacity
                   style={styles.btnAddFriend}
                   onPress={handleButtonPress(account, 'addFriend')}>
@@ -325,59 +322,49 @@ console.log('updatedListUserSearch',updatedListUserSearch)
                     style={styles.imgAddFriend}
                     source={require('../../../../assets/icon_add_friends.png')}
                   />
-                  <Text style={styles.textIntroduce}>
-                    Thêm bạn bè
-                  </Text>
+                  <Text style={styles.textIntroduce}>Thêm bạn bè</Text>
                 </TouchableOpacity>
-              ) : updatedListUserSearch.CheckGui ? (
+              ) : updatedListUserSearch[0]?.CheckGui ? (
                 <>
-                {console.log('updatedListUserSearchupdatedListUserSearch',updatedListUserSearch.CheckGui)}
-                 <TouchableOpacity
-                  style={styles.btnAddFriend}
-                  onPress={handleButtonPress(account, 'backRequest')}>
-                  <Image
-                    style={stylesIn.imgAddFriend}
-                    source={require('../../../../assets/icon_add_friends.png')}
-                  />
-                  <Text style={styles.textIntroduce}>Thu hồi</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.btnAddFriend}
+                    onPress={handleButtonPress(account, 'backRequest')}>
+                    <Image
+                      style={styles.imgAddFriend}
+                      source={require('../../../../assets/icon_add_friends.png')}
+                    />
+                    <Text style={styles.textIntroduce}>Thu hồi</Text>
+                  </TouchableOpacity>
                 </>
-               
-              ) : updatedListUserSearch.CheckNhan ? (
+              ) : updatedListUserSearch[0]?.CheckNhan ? (
                 <TouchableOpacity
                   style={styles.btnAddFriend}
                   onPress={handleButtonPress(account, 'acceptRequest')}>
                   <Image
-                    style={stylesIn.imgAddFriend}
+                    style={styles.imgAddFriend}
                     source={require('../../../../assets/icon_add_friends.png')}
                   />
                   <Text style={styles.textIntroduce}>Đòng ý</Text>
                 </TouchableOpacity>
-              ) :
-                updatedListUserSearch.CheckALL ? (
-                  <TouchableOpacity
-                    style={styles.btnAddFriend}
-                    onPress={handleButtonPress(account, 'unfriend')}>
-                    <Image
-                      style={stylesIn.imgAddFriend}
-                      source={require('../../../../assets/icon_add_friends.png')}
-                    />
-                    <Text style={styles.textIntroduce}>Bạn bè</Text>
-                  </TouchableOpacity>
-                ) :
-                  (
-                    <TouchableOpacity
-                      style={styles.btnAddFriend}
-                    >
-                      <Image
-                        style={styles.imgAddFriend}
-                        source={require('../../../../assets/icon_add_friends.png')}
-                      />
-                      <Text style={styles.textIntroduce}>
-                        xxx
-                      </Text>
-                    </TouchableOpacity>
-                  )}
+              ) : updatedListUserSearch[0]?.CheckALL ? (
+                <TouchableOpacity
+                  style={styles.btnAddFriend}
+                  onPress={handleButtonPress(account, 'unfriend')}>
+                  <Image
+                    style={styles.imgAddFriend}
+                    source={require('../../../../assets/icon_add_friends.png')}
+                  />
+                  <Text style={styles.textIntroduce}>Bạn bè</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.btnAddFriend}>
+                  <Image
+                    style={styles.imgAddFriend}
+                    source={require('../../../../assets/icon_add_friends.png')}
+                  />
+                  <Text style={styles.textIntroduce}>xxx</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity style={styles.btnMess}>
                 <Image
                   style={styles.imgEdit}
@@ -425,17 +412,17 @@ console.log('updatedListUserSearch',updatedListUserSearch)
             }}>
             <Tab.Screen
               name="Bài viết"
-              initialParams={{ account: account, accountzzz: accountzzz }}
+              initialParams={{account: account, accountzzz: accountzzz}}
               component={PostOtherScreen}
             />
             <Tab.Screen
               name="Ảnh"
-              initialParams={{ account: account }}
+              initialParams={{account: account}}
               component={ImgOtherScreen}
             />
             <Tab.Screen
               name="Story"
-              initialParams={{ account: account }}
+              initialParams={{account: account}}
               component={OtherStoryScreen}
             />
           </Tab.Navigator>

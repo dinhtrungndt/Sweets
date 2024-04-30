@@ -11,7 +11,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {GetListUserById} from '../../../../services/user/userService';
 // screens
 import PostOtherScreen2 from './TopTabOther2/PostOtherScreen2';
-import ImgOtherScreen2 from './TopTabOther2/ImgOtherScreen2'
+import ImgOtherScreen2 from './TopTabOther2/ImgOtherScreen2';
 import OtherStoryScreen2 from './TopTabOther2/OtherStoryScreen2';
 // styles
 import {styles} from '../style/otherUserA';
@@ -21,7 +21,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import {useTranslation} from 'react-i18next';
-import { GetFriendById } from '../../../../services/home/friendService';
+import {GetFriendById} from '../../../../services/home/friendService';
 const Tab = createMaterialTopTabNavigator();
 
 const OtherUserA2 = ({navigation, route}) => {
@@ -83,12 +83,12 @@ const OtherUserA2 = ({navigation, route}) => {
       );
 
       if (response.success) {
-        console.log('Kết quả lời mời đã gửi', response.friendRequestsSent);
+        // console.log('Kết quả lời mời đã gửi', response.friendRequestsSent);
         const isFriendRequestSent = response.friendRequestsSent.some(
           request => request.idFriendReceiver === accountzzz._id.toString(),
         );
 
-        console.log('checkGui', isFriendRequestSent);
+        // console.log('checkGui', isFriendRequestSent);
         setcheckGui(isFriendRequestSent);
       } else {
         console.log('No friend invitations found.');
@@ -106,12 +106,12 @@ const OtherUserA2 = ({navigation, route}) => {
       );
 
       if (response.success) {
-        console.log('Kết quả lời mời đã nhận', response.friendRequests);
+        // console.log('Kết quả lời mời đã nhận', response.friendRequests);
         const isFriendRequestSent = response.friendRequests.some(
           request => request.idFriendSender === accountzzz._id.toString(),
         );
 
-        console.log('checkNhạn', isFriendRequestSent);
+        // console.log('checkNhạn', isFriendRequestSent);
         setcheckNhan(isFriendRequestSent);
       } else {
         console.log('No friend invitations found.');
@@ -125,7 +125,7 @@ const OtherUserA2 = ({navigation, route}) => {
     const fetchFriendsCount = async () => {
       try {
         const response = await GetFriendById(accountzzz._id);
-        console.log('response:', response.friendsList.length);
+        // console.log('response:', response.friendsList.length);
         setFriendsCount(response.friendsList.length);
       } catch (error) {
         console.error('Lỗi khi lấy số lượng bạn bè:', error);
@@ -176,8 +176,8 @@ const OtherUserA2 = ({navigation, route}) => {
             <Text style={styles.txtFriends}>{t('friends')}</Text>
           </View>
           <View style={styles.containerAdd}>
-            {console.log('checkGuiReturn', checkGui)}
-            {console.log('checNhaniReturn', checkNhan)}
+            {/* {console.log('checkGuiReturn', checkGui)}
+            {console.log('checNhaniReturn', checkNhan)} */}
             {!checkGui && !checkNhan ? (
               <TouchableOpacity
                 style={styles.btnAddFriend}
@@ -276,7 +276,7 @@ const OtherUserA2 = ({navigation, route}) => {
           />
           <Tab.Screen
             name="Story"
-            initialParams={{ account: accountzzz }}
+            initialParams={{account: accountzzz}}
             component={OtherStoryScreen2}
           />
         </Tab.Navigator>

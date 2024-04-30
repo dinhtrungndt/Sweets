@@ -21,7 +21,7 @@ const LiveStreamScreen = ({navigation, route}) => {
   const onGetAllLiveStream = async () => {
     const response = await getAllLiveStream();
     setListlive(response.data);
-    console.log('listlive', response.data);
+    // console.log('listlive', response.data);
   };
   useEffect(() => {
     onGetAllLiveStream();
