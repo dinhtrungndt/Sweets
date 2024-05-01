@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   T: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     padding: 16,
   },
   header: {
@@ -119,4 +119,7 @@ export const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
   },
+  TextlistChat:{
+    color: 'grey',
+  }
 });
