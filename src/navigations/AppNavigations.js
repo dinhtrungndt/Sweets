@@ -4,9 +4,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {UserContext} from '../contexts/user/userContext';
 import HomeNavigation from './stacksNavigations/homeNavigation';
 import UserNavigation from './stacksNavigations/userNavigations';
+<<<<<<< HEAD
 import {ZegoCallInvitationDialog} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 import {onUserLogin} from '../components/call/HomeTest';
 import linking from '../utils/linking';
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
 const AppNavigations = () => {
   const {user} = useContext(UserContext);
@@ -21,8 +24,12 @@ const AppNavigations = () => {
     zegoLogin();
   }, []);
   return (
+<<<<<<< HEAD
     <NavigationContainer linking={linking}>
       <ZegoCallInvitationDialog />
+=======
+    <NavigationContainer>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
       {user ? <HomeNavigation /> : <UserNavigation />}
     </NavigationContainer>
   );

@@ -1,6 +1,7 @@
-const { StyleSheet } = require('react-native');
+const {StyleSheet} = require('react-native');
 
 export const styles = StyleSheet.create({
+<<<<<<< HEAD
     body: {
         flex: 1,
         backgroundColor: '#ffffff',
@@ -162,3 +163,7 @@ export const styles = StyleSheet.create({
     },
 });
     
+=======
+    
+});
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf

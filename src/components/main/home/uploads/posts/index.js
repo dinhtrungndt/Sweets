@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -28,8 +27,8 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import {CommonActions} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import VideoPlayer from 'react-native-video-player';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+<<<<<<< HEAD
 import Geolocation from 'react-native-geolocation-service';
 import TabFriendUpLoad from './tags';
 import ModelBackground from './background';
@@ -37,6 +36,8 @@ import AxiosInstance from '../../../../../helper/AxiosWeather';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {useTranslation} from 'react-i18next';
 import EmojiPicker from 'react-native-emoji-picker';
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
 export function AddsScreen({route, navigation}) {
   const {user} = useContext(UserContext);
@@ -50,6 +51,7 @@ export function AddsScreen({route, navigation}) {
   const [imagePath, setImagePath] = useState(null);
   const [upload, setUpload] = useState(false);
   const [_idPosts, setIdPosts] = useState(null);
+<<<<<<< HEAD
   const idPostsUp = _idPosts;
   const [loading, setLoading] = useState(false);
   const selectedId = route.params?.selectedId;
@@ -65,6 +67,9 @@ export function AddsScreen({route, navigation}) {
 
   // console.log('>>>>> idObjectValue: ' + idObjectValue);
   // console.log('>>>>> location: ' + JSON.stringify(location));
+=======
+  const selectedId = route.params?.selectedId;
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
   const idObject = () => [
     {
@@ -95,16 +100,14 @@ export function AddsScreen({route, navigation}) {
         name: asset.fileName,
       }));
       setImage(selectedImages);
-
-      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', selectedImages);
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
         formData.append('media', image);
       });
-      setLoading(true);
+
       const data = await uploadImageStatus(formData);
-      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
 
       const mediaArray = data.urls.map(url => {
         const type =
@@ -117,7 +120,6 @@ export function AddsScreen({route, navigation}) {
       });
 
       setImagePath(mediaArray.map(item => item.url));
-      setLoading(false);
     }
   }, []);
 
@@ -135,7 +137,7 @@ export function AddsScreen({route, navigation}) {
       mediaType: 'mixed',
       quality: 5,
       saveToPhotos: true,
-      selectionLimit: 0,
+      selectionLimit: 5,
       multiple: true,
     };
     await launchImageLibrary(options, takePhoto);
@@ -143,7 +145,7 @@ export function AddsScreen({route, navigation}) {
   }, []);
 
   const handleInputChange = text => {
-    setInputText(text || '');
+    setInputText(text);
   };
 
   const showBottomSheet = () => {
@@ -203,6 +205,7 @@ export function AddsScreen({route, navigation}) {
           handleUploadColor(idPostsUp),
         ]);
       } else if (inputText) {
+<<<<<<< HEAD
         await handleUploadPost(idPostsUp, tagSelectedUser, locationData);
         await handleUploadColor(idPostsUp);
       } else if (inputText === '') {
@@ -210,6 +213,9 @@ export function AddsScreen({route, navigation}) {
           handleUploadMedia(idPostsUp),
           handleUploadPost(idPostsUp, tagSelectedUser, locationData),
         ]);
+=======
+        await handleUploadPost();
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
       } else if (imagePath) {
         await handleUploadMedia(idPostsUp);
       } else {
@@ -221,7 +227,7 @@ export function AddsScreen({route, navigation}) {
         Toast.show({
           type: 'success',
           position: 'top',
-          text1: 'Đăng bài viết thành công !',
+          text1: 'Up tin thành công',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -231,7 +237,7 @@ export function AddsScreen({route, navigation}) {
         Toast.show({
           type: 'error',
           position: 'top',
-          text1: 'Đăng bài viết thất bại',
+          text1: 'Up tin thất bại',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -252,11 +258,18 @@ export function AddsScreen({route, navigation}) {
     }
   };
 
+<<<<<<< HEAD
   const handleUploadPost = useCallback(
     async (idPostsUp, tagSelectedUser, locationData) => {
       // if (!user || !inputText) {
       //   return;
       // }
+=======
+  const handleUploadPost = useCallback(async () => {
+    if (!user || !inputText) {
+      return;
+    }
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
       try {
         // console.log('tagSelectedUser in tagSelectedUser:', tagSelectedUser?.id);
@@ -309,6 +322,7 @@ export function AddsScreen({route, navigation}) {
 
   const requestLocationPermission = async () => {
     try {
+<<<<<<< HEAD
       const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
       if (result === RESULTS.GRANTED) {
         // Quyền đã được cấp, lấy vị trí
@@ -326,6 +340,30 @@ export function AddsScreen({route, navigation}) {
           setLoading(false);
         }
       }
+=======
+      // console.log('Selected ID in AddsScreen:', selectedId);
+      let idObjectValue = '65b1fe1be09b1e99f9e8a235';
+      if (selectedId && selectedId._id) {
+        idObjectValue = selectedId._id;
+      }
+      const postDetails = {
+        _id: _idPosts,
+        content: inputText,
+        createAt: new Date().toISOString(),
+        idObject: idObjectValue,
+        idTypePosts: '65b20030261511b0721a9913',
+      };
+
+      const response = await uploadPost(user.user._id, postDetails);
+      setUpload(response);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [{name: 'HomeStackScreen'}],
+        }),
+      );
+      // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     } catch (error) {
       console.error('Lỗi khi kiểm tra quyền truy cập vị trí:', error);
       Alert.alert('Lỗi', 'Có lỗi xảy ra khi truy cập định vị của bạn.');
@@ -333,6 +371,7 @@ export function AddsScreen({route, navigation}) {
     }
   };
 
+<<<<<<< HEAD
   const getLocation = async () => {
     try {
       Geolocation.getCurrentPosition(
@@ -396,6 +435,8 @@ export function AddsScreen({route, navigation}) {
     setInputText(prevText => prevText + emoji);
   };
 
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
   useEffect(() => {
     const dateString = Date.now();
     const randomSuffix = Math.floor(Math.random() * 10000000);
@@ -410,9 +451,9 @@ export function AddsScreen({route, navigation}) {
     setTagSelectedUser(tagSelectedUser);
   }, [tagSelectedUser]);
 
-  // useEffect(() => {
-  //   handleUploadPost();
-  // }, [user]);
+  useEffect(() => {
+    handleUploadPost();
+  }, [user]);
 
   return (
     <View style={styles.T}>
@@ -429,7 +470,7 @@ export function AddsScreen({route, navigation}) {
           onPress={handlePostUpload}
           style={[
             styles.upHeaderButton,
-            {backgroundColor: inputText || imagePath ? '#7ec1a5' : '#CBCBCB'},
+            {backgroundColor: inputText ? '#7ec1a5' : '#CBCBCB'},
           ]}>
           <Text style={styles.textHeaderUp}>{t('post')}</Text>
         </TouchableOpacity>
@@ -561,6 +602,7 @@ export function AddsScreen({route, navigation}) {
             value={inputText}
           />
           {image.length > 0 && (
+<<<<<<< HEAD
             <>
               {loading ? (
                 <ActivityIndicator size="small" color="#22b6c0" />
@@ -604,8 +646,27 @@ export function AddsScreen({route, navigation}) {
                     </TouchableOpacity>
                   )}
                 />
+=======
+            <FlatList
+              style={{marginTop: 10}}
+              data={image}
+              numColumns={numColumns}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => (
+                <TouchableOpacity key={index}>
+                  <Image
+                    source={{uri: item.uri}}
+                    style={{
+                      width: Dimensions.get('window').width / numColumns - 10,
+                      height: Dimensions.get('window').width / numColumns - 10,
+                      margin: 5,
+                      borderRadius: 5,
+                    }}
+                  />
+                </TouchableOpacity>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
               )}
-            </>
+            />
           )}
         </View>
         {/* bottom sheet */}
@@ -688,6 +749,7 @@ export function AddsScreen({route, navigation}) {
                 {t('emotions/activity')}
               </Text>
             </TouchableOpacity>
+<<<<<<< HEAD
             <TouchableOpacity
               style={styles.bottomSheetItem}
               // onPress={() => {
@@ -695,6 +757,9 @@ export function AddsScreen({route, navigation}) {
               //   hideBottomSheet();
               // }}
             >
+=======
+            <TouchableOpacity style={styles.bottomSheetItem}>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_checkin.png')}

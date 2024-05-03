@@ -16,6 +16,7 @@ import ThoiTiet from '../../../components/main/phonebook/Feature/ThoiTiet';
 import SinhNhat from '../../../components/main/phonebook/Feature/SinhNhat';
 import LoiMoiDaGui from '../../../components/main/phonebook/Feature/LoiMoiDaGui';
 import QuetQR from '../../../components/main/phonebook/Feature/QuetQR';
+<<<<<<< HEAD
 import ScanQR from '../../../components/main/phonebook/Feature/ScanQR';
 import BothRes from '../../../components/main/phonebook/TopTab/BothRes';
 import ThoiTiet2 from '../../../components/main/phonebook/Feature/ThoiTiet2';
@@ -30,6 +31,8 @@ import ReviewSeenHis from '../../../components/main/phonebook/Feature/Gift/Revie
 import AllFriend from '../../../components/main/phonebook/TopTab/AllFriend';
 import {useNavigation} from '@react-navigation/native';
 import OtherUserA2 from '../../../components/main/account/OtherUserAccounts/OtherUserA2';
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 const Stack = createNativeStackNavigator();
 
 export function PhoneBookStack() {
@@ -39,6 +42,7 @@ export function PhoneBookStack() {
       screenOptions={{
         headerShown: false,
       }}>
+<<<<<<< HEAD
       <Stack.Screen name="PhoneBookScreen" component={PhoneBookScreen}  />
       <Stack.Screen name="BothRes" component={BothRes} />
       <Stack.Screen name="AllFriend" component={AllFriend} />
@@ -57,6 +61,34 @@ export function PhoneBookStack() {
       <Stack.Screen name="ThoiTiet" component={ThoiTiet} />
       <Stack.Screen name="ThoiTiet2" component={ThoiTiet2} />
       <Stack.Screen name="OtherUserA2" component={OtherUserA2} />
+=======
+      <Stack.Screen name="PhoneBookScreen" component={PhoneBookScreen} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen
+        name="SinhNhat"
+        component={SinhNhat}
+      />
+      <Stack.Screen
+        name="LoiMoiKetBan"
+        component={LoiMoiKetBan}
+      />
+       <Stack.Screen
+        name="LoiMoiDaGui"
+        component={LoiMoiDaGui}
+      />
+       <Stack.Screen
+        name="QuetQR"
+        component={QuetQR}
+      />
+       <Stack.Screen
+        name="QRCODE"
+        component={QRCODE}
+      />
+       <Stack.Screen
+        name="ThoiTiet"
+        component={ThoiTiet}
+      />
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
    
     </Stack.Navigator>
   );

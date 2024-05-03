@@ -25,7 +25,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker, {launchCamera} from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import LabelPickStory from './label';
 import {
@@ -40,9 +40,13 @@ import UpImageStory from './upImage';
 import Toast from 'react-native-toast-message';
 import {UserContext} from '../../../../../../contexts/user/userContext';
 import {CommonActions} from '@react-navigation/native';
+<<<<<<< HEAD
 import VideoPlayer from 'react-native-video-player';
 import {LoadingScreen} from '../../../../../../utils/loading';
 import ImagePicker from 'react-native-image-crop-picker';
+=======
+import RNFetchBlob from 'rn-fetch-blob';
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
 const SelectFeeingStory = ({cancel, navigation}) => {
   const [selectedImages, setSelectedImages] = useState([]);
@@ -58,9 +62,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
   const [upload, setUpload] = useState(false);
   const {user} = useContext(UserContext);
   const [imagePath, setImagePath] = useState(null);
-  const [imageCloud, setImageCloud] = useState([]);
-  const [loadingImage, setLoadingImage] = useState(false);
-  const [loadingPickImage, setLoadingPickImage] = useState(false);
+  const [image, setImage] = useState([]);
 
   const handleCloseBoom = () => {
     setOpenModelBoom(false);
@@ -72,32 +74,18 @@ const SelectFeeingStory = ({cancel, navigation}) => {
       const directoryPath = RNFS.PicturesDirectoryPath;
       const files = await RNFS.readDir(directoryPath);
       const imageFiles = files.filter(
-        file =>
-          file.isFile() &&
-          (file.name.endsWith('.jpg') || file.name.endsWith('.mp4')),
+        file => file.isFile() && file.name.endsWith('.jpg'),
       );
-
-      const imageURIs = await Promise.all(
-        imageFiles.map(async file => {
-          const destPath = RNFS.CachesDirectoryPath + '/' + file.name;
-          await RNFS.copyFile(file.path, destPath);
-          return {
-            name: file.name,
-            type: file.name.endsWith('.jpg') ? 'image/jpeg' : 'video/mp4',
-            uri: 'file://' + destPath,
-          };
-        }),
-      );
-
+      const imageURIs = imageFiles.map(file => ({uri: 'file://' + file.path}));
       setSelectedImages(imageURIs);
-      // console.log('>>>>>>>>>>>>>>>>>>>> uuuuuuuuuuuuuu', imageURIs);
-
       setLoading(false);
     } catch (error) {
-      console.log('Lỗi tải ảnh:', error);
+      console.log('Error loading images:', error);
     }
   };
+  console.log('>>>>>>>> imagePath', imagePath);
 
+<<<<<<< HEAD
   const handleOpenPickLibrary = async () => {
     try {
       const options = {
@@ -146,16 +134,13 @@ const SelectFeeingStory = ({cancel, navigation}) => {
 
   const handleImagePress = async index => {
     setLoadingImage(true);
+=======
+  const handleImagePress = index => {
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     setSelectedImageIndex(index);
     setSelectedImageURI(selectedImages[index].uri);
-
-    const formData = new FormData();
-    formData.append('media', selectedImages[index]);
-    const data = await uploadImageStatus(formData);
-    // console.log('>>>>>>>>>>>>>>>>>>>> Data 56669 data', data);
-    setImageCloud(data.urls.join());
+    // sau khi lấy vị trí và link file:// thì upload lên cloudinary
     setModalVisible(true);
-    setLoadingImage(false);
   };
 
   const takePhoto = useCallback(async response => {
@@ -163,15 +148,20 @@ const SelectFeeingStory = ({cancel, navigation}) => {
       return;
     }
     if (response.assets && response.assets.length > 0) {
-      const selectedImage = response.assets[0];
+      const selectedImages = response.assets.map(asset => ({
+        uri: asset.uri,
+        type: asset.type,
+        name: asset.fileName,
+      }));
+      setImage(selectedImages);
       const formData = new FormData();
-      formData.append('media', {
-        uri: selectedImage.uri,
-        type: selectedImage.type,
-        name: selectedImage.fileName,
+
+      selectedImages.forEach((image, index) => {
+        formData.append('media', image);
       });
+
       const data = await uploadImageStatus(formData);
-      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
 
       const mediaArray = data.urls.map(url => {
         const type =
@@ -184,49 +174,53 @@ const SelectFeeingStory = ({cancel, navigation}) => {
       });
 
       setImagePath(mediaArray.map(item => item.url));
-      handleUploadMedia(imageCloud);
+      handleUploadMedia(selectedImages);
     }
   }, []);
 
   const openCamera = useCallback(async () => {
     const options = {
-      mediaType: 'mixed',
+      mediaType: 'photo',
       quality: 1,
       saveToPhotos: true,
     };
     await launchCamera(options, takePhoto);
   }, []);
 
+<<<<<<< HEAD
   // console.log(' -----------------> imageCloud', imageCloud);
 
   const handleUploadMedia = useCallback(async imageCloud => {
+=======
+  const handleUploadMedia = useCallback(async selectedImageURI => {
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     try {
-      if (!_idPosts || !imageCloud) {
+      if (!_idPosts || !selectedImageURI) {
         return;
       }
+
       const media = {
-        url: imageCloud,
+        url: selectedImageURI,
         type:
-          imageCloud.endsWith('.jpg') ||
-          imageCloud.endsWith('.jpeg') ||
-          imageCloud.endsWith('.png')
+          selectedImageURI.endsWith('.jpg') ||
+          selectedImageURI.endsWith('.jpeg') ||
+          selectedImageURI.endsWith('.png')
             ? 'image'
-            : imageCloud.endsWith('.mp4')
+            : selectedImageURI.endsWith('.mp4')
             ? 'video'
             : 'unknown',
       };
 
-      // console.log(' -----------------> mediamediamedia', media);
       const response = await uploadMedia(_idPosts, media);
-      // console.log('>>>>>>> response -> handleUploadMedia', response);
+      console.log('>>>>>>> response -> handleUploadMedia', response);
     } catch (error) {
       console.log('>>>>>>> Lỗi ở HandleUploadMedia nè', error);
     }
   });
 
-  const handlePostUpload = async imageCloud => {
+  const handlePostUpload = async selectedImageURI => {
     try {
-      if (!imageCloud) {
+      if (!selectedImageURI) {
         return Toast.show({
           type: 'error',
           position: 'top',
@@ -239,9 +233,10 @@ const SelectFeeingStory = ({cancel, navigation}) => {
       }
       console.log('_idPosts  handlePostUpload _idPosts:', _idPosts);
 
+      // Cập nhật handleUploadMedia để nhận selectedImageURI
       await Promise.all([
         handleUploadPost(_idPosts),
-        handleUploadMedia(imageCloud),
+        handleUploadMedia(selectedImageURI),
       ]);
 
       if (!upload) {
@@ -249,7 +244,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         Toast.show({
           type: 'success',
           position: 'top',
-          text1: 'Đăng story thành công !',
+          text1: 'Up tin thành công',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -259,7 +254,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         Toast.show({
           type: 'error',
           position: 'top',
-          text1: 'Đăng story thất bại !',
+          text1: 'Up tin thất bại',
           visibilityTime: 2000,
           autoHide: true,
           topOffset: 30,
@@ -279,7 +274,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
       });
     }
   };
-  // console.log('_idPosts  out _idPosts:', _idPosts);
+  console.log('_idPosts  out _idPosts:', _idPosts);
 
   const handleUploadPost = useCallback(
     async _idPosts => {
@@ -304,7 +299,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
             routes: [{name: 'HomeStackScreen'}],
           }),
         );
-        // console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
+        console.log(' >>>>>>>>>>>>>>>> Đăng thành công:', response);
       } catch (error) {
         console.error('Lỗi catch --->>>>> error storry :', error);
       }
@@ -345,6 +340,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
     }
   };
 
+<<<<<<< HEAD
   const isImage = url => {
     return /\.(jpeg|jpg|png)$/i.test(url);
   };
@@ -387,6 +383,9 @@ const SelectFeeingStory = ({cancel, navigation}) => {
   };
 
   // console.log('>>>>>selectedImageURI', selectedImageURI);
+=======
+  console.log('>>>>>selectedImageURI', selectedImageURI);
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
   useEffect(() => {
     requestCameraPermission();
   }, []);
@@ -413,141 +412,89 @@ const SelectFeeingStory = ({cancel, navigation}) => {
           />
         </TouchableOpacity>
       </View>
-      {loadingImage ? (
-        <ActivityIndicator size="small" color="#22b6c0" />
-      ) : (
-        <>
-          {/* body */}
-          <ScrollView style={{marginBottom: 10}}>
-            <View style={styles.body}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {/* văn bản */}
-                <TouchableOpacity
-                  style={styles.typingFeeting}
-                  onPress={() => setOpenModelLabel(true)}>
-                  <View style={styles.typingFeeting_in_VItext}>
-                    <Ionicons name={'text-outline'} color={'#000'} size={25} />
-                  </View>
-                  <Text style={styles.typingFeeting_in_text}>Văn bản</Text>
-                </TouchableOpacity>
-
-                {/* Music */}
-                <TouchableOpacity
-                  onPress={() => setOpenModelMusic(true)}
-                  style={[
-                    styles.typingFeeting,
-                    {marginLeft: 0, marginRight: 7, backgroundColor: '#29CBB8'},
-                  ]}>
-                  <View style={styles.typingFeeting_in_VItext}>
-                    <FontAwesome name={'music'} color={'#000'} size={25} />
-                  </View>
-                  <Text style={styles.typingFeeting_in_text}>Nhạc</Text>
-                </TouchableOpacity>
-
-                {/* Boomerang */}
-                <TouchableOpacity
-                  onPress={() => setOpenModelBoom(true)}
-                  style={[
-                    styles.typingFeeting,
-                    {marginLeft: 0, backgroundColor: '#E7A966'},
-                  ]}>
-                  <View style={styles.typingFeeting_in_VItext}>
-                    <Ionicons name={'text-outline'} color={'#000'} size={25} />
-                  </View>
-                  <Text style={styles.typingFeeting_in_text}>Boomerang</Text>
-                </TouchableOpacity>
-              </ScrollView>
-              {openModelBoom && (
-                <Overlay>
-                  <View style={{padding: 15}}>
-                    <Text h4 style={{paddingBottom: 15}}>
-                      Tính năng này đang được phát triển...
-                    </Text>
-                    <Button
-                      title="Đóng"
-                      onPress={handleCloseBoom}
-                      color={'#22b6c0'}
-                    />
-                  </View>
-                </Overlay>
-              )}
+      {/* body */}
+      <View style={styles.body}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {/* văn bản */}
+          <TouchableOpacity
+            style={styles.typingFeeting}
+            onPress={() => setOpenModelLabel(true)}>
+            <View style={styles.typingFeeting_in_VItext}>
+              <Ionicons name={'text-outline'} color={'#000'} size={25} />
             </View>
-            {/* footer */}
-            <View style={styles.footer}>
-              {/* Library */}
-              <View style={styles.rowPickImage}>
-                <TouchableOpacity style={styles.library_container}>
-                  <Text style={styles.library_text}>Cuộn camera</Text>
-                  <Entypo
-                    name={'chevron-small-down'}
-                    color={'#000'}
-                    size={22}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.pickImage_container}
-                  onPress={handleOpenPickLibrary}>
-                  <Entypo name={'folder-images'} color={'#000'} size={18} />
-                  <Text style={[styles.library_text, {paddingLeft: 7}]}>
-                    Chọn nhiều file
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              {/* List of selected images and video */}
-              {loading ? (
-                <ActivityIndicator size="small" color="#22b6c0" />
-              ) : (
-                <>
-                  {loadingPickImage ? (
-                    <ActivityIndicator size="small" color="#22b6c0" />
-                  ) : (
-                    <View style={styles.imageList}>
-                      {selectedImages.map((image, index) => (
-                        <View key={index}>
-                          {/* <TouchableOpacity onPress={() => handleImagePress(index)}>
-                        <Image
-                          source={{uri: image?.uri}}
-                          style={styles.imageItem}
-                        />
-                      </TouchableOpacity> */}
-                          {isImage(image.uri) ? (
-                            <TouchableOpacity
-                              onPress={() => handleImagePress(index)}>
-                              <Image
-                                source={{uri: image.uri}}
-                                style={styles.imageItem}
-                              />
-                            </TouchableOpacity>
-                          ) : isVideo(image.uri) ? (
-                            <TouchableOpacity
-                              onPress={() => handleImagePress(index)}>
-                              <VideoPlayer
-                                style={styles.videoItem}
-                                video={{uri: image.uri}}
-                                videoWidth={1600}
-                                videoHeight={900}
-                                thumbnail={{uri: image.uri}}
-                              />
-                            </TouchableOpacity>
-                          ) : (
-                            <Text>Null</Text>
-                          )}
-                        </View>
-                      ))}
-                    </View>
-                  )}
-                </>
-              )}
+            <Text style={styles.typingFeeting_in_text}>Văn bản</Text>
+          </TouchableOpacity>
+
+          {/* Music */}
+          <TouchableOpacity
+            onPress={() => setOpenModelMusic(true)}
+            style={[
+              styles.typingFeeting,
+              {marginLeft: 0, marginRight: 7, backgroundColor: '#29CBB8'},
+            ]}>
+            <View style={styles.typingFeeting_in_VItext}>
+              <FontAwesome name={'music'} color={'#000'} size={25} />
             </View>
-          </ScrollView>
-          {/* camera */}
-          <View style={styles.openCamera_container}>
-            <TouchableOpacity style={styles.openCamera} onPress={openCamera}>
-              <Entypo name={'camera'} color={'#22b6c0'} size={26} />
-            </TouchableOpacity>
+            <Text style={styles.typingFeeting_in_text}>Nhạc</Text>
+          </TouchableOpacity>
+
+          {/* Boomerang */}
+          <TouchableOpacity
+            onPress={() => setOpenModelBoom(true)}
+            style={[
+              styles.typingFeeting,
+              {marginLeft: 0, backgroundColor: '#E7A966'},
+            ]}>
+            <View style={styles.typingFeeting_in_VItext}>
+              <Ionicons name={'text-outline'} color={'#000'} size={25} />
+            </View>
+            <Text style={styles.typingFeeting_in_text}>Boomerang</Text>
+          </TouchableOpacity>
+        </ScrollView>
+        {openModelBoom && (
+          <Overlay>
+            <View style={{padding: 15}}>
+              <Text h4 style={{paddingBottom: 15}}>
+                Tính năng này đang được phát triển...
+              </Text>
+              <Button
+                title="Đóng"
+                onPress={handleCloseBoom}
+                color={'#22b6c0'}
+              />
+            </View>
+          </Overlay>
+        )}
+      </View>
+      {/* footer */}
+      <View style={styles.footer}>
+        {/* Library */}
+        <TouchableOpacity style={styles.library_container}>
+          <Text style={styles.library_text}>Cuộn camera</Text>
+          <Entypo name={'chevron-small-down'} color={'#000'} size={22} />
+        </TouchableOpacity>
+        {/* List of selected images */}
+        {loading ? (
+          <ActivityIndicator size="small" color="#22b6c0" />
+        ) : (
+          <View style={styles.imageList}>
+            {selectedImages.map((image, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleImagePress(index)}>
+                <Image source={image} style={styles.imageItem} />
+              </TouchableOpacity>
+            ))}
           </View>
-        </>
-      )}
+        )}
+      </View>
+      {/* camera */}
+      <View style={styles.openCamera_container}>
+        <TouchableOpacity style={styles.openCamera} onPress={openCamera}>
+          <Entypo name={'camera'} color={'#22b6c0'} size={26} />
+        </TouchableOpacity>
+      </View>
+
       {/* Setting Objects */}
       <Modal
         animationType="slide"
@@ -558,6 +505,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
         }}>
         <SettingStoryObjects cancel={() => setOpenModelSettingObjects(false)} />
       </Modal>
+
       {/* up story */}
       <Modal
         animationType="fade"
@@ -580,21 +528,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
             onPress={() => setModalVisible(false)}>
             <Ionicons name={'chevron-back'} color={'#fff'} size={30} />
           </TouchableOpacity>
-          {/* {console.log('selectedImageURIselectedImageURI', selectedImageURI)} */}
-
-          {isImage(selectedImageURI) ? (
-            <Image source={{uri: selectedImageURI}} style={styles.modalImage} />
-          ) : isVideo(selectedImageURI) ? (
-            <VideoPlayer
-              style={styles.modalImageVideo}
-              video={{uri: selectedImageURI}}
-              videoWidth={1600}
-              videoHeight={900}
-              thumbnail={{uri: selectedImageURI}}
-            />
-          ) : (
-            <Text>Null</Text>
-          )}
+          <Image source={{uri: selectedImageURI}} style={styles.modalImage} />
           <View style={styles.seetingInUp}>
             <View style={styles.seetingInUp_two}>
               <TouchableOpacity
@@ -618,12 +552,13 @@ const SelectFeeingStory = ({cancel, navigation}) => {
             </View>
             <TouchableOpacity
               style={styles.btnShare}
-              onPress={() => handlePostUpload(imageCloud)}>
+              onPress={() => handlePostUpload(selectedImageURI)}>
               <Text style={styles.btnShareText}>Chia sẻ</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
       {/* label */}
       <Modal
         animationType="fade"
@@ -638,6 +573,7 @@ const SelectFeeingStory = ({cancel, navigation}) => {
           navigation={navigation}
         />
       </Modal>
+
       {/* Music */}
       <Modal
         animationType="fade"

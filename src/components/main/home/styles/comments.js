@@ -288,11 +288,8 @@ export const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '300',
   },
-  container_image_camera: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
   content_image: {
+<<<<<<< HEAD
     width: 80,
     height: 150,
     borderRadius: 10,
@@ -305,6 +302,12 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 15,
     marginLeft: 10,
+=======
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    marginTop: 15,
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
   },
   comment_time_like: {
     flexDirection: 'row',

@@ -9,6 +9,7 @@ import ChatScreen from '../../../components/main/chat';
 import ChatScreenIn from '../../../components/main/chat/inChat';
 import SearchScreens from '../../../components/main/layout/search';
 import User from '../../../components/main/layout/search/Src/User/User';
+<<<<<<< HEAD
 import VideoCallPage from '../../../components/call/VideoCAll';
 import HomeTest from '../../../components/call/HomeTest';
 import InputYourName from '../../../components/call/InputYourName';
@@ -23,6 +24,8 @@ import OtherUserA2 from '../../../components/main/account/OtherUserAccounts/Othe
 import PostOtherScreen2 from '../../../components/main/account/OtherUserAccounts/TopTabOther2/PostOtherScreen2';
 import ImgOtherScreen2 from '../../../components/main/account/OtherUserAccounts/TopTabOther2/ImgOtherScreen2';
 
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 const Stack = createNativeStackNavigator();
 
 export function ChatScreenStack() {
@@ -34,6 +37,7 @@ export function ChatScreenStack() {
       <Stack.Screen name="ChatScreenHome" component={ChatScreen} />
       <Stack.Screen name="SearchScreens" component={User} />
       <Stack.Screen name="ChatScreenIn" component={ChatScreenIn} />
+<<<<<<< HEAD
       <Stack.Screen name="VideoCallPage" component={VideoCallPage} />
       <Stack.Screen name="HomeTest" component={HomeTest} />
       <Stack.Screen name="OtherUserA2" component={OtherUserA2} />
@@ -53,6 +57,8 @@ export function ChatScreenStack() {
         name="ZegoUIKitPrebuiltCallInCallScreen"
         component={ZegoUIKitPrebuiltCallInCallScreen}
       />
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     </Stack.Navigator>
   );
 }

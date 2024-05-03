@@ -100,7 +100,6 @@ const CommentsScreen = ({navigation, route}) => {
   const [commentContent, setCommentContent] = useState('');
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingCamera, setIsLoadingCamera] = useState(false);
   const commentInputRef = useRef(null);
   const [parentId, setParentId] = useState(null);
   const [imageimageShowMore, setImageImageShowMore] = useState(null);
@@ -411,8 +410,6 @@ const CommentsScreen = ({navigation, route}) => {
         return require('../../../../../assets/haha_25px.png');
       case 'Wow':
         return require('../../../../../assets/wow_25px.png');
-      case 'Buồn':
-        return require('../../../../../assets/sad_25px.png');
       case 'Tức giận':
         return require('../../../../../assets/angry_25px.png');
       default:
@@ -429,8 +426,6 @@ const CommentsScreen = ({navigation, route}) => {
       case 'Haha':
         return '#ff9900';
       case 'Wow':
-        return '#ff9900';
-      case 'Buồn':
         return '#ff9900';
       case 'Tức giận':
         return '#ff0000';
@@ -467,15 +462,13 @@ const CommentsScreen = ({navigation, route}) => {
       const formData = new FormData();
 
       selectedImages.forEach((image, index) => {
-        formData.append('media', image);
+        formData.append('imageStatus', image);
       });
 
-      setIsLoadingCamera(true);
       const data = await uploadImageStatus(formData);
-      // console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
+      console.log('>>>>>>>>>>>>>>>>>>>> Data 59 data', data);
       setImagePath(data.urls);
-      // console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
-      setIsLoadingCamera(false);
+      console.log('>>>>>>>>>>>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 
@@ -490,10 +483,10 @@ const CommentsScreen = ({navigation, route}) => {
 
   const openLibrary = useCallback(async () => {
     const options = {
-      mediaType: 'mixed',
+      mediaType: 'photo',
       quality: 5,
       saveToPhotos: true,
-      selectionLimit: 0,
+      selectionLimit: 5,
       multiple: true,
     };
     await launchImageLibrary(options, takePhoto);
@@ -502,6 +495,7 @@ const CommentsScreen = ({navigation, route}) => {
 
   const reloadComments = async () => {
     try {
+<<<<<<< HEAD
       // setIsLoading(true);
       const response = await getComments(postId._id || postId);
       const postComments = await Promise.all(
@@ -513,6 +507,15 @@ const CommentsScreen = ({navigation, route}) => {
       setComments(postComments);
       await reloadPosts();
       // setIsLoading(false);
+=======
+      const response = await getComments(postId._id);
+      const data = await response;
+      if (parentId) {
+        setComments(data.reverse());
+      } else {
+        setComments(data);
+      }
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     } catch (error) {
       console.error('Lỗi khi tải danh sách bình luận:', error);
     }
@@ -589,9 +592,12 @@ const CommentsScreen = ({navigation, route}) => {
         // console.log('Tải danh sách bình luận cha:', response);
       }
       setCommentContent('');
+<<<<<<< HEAD
       setImagePath(null);
       setImage('');
       setParentUserName(null);
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
       await reloadComments();
       if (commentInputRef.current.clear === null) {
         return;
@@ -604,6 +610,7 @@ const CommentsScreen = ({navigation, route}) => {
     }
   };
 
+<<<<<<< HEAD
   const removeImage = index => {
     const newImages = [...image];
     newImages.splice(index, 1);
@@ -627,6 +634,9 @@ const CommentsScreen = ({navigation, route}) => {
   const isVideo = url => {
     return /\.(mp4|avi|mov)$/i.test(url);
   };
+=======
+  // console.log('???? >>>>>>> imagePathimagePath', imagePath);
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
   const handleShowMoreImage = image => {
     setImageImageShowMore(image);
@@ -1016,6 +1026,7 @@ const CommentsScreen = ({navigation, route}) => {
               )}
 
               {/* media */}
+<<<<<<< HEAD
               {detailPosts === null ? (
                 <>
                   {item.media?.length > 0 ? (
@@ -1057,6 +1068,43 @@ const CommentsScreen = ({navigation, route}) => {
                     <View style={{height: 0}} />
                   )}
                 </>
+=======
+              {item.media.length > 0 ? (
+                <View style={styles.container_media}>
+                  <Swiper
+                    style={styles.swiper}
+                    showsButtons={false}
+                    loop={false}
+                    paginationStyle={{bottom: 10}}
+                    activeDotColor="#22b6c0"
+                    onIndexChanged={index => setActiveSlide(index)}>
+                    {item.media?.map((media, index) => (
+                      <View key={media._id}>
+                        {media.type === 'image' ? (
+                          <Image
+                            source={{uri: media.url.join()}}
+                            style={styles.posts}
+                          />
+                        ) : (
+                          <VideoPlayer
+                            video={{uri: media.url}}
+                            videoWidth={1600}
+                            videoHeight={900}
+                            thumbnail={{uri: media.url.join()}}
+                            // autoplay={true}
+                            style={styles.posts}
+                          />
+                        )}
+                        <View style={styles.imageCountContainer}>
+                          <Text style={styles.imageCountText}>
+                            {index + 1}/{item.media.length}
+                          </Text>
+                        </View>
+                      </View>
+                    ))}
+                  </Swiper>
+                </View>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
               ) : (
                 <>
                   {detailPosts?.media?.length > 0 ? (
@@ -1211,7 +1259,6 @@ const CommentsScreen = ({navigation, route}) => {
                               style={[
                                 reaction.type === 'Haha' ||
                                 reaction.type === 'Wow' ||
-                                reaction.type === 'Buồn' ||
                                 reaction.type === 'Tức giận'
                                   ? {width: 22, height: 22}
                                   : styles.icon_Like_Feeling,
@@ -1223,6 +1270,7 @@ const CommentsScreen = ({navigation, route}) => {
                         </View>
                       ),
                     )}
+<<<<<<< HEAD
                     {item.reaction.length > 1 ? (
                       <View style={styles.cssLengthMeYou}>
                         {item.reaction.map(item => item.idUsers._id).join() ===
@@ -1245,6 +1293,21 @@ const CommentsScreen = ({navigation, route}) => {
                           </Text>
                         )}
                       </View>
+=======
+                    {item.reaction.length > 0 && (
+                      <>
+                        <Text style={styles.text_peopleLike}>
+                          {item.reaction.length > 1 && ' Bạn,'}
+                          {item.reaction.length > 2
+                            ? item.reaction.length - 2 + 'và những người khác'
+                            : item.reaction.map((item, index) => {
+                                if (item !== item._id) {
+                                  return ' ' + item.idUsers.name;
+                                }
+                              })}
+                        </Text>
+                      </>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
                     )}
                   </TouchableOpacity>
                   {/* line */}
@@ -1317,6 +1380,7 @@ const CommentsScreen = ({navigation, route}) => {
                           </TouchableOpacity>
                         )}
                         <View style={styles.container_comment_content}>
+<<<<<<< HEAD
                           <View
                             style={
                               item?.content !== ''
@@ -1394,6 +1458,30 @@ const CommentsScreen = ({navigation, route}) => {
                             ) : (
                               <></>
                             )}
+=======
+                          <View style={styles.comment_content}>
+                            <Text style={styles.name_comment}>
+                              {item.idUsers?.name}
+                            </Text>
+                            <View>
+                              {item?.content && (
+                                <View>
+                                  <Text>{item.content}</Text>
+                                </View>
+                              )}
+                              {item?.image && item?.image.length > 0 && (
+                                <View>
+                                  {item.image.map((image, imageIndex) => (
+                                    <Image
+                                      key={imageIndex}
+                                      source={{uri: image}}
+                                      style={styles.content_image}
+                                    />
+                                  ))}
+                                </View>
+                              )}
+                            </View>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
                           </View>
 
                           {item?.image && item?.image.length > 0 && (
@@ -1503,6 +1591,7 @@ const CommentsScreen = ({navigation, route}) => {
                                     setParentId(subItem._id);
                                 }}
                                 style={[
+<<<<<<< HEAD
                                   styles.container_comment_body,
                                   styles.childComment,
                                 ]}>
@@ -1722,6 +1811,29 @@ const CommentsScreen = ({navigation, route}) => {
                                         </View>
                                       )}
                                   </View>
+=======
+                                  styles.avatar_comment,
+                                  {width: 30, height: 30},
+                                ]}
+                                source={
+                                  subItem.idUsers?.avatar === '' ||
+                                  subItem.idUsers?.avatar === null ||
+                                  subItem.idUsers?.avatar === undefined ||
+                                  subItem.idUsers?.avatar === 'default' ||
+                                  subItem.idUsers?.avatar === 'null'
+                                    ? require('../../../../../assets/account.png')
+                                    : {uri: subItem.idUsers?.avatar}
+                                }
+                              />
+                              <View style={styles.container_comment_content}>
+                                <View style={styles.comment_content}>
+                                  <Text style={styles.name_comment}>
+                                    {subItem.idUsers?.name}
+                                  </Text>
+                                  <Text style={styles.content_comment}>
+                                    {subItem.content}
+                                  </Text>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
                                 </View>
                               </Pressable>
 
@@ -2069,6 +2181,7 @@ const CommentsScreen = ({navigation, route}) => {
         {/* Reply Comment */}
         <>
           {image.length > 0 && (
+<<<<<<< HEAD
             <>
               {isLoadingCamera ? (
                 <ActivityIndicator size="small" color="#22b6c0" />
@@ -2151,8 +2264,27 @@ const CommentsScreen = ({navigation, route}) => {
                     </TouchableOpacity>
                   )}
                 />
+=======
+            <FlatList
+              style={{marginTop: 10}}
+              data={image}
+              numColumns={numColumns}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => (
+                <TouchableOpacity key={index}>
+                  <Image
+                    source={{uri: item.uri}}
+                    style={{
+                      width: Dimensions.get('window').width / numColumns - 10,
+                      height: Dimensions.get('window').width / numColumns - 10,
+                      margin: 5,
+                      borderRadius: 5,
+                    }}
+                  />
+                </TouchableOpacity>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
               )}
-            </>
+            />
           )}
           <View style={styles.container_reply_comment}>
             <TouchableOpacity onPress={openLibrary}>

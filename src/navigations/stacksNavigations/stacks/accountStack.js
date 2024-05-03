@@ -13,10 +13,14 @@ import EditProfile from '../../../components/main/account/EditProfile/EditProfil
 import AccountAndSecurity from '../../../components/main/account/PIM/AccountAndSecurity';
 import SettingsAndPrivacy from '../../../components/main/account/PIM/SettingsAndPrivacy';
 import HelpAndSupport from '../../../components/main/account/PIM/HelpAndSupport';
+<<<<<<< HEAD
 import ChangePassword from '../../../components/main/account/PIM/ChangePassword';
 import ScanQRLogin from '../../../components/main/phonebook/Feature/ScanQRLogin';
 import SavePostsScreen from '../../../components/main/account/savePosts';
 import MyQRcode from '../../../components/main/account/PIM/MyQRcode';
+=======
+import OtherUserA from '../../../components/main/account/OtherUserAccounts/OtherUserA';
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
 const Stack = createNativeStackNavigator();
 
@@ -34,10 +38,14 @@ export function AccountStackScreen() {
       <Stack.Screen name="AccountAndSecurity" component={AccountAndSecurity} />
       <Stack.Screen name="SettingsAndPrivacy" component={SettingsAndPrivacy} />
       <Stack.Screen name="HelpAndSupport" component={HelpAndSupport} />
+<<<<<<< HEAD
       <Stack.Screen name="ChangePassword" component={ChangePassword} />
       <Stack.Screen name="ScanQRLogin" component={ScanQRLogin} />
       <Stack.Screen name="SavePostsScreen" component={SavePostsScreen} />
       <Stack.Screen name="MyQRcode" component={MyQRcode} />
+=======
+      <Stack.Screen name="OtherUserA" component={OtherUserA} />
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     </Stack.Navigator>
   );
 }

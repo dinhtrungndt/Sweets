@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { createBottomTabNavigator, DarkTheme } from '@react-navigation/bottom-tabs';
 
 // Screens
+<<<<<<< HEAD
 import { options } from '../customs/tabNavigator';
 import { HomeStackScreen } from './stacks/homeStack';
 import { AccountStackScreen } from './stacks/accountStack';
@@ -25,6 +26,18 @@ import { EventRegister } from 'react-native-event-listeners';
 import theme from '../../themes/theme';
 import themContext from '../../themes/themeContext';
 import { DefaultTheme } from 'react-native-paper';
+=======
+import {options} from '../customs/tabNavigator';
+import {HomeStackScreen} from './stacks/homeStack';
+import {AccountStackScreen} from './stacks/accountStack';
+import {GetRouteNameAccount} from '../customs/routeAccount';
+import {GetRouteNameHome} from '../customs/routeHome';
+import {GetRouteNamePhone} from '../customs/routePhone';
+import {PhoneBookStack} from './stacks/PhoneBookStack';
+import {ChatScreenStack} from './stacks/chatStack';
+import {AddsScreenStack} from './stacks/addsStack';
+import {GetRouteNameAdds} from '../customs/routeAdds';
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
 const Tab = createBottomTabNavigator();
 

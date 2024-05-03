@@ -2,7 +2,11 @@
 import React, {useState, useEffect, createContext} from 'react';
 import {login} from '../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+<<<<<<< HEAD
 import {onUserLogout, onUserLogin} from '../../components/call/HomeTest';
+=======
+
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 export const UserContext = createContext();
 
 export const UserProvider = props => {
@@ -20,6 +24,7 @@ export const UserProvider = props => {
           const result = await login(userEmail, userPassword);
           if (result && result.status === 1) {
             setUser(result);
+<<<<<<< HEAD
             // await onUserLogout();
             // console.log('onUserLogout được gọi trước khi gọi onUserLogin');
             
@@ -29,6 +34,8 @@ export const UserProvider = props => {
             );
             console.log('23 User:', result.id);
             console.log('24 User:', result.user.name);
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
           }
         }
       } catch (error) {
@@ -44,8 +51,11 @@ export const UserProvider = props => {
     try {
       await AsyncStorage.removeItem('userEmail');
       await AsyncStorage.removeItem('userPassword');
+<<<<<<< HEAD
       // await onUserLogout();
       // console.log('onUserLogout được gọi thành công');
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
       setUser(null);
     } catch (error) {
       console.log('---- >>>>>>Lỗi khi đăng xuất:', error);
@@ -90,9 +100,12 @@ export const UserProvider = props => {
         await AsyncStorage.setItem('token', result.token);
         await AsyncStorage.setItem('user', JSON.stringify(result.user));
         setUser(result);
+<<<<<<< HEAD
         await onUserLogin(result.id, result.user.name);
         console.log('User:', result.id);
         console.log('User:', result.user.name);
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
         if (result.user.friends) {
           console.log('Friends:', result.user.friends);
           await AsyncStorage.setItem(

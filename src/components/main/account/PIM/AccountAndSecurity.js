@@ -111,10 +111,15 @@ const AccountAndSecurity = props => {
             style={styles.imgNext2}
             source={require('../../../../assets/icon_next.png')}
           />
+<<<<<<< HEAD
         </TouchableOpacity> */}
         <TouchableOpacity
           onPress={() => navigation.navigate('ChangePassword')}
           style={styles.qrFrame}>
+=======
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.qrFrame}>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
           <Image
             style={styles.imgEmail}
             source={require('../../../../assets/icon_lock.png')}

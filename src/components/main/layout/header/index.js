@@ -59,16 +59,18 @@ const HeaderScreen = ({onRefresh, navigation}) => {
     }
   }, [listNotifi]);
 
+<<<<<<< HEAD
+=======
+const HeaderScreen = () => {
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
   return (
     <View style={styles.T}>
       {/* header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={onRefresh}>
-          <Image
-            style={styles.logoHeader}
-            source={require('../../../../assets/sweets_ngnag.png')}
-          />
-        </TouchableOpacity>
+        <Image
+          style={styles.logoHeader}
+          source={require('../../../../assets/sweets_ngnag.png')}
+        />
         <View style={styles.towEnd_Noti_Search}>
           <TouchableOpacity
             style={{paddingRight: 5}}

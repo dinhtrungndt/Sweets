@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   Text,
   View,
@@ -20,9 +21,15 @@ import Swiper from 'react-native-swiper';
 import VideoPlayer from 'react-native-video-player';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useTranslation} from 'react-i18next';
+=======
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 // styles
 import {styles} from '../style/postOtherScreen';
 
+<<<<<<< HEAD
 const PostOtherScreen = ({navigation, route}) => {
   const {account, accountzzz} = route?.params;
   // console.log('>>>>>>>>> accountttt', account);
@@ -262,5 +269,14 @@ const PostOtherScreen = ({navigation, route}) => {
     />
   );
 };
+=======
+const PostOtherScreen = () => {
+  return (
+    <View>
+      <Text>PostOtherScreen</Text>
+    </View>
+  )
+}
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
 export default PostOtherScreen;

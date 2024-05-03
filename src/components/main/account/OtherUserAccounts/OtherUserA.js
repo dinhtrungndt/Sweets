@@ -8,8 +8,13 @@ import {
 } from 'react-native';
 import React, {useContext, useState, useCallback, useEffect} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+<<<<<<< HEAD
 import AxiosInstance from '../../../../helper/Axiosinstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+=======
+import {GetListUser} from '../../../../services/user/userService';
+import {GetListUserById} from '../../../../services/user/userService';
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 // screens
 import PostOtherScreen from './TopTabOther/PostOtherScreen';
 import ImgOtherScreen from './TopTabOther/ImgOtherScreen';
@@ -240,6 +245,7 @@ const OtherUserA = ({navigation, route}) => {
             </View>
           </View>
 
+<<<<<<< HEAD
           <Tab.Navigator
             screenOptions={{
               tabBarActiveTintColor: '#22b6c0',
@@ -429,6 +435,32 @@ const OtherUserA = ({navigation, route}) => {
         </View>
       ) : null}
     </>
+=======
+      <Tab.Navigator
+        screenOptions={{
+          tabBarLabelStyle: {
+            fontSize: 14,
+            fontWeight: 'bold',
+          },
+          tabBarStyle: {
+            backgroundColor: '#fff',
+            borderTopWidth: 0,
+            borderTopColor: '#ddd',
+            elevation: 0,
+            marginTop: 12,
+          },
+          tabBarActiveTintColor: '#000',
+          tabBarInactiveTintColor: '#999',
+          tabBarIndicatorStyle: {
+            backgroundColor: '#000000',
+          },
+          tabBarPressColor: 'rgba(0,0,0,0.1)',
+        }}>
+        <Tab.Screen name="Bài viết" component={PostOtherScreen} />
+        <Tab.Screen name="Ảnh" component={ImgOtherScreen} />
+      </Tab.Navigator>
+    </View>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
   );
 };
 

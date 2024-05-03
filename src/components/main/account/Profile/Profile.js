@@ -7,9 +7,14 @@ import {
   Alert,
   FlatList,
 } from 'react-native';
+<<<<<<< HEAD
 import React, {useContext, useState, useCallback, useEffect} from 'react';
 import {UserContext} from '../../../../contexts/user/userContext';
 import AxiosInstance from '../../../../helper/Axiosinstance';
+=======
+import React, { useContext, useState, useCallback, useEffect } from 'react';
+import { UserContext } from '../../../../contexts/user/userContext';
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {updateAvatar, updateCover} from '../../../../services/user/userService';
 // style
@@ -39,11 +44,17 @@ const Profile = props => {
   const [imageCover, setImageCover] = useState([]);
   const [imageCoverPath, setImageCoverPath] = useState(null);
   const [modalVisibleCover, setModalVisibleCover] = useState(false);
+<<<<<<< HEAD
   const [friendsCount, setFriendsCount] = useState(0);
   const [friendsList, setFriendsList] = useState([]);
 
   const {user, setUser} = useContext(UserContext);
   // console.log('>>>>>>>>>>>>>> user', user);
+=======
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const { user, setUser } = useContext(UserContext);
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
   const takePhotoAvatar = useCallback(async response => {
     if (response.didCancel || response.errorCode || response.errorMessage) {
@@ -63,7 +74,9 @@ const Profile = props => {
       });
 
       const data = await uploadImageStatus(formData);
+      // console.log('5955 995959 >>>>>>>>>> Data 59 data', data);
       setImageAvatarPath(data.urls);
+      // console.log('6226262626 >>>>>>>>>>>>>> 62 dataImage', data.urls);
     }
   }, []);
 
@@ -128,7 +141,7 @@ const Profile = props => {
       multiple: true,
     };
     await launchImageLibrary(options, takePhotoCover);
-    setModalVisibleCover(false);
+    setModalVisibleAvatar(false);
   }, []);
 
   const handleAvatarUpdate = useCallback(async () => {
@@ -205,6 +218,7 @@ const Profile = props => {
     handleCoverUpdate();
   }, [handleCoverUpdate]);
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchFriendsCount = async () => {
       try {
@@ -232,6 +246,8 @@ const Profile = props => {
     fetchFriendsCount();
   }, []);
 
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
   return (
     <View style={styles.body}>
       <View style={styles.profileFrame}>
@@ -286,6 +302,7 @@ const Profile = props => {
           </View>
         </TouchableOpacity>
         <Text style={styles.textName}>{user ? user.user.name : ''}</Text>
+<<<<<<< HEAD
         <View style={styles.containerFriends}>
           <Text style={styles.txtFriendsNumber}>{friendsCount}</Text>
           <Text style={styles.txtFriends}>{t('friends')}</Text>
@@ -296,6 +313,10 @@ const Profile = props => {
             source={require('../../../../assets/icon_add_32.png')}
           />
           <Text style={styles.textIntroduce}>{t('addToNews')}</Text>
+=======
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.btnIntroduce}>
+          <Text style={styles.textIntroduce}>Cập nhật giới thiệu bản thân</Text>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate('EditProfile', {user: user})}
@@ -410,8 +431,13 @@ const Profile = props => {
           tabBarItemStyle: {
             width: 'auto',
           },
+<<<<<<< HEAD
+=======
+          tabBarActiveTintColor: '#000',
+          tabBarInactiveTintColor: '#999',
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
           tabBarIndicatorStyle: {
-            backgroundColor: '#22b6c0',
+            backgroundColor: '#000000',
           },
           tabBarStyle: {
             backgroundColor: '#FFF',

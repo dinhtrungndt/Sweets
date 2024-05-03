@@ -46,7 +46,7 @@ const LabelPickStory = ({cancel, openModelSettingObjects, navigation}) => {
       Toast.show({
         type: 'success',
         position: 'top',
-        text1: 'Đăng story thành công !',
+        text1: 'Up tin thành công',
         visibilityTime: 2000,
         autoHide: true,
         topOffset: 30,
@@ -56,7 +56,7 @@ const LabelPickStory = ({cancel, openModelSettingObjects, navigation}) => {
       Toast.show({
         type: 'error',
         position: 'top',
-        text1: 'Đăng story thất bại !',
+        text1: 'Up tin thất bại',
         visibilityTime: 2000,
         autoHide: true,
         topOffset: 30,

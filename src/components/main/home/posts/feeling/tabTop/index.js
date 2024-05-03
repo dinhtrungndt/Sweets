@@ -12,8 +12,6 @@ import WowFeeling from './wow';
 
 // custom
 import {optionsTabsTop} from '../../../styles/optionsTabsTop';
-import BuonFeeling from './buon';
-import TucGianFeeling from './tucGian';
 
 const TabTop = createMaterialTopTabNavigator();
 
@@ -30,6 +28,7 @@ const FeelingTop = ({reactions}) => {
           component={AllFeeling}
           initialParams={{reactions}}
         />
+<<<<<<< HEAD
         {reactionsType.find(item => item === 'Thích') && (
           <TabTop.Screen
             name="LikeFeeling"
@@ -72,6 +71,28 @@ const FeelingTop = ({reactions}) => {
             initialParams={{reactions}}
           />
         )}
+=======
+        <TabTop.Screen
+          name="LikeFeeling"
+          component={LikeFeeling}
+          initialParams={{reactions}}
+        />
+        <TabTop.Screen
+          name="LoveFeeling"
+          component={LoveFeeling}
+          initialParams={{reactions}}
+        />
+        <TabTop.Screen
+          name="HahaFeeling"
+          component={HahaFeeling}
+          initialParams={{reactions}}
+        />
+        <TabTop.Screen
+          name="WowFeeling"
+          component={WowFeeling}
+          initialParams={{reactions}}
+        />
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
       </TabTop.Navigator>
     </View>
   );

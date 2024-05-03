@@ -29,7 +29,6 @@ import {
 import {UserContext} from '../../../contexts/user/userContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LoadingScreen} from '../../../utils/loading';
-import ToastManager from 'toastify-react-native';
 
 const HomeScreen = props => {
   const {navigation} = props;
@@ -96,11 +95,44 @@ const HomeScreen = props => {
   };
 
   const onRefresh = useCallback(async () => {
-    setIsLoading(true);
     await onGetPosts();
-    setIsLoading(false);
+    setRefreshing(false);
   }, []);
 
+<<<<<<< HEAD
+=======
+  const handleLike = async idPosts => {
+    try {
+      const idUsers = user.id;
+      const type = 'Thích';
+      const response = await likeByPost(idUsers, idPosts, type);
+
+      if (response.status === 1) {
+        const updatedPosts = posts.map(post => {
+          if (post._id === idPosts) {
+            const updatedReaction = post.reaction.map(reactionItem => {
+              if (reactionItem.idUsers._id === user.id) {
+                return {...reactionItem, type: 'Thích'};
+              }
+              return reactionItem;
+            });
+            return {
+              ...post,
+              reaction: updatedReaction,
+            };
+          }
+          return post;
+        });
+        setPosts(updatedPosts);
+      } else {
+        console.error('Lỗi khi thay đổi trạng thái like:', response.message);
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu API:', error);
+    }
+  };
+
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
   useEffect(() => {
     onGetPosts();
   }, []);
@@ -120,8 +152,12 @@ const HomeScreen = props => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
+<<<<<<< HEAD
         <ToastManager />
         <HeaderScreen onRefresh={onRefresh} navigation={navigation} />
+=======
+        <HeaderScreen />
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
         <StoryScreen story={filteredStore} navigation={navigation} />
         <PostsScreen posts={filteredPosts} navigation={navigation} />
       </ScrollView>

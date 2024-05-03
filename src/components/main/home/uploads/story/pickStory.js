@@ -194,12 +194,98 @@ const PickStory = ({route}) => {
   }, [current]);
 
   return (
+<<<<<<< HEAD
     <View
       style={{
         flex: 1,
         backgroundColor: '#000',
       }}>
       {/* {console.log('storys[current]storys[current]', storys)} */}
+=======
+    <View style={{flex: 1, backgroundColor: '#000'}}>
+      {story.media && story.media.map(item => item.url).join() !== '' ? (
+        <>
+          {story.media[current].type === 'image' ? (
+            <Image
+              source={{uri: story.media[current].url}}
+              onLoadEnd={() => {
+                progress.setValue(0);
+                start();
+              }}
+              style={{width: width, height: height}}
+            />
+          ) : (
+            <TouchableOpacity onPress={handleVideoPress} style={{opacity: 1}}>
+              <VideoPlayer
+                video={{uri: story.media[current].url}}
+                videoWidth={1600}
+                videoHeight={900}
+                thumbnail={{uri: story.media[current].url}}
+                autoplay={true}
+                hideControls={true}
+                showOnStart={true}
+                paused={isPaused}
+                style={styles.video_story}
+              />
+            </TouchableOpacity>
+          )}
+        </>
+      ) : (
+        <View style={styles.container_content}>
+          <Text style={styles.content}>
+            {story.content ? story.content : story[current].content}
+          </Text>
+          {/* {story.content ? (
+            <Text style={styles.content}>
+              {story.content ? story.content : story[current].content}
+            </Text>
+          ) : (
+            <>
+              {story
+                .flatMap(item => item.media.map(item => item.type))
+                .join() === 'image' ? (
+                <Image
+                  source={{
+                    uri: story
+                      .flatMap(item => item.media.map(item => item.url))
+                      .join(),
+                  }}
+                  onLoadEnd={() => {
+                    progress.setValue(0);
+                    start();
+                  }}
+                  style={{width: width, height: height}}
+                />
+              ) : (
+                <TouchableOpacity
+                  onPress={handleVideoPress}
+                  style={{opacity: 1}}>
+                  <VideoPlayer
+                    video={{
+                      uri: story
+                        .flatMap(item => item.media.map(item => item.url))
+                        .join(),
+                    }}
+                    videoWidth={1600}
+                    videoHeight={900}
+                    thumbnail={{
+                      uri: story
+                        .flatMap(item => item.media.map(item => item.url))
+                        .join(),
+                    }}
+                    autoplay={true}
+                    hideControls={true}
+                    showOnStart={true}
+                    paused={isPaused}
+                    style={styles.video_story_me}
+                  />
+                </TouchableOpacity>
+              )}
+            </>
+          )} */}
+        </View>
+      )}
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
       <View style={styles.container_content}>
         {storys[current] && storys[current].media.length === 0 ? (

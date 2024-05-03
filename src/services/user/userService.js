@@ -1,6 +1,10 @@
 /* eslint-disable prettier/prettier */
 import AxiosInstance from '../../helper/Axiosinstance';
+<<<<<<< HEAD
 import HomeTest from '../../components/call/HomeTest';
+=======
+
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 export const register = async (
   name,
   email,
@@ -23,6 +27,7 @@ export const register = async (
       avatar,
       coverImage,
     );
+
     return response;
   } catch (error) {
     console.log('register: ', error);
@@ -37,7 +42,7 @@ export const login = async (email, password) => {
       password: password,
     };
     const response = await AxiosInstance().post('/users/post-login', body);
-
+   
     return response;
   } catch (error) {
     console.log('register: ', error);
@@ -67,6 +72,7 @@ export const updateStatus = async (_id, status) => {
     console.log('getListUser error', error);
     return error;
   }
+<<<<<<< HEAD
 };
 
 export const getUser = async _id => {
@@ -182,3 +188,6 @@ export const resetPassword = async (email, otp, newPassword) => {
     return error;
   }
 };
+=======
+};
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf

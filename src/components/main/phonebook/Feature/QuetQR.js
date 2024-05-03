@@ -111,9 +111,15 @@ return (
       </View>
     </View>
 
+<<<<<<< HEAD
     <TouchableOpacity style={styles.ToQR} onPress={captureAndSave}>
       <Image source={require('../../../../assets/install.png')}  /> 
       <Text style={styles.txtToQR}>Lưu mã QR của tôi</Text>
+=======
+    <TouchableOpacity style={styles.ToQR}>
+    <Image source={require('../../../../assets/qr-scanb.png')}  /> 
+        <Text style={styles.txtToQR}>Quét mã qr</Text>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     </TouchableOpacity>
 
     <TouchableOpacity style={styles.ToQR} onPress={() => navigation.navigate('ScanQR')}>

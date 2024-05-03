@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
         marginHorizontal:20,
         
+<<<<<<< HEAD
       color:'#22b6c0'
       },
       imgQR:{
@@ -88,6 +89,9 @@ const styles = StyleSheet.create({
         borderColor:'blue',
         justifyContent:'center',
         alignItems:'center'
+=======
+      
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
       }
   });
   

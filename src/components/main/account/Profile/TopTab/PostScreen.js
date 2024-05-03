@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {Text, View, Image, FlatList, TouchableOpacity} from 'react-native';
 import React, {useState, useContext, useEffect} from 'react';
 import {UserContext} from '../../../../../contexts/user/userContext';
@@ -217,9 +218,19 @@ const PostScreenAccount = () => {
           <Text style={styles.postActionText}>Chia sẻ</Text>
         </TouchableOpacity>
       </View>
+=======
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+
+const PostScreen = () => {
+  return (
+    <View>
+      <Text>PostScreen</Text>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     </View>
   );
 
+<<<<<<< HEAD
   const header = (
     <View style={styles.container}>
       <Text style={styles.text1}>Chi tiết</Text>
@@ -265,3 +276,8 @@ const PostScreenAccount = () => {
 };
 
 export default PostScreenAccount;
+=======
+export default PostScreen
+
+const styles = StyleSheet.create({})
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf

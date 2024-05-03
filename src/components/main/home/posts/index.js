@@ -153,11 +153,6 @@ const PostsScreen = ({posts, navigation}) => {
     },
     {
       id: 4,
-      emoji: '😔',
-      name: 'Buồn',
-    },
-    {
-      id: 5,
       emoji: '😡',
       name: 'Tức giận',
     },
@@ -270,8 +265,6 @@ const PostsScreen = ({posts, navigation}) => {
         return require('../../../../assets/haha_25px.png');
       case 'Wow':
         return require('../../../../assets/wow_25px.png');
-      case 'Buồn':
-        return require('../../../../assets/sad_25px.png');
       case 'Tức giận':
         return require('../../../../assets/angry_25px.png');
       default:
@@ -288,8 +281,6 @@ const PostsScreen = ({posts, navigation}) => {
       case 'Haha':
         return '#ff9900';
       case 'Wow':
-        return '#ff9900';
-      case 'Buồn':
         return '#ff9900';
       case 'Tức giận':
         return '#ff0000';
@@ -1536,7 +1527,6 @@ const PostsScreen = ({posts, navigation}) => {
                           style={[
                             reaction.type === 'Haha' ||
                             reaction.type === 'Wow' ||
-                            reaction.type === 'Buồn' ||
                             reaction.type === 'Tức giận'
                               ? {width: 22, height: 22}
                               : styles.icon_Like_Feeling,
@@ -1548,20 +1538,14 @@ const PostsScreen = ({posts, navigation}) => {
                     </View>
                   ))}
 
-                  {item.reaction.length === 0 ? (
-                    <Text />
+                  {item.reaction.length <= 2 ? (
+                    <Text style={styles.text_feeling}>
+                      {item.reaction.length}
+                    </Text>
                   ) : (
-                    <>
-                      {item.reaction.length <= 2 ? (
-                        <Text style={styles.text_feeling}>
-                          {item.reaction.length}
-                        </Text>
-                      ) : (
-                        <Text style={styles.text_feeling2}>
-                          {item.reaction.length}
-                        </Text>
-                      )}
-                    </>
+                    <Text style={styles.text_feeling2}>
+                      {item.reaction.length}
+                    </Text>
                   )}
                 </TouchableOpacity>
 

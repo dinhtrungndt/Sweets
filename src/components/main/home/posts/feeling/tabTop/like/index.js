@@ -5,7 +5,7 @@ import {UserContext} from '../../../../../../../contexts/user/userContext';
 
 const LikeFeeling = ({route}) => {
   const reactions = route.params.reactions;
-  const likeReactions = reactions.filter(item => item.type === 'Thích');
+  const likeReactions = reactions.filter(item => item.type === 'Like');
   const {user} = useContext(UserContext);
 
   const getAvatar = avatar => {
@@ -25,8 +25,6 @@ const LikeFeeling = ({route}) => {
         return '😂';
       case 'Wow':
         return '😮';
-      case 'Buồn':
-        return '😔';
       case 'Tức giận':
         return '😡';
       default:

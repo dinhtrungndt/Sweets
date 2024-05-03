@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, {useEffect, useContext, useState, useRef} from 'react';
+=======
+import React, { useContext, useEffect, useState, useRef } from 'react';
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 import {
   FlatList,
   Image,
@@ -9,12 +13,13 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import io from 'socket.io-client';
-import {GetMessageSR} from '../../../../services/home/chatService';
-import {UserContext} from '../../../../contexts/user/userContext';
-import {styles} from '../styles/chat_in';
+import { GetMessageSR } from '../../../../services/home/chatService';
+import { UserContext } from '../../../../contexts/user/userContext';
+import { styles } from '../styles/chat_in';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+<<<<<<< HEAD
 import ZegoUIKitPrebuiltCallService, {
   ZegoCallInvitationDialog,
   ZegoUIKitPrebuiltCallWaitingScreen,
@@ -26,6 +31,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const ChatScreenIn = ({route, navigation}) => {
   const {receiver, message} = route.params;
   const {user} = useContext(UserContext);
+=======
+
+const ChatScreenIn = ({ route, navigation }) => {
+  const { receiver } = route.params;
+  const { user } = useContext(UserContext);
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -68,10 +79,8 @@ const ChatScreenIn = ({route, navigation}) => {
     socket.current.on('new_message', newMessage => {
       // Kiểm tra xem tin nhắn mới có thuộc về hai người liên quan hay không
       if (
-        (newMessage.idSender === user.user._id &&
-          newMessage.idReceiver === receiver.receiverv2) ||
-        (newMessage.idSender === receiver.receiverv2 &&
-          newMessage.idReceiver === user.user._id)
+        (newMessage.idSender === user.user._id && newMessage.idReceiver === receiver.receiverv2) ||
+        (newMessage.idSender === receiver.receiverv2 && newMessage.idReceiver === user.user._id)
       ) {
         setMessages(prevMessages => [...prevMessages, newMessage]);
       }
@@ -85,21 +94,43 @@ const ChatScreenIn = ({route, navigation}) => {
       socket.current.off('disconnect', handleDisconnect);
       socket.current.disconnect();
     };
+<<<<<<< HEAD
   }, [message]);
+=======
+  }, []);
+
+
+
+  0
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
   const fetchData = async () => {
     try {
       const idSender = user.user._id;
       const idReceiver = receiver.receiverv2;
+<<<<<<< HEAD
       const response = await GetMessageSR(idSender, idReceiver);
       setMessages(response);
+=======
+
+
+      const response = await GetMessageSR(idSender, idReceiver);
+      setMessages(response.slice(-100));
+
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     } catch (error) {
       console.error('Lỗi:', error);
     }
   };
 
+<<<<<<< HEAD
   const sendMessage = content => {
     if (content === '' || !content.trim()) {
+=======
+
+  const sendMessage = () => {
+    if (messageInput === '' || !messageInput.trim()) {
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
       return;
     }
     if (socket.current && socket.current.connected) {
@@ -116,7 +147,8 @@ const ChatScreenIn = ({route, navigation}) => {
     }
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
+
     return (
       <View style={styles.chat}>
         {item.idSender === user.user._id ? (
@@ -137,11 +169,24 @@ const ChatScreenIn = ({route, navigation}) => {
   return (
     <View style={styles.T}>
       <View style={styles.header}>
+<<<<<<< HEAD
         <View style={{alignItems: 'center', flexDirection: 'row'}}>
           <TouchableOpacity
             style={styles.back_user}
             onPress={() => navigation.goBack()}>
             <Ionicons name="chevron-back-outline" size={26} color={'#000'} />
+=======
+        <TouchableOpacity
+          style={styles.back_user}
+          onPress={() => navigation.goBack()}>
+          <Image
+            style={styles.back}
+            source={require('../../../../assets/back_50px.png')}
+          />
+          <TouchableOpacity style={styles.account}>
+            <Image source={{ uri: receiver.avatar }} style={styles.avatar} />
+            <Text style={styles.name_user}>{receiver.name}</Text>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
           </TouchableOpacity>
           {/* {console.log('>>>>>>> kakakaka', receiver.receiverv2)} */}
           {receiver.receiverv2 === user.user._id ? (
@@ -168,6 +213,7 @@ const ChatScreenIn = ({route, navigation}) => {
           )}
         </View>
         <View style={styles.call_video}>
+<<<<<<< HEAD
           <ZegoSendCallInvitationButton
             invitees={[{userID: receiver.receiverv2, userName: receiver.name}]}
             isVideoCall={false}
@@ -178,6 +224,20 @@ const ChatScreenIn = ({route, navigation}) => {
             isVideoCall={true}
             resourceID={'sweets_call'}
           />
+=======
+          <TouchableOpacity>
+            <Image
+              style={styles.back}
+              source={require('../../../../assets/call_50px.png')}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ marginLeft: 15 }}>
+            <Image
+              style={styles.back}
+              source={require('../../../../assets/call_video.png')}
+            />
+          </TouchableOpacity>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
         </View>
       </View>
       <Text style={styles.line} />
@@ -185,8 +245,13 @@ const ChatScreenIn = ({route, navigation}) => {
       <FlatList
         inverted={true}
         data={messages.slice().reverse()}
+<<<<<<< HEAD
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => renderItem({item})}
+=======
+        keyExtractor={(item, index) => index.toString()} // Sử dụng index như một key
+        renderItem={({ item }) => renderItem({ item })}
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
       />
       <View style={styles.input}>
         <TextInput

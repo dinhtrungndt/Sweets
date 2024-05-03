@@ -1,10 +1,15 @@
 /* eslint-disable prettier/prettier */
+<<<<<<< HEAD
 import React, { forwardRef, useEffect } from 'react';
+=======
+import React, {useEffect} from 'react';
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 import SplashScreen from 'react-native-splash-screen';
 import { SafeAreaView } from 'react-native';
 import { UserProvider } from './src/contexts/user/userContext';
 import { HomeProvider } from './src/contexts/home/homeContext';
 import AppNavigations from './src/navigations/AppNavigations';
+<<<<<<< HEAD
 import {LogBox} from 'react-native';
 import ChatScreen from './src/components/main/chat';
 // import {NavigationContainer} from '@react-navigation/native';
@@ -15,6 +20,8 @@ import StackTest from './src/components/call/StackTest';
 
 import Toast from 'react-native-toast-message';
 
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 const App = () => {
   // Ignore log notification by message
   LogBox.ignoreLogs(['Warning: ...']);
@@ -28,6 +35,7 @@ const App = () => {
   }, []);
 
   return (
+<<<<<<< HEAD
     <SafeAreaView style={{ flex: 1 }}>
         <UserProvider>
           <HomeProvider>
@@ -36,12 +44,16 @@ const App = () => {
         </UserProvider>
         {/* <StackTest /> */}
         <ToastComponent />
+=======
+    <SafeAreaView style={{flex: 1}}>
+      <UserProvider>
+        <HomeProvider>
+          <AppNavigations />
+        </HomeProvider>
+      </UserProvider>
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     </SafeAreaView>
   );
 };
-
-const ToastComponent = forwardRef((props, ref) => (
-  <Toast ref={ref} {...props} />
-));
 
 export default App;

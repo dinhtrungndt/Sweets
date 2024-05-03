@@ -12,10 +12,6 @@ import BoardingScreens from '../../components/user/Boarding/Boarding';
 import Update from '../../components/user/update/Update';
 
 import HomeNavigation from './homeNavigation';
-import {
-  ZegoUIKitPrebuiltCallWaitingScreen,
-  ZegoUIKitPrebuiltCallInCallScreen,
-} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 const StacK = createNativeStackNavigator();
 
@@ -38,8 +34,12 @@ const UserNavigation = () => {
       <StacK.Screen name="ForgetPassword" component={ForgetPassword} />
       <StacK.Screen name="Update" component={Update} />
       <StacK.Screen name="Home" component={HomeNavigation} />
+<<<<<<< HEAD
       <StacK.Screen name="CheckOTP" component={CheckOTP} />
       <StacK.Screen name="ResetPassword" component={ResetPassword} />
+=======
+
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
     </StacK.Navigator>
 
     // >>>>>>> parent of 44adc45 (fix)

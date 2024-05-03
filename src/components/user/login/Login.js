@@ -14,30 +14,41 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {login} from '../../../services/user/userService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Style';
+<<<<<<< HEAD
 import {UserContext} from '../../../contexts/user/userContext';
 import {onUserLogin} from '../../call/HomeTest';
 import {getUser} from '../../../services/user/userService';
 import {useTranslation} from 'react-i18next';
 
 const LoginScreen = ({navigation}) => {
+=======
+import { UserContext } from '../../../contexts/user/userContext';
+
+const LoginScreen = ({ navigation }) => {
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {onLogin} = useContext(UserContext);
   const [loading, setLoading] = useState(false);
+<<<<<<< HEAD
   const {user} = useContext(UserContext);
   const {t, i18n} = useTranslation();
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
 
   const handleLogin = async () => {
     setLoading(true);
     const response = await onLogin(email, password);
     if (response) {
       setLoading(false);
+<<<<<<< HEAD
       console.log('kiểm tra user', user);
+=======
+>>>>>>> 16d62ec8c383bb71477951b93e23bb2b41441ebf
       navigation.reset({
         index: 0,
         routes: [{name: 'Home'}],
       });
-      // await onUserLogin();
       ToastAndroid.show('Đăng nhập thành công', ToastAndroid.SHORT);
       await AsyncStorage.setItem('userEmail', email);
       await AsyncStorage.setItem('userPassword', password);
