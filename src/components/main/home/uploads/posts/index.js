@@ -35,7 +35,7 @@ import TabFriendUpLoad from './tags';
 import ModelBackground from './background';
 import AxiosInstance from '../../../../../helper/AxiosWeather';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import EmojiPicker from 'react-native-emoji-picker';
 
 export function AddsScreen({route, navigation}) {
@@ -59,7 +59,7 @@ export function AddsScreen({route, navigation}) {
   const [selectColor, setSelectColor] = useState(undefined);
   const [location, setLocation] = useState(null);
   const [locationData, setLocationData] = useState(null);
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const [emojiVisible, setEmojiVisible] = useState(false);
 
@@ -684,14 +684,17 @@ export function AddsScreen({route, navigation}) {
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_feeling.png')}
               />
-              <Text style={styles.bottomSheetText}>{t('emotions/activity')}</Text>
+              <Text style={styles.bottomSheetText}>
+                {t('emotions/activity')}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.bottomSheetItem}
-              onPress={() => {
-                handleCheckIn();
-                hideBottomSheet();
-              }}>
+              // onPress={() => {
+              //   handleCheckIn();
+              //   hideBottomSheet();
+              // }}
+            >
               <Image
                 style={styles.bottomSheetIcon}
                 source={require('../../../../../assets/icon_checkin.png')}

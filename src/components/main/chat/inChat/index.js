@@ -40,7 +40,7 @@ const ChatScreenIn = ({route, navigation}) => {
     }
 
     // Khởi tạo socket khi component được mount
-    socket.current = io('https://sweets-nodejs.onrender.com/');
+    socket.current = io('https://api.dinhtrungndt.id.vn/');
     // 11.189.180.53
 
     let isConnected = false;

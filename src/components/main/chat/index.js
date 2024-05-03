@@ -34,7 +34,7 @@ const ChatScreen = props => {
 
   useEffect(() => {
     // Khởi tạo socket khi component được mount
-    socket.current = io('https://sweets-nodejs.onrender.com/');
+    socket.current = io('https://api.dinhtrungndt.id.vn/');
     // 11.189.180.53
     getListUser(); // Fetch tin nhắn ban đầu
     // Lắng nghe sự kiện new_message từ socket

@@ -19,8 +19,8 @@ const ScanQRLogin = () => {
     socket.current.emit('UpdateDevice', {response: response.status});
   };
   useEffect(() => {
-    // baseURL: 'https://sweets-nodejs.onrender.com/',
-    socket.current = io('https://sweets-nodejs.onrender.com/');
+    // baseURL: 'https://api.dinhtrungndt.id.vn/',
+    socket.current = io('https://api.dinhtrungndt.id.vn/');
   }, []);
 
   const handleBarcodeScan = event => {
